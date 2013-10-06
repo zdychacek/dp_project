@@ -50,7 +50,8 @@ require([
 	//'common/mocks/mocks',
 	
 	// controllers
-	'base/base',
+	'base/MainCtrl',
+	'base/HeaderCtrl',
 	'welcome/WelcomeCtrl',
 	'users/users',
 	'campaigns/CampaignsCtrl',
@@ -78,7 +79,8 @@ require([
 		//'mocks',
 
 		// controllers
-		'base',
+		'base.MainCtrl',
+		'base.HeaderCtrl',
 		'welcome',
 		'users',
 		'campaigns',

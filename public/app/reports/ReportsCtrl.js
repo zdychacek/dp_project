@@ -7,6 +7,7 @@ define([
 	angular.module('reports', ['security.authorization'])
 		.config(['$routeProvider', 'securityAuthorizationProvider', function ($routeProvider, securityAuthorizationProvider) {
 			$routeProvider.when('/seznam-prehledu', {
+				title: 'Sklik - statistické přehledy',
 				templateUrl: '/static/app/reports/reportsList.html',
 				controller: 'ReportsCtrl',
 				

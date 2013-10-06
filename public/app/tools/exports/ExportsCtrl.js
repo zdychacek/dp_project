@@ -7,6 +7,7 @@ define([
 	angular.module('exports', ['security.authorization'])
 		.config(['$routeProvider', 'securityAuthorizationProvider', function ($routeProvider, securityAuthorizationProvider) {
 			$routeProvider.when('/nastroje/export-dat', {
+				title: 'Sklik - export dat',
 				templateUrl: '/static/app/tools/exports/exportsList.html',
 				controller: 'ExportsCtrl',
 				

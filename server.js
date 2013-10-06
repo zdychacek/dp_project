@@ -4,6 +4,7 @@ const express = require('express'),
 	Resource = require('express-resource'),
 	app = express(),
 	mongoose = require('mongoose'),
+	fs = require('fs'),
 	// MOCK
 	security = require('./lib/security.js'),
 	config = require('./config.js');
@@ -75,5 +76,10 @@ app.use(function (req, res, next) {
 	res.type('txt').send('Not found');
 });
 
-app.listen(config.server.listenPort);
+app.listen(config.server.listenPort, function () {
+	var open = require('open');
+  	open('http://localhost:' + config.server.listenPort + '/');
+});
+
+
 console.log('Express started on port ' + config.server.listenPort);

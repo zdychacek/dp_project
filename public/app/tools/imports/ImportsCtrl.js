@@ -7,6 +7,7 @@ define([
 	angular.module('imports', ['security.authorization'])
 		.config(['$routeProvider', 'securityAuthorizationProvider', function ($routeProvider, securityAuthorizationProvider) {
 			$routeProvider.when('/nastroje/import-dat', {
+				title: 'Sklik - import dat',
 				templateUrl: '/static/app/tools/imports/importsList.html',
 				controller: 'ImportsCtrl',
 				

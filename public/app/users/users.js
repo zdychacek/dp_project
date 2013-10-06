@@ -13,6 +13,7 @@ define([
 	])
 		.config(['$routeProvider', 'securityAuthorizationProvider', function ($routeProvider, securityAuthorizationProvider) {
 			$routeProvider.when('/spravovane-ucty', {
+				title: 'Sklik - spravované účty',
 				templateUrl: '/static/app/users/usersList.html',
 				controller: 'UsersCtrl',
 				resolve: {

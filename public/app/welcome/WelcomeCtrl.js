@@ -7,6 +7,7 @@ define([
 	angular.module('welcome', [])
 		.config(['$routeProvider', function ($routeProvider) {
 			$routeProvider.when('/welcome', {
+				title: 'Sklik - welcome',
 				templateUrl: '/static/app/welcome/welcome.html',
 				controller: 'WelcomeCtrl',
 			});

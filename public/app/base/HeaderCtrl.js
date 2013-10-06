@@ -1,22 +1,7 @@
-define([
-	'angular',
-	'lodash'
-], function (angular, _) {
+define(['angular'], function (angular) {
 	'use strict';
 
-	angular.module('base', [])
-		.controller('AppCtrl', ['$scope', 'i18nNotifications', 'localizedMessages', function ($scope, i18nNotifications) {
-			$scope.notifications = i18nNotifications;
-
-			$scope.removeNotification = function (notification) {
-				i18nNotifications.remove(notification);
-			};
-
-			$scope.$on('$routeChangeError', function(event, current, previous, rejection){
-				i18nNotifications.pushForCurrentRoute('errors.route.changeError', 'error', {}, { rejection: rejection });
-			});
-		}])
-
+	angular.module('base.HeaderCtrl', [])
 		.controller('HeaderCtrl', ['$scope', '$location', '$route', 'security', 'breadcrumbs', 'notifications', 'httpRequestTracker',
 			function ($scope, $location, $route, security, breadcrumbs, notifications, httpRequestTracker) {
 				$scope.location = $location;

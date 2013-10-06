@@ -1,12 +1,12 @@
 doctype 5
-html(lang="en")
+html(lang="en", ng-controller="MainCtrl")
 	head
 		meta(charset="utf-8")
-		title Sklik New generation
+		title(ng-bind="title")
 		link(rel="stylesheet", href="static/css/bootstrap.css")
 		link(rel="stylesheet", href="static/css/app.css")
 
-	body(ng-controller="AppCtrl")
+	body
 		div(ng-include="'static/app/base/header.html'")
 		div.container-fluid(ng-include="'static/app/base/notifications.html'", ng-show="notifications.getCurrent().length")
 		<!-- HLAVNI VIEW-->
