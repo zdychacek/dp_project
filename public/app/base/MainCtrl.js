@@ -1,8 +1,11 @@
-define(['angular'], function (angular) {
+define([
+	'angular',
+	'common/services/i18nNotifications'
+], function (angular) {
 	'use strict';
 
-	angular.module('base.MainCtrl', [])
-		.controller('MainCtrl', ['$scope', '$rootScope', 'i18nNotifications', 'localizedMessages', function ($scope, $rootScope, i18nNotifications) {
+	angular.module('base.MainCtrl', ['services.i18nNotifications'])
+		.controller('MainCtrl', ['$scope', '$rootScope', 'i18nNotifications', function ($scope, $rootScope, i18nNotifications) {
 			$scope.notifications = i18nNotifications;
 
 			$scope.removeNotification = function (notification) {

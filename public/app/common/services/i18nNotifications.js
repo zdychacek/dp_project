@@ -1,4 +1,8 @@
-define(['angular'], function (angular) {
+define([
+	'angular',
+	'common/services/notifications',
+	'common/services/localizedMessages'
+], function (angular) {
 	'use strict';
 	
 	angular.module('services.i18nNotifications', ['services.notifications', 'services.localizedMessages'])

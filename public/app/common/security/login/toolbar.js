@@ -6,7 +6,7 @@ define([
 	angular.module('security.login.toolbar', [])
 		.directive('loginToolbar', ['security', function (security) {
 			var directive = {
-				templateUrl: 'static/app/common/security/login/toolbar.html',
+				templateUrl: '/static/app/common/security/login/toolbar.html',
 				restrict: 'E',
 				replace: true,
 				scope: true,

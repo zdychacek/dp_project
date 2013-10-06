@@ -36,28 +36,21 @@ require([
 	'angular-resource',
 
 	// services
-	'common/services/i18nNotifications',
-	'common/services/notifications',
-	'common/services/localizedMessages',
-	'common/services/breadcrumbs',
-	'common/services/httpRequestTracker',
 
 	// directives
 	'common/directives/pagination',
 	'common/directives/sortableTable',
 
 	'common/security/index',
-	//'common/mocks/mocks',
 	
 	// controllers
 	'base/MainCtrl',
 	'base/HeaderCtrl',
-	'welcome/WelcomeCtrl',
-	'users/users',
-	'campaigns/CampaignsCtrl',
-	'reports/ReportsCtrl',
-	'tools/exports/ExportsCtrl',
-	'tools/imports/ImportsCtrl'
+	'dashboard/DashboardCtrl',
+	'account/AccountCtrl',
+	'flights/FlightsCtrl',
+	'admin/users/UsersListCtrl',
+	'admin/users/edit/UserEditCtrl'
 ], function (angular) {
 	'use strict';
 
@@ -65,11 +58,6 @@ require([
 		'ngResource',
 		
 		// services
-		'services.i18nNotifications',
-		'services.breadcrumbs',
-		'services.notifications',
-		'services.localizedMessages',
-		'services.httpRequestTracker',
 		
 		// directives
 		'directives.sortableTable',
@@ -81,35 +69,32 @@ require([
 		// controllers
 		'base.MainCtrl',
 		'base.HeaderCtrl',
-		'welcome',
-		'users',
-		'campaigns',
-		'reports',
-		'exports',
-		'imports',
+		'dashboard',
+		'account',
+		'flights',
+
+		'admin.users',
+		'admin.users.edit',
 
 		// sablonky proo boostrapovske komponenty
 		'template/modal/window.html',
 		'template/modal/backdrop.html'
 	]);
-	
-	app.constant('MOJE_KONSTANTA', {
-		cislo1: 28,
-		cislo2: 14
-	});
 
 	//TODO: vytahnout do samostatneho souboru
 	app.constant('I18N.MESSAGES', {
 		'msg.test': 'Testovaci zprava',
 		'login.reason.notAuthenticated': 'Nejste přihlášen.',
+		'login.reason.notAuthorized': 'Nemáte oprávnění administrátora.',
 		'login.error.invalidCredentials': 'Špatné přihlašovací údaje.',
+		'errors.route.changeError': 'Chyba při načítání.',
 		'save.success': 'Úspěšně uloženo.',
 		'save.error': 'Během ukládání došlo k chybě.'
 	});
 
 	app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 		$routeProvider.otherwise({
-			redirectTo: '/welcome'
+			redirectTo: '/dashboard'
 		});
 
 		$locationProvider.html5Mode(true);

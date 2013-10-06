@@ -1,48 +1,24 @@
 div.navbar(ng-controller="HeaderCtrl")
 	div.navbar-inner.clearfix
-		a.brand.pull-left(ng-click="home()") Sklik          
+		a.brand.pull-left(ng-click="home()") Letecká společnost s.r.o.          
 
 		ul.nav.pull-left(ng-show="isAuthenticated()")
-			li(ng-class="{active:isNavbarActive('spravovane-ucty')}")
-				a(href="/spravovane-ucty") Spravované účty
+			li(ng-class="{active:isNavbarActive('flights')}")
+				a(href="/flights") Seznam letů
 
-			li(ng-class="{active:isNavbarActive('seznam-kampani')}")
-				a(href="/seznam-kampani") Kampaně
+			li(ng-class="{active:isNavbarActive('account')}")
+				a(href="/account") Nastavení účtu
 
-			li(ng-class="{active:isNavbarActive('seznam-prehledu')}")
-				a(href="/seznam-prehledu") Statistiky
-
-			li.dropdown(ng-class="{active:isNavbarActive('nastroje'), open:isToolsMenuOpen}")
-				a#tools-menu.dropdown-toggle(role="button", ng-click="isToolsMenuOpen=!isToolsMenuOpen") Nástroje
+			li.dropdown(ng-class="{active:isNavbarActive('admin'), open: isAdminMenuOpen}", ng-show="isAdmin()")
+				a#tools-menu.dropdown-toggle(role="button", ng-click="isAdminMenuOpen = !isAdminMenuOpen") Admin
 					b.caret
-				ul.dropdown-menu(role="menu", aria-labelledby="tools-menu")
+				ul.dropdown-menu(role="menu", aria-labelledby="admin-menu")
 					li
-						a(tabindex="-1", href="/nastroje/import-dat", ng-click="isToolsMenuOpen=false") Import kampaní
+						a(tabindex="-1", href="/admin/users", ng-click="isAdminMenuOpen=false") Uživatelé
 					li
-						a(tabindex="-1", href="/nastroje/export-dat", ng-click="isToolsMenuOpen=false") Export dat
-					li
-						a(tabindex="-1", href="/nastroje/navrh-klicovych-slov", ng-click="isToolsMenuOpen=false") Návrh klíčových slov
-					li
-						a(tabindex="-1", href="/nastroje/navrh-klicovych-slov", ng-click="isToolsMenuOpen=false") Návrh klíčových slov
-					li
-						a(tabindex="-1", href="/nastroje/seznam-konverzi", ng-click="isToolsMenuOpen=false") Sledování konverzí
-					li
-						a(tabindex="-1", href="/nastroje/retargeting", ng-click="isToolsMenuOpen=false") Retargeting
-
-			li.dropdown(ng-class="{active:isNavbarActive('zpravy'), open:isMessageMenuOpen}")
-				a#messages-menu.dropdown-toggle(role="button", ng-click="isMessageMenuOpen=!isMessageMenuOpen") Zprávy
-					b.caret
-				ul.dropdown-menu(role="menu", aria-labelledby="messages-menu")
-					li
-						a(tabindex="-1", href="/zpravy/1", ng-click="isMessageMenuOpen=false") Zpráva 1
-					li
-						a(tabindex="-1", href="/zpravy/2", ng-click="isMessageMenuOpen=false") Zpráva 2
+						a(tabindex="-1", href="/admin/flights", ng-click="isToolsMenuOpen=false") Editace letů
 
 		login-toolbar
-
-		ul.nav.pull-right(ng-show="isAuthenticated()")
-			li
-				a(tabindex="-1", href="https://penezenka.seznam.cz") Registrovat peněženku
 
 		ul.nav.pull-right(ng-show="hasPendingRequests()")
 			li.divider-vertical

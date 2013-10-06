@@ -1,31 +1,17 @@
 
 <div ng-controller="HeaderCtrl" class="navbar">
-  <div class="navbar-inner clearfix"><a ng-click="home()" class="brand pull-left">Sklik          </a>
+  <div class="navbar-inner clearfix"><a ng-click="home()" class="brand pull-left">Letecká společnost s.r.o.          </a>
     <ul ng-show="isAuthenticated()" class="nav pull-left">
-      <li ng-class="{active:isNavbarActive('spravovane-ucty')}"><a href="/spravovane-ucty">Spravované účty</a></li>
-      <li ng-class="{active:isNavbarActive('seznam-kampani')}"><a href="/seznam-kampani">Kampaně</a></li>
-      <li ng-class="{active:isNavbarActive('seznam-prehledu')}"><a href="/seznam-prehledu">Statistiky</a></li>
-      <li ng-class="{active:isNavbarActive('nastroje'), open:isToolsMenuOpen}" class="dropdown"><a id="tools-menu" role="button" ng-click="isToolsMenuOpen=!isToolsMenuOpen" class="dropdown-toggle">Nástroje<b class="caret"></b></a>
-        <ul role="menu" aria-labelledby="tools-menu" class="dropdown-menu">
-          <li><a tabindex="-1" href="/nastroje/import-dat" ng-click="isToolsMenuOpen=false">Import kampaní</a></li>
-          <li><a tabindex="-1" href="/nastroje/export-dat" ng-click="isToolsMenuOpen=false">Export dat</a></li>
-          <li><a tabindex="-1" href="/nastroje/navrh-klicovych-slov" ng-click="isToolsMenuOpen=false">Návrh klíčových slov</a></li>
-          <li><a tabindex="-1" href="/nastroje/navrh-klicovych-slov" ng-click="isToolsMenuOpen=false">Návrh klíčových slov</a></li>
-          <li><a tabindex="-1" href="/nastroje/seznam-konverzi" ng-click="isToolsMenuOpen=false">Sledování konverzí</a></li>
-          <li><a tabindex="-1" href="/nastroje/retargeting" ng-click="isToolsMenuOpen=false">Retargeting</a></li>
-        </ul>
-      </li>
-      <li ng-class="{active:isNavbarActive('zpravy'), open:isMessageMenuOpen}" class="dropdown"><a id="messages-menu" role="button" ng-click="isMessageMenuOpen=!isMessageMenuOpen" class="dropdown-toggle">Zprávy<b class="caret"></b></a>
-        <ul role="menu" aria-labelledby="messages-menu" class="dropdown-menu">
-          <li><a tabindex="-1" href="/zpravy/1" ng-click="isMessageMenuOpen=false">Zpráva 1</a></li>
-          <li><a tabindex="-1" href="/zpravy/2" ng-click="isMessageMenuOpen=false">Zpráva 2</a></li>
+      <li ng-class="{active:isNavbarActive('flights')}"><a href="/flights">Seznam letů</a></li>
+      <li ng-class="{active:isNavbarActive('account')}"><a href="/account">Nastavení účtu</a></li>
+      <li ng-class="{active:isNavbarActive('admin'), open: isAdminMenuOpen}" ng-show="isAdmin()" class="dropdown"><a id="tools-menu" role="button" ng-click="isAdminMenuOpen = !isAdminMenuOpen" class="dropdown-toggle">Admin<b class="caret"></b></a>
+        <ul role="menu" aria-labelledby="admin-menu" class="dropdown-menu">
+          <li><a tabindex="-1" href="/admin/users" ng-click="isAdminMenuOpen=false">Uživatelé</a></li>
+          <li><a tabindex="-1" href="/admin/flights" ng-click="isToolsMenuOpen=false">Editace letů</a></li>
         </ul>
       </li>
     </ul>
     <login-toolbar></login-toolbar>
-    <ul ng-show="isAuthenticated()" class="nav pull-right">
-      <li><a tabindex="-1" href="https://penezenka.seznam.cz">Registrovat peněženku</a></li>
-    </ul>
     <ul ng-show="hasPendingRequests()" class="nav pull-right">
       <li class="divider-vertical"></li>
       <li><a href="#"><img src="/static/img/spinner.gif"/></a></li>

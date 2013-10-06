@@ -4,7 +4,7 @@ define(['angular'], function (angular) {
 	angular.module('services.localizedMessages', [])
 		.factory('localizedMessages', ['$interpolate', 'I18N.MESSAGES', function ($interpolate, i18nmessages) {
 			var handleNotFound = function (msg, msgKey) {
-				return msg || '?' + msgKey + '?';
+				return msg || '**' + msgKey + '**';
 			};
 
 			return {

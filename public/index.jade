@@ -2,14 +2,14 @@ doctype 5
 html(lang="en", ng-controller="MainCtrl")
 	head
 		meta(charset="utf-8")
-		title(ng-bind="title")
-		link(rel="stylesheet", href="static/css/bootstrap.css")
-		link(rel="stylesheet", href="static/css/app.css")
+		title(ng-bind="'Letecká společnost s.r.o. - ' + title")
+		link(rel="stylesheet", href="/static/css/bootstrap.css")
+		link(rel="stylesheet", href="/static/css/app.css")
 
 	body
-		div(ng-include="'static/app/base/header.html'")
-		div.container-fluid(ng-include="'static/app/base/notifications.html'", ng-show="notifications.getCurrent().length")
+		div(ng-include="'/static/app/base/header.html'")
+		div.container-fluid(ng-include="'/static/app/base/notifications.html'", ng-show="notifications.getCurrent().length")
 		<!-- HLAVNI VIEW-->
 		div.container-fluid(ng-view)
 		
-		script(data-main="static/app/app", src="static/components/requirejs/require.js")
+		script(data-main="/static/app/app", src="/static/components/requirejs/require.js")

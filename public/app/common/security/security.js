@@ -23,7 +23,7 @@ define(['angular'], function (angular) {
 				}
 
 				loginDialog = $modal.open({
-					templateUrl: 'static/app/common/security/login/form.html',
+					templateUrl: '/static/app/common/security/login/form.html',
 					controller: 'LoginFormCtrl',
 					backdrop: 'static',
 					keyboard: false

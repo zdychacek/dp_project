@@ -1,0 +1,31 @@
+div.users-content
+	h1 Seznam uživatelů
+
+	a.btn(ng-href="/admin/users/0/edit") Nový uživatel
+
+	table.table(sortable-table, sort-column="sort.column", sort-dir="sort.dir")
+		tr(ng-repeat="user in users")
+			td(data-title="Login", sortable="login") {{user.login}}
+			td(data-title="Jméno", sortable="firstName") {{user.firstName}}
+			td(data-title="Příjmení", sortable="lastName") {{user.lastName}}
+			td(data-title="E-mail", sortable="email") {{user.email}}
+			td(data-title="Administrátor", sortable="isAdmin") {{user.isAdmin}}
+			td
+				a.icon-pencil(ng-click="editUser(user)", href="#")
+			td
+				a.icon-remove-sign(ng-click="removeUser(user)", href="#")
+
+	pagination.pagination(
+					total-items="totalItems",
+					page="currentPage",
+					max-size="maxSize",
+					on-select-page="selectPage(page)",
+					items-per-page="itemsPerPage",
+					num-pages="totalPages",
+					boundary-links="true",
+					max-size="5")
+
+	div.itemsCount Počet záznamů na stránku:
+		select(ng-model="itemsPerPage", ng-options="i for i in itemsPerPageList")
+
+	div.total Stránka: {{currentPage}} / {{totalPages}}

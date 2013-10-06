@@ -62,9 +62,6 @@ app.all('/*', function(req, res) {
 	res.sendfile('index.html', { root: config.server.appFolder });
 });
 
-// $ curl http://localhost:9000/notfound
-// $ curl http://localhost:9000/notfound -H "Accept: application/json"
-// $ curl http://localhost:9000/notfound -H "Accept: text/plain"
 app.use(function (req, res, next) {
 	res.status(404);
 
@@ -76,10 +73,5 @@ app.use(function (req, res, next) {
 	res.type('txt').send('Not found');
 });
 
-app.listen(config.server.listenPort, function () {
-	var open = require('open');
-  	open('http://localhost:' + config.server.listenPort + '/');
-});
-
-
+app.listen(config.server.listenPort);
 console.log('Express started on port ' + config.server.listenPort);

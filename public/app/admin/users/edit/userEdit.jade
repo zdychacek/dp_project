@@ -1,0 +1,26 @@
+h1 {{formTitle}}
+
+form.form-horizontal(name="form")
+	.control-group
+		label.control-label Telefonní číslo
+		.controls
+			input(type='text', ng-model="user.login", required)
+	.control-group
+		label.control-label Jméno
+		.controls
+			input(type='text', ng-model="user.firstName")
+	.control-group
+		label.control-label Příjmení
+		.controls
+			input(type='text', ng-model="user.lastName")
+	.control-group
+		label.control-label Heslo
+		.controls
+			input(type='password', ng-model="user.password")
+	.control-group
+		label.control-label Heslo znovu
+		.controls
+			input(type='password', ng-model="user.passwordConf")
+
+	.control-group
+		a.btn.btn-primary(ng-click="save()") Uložit

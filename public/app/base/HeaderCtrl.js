@@ -1,7 +1,13 @@
-define(['angular'], function (angular) {
+define([
+	'angular',
+	'common/security/index',
+	'common/services/breadcrumbs',
+	'common/services/notifications',
+	'common/services/httpRequestTracker'
+], function (angular) {
 	'use strict';
 
-	angular.module('base.HeaderCtrl', [])
+	angular.module('base.HeaderCtrl', ['security', 'services.breadcrumbs', 'services.notifications', 'services.httpRequestTracker'])
 		.controller('HeaderCtrl', ['$scope', '$location', '$route', 'security', 'breadcrumbs', 'notifications', 'httpRequestTracker',
 			function ($scope, $location, $route, security, breadcrumbs, notifications, httpRequestTracker) {
 				$scope.location = $location;
@@ -12,10 +18,10 @@ define(['angular'], function (angular) {
 
 				$scope.home = function () {
 					if (security.isAuthenticated()) {
-						$location.path('/seznam-kampani');
+						$location.path('/flights');
 					}
 					else {
-						$location.path('/welcome');
+						$location.path('/dashboard');
 					}
 				};
 
