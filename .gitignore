@@ -1,0 +1,9 @@
+node_modules
+dist
+data/db/*
+public/components
+public/app/common/mocks/mocksData.js
+*.html
+public/css/*.css
+!public/css/bootstrap.css
+.nodemonignore
