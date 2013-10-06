@@ -1,0 +1,16 @@
+
+<ul class="nav pull-right">
+  <li class="divider-vertical">
+    <li ng-show="isAuthenticated()"><a href="#">{{currentUser.firstName}} {{currentUser.lastName}}</a></li>
+    <li ng-show="isAuthenticated()" class="logout">
+      <form class="navbar-form">
+        <button ng-click="logout()" class="btn logout">Odhlásit</button>
+      </form>
+    </li>
+    <li ng-hide="isAuthenticated()" class="login">
+      <form class="navbar-form">
+        <button ng-click="login()" class="btn login">Přihlásit</button>
+      </form>
+    </li>
+  </li>
+</ul>

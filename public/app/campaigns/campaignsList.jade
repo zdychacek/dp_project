@@ -1,0 +1,11 @@
+h1 Všechny kampaně
+
+table
+	thead
+		tr
+			td Kampaň
+			td Stav
+	tbody
+		tr(ng-repeat="campaign in campaigns")
+			td {{campaign.name}}
+			td {{campaign.status}}

@@ -1,0 +1,18 @@
+{
+  "name": "grunt-express-workflow",
+  "version": "0.3.6",
+  "dependencies": {
+    "modernizr": "~2.6.2",
+    "jquery": "~1.10.2",
+    "json3": "~3.2.5",
+    "normalize-css": "~2.1.2",
+    "angular": "~1.0.8",
+    "requirejs": "~2.1.8",
+    "angular-mocks": "~1.0.8",
+    "lodash": "~2.1.0",
+    "angular-resource": "~1.0.8",
+    "angular-ui": "~0.4.0",
+    "angular-bootstrap": "~0.6.0"
+  },
+  "devDependencies": {}
+}

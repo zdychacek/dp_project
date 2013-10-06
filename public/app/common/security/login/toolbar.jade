@@ -1,0 +1,10 @@
+ul.nav.pull-right
+    li.divider-vertical
+      li(ng-show='isAuthenticated()')
+        a(href='#') {{currentUser.firstName}} {{currentUser.lastName}}
+      li.logout(ng-show='isAuthenticated()')
+        form.navbar-form
+          button.btn.logout(ng-click='logout()') Odhlásit
+      li.login(ng-hide='isAuthenticated()')
+        form.navbar-form
+          button.btn.login(ng-click='login()') Přihlásit

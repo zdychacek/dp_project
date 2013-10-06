@@ -1,0 +1,30 @@
+div.users-content
+	h1 Spravované účty
+
+	a.btn.btn-success(ng-click="requestAccess()", href="#")
+		span.icon-plus-sign
+		| &nbsp;Požádat o přístup
+
+	table.table(sortable-table, sort-column="sort.column", sort-dir="sort.dir")
+		tr(ng-repeat="user in users")
+			td(data-title="Název", sortable="relationName") {{user.relationName}}
+			td(data-title="Stav", sortable="agencyStatus") {{user.agencyStatus}}
+			td(data-title="Zasílat e-maily", sortable="sendNotice") {{user.sendNotice}}
+			td(data-title="Měsíční limit", sortable="agencyLimit") {{user.agencyLimit}}
+			td
+				a.icon-pencil(ng-click="editUser(user)", href="#")
+
+	pagination.pagination(
+					total-items="totalItems",
+					page="currentPage",
+					max-size="maxSize",
+					on-select-page="selectPage(page)",
+					items-per-page="itemsPerPage",
+					num-pages="totalPages",
+					boundary-links="true",
+					max-size="5")
+
+	div.itemsCount Počet záznamů na stránku:
+		select(ng-model="itemsPerPage", ng-options="i for i in limitsList")
+
+	div.total Stránka: {{currentPage}} / {{totalPages}}

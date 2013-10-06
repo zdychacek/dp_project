@@ -1,0 +1,37 @@
+div.modal-header
+	button.close(type="button", aria-hidden="true", ng-click="closeModal()") &times;
+	h3 Úprava propojení
+div.modal-body
+	form.form-horizontal
+		.control-group
+			label.control-label Email
+			.controls
+				span {{user.relationName}}
+
+		.control-group
+			label.control-label Název
+			.controls
+				input(type="text", ng-model="user.relationName")
+
+		.control-group
+			label.control-label Práva
+			.controls
+				select(ng-model="user.access", ng-options="a.value as a.name for a in accessList")
+
+		.control-group
+			label.control-label Zasílat emaily
+			.controls
+				input(type="radio", ng-model="user.sendNotice", value="1") Ano
+				span Ano
+				
+				input(type="radio", ng-model="user.sendNotice", value="0") Ne
+				span Ne
+
+		.control-group
+			label.control-label Měsíční limit
+			.controls
+				input(type="text", ng-model="user.agencyLimit")
+
+div.modal-footer
+	a.btn.btn-danger(ng-click="disconnectAccount()", href="#") Odpojit účet
+	a.btn.btn-success(ng-click="saveChanges()", href="#") Uložit změny

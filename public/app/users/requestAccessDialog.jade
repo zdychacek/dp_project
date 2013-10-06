@@ -1,0 +1,19 @@
+div.modal-header
+	button.close(type="button", aria-hidden="true", ng-click="closeModal()") &times;
+	h3 Požádat o přístup
+div.modal-body
+	form.form-horizontal
+		.control-group
+			label.control-label Účet
+			.controls
+				input(type="text", ng-model="request.name")
+
+		.control-group
+			label.control-label Práva
+			.controls
+				select(ng-model="request.access", ng-options="a.value as a.name for a in accessList")
+
+		
+
+div.modal-footer
+	a.btn.btn-success(ng-click="requestAccess()", href="#") Požádat o přístup
