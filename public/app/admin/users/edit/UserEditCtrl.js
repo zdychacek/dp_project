@@ -22,7 +22,7 @@ define([
 			});
 		}])
 
-		.controller('UserEditCtrl', ['$scope', 'User', '$routeParams', 'notifications', function ($scope, User, $routeParams, notifications) {
+		.controller('UserEditCtrl', ['$scope', 'User', '$routeParams', 'notifications', '$location', function ($scope, User, $routeParams, notifications, $location) {
 			var creatingNew = +$routeParams.id == 0;
 
 			if (!creatingNew) {
@@ -33,17 +33,25 @@ define([
 
 			$scope.save = function () {
 				if (this.form.$invalid) {
-					return notifications.pushForCurrentRoute({
-						message: 'huhu',
-						type: 'error'
-					});
+					return;
 				}
 
 				if (creatingNew) {
-					$scope.user = new User($scope.user).$save();
+					$scope.user = new User($scope.user).$save(function (user) {
+						notifications.pushForNextRoute({
+							message: 'Nový uživatel byl vytvořen.',
+							type: 'success'
+						});
+						$location.path('/admin/users/' + user._id);
+					});
 				}
 				else {
-					$scope.user.$update();
+					$scope.user.$update(function (user) {
+						notifications.pushForCurrentRoute({
+							message: 'Změny byly uloženy.',
+							type: 'success'
+						});
+					});
 				}
 			};
 		}]);

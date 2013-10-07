@@ -3,10 +3,11 @@ const mongoose = require('mongoose'),
 
 var User = new mongoose.Schema({
 	login: String,
-	email: String,
 	firstName: String,
 	lastName: String,
-	isAdmin: Boolean
+	email: String,
+	isAdmin: Boolean,
+	password: String
 });
 
 User.plugin(lastModified);

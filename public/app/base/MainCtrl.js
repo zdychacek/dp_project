@@ -18,7 +18,9 @@ define([
 
 			$rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
 				// nastaveni titulku stranky
-				$rootScope.title = current.$$route.title;
+				if (current.$$route) {
+					$rootScope.title = current.$$route.title;
+				}
 			});
 		}]);
 });

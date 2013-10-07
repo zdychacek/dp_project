@@ -40,6 +40,7 @@ require([
 	// directives
 	'common/directives/pagination',
 	'common/directives/sortableTable',
+	'common/directives/sameAs',
 
 	'common/security/index',
 	
@@ -62,6 +63,7 @@ require([
 		// directives
 		'directives.sortableTable',
 		'directives.pagination',
+		'directives.sameAs',
 
 		'security',
 		//'mocks',
