@@ -7,7 +7,8 @@ require.config({
 		'angular-mocks': '../components/angular-mocks/angular-mocks',
 		'angular-ui': '../components/angular-ui/build/angular-ui.',
 		'angular-bootstrap': '../components/angular-bootstrap/ui-bootstrap-tpls',
-		'angular-resource': '../components/angular-resource/angular-resource'
+		'angular-resource': '../components/angular-resource/angular-resource',
+		'spin': '../components/spinjs/spin'
 	},
 	shim: {
 		angular: {
@@ -33,14 +34,13 @@ require([
 	'angular',
 	//'angular-ui',
 	'angular-bootstrap',
-	'angular-resource',
-
-	// services
 
 	// directives
 	'common/directives/pagination',
 	'common/directives/sortableTable',
-	'common/directives/sameAs',
+	'common/directives/repeat',
+	'common/directives/spinner',
+	'common/directives/uniqueLogin',
 
 	'common/security/index',
 	
@@ -56,14 +56,12 @@ require([
 	'use strict';
 
 	var app = angular.module('app', [
-		'ngResource',
-		
-		// services
-		
 		// directives
 		'directives.sortableTable',
 		'directives.pagination',
-		'directives.sameAs',
+		'directives.repeat',
+		'directives.spinner',
+		'directives.uniqueLogin',
 
 		'security',
 		//'mocks',

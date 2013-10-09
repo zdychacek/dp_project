@@ -121,7 +121,8 @@ module.exports = function (grunt) {
                 '-W087': true,
                 '-W064': true,
                 // type coersion
-                '-W116': true
+                '-W116': true,
+                '-W030': true
             },
             all: [
                 '<%= appConfig.app %>/app/**/*.js',

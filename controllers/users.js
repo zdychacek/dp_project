@@ -2,9 +2,25 @@ const User = require('../models/User'),
 	async = require('async');
 
 exports.addRoutes = function (app, config) {
-	app.namespace('/api/v1', function () {
+	app.namespace('/api/v1/users', function () {
 
-		app.get('/users/:id', function (req, res, next) {
+		app.get('/checkLogin', function (req, res) {
+			var login = req.query.login;
+
+			User
+				.find({ login: login })
+				.count(function (err, count) {
+					if (err) {
+						return console.log(err);
+					}
+
+					res.json({
+						isValid: count == 0
+					});
+				});
+		});
+
+		app.get('/:id', function (req, res, next) {
 			var id = req.params.id;
 
 			User.findOne({ _id: id }, function (err, user) {
@@ -16,7 +32,7 @@ exports.addRoutes = function (app, config) {
 			});
 		});
 
-		app.post('/users', function (req, res) {
+		app.post('/', function (req, res) {
 			var userData = req.body,
 				newUser = new User(userData);
 
@@ -29,7 +45,7 @@ exports.addRoutes = function (app, config) {
 			});
 		});
 
-		app.delete('/users/:id', function (req, res) {
+		app.delete('/:id', function (req, res) {
 			var id = req.params.id;
 
 			User.remove({ _id: id }, function (err) {
@@ -38,10 +54,10 @@ exports.addRoutes = function (app, config) {
 				}
 
 				res.json(null);
-			})
+			});
 		});
 
-		app.put('/users', function (req, res) {
+		app.put('/', function (req, res) {
 			var userData = req.body,
 				id = userData._id;
 
@@ -56,7 +72,7 @@ exports.addRoutes = function (app, config) {
 			});
 		});
 
-		app.get('/users', function (req, res) {
+		app.get('/', function (req, res) {
 			var offset = req.query.offset,
 				limit = req.query.limit ? req.query.limit : 9999,
 				sort = req.query.sort || '_id',

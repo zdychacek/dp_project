@@ -20,11 +20,9 @@ div.navbar(ng-controller="HeaderCtrl")
 
 		login-toolbar
 
-		ul.nav.pull-right(ng-show="hasPendingRequests()")
-			li.divider-vertical
-			li
-				a(href="#")
-					img(src="/static/img/spinner.gif")
+		ul.nav.pull-right
+			li.spinner-wrap
+				spinner(size="small", show="hasPendingRequests()")
 
 	div
 		ul.breadcrumb

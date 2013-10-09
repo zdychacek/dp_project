@@ -37,6 +37,8 @@ define([
 			};
 
 			var loadUsers = function () {
+				$scope.loadingData = true;
+
 				$scope.users = User.query({
 					offset: ($scope.currentPage - 1) * $scope.itemsPerPage,
 					limit: $scope.itemsPerPage,
@@ -45,6 +47,7 @@ define([
 				}, function (users, responseHeadersGetter) {
 					var headers = responseHeadersGetter();
 
+					$scope.loadingData = false;
 					$scope.totalItems = headers['total-count'];
 				});
 			};
@@ -61,6 +64,14 @@ define([
 
 			$scope.selectPage = function (pageNum) {
 				$scope.currentPage = pageNum;
+			};
+
+			$scope.getTableVisibilityStyle = function () {
+				if ($scope.loadingData) {
+					return {
+						visibility: 'hidden'
+					};
+				}
 			};
 
 			$scope.$watch('itemsPerPage', loadUsers);

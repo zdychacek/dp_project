@@ -12,9 +12,10 @@
       </li>
     </ul>
     <login-toolbar></login-toolbar>
-    <ul ng-show="hasPendingRequests()" class="nav pull-right">
-      <li class="divider-vertical"></li>
-      <li><a href="#"><img src="/static/img/spinner.gif"/></a></li>
+    <ul class="nav pull-right">
+      <li class="spinner-wrap">
+        <spinner size="small" show="hasPendingRequests()"></spinner>
+      </li>
     </ul>
   </div>
   <div>

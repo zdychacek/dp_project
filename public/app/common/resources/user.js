@@ -1,7 +1,10 @@
-define(['angular'], function (angular) {
+define([
+	'angular',
+	'angular-resource'
+], function (angular) {
 	'use strict';
 	
-	angular.module('resources.user', [])
+	angular.module('resources.user', ['ngResource'])
 		.factory('User', ['$resource', function ($resource) {
 			var User = $resource('/api/v1/users/:id', {
 				id: '@id'

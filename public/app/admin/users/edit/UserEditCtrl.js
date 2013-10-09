@@ -26,7 +26,11 @@ define([
 			var creatingNew = +$routeParams.id == 0;
 
 			if (!creatingNew) {
-				$scope.user = User.get({ id: $routeParams.id });
+				$scope.loadingData = true;
+
+				$scope.user = User.get({ id: $routeParams.id }, function () {
+					$scope.loadingData = false;
+				});
 			}
 
 			$scope.formTitle = creatingNew ? 'Nový uživatel' : 'Editace';
@@ -53,6 +57,12 @@ define([
 						});
 					});
 				}
+			};
+
+			$scope.showErrorMessage = function (field, validityType) {
+				validityType || (validityType = 'required');
+
+				return field.$error[validityType] && field.$dirty;
 			};
 		}]);
 });
