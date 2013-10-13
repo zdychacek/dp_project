@@ -56,6 +56,7 @@ require('./controllers/security').addRoutes(app, security);
 // Mapovani na controllery
 //app.resource('blogposts', require('./controllers/blogposts'), { base: '/api/v1/' });
 require('./controllers/users').addRoutes(app, config);
+require('./controllers/flights').addRoutes(app, config);
 
 // pro podporu HTML5 location api
 app.all('/*', function(req, res) {

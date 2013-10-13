@@ -1,0 +1,59 @@
+h1 {{formTitle}}
+
+form.form-horizontal(name="form")
+	spinner(show="loadingData", align="center")
+
+	div.wrap(ng-hide="loadingData")
+		.control-group
+			label.control-label Telefonní číslo
+			.controls
+				input(type='text', name="login", ng-model="user.login", required, unique-login, after-server-validation-callback="afterLoginValidation")
+				span.text-error(ng-show="showErrorMessage(form.login)") Vyplňte telefonní číslo.
+				span.text-error(ng-show="showErrorMessage(form.login, 'uniqueLogin')") Zadané telefonní číslo již existuje.
+
+		.control-group
+			label.control-label Jméno
+			.controls
+				input(type='text', name="firstName", ng-model="user.firstName", required)
+				span.text-error(ng-show="showErrorMessage(form.firstName)") Vyplňte jméno.
+
+		.control-group
+			label.control-label Příjmení
+			.controls
+				input(type='text', name="lastName", ng-model="user.lastName", required)
+				span.text-error(ng-show="showErrorMessage(form.lastName)") Vyplňte příjmení.
+
+		.control-group
+			label.control-label E-mail
+			.controls
+				input(type='email', name="email", ng-model="user.email", required)
+				span.text-error(ng-show="showErrorMessage(form.email)") Vyplňte e-mail.
+				span.text-error(ng-show="showErrorMessage(form.email, 'email')") Vyplňte platnou e-mailovou adresu.
+
+		.control-group
+			label.control-label Administrátor
+			.controls
+				input(type='checkbox', ng-model="user.isAdmin")
+
+		ng-switch(on="!creatingNew")
+			.control-group(ng-switch-when="true")
+				label.control-label Staré heslo
+				.controls
+					input(type='password', name="oldPassword", ng-model="user.oldPassword")
+
+		.control-group
+			label.control-label {{creatingNew && 'Heslo' || !creatingNew && 'Nové heslo'}}
+			.controls
+				input(type='password', name="password", ng-model="user.password", ng-required="creatingNew")
+				span.text-error(ng-show="showErrorMessage(form.password)") Vyplňte heslo.
+
+		.control-group
+			label.control-label {{creatingNew && 'Potvrzení hesla' || !creatingNew && 'Potvrzení nového hesla'}}
+			.controls
+				input(type='password', name="passwordConfirmaton", ng-model="user.passwordConfirmaton", ng-required="creatingNew", repeat="password")
+				span.text-error(ng-show="showErrorMessage(form.passwordConfirmaton)") Vyplňte heslo znovu.
+				span.text-error(ng-show="showErrorMessage(form.passwordConfirmaton, 'repeat')") Heslo se neshoduje.
+
+		div
+			a.btn.span2(ng-href="/admin/users") Zpět na seznam
+			a.btn.btn-primary.span1(ng-click="save()",ng-disabled="form.$invalid || form.login.requestRunning") Uložit

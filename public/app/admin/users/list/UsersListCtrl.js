@@ -4,7 +4,7 @@ define([
 ], function (angular) {
 	'use strict';
 
-	angular.module('admin.users', [
+	angular.module('admin.users.list', [
 		'security.authorization',
 		'services.i18nNotifications',
 		'resources.user'
@@ -12,7 +12,7 @@ define([
 		.config(['$routeProvider', 'securityAuthorizationProvider', function ($routeProvider, securityAuthorizationProvider) {
 			$routeProvider.when('/admin/users', {
 				title: 'admin/editace uživatelů',
-				templateUrl: '/static/app/admin/users/usersList.html',
+				templateUrl: '/static/app/admin/users/list/usersList.html',
 				controller: 'UsersListCtrl',
 				resolve: {
 					adminUser: securityAuthorizationProvider.requireAdminUser

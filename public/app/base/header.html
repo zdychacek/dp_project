@@ -6,8 +6,10 @@
       <li ng-class="{active:isNavbarActive('account')}"><a href="/account">Nastavení účtu</a></li>
       <li ng-class="{active:isNavbarActive('admin'), open: isAdminMenuOpen}" ng-show="isAdmin()" class="dropdown"><a id="tools-menu" role="button" ng-click="isAdminMenuOpen = !isAdminMenuOpen" class="dropdown-toggle">Admin<b class="caret"></b></a>
         <ul role="menu" aria-labelledby="admin-menu" class="dropdown-menu">
-          <li><a tabindex="-1" href="/admin/users" ng-click="isAdminMenuOpen=false">Uživatelé</a></li>
-          <li><a tabindex="-1" href="/admin/flights" ng-click="isToolsMenuOpen=false">Editace letů</a></li>
+          <li><a tabindex="-1" href="/admin/users" ng-click="isAdminMenuOpen=false">Editace uživatelů</a></li>
+          <li><a tabindex="-1" href="/admin/flights" ng-click="isAdminMenuOpen=false">Editace letů</a></li>
+          <li><a tabindex="-1" href="/admin/carriers" ng-click="isAdminMenuOpen=false">Editace dopravců</a></li>
+          <li><a tabindex="-1" href="/admin/voice-portal-settings" ng-click="isAdminMenuOpen=false">Nastavení hlasového portálu</a></li>
         </ul>
       </li>
     </ul>

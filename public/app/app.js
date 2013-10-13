@@ -50,8 +50,17 @@ require([
 	'dashboard/DashboardCtrl',
 	'account/AccountCtrl',
 	'flights/FlightsCtrl',
-	'admin/users/UsersListCtrl',
-	'admin/users/edit/UserEditCtrl'
+
+	'admin/users/list/UsersListCtrl',
+	'admin/users/edit/UserEditCtrl',
+
+	'admin/flights/list/FlightsListCtrl',
+	'admin/flights/edit/FlightEditCtrl',
+
+	'admin/carriers/list/CarriersListCtrl',
+	'admin/carriers/edit/CarrierEditCtrl',
+
+	'admin/voicePortalSettings/VoicePortalSettingsCtrl'
 ], function (angular) {
 	'use strict';
 
@@ -64,7 +73,6 @@ require([
 		'directives.uniqueLogin',
 
 		'security',
-		//'mocks',
 
 		// controllers
 		'base.MainCtrl',
@@ -73,8 +81,16 @@ require([
 		'account',
 		'flights',
 
-		'admin.users',
+		'admin.users.list',
 		'admin.users.edit',
+
+		'admin.flights.list',
+		'admin.flights.edit',
+
+		'admin.carriers.list',
+		'admin.carriers.edit',
+
+		'admin.voicePortalSettings',
 
 		// sablonky proo boostrapovske komponenty
 		'template/modal/window.html',

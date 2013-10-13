@@ -46,7 +46,7 @@ define(['angular'], function (angular) {
 						queue.retryAll();
 					}
 					else {
-						redirect('/seznam-kampani');
+						redirect('/flights');
 					}
 				}
 				else {

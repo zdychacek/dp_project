@@ -14,9 +14,13 @@ div.navbar(ng-controller="HeaderCtrl")
 					b.caret
 				ul.dropdown-menu(role="menu", aria-labelledby="admin-menu")
 					li
-						a(tabindex="-1", href="/admin/users", ng-click="isAdminMenuOpen=false") Uživatelé
+						a(tabindex="-1", href="/admin/users", ng-click="isAdminMenuOpen=false") Editace uživatelů
 					li
-						a(tabindex="-1", href="/admin/flights", ng-click="isToolsMenuOpen=false") Editace letů
+						a(tabindex="-1", href="/admin/flights", ng-click="isAdminMenuOpen=false") Editace letů
+					li
+						a(tabindex="-1", href="/admin/carriers", ng-click="isAdminMenuOpen=false") Editace dopravců
+					li
+						a(tabindex="-1", href="/admin/voice-portal-settings", ng-click="isAdminMenuOpen=false") Nastavení hlasového portálu
 
 		login-toolbar
 
