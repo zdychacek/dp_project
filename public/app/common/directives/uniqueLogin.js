@@ -10,17 +10,32 @@ define([
 			return {
 				restrict: 'A',
 				require: 'ngModel',
-				link: function (scope, elem, attr, ctrl) { 
+				link: function (scope, elem, attr, ctrl) {
+					var callback;
+
+					if (attr.afterServerValidationCallback && scope[attr.afterServerValidationCallback]) {
+						callback = scope[attr.afterServerValidationCallback];
+					}
+
 					scope.$watch(attr.ngModel, function (value) {
 						if (toId) {
 							clearTimeout(toId);
 						}
 
+						ctrl.requestRunning = true;
+
 						toId = setTimeout(function () {
 							$http.get('/api/v1/users/checkLogin/?login=' + value).success(function (data) {
-								//scope.$apply(function (s) {
-									ctrl.$setValidity('uniqueLogin', data.isValid);               
-								//});
+								if (typeof callback === 'function') {
+									callback(data.isValid, function (result) {
+										ctrl.$setValidity('uniqueLogin', result);
+										ctrl.requestRunning = false;	
+									});
+								}
+								else {
+									ctrl.$setValidity('uniqueLogin', data.isValid);
+									ctrl.requestRunning = false;
+								}
 							});
 						}, 200);
 					});

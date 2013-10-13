@@ -12,7 +12,7 @@ define([
 		'resources.user'
 	])
 		.config(['$routeProvider', 'securityAuthorizationProvider', function ($routeProvider, securityAuthorizationProvider) {
-			$routeProvider.when('/admin/users/:id/edit', {
+			$routeProvider.when('/admin/users/:id', {
 				title: 'admin/editace uživatele',
 				templateUrl: '/static/app/admin/users/edit/userEdit.html',
 				controller: 'UserEditCtrl',
@@ -23,24 +23,37 @@ define([
 		}])
 
 		.controller('UserEditCtrl', ['$scope', 'User', '$routeParams', 'notifications', '$location', function ($scope, User, $routeParams, notifications, $location) {
-			var creatingNew = +$routeParams.id == 0;
+			var originalUserLogin;
 
-			if (!creatingNew) {
+			$scope.creatingNew = $routeParams.id == 'new';
+
+			$scope.afterLoginValidation = function (serverResult, callback) {
+				if (!$scope.creatingNew && $scope.user.login === originalUserLogin) {
+					callback(true);
+				}
+				else {
+					callback(serverResult);	
+				}
+			};
+
+			if (!$scope.creatingNew) {
 				$scope.loadingData = true;
 
 				$scope.user = User.get({ id: $routeParams.id }, function () {
 					$scope.loadingData = false;
+
+					originalUserLogin = $scope.user.login;
 				});
 			}
 
-			$scope.formTitle = creatingNew ? 'Nový uživatel' : 'Editace';
+			$scope.formTitle = $scope.creatingNew ? 'Nový uživatel' : 'Editace';
 
 			$scope.save = function () {
 				if (this.form.$invalid) {
 					return;
 				}
 
-				if (creatingNew) {
+				if ($scope.creatingNew) {
 					$scope.user = new User($scope.user).$save(function (user) {
 						notifications.pushForNextRoute({
 							message: 'Nový uživatel byl vytvořen.',

@@ -32,7 +32,7 @@ define([
 
 			// sorting
 			$scope.sort = {
-				column: 'relationName',
+				column: 'login',
 				dir: 'asc'
 			};
 
@@ -53,7 +53,7 @@ define([
 			};
 
 			$scope.editUser = function (user) {
-				$location.path('/admin/users/' + user._id + '/edit');
+				$location.path('/admin/users/' + user._id);
 			};
 
 			$scope.removeUser = function (user) {
