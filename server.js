@@ -28,7 +28,9 @@ mongoose.connect(app.get('db uri'), function (err) {
 
 app.use(express.favicon());
 app.use(express.cookieParser(config.server.secret));
-app.use(express.session({ secret: config.server.secret }));
+app.use(express.session({
+	secret: config.server.secret
+}));
 app.use(express.bodyParser());
 app.use(express.compress());
 app.use(express.methodOverride());

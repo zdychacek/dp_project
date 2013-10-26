@@ -39,6 +39,9 @@ define([
 					$scope.loadingData = false;
 				});
 			}
+			else {
+				$scope.carrier = {};
+			}
 
 			$scope.formTitle = $scope.creatingNew ? 'Nový přepravce' : 'Editace přepravce';
 
@@ -65,6 +68,12 @@ define([
 					});
 				}
 			};
+
+			$scope.$on('fileSelected', function (event, args) {
+				$scope.$apply(function () {
+					$scope.carrier.logo = args.file;
+				});
+			});
 
 			$scope.showErrorMessage = function (field, validityType) {
 				validityType || (validityType = 'required');

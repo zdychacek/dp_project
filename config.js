@@ -11,5 +11,8 @@ module.exports = {
 		appFolder: __dirname + '/public',
 		staticUrl: '/static',
 		secret: 'leteckaspolecnost'
+	},
+	app: {
+		uploadedFilesRoot: __dirname + '/public/img'
 	}
 };

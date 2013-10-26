@@ -14,7 +14,7 @@ div.content-main
 		table.table.table-bordered(sortable-table, sort-column="sort.column", sort-dir="sort.dir", ng-style="getTableVisibilityStyle()")
 			tr(ng-repeat="carrier in carriers")
 				td(data-title="Logo")
-					img(ng-src="carrier.logo")
+					img.carrier-logo(src="{{carrier.logo}}")
 				td(data-title="Název", sortable="name") {{carrier.name}}
 				td(data-title="Zakázáno", sortable="disabled") {{carrier.disabled}}
 				td(data-title="Vytvořeno", sortable="lastModified") {{carrier.lastModified | date: 'd.M.yy H:mm'}}

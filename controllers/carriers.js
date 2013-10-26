@@ -1,5 +1,6 @@
 const Carrier = require('../models/Carrier'),
-	async = require('async');
+	async = require('async'),
+	fs = require('fs');
 
 exports.addRoutes = function (app, config) {
 	app.namespace('/api/v1/carriers', function () {
@@ -18,16 +19,44 @@ exports.addRoutes = function (app, config) {
 		});
 
 		app.post('/', function (req, res) {
-			var carrierData = req.body,
-				newCarrier = new Carrier(carrierData);
+			var carrierData = JSON.parse(req.body.data),
+				logoFile = req.files.logoFile;
 
-			newCarrier.save(function (err, carrier) {
-				if (err) {
-					console.log(err);
-				}
+			function saveLogo (logo, callback) {
+				fs.readFile(logoFile.path, function (err, data) {
+					var newName = (+new Date()) + '_' + logoFile.name;
 
-				res.json(carrier);
-			});
+					fs.writeFile(config.app.uploadedFilesRoot + '/carriersLogos/' + newName, data, function (err) {
+						callback(err, '/static/img/carriersLogos/' + newName);
+					});
+				});
+			};
+
+			function saveData (data, callback) {
+				var newCarrier = new Carrier(data);
+
+				newCarrier.save(function (err, carrier) {
+					callback(err, carrier);
+				});	
+			};
+
+			if (logoFile) {
+				saveLogo(logoFile, function (err, logoPath) {
+					if (err) { console.log(err); }
+
+					carrierData.logo = logoPath;
+
+					saveData(carrierData, function (err, carrier) {
+						if (err) { console.log(err); }
+
+						res.json(carrier);
+					});
+				})
+			}
+			// TODO
+			else {
+				saveData()
+			}
 		});
 
 		app.delete('/:id', function (req, res) {

@@ -37,6 +37,7 @@ require([
 	'common/directives/repeat',
 	'common/directives/spinner',
 	'common/directives/uniqueLogin',
+	'common/directives/fileUpload',
 
 	'common/security/index',
 	
@@ -67,6 +68,7 @@ require([
 		'directives.repeat',
 		'directives.spinner',
 		'directives.uniqueLogin',
+		'directives.fileUpload',
 
 		'security',
 
