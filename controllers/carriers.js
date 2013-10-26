@@ -10,6 +10,7 @@ exports.addRoutes = function (app, config) {
 			Carrier.findOne({ _id: id }, function (err, carrier) {
 				if (err) {
 					console.log(err);
+					res.json(null);
 				}
 
 				res.json(carrier);
@@ -88,11 +89,15 @@ exports.addRoutes = function (app, config) {
 					return console.log(err);
 				}
 
-				res.set({
-					'total-count': result.totalCount
+				var metadata = {
+					totalCount: result.totalCount
+				};
+
+				res.json({
+					items: result.carriers,
+					metadata: metadata
 				});
-				res.json(result.carriers);
-			});			
+			});	
 		});
 	});
 };

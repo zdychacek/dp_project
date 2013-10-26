@@ -1,39 +1,42 @@
-div.users-list-content
-	h1 Seznam přepravců
+h1 Seznam přepravců
 
-	a.btn.btn-new-user(ng-href="/admin/carriers/new")
-		span.icon.icon-plus-sign
-		| Nový přepravce
+div.alert(ng-show="totalItems == 0") Nejsou k dispozici žádné záznamy.
 
-div.wrap
+div.content-menu
+	a.btn.btn-new(ng-href="/admin/carriers/new")
+		i.icon.icon-plus-sign
+		| &nbsp;Nový přepravce
+
+div.content-main
 	spinner(show="loadingData", align="center")
 
-	table.table.table-bordered(sortable-table, sort-column="sort.column", sort-dir="sort.dir", ng-style="getTableVisibilityStyle()")
-		tr(ng-repeat="user in users")
-			td(data-title="Login", sortable="login") {{user.login}}
-			td(data-title="Jméno", sortable="firstName") {{user.firstName}}
-			td(data-title="Příjmení", sortable="lastName") {{user.lastName}}
-			td(data-title="E-mail", sortable="email") {{user.email}}
-			td(data-title="Administrátor", sortable="isAdmin") {{user.isAdmin}}
-			td(data-title="Vytvořeno", sortable="lastModified") {{user.lastModified | date: 'd.M.yy H:mm'}}
-			td.icon
-				a.btn.btn-info(ng-click="editUser(user)", href="#")
-					span.icon-pencil
+	div.table-container(ng-show="totalItems > 0")
+		table.table.table-bordered(sortable-table, sort-column="sort.column", sort-dir="sort.dir", ng-style="getTableVisibilityStyle()")
+			tr(ng-repeat="item in items")
+				td(data-title="Login", sortable="login") {{item.login}}
+				td(data-title="Jméno", sortable="firstName") {{item.firstName}}
+				td(data-title="Příjmení", sortable="lastName") {{item.lastName}}
+				td(data-title="E-mail", sortable="email") {{item.email}}
+				td(data-title="Administrátor", sortable="isAdmin") {{item.isAdmin}}
+				td(data-title="Vytvořeno", sortable="lastModified") {{item.lastModified | date: 'd.M.yy H:mm'}}
+				td.icon
+					a.btn.btn-info(ng-click="edititem(item)", href="#")
+						span.icon-pencil
 
-				a.btn.btn-danger(ng-click="removeUser(user)", href="#")
-					span.icon-remove-sign
+					a.btn.btn-danger(ng-click="removeitem(item)", href="#")
+						span.icon-remove-sign
 
-	pagination.pagination(
-					total-items="totalItems",
-					page="currentPage",
-					max-size="maxSize",
-					on-select-page="selectPage(page)",
-					items-per-page="itemsPerPage",
-					num-pages="totalPages",
-					boundary-links="true",
-					max-size="5")
+		pagination.pagination(
+						total-items="totalItems",
+						page="currentPage",
+						max-size="maxSize",
+						on-select-page="selectPage(page)",
+						items-per-page="itemsPerPage",
+						num-pages="totalPages",
+						boundary-links="true",
+						max-size="5")
 
-	div.itemsCount Počet záznamů na stránku:
-		select(ng-model="itemsPerPage", ng-options="i for i in itemsPerPageList")
+		div.itemsCount Počet záznamů na stránku:
+			select(ng-model="itemsPerPage", ng-options="i for i in itemsPerPageList")
 
-	div.total Stránka: {{currentPage}} / {{totalPages}}
+		div.total Stránka: {{currentPage}} / {{totalPages}}

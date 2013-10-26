@@ -22,7 +22,6 @@ define([
 
 		// Seznam uctu
 		.controller('UsersListCtrl', ['$scope', 'User', '$location', function ($scope, User, $location) {
-			$scope.users = [];
 			$scope.itemsPerPageList = [5, 10, 15, 20];
 
 			// paging

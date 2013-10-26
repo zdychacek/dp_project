@@ -1,15 +1,14 @@
-div.users-list-content
-	h1 Seznam uživatelů
+h1 Seznam uživatelů
 
-	a.btn.btn-new-user(ng-href="/admin/users/new")
-		span.icon.icon-plus-sign
-		| Nový uživatel
+div.alert(ng-show="totalItems == 0") Nejsou k dispozici žádné záznamy.
 
-div.wrap
+div.content-menu
+	a.btn.btn-new(ng-href="/admin/users/new")
+		i.icon.icon-plus-sign
+		| &nbsp;Nový uživatel
+
+div.content-main
 	spinner(show="loadingData", align="center")
-
-	div.alert(ng-show="totalItems == 0")
-		| Nejsou k dispozici žádné záznamy.
 
 	div.table-container(ng-show="totalItems > 0")
 		table.table.table-bordered(sortable-table, sort-column="sort.column", sort-dir="sort.dir", ng-style="getTableVisibilityStyle()")

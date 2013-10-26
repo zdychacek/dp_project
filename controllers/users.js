@@ -113,7 +113,7 @@ exports.addRoutes = function (app, config) {
 					items: result.users,
 					metadata: metadata
 				});
-			});			
+			});
 		});
 	});
 };

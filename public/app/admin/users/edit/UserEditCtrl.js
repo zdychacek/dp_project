@@ -28,7 +28,7 @@ define([
 			$scope.creatingNew = $routeParams.id == 'new';
 
 			$scope.afterLoginValidation = function (serverResult, callback) {
-				if (!$scope.creatingNew && $scope.user.login === originalUserLogin) {
+				if (!$scope.creatingNew && $scope.user && $scope.user.login === originalUserLogin) {
 					callback(true);
 				}
 				else {

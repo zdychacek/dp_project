@@ -38,16 +38,15 @@ define([
 			var loadCarriers = function () {
 				$scope.loadingData = true;
 
-				$scope.carriers = Carrier.query({
+				Carrier.query({
 					offset: ($scope.currentPage - 1) * $scope.itemsPerPage,
 					limit: $scope.itemsPerPage,
 					sort: $scope.sort.column,
 					dir: $scope.sort.dir
-				}, function (carriers, responseHeadersGetter) {
-					var headers = responseHeadersGetter();
-
+				}).then(function (data) {
+					$scope.carriers = data.items;
 					$scope.loadingData = false;
-					$scope.totalItems = headers['total-count'];
+					$scope.totalItems = data.metadata.totalCount;
 				});
 			};
 
@@ -56,7 +55,7 @@ define([
 			};
 
 			$scope.removeCarrier = function (carrier) {
-				Carrier.delete({ id: carrier._id }, function () {
+				Carrier.remove({ id: carrier._id }).then(function () {
 					loadCarriers();
 				});
 			};
