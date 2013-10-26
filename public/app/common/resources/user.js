@@ -1,27 +1,23 @@
 define([
 	'angular',
-	'angular-resource'
+	'common/resources/resource'
 ], function (angular) {
 	'use strict';
 	
-	angular.module('resources.user', ['ngResource'])
-		.factory('User', ['$resource', function ($resource) {
-			var User = $resource('/api/v1/users/:id', {
-				id: '@id'
-			}, {
-				query:  {
-					method: 'GET',
-					params: {
-						limit: 0,
-						offset: 0,
-						sort: '',
-						dir: ''
-					},
-					isArray:true
-				},
-				update: { method: 'PUT' }
-			});
+	angular.module('resources.user', ['resources.resource'])
+		.factory('User', ['resource', '$http', function (resource, $http) {
+			var User = resource('/api/v1/users/');
 			
+			User.checkLogin = function (login) {
+				return $http.get(this.getResourceUrl() + '/checkLogin', {
+					params: {
+						login: login
+					}
+				}).then(function (response) {
+					return response.data;
+				});
+			};
+
 			return User;
 		}]);
 });

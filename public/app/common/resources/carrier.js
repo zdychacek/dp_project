@@ -1,26 +1,12 @@
 define([
 	'angular',
-	'angular-resource'
+	'common/resources/resource'
 ], function (angular) {
 	'use strict';
 	
-	angular.module('resources.carrier', ['ngResource'])
-		.factory('Carrier', ['$resource', function ($resource) {
-			var Carrier = $resource('/api/v1/carriers/:id', {
-				id: '@id'
-			}, {
-				query:  {
-					method: 'GET',
-					params: {
-						limit: 0,
-						offset: 0,
-						sort: '',
-						dir: ''
-					},
-					isArray:true
-				},
-				update: { method: 'PUT' }
-			});
+	angular.module('resources.carrier', ['resources.resource'])
+		.factory('Carrier', ['resource', function (resource) {
+			var Carrier = resource('/api/v1/carriers/');
 			
 			return Carrier;
 		}]);

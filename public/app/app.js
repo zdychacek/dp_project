@@ -7,7 +7,6 @@ require.config({
 		'angular-mocks': '../components/angular-mocks/angular-mocks',
 		'angular-ui': '../components/angular-ui/build/angular-ui.',
 		'angular-bootstrap': '../components/angular-bootstrap/ui-bootstrap-tpls',
-		'angular-resource': '../components/angular-resource/angular-resource',
 		'spin': '../components/spinjs/spin'
 	},
 	shim: {
@@ -23,9 +22,6 @@ require.config({
 		},
 		'angular-bootstrap': {
 			deps: ['angular']
-		},
-		'angular-resource': {
-			deps: ['angular']	
 		}
 	}
 });

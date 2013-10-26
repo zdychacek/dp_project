@@ -39,16 +39,15 @@ define([
 			var loadUsers = function () {
 				$scope.loadingData = true;
 
-				$scope.users = User.query({
+				User.query({
 					offset: ($scope.currentPage - 1) * $scope.itemsPerPage,
 					limit: $scope.itemsPerPage,
 					sort: $scope.sort.column,
 					dir: $scope.sort.dir
-				}, function (users, responseHeadersGetter) {
-					var headers = responseHeadersGetter();
-
+				}).then(function (data) {
+					$scope.users = data.items;
 					$scope.loadingData = false;
-					$scope.totalItems = headers['total-count'];
+					$scope.totalItems = data.metadata.totalCount;
 				});
 			};
 

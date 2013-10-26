@@ -104,10 +104,14 @@ exports.addRoutes = function (app, config) {
 					return console.log(err);
 				}
 
-				res.set({
-					'total-count': result.totalCount
+				var metadata = {
+					totalCount: result.totalCount
+				};
+
+				res.json({
+					items: result.users,
+					metadata: metadata
 				});
-				res.json(result.users);
 			});			
 		});
 	});

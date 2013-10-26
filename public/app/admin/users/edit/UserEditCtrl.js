@@ -39,9 +39,9 @@ define([
 			if (!$scope.creatingNew) {
 				$scope.loadingData = true;
 
-				$scope.user = User.get({ id: $routeParams.id }, function () {
+				User.get({ id: $routeParams.id }).then(function (user) {
 					$scope.loadingData = false;
-
+					$scope.user = user;
 					originalUserLogin = $scope.user.login;
 				});
 			}
@@ -54,7 +54,7 @@ define([
 				}
 
 				if ($scope.creatingNew) {
-					$scope.user = new User($scope.user).$save(function (user) {
+					User.save($scope.user).then(function (user) {
 						notifications.pushForNextRoute({
 							message: 'Nový uživatel byl vytvořen.',
 							type: 'success'
@@ -63,7 +63,7 @@ define([
 					});
 				}
 				else {
-					$scope.user.$update(function (user) {
+					$scope.user.$update().then(function (user) {
 						notifications.pushForCurrentRoute({
 							message: 'Změny byly uloženy.',
 							type: 'success'

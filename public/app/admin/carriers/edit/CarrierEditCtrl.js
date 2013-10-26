@@ -25,11 +25,10 @@ define([
 		.controller('CarrierEditCtrl', ['$scope', 'Carrier', '$routeParams', 'notifications', '$location', function ($scope, Carrier, $routeParams, notifications, $location) {
 			$scope.creatingNew = $routeParams.id == 'new';
 		
-
 			if (!$scope.creatingNew) {
 				$scope.loadingData = true;
 
-				$scope.flig = Flight.get({ id: $routeParams.id }, function () {
+				$scope.carrier = Carrier.get({ id: $routeParams.id }, function () {
 					$scope.loadingData = false;
 				});
 			}
@@ -42,7 +41,7 @@ define([
 				}
 
 				if ($scope.creatingNew) {
-					$scope.carrier = new Flight($scope.carrier).$save(function (carrier) {
+					$scope.carrier = new Carrier($scope.carrier).$save(function (carrier) {
 						notifications.pushForNextRoute({
 							message: 'Nový let byl vytvořen.',
 							type: 'success'

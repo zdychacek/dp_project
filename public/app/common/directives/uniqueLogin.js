@@ -1,10 +1,11 @@
 define([
-  'angular'
+  'angular',
+  'common/resources/user'
 ], function (angular) {
   'use strict';
 
-	angular.module('directives.uniqueLogin', [])
-		.directive('uniqueLogin', ['$http', function ($http) {
+	angular.module('directives.uniqueLogin', ['resources.user'])
+		.directive('uniqueLogin', ['User', function (User) {
 			var toId;
 
 			return {
@@ -25,7 +26,7 @@ define([
 						ctrl.requestRunning = true;
 
 						toId = setTimeout(function () {
-							$http.get('/api/v1/users/checkLogin/?login=' + value).success(function (data) {
+							User.checkLogin(value).then(function (data) {
 								if (typeof callback === 'function') {
 									callback(data.isValid, function (result) {
 										ctrl.$setValidity('uniqueLogin', result);
