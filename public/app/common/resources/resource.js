@@ -18,38 +18,37 @@ define(['angular'], function (angular) {
 				Resource.query = function (params) {
 					return $http.get(Resource._resourceUrl, {
 						params: params || {}
-					})
-						.then(function (response) {
-							var data = response.data,
-								collectionToIterate,
-								metadata = data.metadata,
-								items = [];
+					}).then(function (response) {
+						var data = response.data,
+							collectionToIterate,
+							metadata = data.metadata,
+							items = [];
 
-							if (angular.isArray(data)) {
-								collectionToIterate = data;
-							}
-							else if (angular.isArray(data.items)) {
-								collectionToIterate = data.items;
-							}
-							else {
-								throw new Error('Resource.query(): Missing items collection.');
-							}
+						if (angular.isArray(data)) {
+							collectionToIterate = data;
+						}
+						else if (angular.isArray(data.items)) {
+							collectionToIterate = data.items;
+						}
+						else {
+							throw new Error('Resource.query(): Missing items collection.');
+						}
 
-							// vytvoreni jednotlivych instanci
-							angular.forEach(collectionToIterate, function (value, key) {
-								items[key] = new Resource(value);
-							});
-
-							if (metadata) {
-								return {
-									items: items,
-									metadata: metadata
-								};	
-							}
-							else {
-								return items;
-							}
+						// vytvoreni jednotlivych instanci
+						angular.forEach(collectionToIterate, function (value, key) {
+							items[key] = new Resource(value);
 						});
+
+						if (metadata) {
+							return {
+								items: items,
+								metadata: metadata
+							};	
+						}
+						else {
+							return items;
+						}
+					});
 				};
 
 				Resource.getResourceUrl = function () {
@@ -66,31 +65,38 @@ define(['angular'], function (angular) {
 
 					return $http.get(url, {
 						params: params || {}
-					})
-						.then(function (response) {
-							return new Resource(response.data);
-						});
+					}).then(function (response) {
+						return new Resource(response.data);
+					});
 				};
 
 				Resource.save = function (data) {
 					return $http.post(this.getResourceUrl(), data)
-						.then(function (response) {
-							return new Resource(response.data);
-						});
+					.then(function (response) {
+						return new Resource(response.data);
+					});
 				};
 
 				Resource.update = function (data) {
 					return $http.put(this.getResourceUrl(), data)
-						.then(function (response) {
-							return new Resource(response.data);
-						});
+					.then(function (response) {
+						return new Resource(response.data);
+					});
 				};
 
-				Resource.remove = function (data) {
-					return $http.delete(this.getResourceUrl())
-						.then(function (response) {
-							return new Resource(response.data);
-						});
+				Resource.remove = function (params) {
+					var url = this.getResourceUrl();
+
+					if ('id' in params) {
+						url += '/' + params.id;
+						delete params.id;
+					}
+
+					return $http.delete(url, {
+						params: params || {}
+					}).then(function (response) {
+						return new Resource(response.data);
+					});
 				};
 
 				// intancni metody

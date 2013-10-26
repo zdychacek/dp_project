@@ -56,7 +56,7 @@ define([
 			};
 
 			$scope.removeUser = function (user) {
-				User.delete({ id: user._id }, function () {
+				User.remove({ id: user._id }).then(function () {
 					loadUsers();
 				});
 			};
