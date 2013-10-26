@@ -26,6 +26,7 @@ exports.addRoutes = function (app, config) {
 			User.findOne({ _id: id }, function (err, user) {
 				if (err) {
 					console.log(err);
+					res.json(null);
 				}
 
 				res.json(user);

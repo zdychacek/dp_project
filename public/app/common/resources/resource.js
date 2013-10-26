@@ -15,6 +15,17 @@ define(['angular'], function (angular) {
 				}
 				Resource._resourceUrl = baseUrl;
 
+				function parseResponse(response) {
+					var data = response.data;
+
+					if (typeof data === 'object') {
+						return new Resource(data);
+					}
+					else {
+						return null;
+					}
+				}
+
 				Resource.query = function (params) {
 					return $http.get(Resource._resourceUrl, {
 						params: params || {}
@@ -66,21 +77,21 @@ define(['angular'], function (angular) {
 					return $http.get(url, {
 						params: params || {}
 					}).then(function (response) {
-						return new Resource(response.data);
+						return parseResponse(response);
 					});
 				};
 
 				Resource.save = function (data) {
 					return $http.post(this.getResourceUrl(), data)
 					.then(function (response) {
-						return new Resource(response.data);
+						return parseResponse(response);
 					});
 				};
 
 				Resource.update = function (data) {
 					return $http.put(this.getResourceUrl(), data)
 					.then(function (response) {
-						return new Resource(response.data);
+						return parseResponse(response);
 					});
 				};
 
@@ -95,7 +106,7 @@ define(['angular'], function (angular) {
 					return $http.delete(url, {
 						params: params || {}
 					}).then(function (response) {
-						return new Resource(response.data);
+						return parseResponse(response);
 					});
 				};
 

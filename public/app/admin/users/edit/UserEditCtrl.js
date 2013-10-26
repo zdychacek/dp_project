@@ -41,12 +41,18 @@ define([
 
 				User.get({ id: $routeParams.id }).then(function (user) {
 					$scope.loadingData = false;
-					$scope.user = user;
-					originalUserLogin = $scope.user.login;
+
+					if (!user) {
+						$scope.noData = true;
+					}
+					else {
+						$scope.user = user;
+						originalUserLogin = $scope.user.login;
+					}
 				});
 			}
 
-			$scope.formTitle = $scope.creatingNew ? 'Nový uživatel' : 'Editace';
+			$scope.formTitle = $scope.creatingNew ? 'Nový uživatel' : 'Editace uživatele';
 
 			$scope.save = function () {
 				if (this.form.$invalid) {

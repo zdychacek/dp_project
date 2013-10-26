@@ -1,6 +1,10 @@
 h1 {{formTitle}}
 
-form.form-horizontal(name="form")
+div(ng-show="noData")
+	div.alert.alert-error Uživatel nebyl nalezen.
+	a.btn.span2(ng-href="/admin/users") Zpět na seznam
+
+form.form-horizontal(name="form", ng-hide="noData")
 	spinner(show="loadingData", align="center")
 
 	div.wrap(ng-hide="loadingData")
@@ -42,13 +46,13 @@ form.form-horizontal(name="form")
 					input(type='password', name="oldPassword", ng-model="user.oldPassword")
 
 		.control-group
-			label.control-label {{creatingNew && 'Heslo' || !creatingNew && 'Nové heslo'}}
+			label.control-label {{creatingNew &amp;&amp; 'Heslo' || !creatingNew &amp;&amp; 'Nové heslo'}}
 			.controls
 				input(type='password', name="password", ng-model="user.password", ng-required="creatingNew")
 				span.text-error(ng-show="showErrorMessage(form.password)") Vyplňte heslo.
 
 		.control-group
-			label.control-label {{creatingNew && 'Potvrzení hesla' || !creatingNew && 'Potvrzení nového hesla'}}
+			label.control-label {{creatingNew &amp;&amp; 'Potvrzení hesla' || !creatingNew &amp;&amp; 'Potvrzení nového hesla'}}
 			.controls
 				input(type='password', name="passwordConfirmaton", ng-model="user.passwordConfirmaton", ng-required="creatingNew", repeat="password")
 				span.text-error(ng-show="showErrorMessage(form.passwordConfirmaton)") Vyplňte heslo znovu.
