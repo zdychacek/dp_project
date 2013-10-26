@@ -4,7 +4,7 @@ div(ng-show="noData")
 	div.alert.alert-error Uživatel nebyl nalezen.
 	a.btn.span2(ng-href="/admin/users") Zpět na seznam
 
-form.form-horizontal(name="form", ng-hide="noData")
+form.form-horizontal(name="form", ng-hide="noData", ng-submit="save()")
 	spinner(show="loadingData", align="center")
 
 	div.wrap(ng-hide="loadingData")
@@ -58,6 +58,6 @@ form.form-horizontal(name="form", ng-hide="noData")
 				span.text-error(ng-show="showErrorMessage(form.passwordConfirmaton)") Vyplňte heslo znovu.
 				span.text-error(ng-show="showErrorMessage(form.passwordConfirmaton, 'repeat')") Heslo se neshoduje.
 
-		div
+		div.btn-toolbar
 			a.btn.span2(ng-href="/admin/users") Zpět na seznam
-			a.btn.btn-primary.span1(ng-click="save()",ng-disabled="form.$invalid || form.login.requestRunning") Uložit
+			input.btn.btn-primary(type="submit", ng-disabled="form.$invalid || form.login.requestRunning", value="Uložit")

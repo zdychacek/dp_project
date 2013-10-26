@@ -12,18 +12,17 @@ div.content-main
 
 	div.table-container(ng-show="totalItems > 0")
 		table.table.table-bordered(sortable-table, sort-column="sort.column", sort-dir="sort.dir", ng-style="getTableVisibilityStyle()")
-			tr(ng-repeat="item in items")
-				td(data-title="Login", sortable="login") {{item.login}}
-				td(data-title="Jméno", sortable="firstName") {{item.firstName}}
-				td(data-title="Příjmení", sortable="lastName") {{item.lastName}}
-				td(data-title="E-mail", sortable="email") {{item.email}}
-				td(data-title="Administrátor", sortable="isAdmin") {{item.isAdmin}}
-				td(data-title="Vytvořeno", sortable="lastModified") {{item.lastModified | date: 'd.M.yy H:mm'}}
+			tr(ng-repeat="carrier in carriers")
+				td(data-title="Logo")
+					img(ng-src="carrier.logo")
+				td(data-title="Název", sortable="name") {{carrier.name}}
+				td(data-title="Zakázáno", sortable="disabled") {{carrier.disabled}}
+				td(data-title="Vytvořeno", sortable="lastModified") {{carrier.lastModified | date: 'd.M.yy H:mm'}}
 				td.icon
-					a.btn.btn-info(ng-click="edititem(item)", href="#")
+					a.btn.btn-info(ng-click="editCarrier(carrier)", href="#")
 						span.icon-pencil
 
-					a.btn.btn-danger(ng-click="removeitem(item)", href="#")
+					a.btn.btn-danger(ng-click="removeCarrier(carrier)", href="#")
 						span.icon-remove-sign
 
 		pagination.pagination(

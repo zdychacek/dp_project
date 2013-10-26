@@ -12,7 +12,7 @@ var Flight = new mongoose.Schema({
 	toDestination: String,
 	departureTime: Date,
 	arrivalTime: Date,
-	carrier: {
+	'class': {
 		type: mongoose.Schema.ObjectId,
 		ref: Class
 	},

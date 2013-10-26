@@ -22,18 +22,25 @@ define([
 			});
 		}])
 
-		.controller('CarrierEditCtrl', ['$scope', 'Carrier', '$routeParams', 'notifications', '$location', function ($scope, Carrier, $routeParams, notifications, $location) {
+		.controller('CarrierEditCtrl', [
+			'$scope',
+			'Carrier',
+			'$routeParams',
+			'notifications',
+			'$location',
+		function ($scope, Carrier, $routeParams, notifications, $location) {
 			$scope.creatingNew = $routeParams.id == 'new';
 		
 			if (!$scope.creatingNew) {
 				$scope.loadingData = true;
 
-				$scope.carrier = Carrier.get({ id: $routeParams.id }, function () {
+				Carrier.get({ id: $routeParams.id }).then(function (carrier) {
+					$scope.carrier = carrier;
 					$scope.loadingData = false;
 				});
 			}
 
-			$scope.formTitle = $scope.creatingNew ? 'Nový přepravce' : 'Editace';
+			$scope.formTitle = $scope.creatingNew ? 'Nový přepravce' : 'Editace přepravce';
 
 			$scope.save = function () {
 				if (this.form.$invalid) {
@@ -41,7 +48,7 @@ define([
 				}
 
 				if ($scope.creatingNew) {
-					$scope.carrier = new Carrier($scope.carrier).$save(function (carrier) {
+					Carrier.save($scope.carrier).then(function (carrier) {
 						notifications.pushForNextRoute({
 							message: 'Nový let byl vytvořen.',
 							type: 'success'
@@ -50,7 +57,7 @@ define([
 					});
 				}
 				else {
-					$scope.carrier.$update(function (carrier) {
+					$scope.carrier.$update().then(function (carrier) {
 						notifications.pushForCurrentRoute({
 							message: 'Změny byly uloženy.',
 							type: 'success'

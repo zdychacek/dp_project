@@ -22,7 +22,13 @@ define([
 			});
 		}])
 
-		.controller('UserEditCtrl', ['$scope', 'User', '$routeParams', 'notifications', '$location', function ($scope, User, $routeParams, notifications, $location) {
+		.controller('UserEditCtrl', [
+			'$scope',
+			'User',
+			'$routeParams',
+			'notifications',
+			'$location',
+		function ($scope, User, $routeParams, notifications, $location) {
 			var originalUserLogin;
 
 			$scope.creatingNew = $routeParams.id == 'new';
