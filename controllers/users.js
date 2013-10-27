@@ -58,9 +58,9 @@ exports.addRoutes = function (app, config) {
 			});
 		});
 
-		app.put('/', function (req, res) {
+		app.put('/:id', function (req, res) {
 			var userData = req.body,
-				id = userData._id;
+				id = req.params.id;
 
 			delete userData._id;
 

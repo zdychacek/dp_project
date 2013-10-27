@@ -15,6 +15,8 @@ define(['angular'], function (angular) {
 				}
 				Resource._resourceUrl = baseUrl;
 
+				Resource.idField = '_id';
+
 				Resource._parseResponse = function (response) {
 					var data = response.data;
 
@@ -69,9 +71,9 @@ define(['angular'], function (angular) {
 				Resource.get = function (params) {
 					var url = this.getResourceUrl();
 
-					if ('id' in params) {
-						url += '/' + params.id;
-						delete params.id;
+					if (Resource.idField in params) {
+						url += '/' + params[Resource.idField];
+						delete params[Resource.idField];
 					}
 
 					return $http.get(url, {
@@ -89,7 +91,14 @@ define(['angular'], function (angular) {
 				};
 
 				Resource.update = function (data) {
-					return $http.put(this.getResourceUrl(), data)
+					var url = this.getResourceUrl();
+
+					if (Resource.idField in data) {
+						url += '/' + data[Resource.idField];
+						delete data[Resource.idField];
+					}
+
+					return $http.put(url, data)
 					.then(function (response) {
 						return Resource._parseResponse(response);
 					});
@@ -98,9 +107,9 @@ define(['angular'], function (angular) {
 				Resource.remove = function (params) {
 					var url = this.getResourceUrl();
 
-					if ('id' in params) {
-						url += '/' + params.id;
-						delete params.id;
+					if (Resource.idField in params) {
+						url += '/' + params[Resource.idField];
+						delete params[Resource.idField];
 					}
 
 					return $http.delete(url, {
@@ -124,7 +133,7 @@ define(['angular'], function (angular) {
 				};
 				
 				Resource.prototype.$id = function () {
-					return this._id;
+					return this[Resource.idField];
 				};
 
 				Resource.prototype.getResourceUrl = function () {

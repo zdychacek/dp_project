@@ -34,7 +34,7 @@ define([
 			if (!$scope.creatingNew) {
 				$scope.loadingData = true;
 
-				Carrier.get({ id: $routeParams.id }).then(function (carrier) {
+				Carrier.get({ _id: $routeParams.id }).then(function (carrier) {
 					$scope.carrier = carrier;
 					$scope.loadingData = false;
 				});
@@ -65,6 +65,7 @@ define([
 							message: 'Změny byly uloženy.',
 							type: 'success'
 						});
+						$scope.carrier = carrier;
 					});
 				}
 			};
@@ -74,6 +75,23 @@ define([
 					$scope.carrier.logo = args.file;
 				});
 			});
+
+			$scope.isLogoVisible = function () {
+				return $scope.carrier && $scope.carrier.logo && !($scope.carrier.logo instanceof window.File);
+			};
+
+			$scope.getLogoUrl = function () {
+				if ($scope.carrier && typeof $scope.carrier.logo === 'string') {
+					return '/static/img/carriersLogos/' + $scope.carrier.logo;
+				}
+				else {
+					return '';
+				}
+			};
+
+			$scope.removeLogo = function () {
+				$scope.carrier.logo = '';
+			};
 
 			$scope.showErrorMessage = function (field, validityType) {
 				validityType || (validityType = 'required');

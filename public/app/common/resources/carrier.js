@@ -8,10 +8,10 @@ define([
 		.factory('Carrier', ['resource', '$http', function (resource, $http) {
 			var Carrier = resource('/api/v1/carriers');
 			
-			Carrier.save = function (data) {
+			function _doRequest (method, url, data) {
 				return $http({
-					method: 'POST',
-					url: this.getResourceUrl(),
+					method: method,
+					url: url,
 					headers: {
 						'Content-Type': false
 					},
@@ -25,14 +25,25 @@ define([
 						}
 						
 						formData.append('data', angular.toJson(data));
-						formData.append('logoFile', logoFile);
+						
+						if (logoFile) {
+							formData.append('logoFile', logoFile);
+						}
 
 						return formData;
 					},
 					data: data
 				}).then(function (response) {
 					return Carrier._parseResponse(response);
-				});				
+				});	
+			}
+
+			Carrier.save = function (data) {
+				return _doRequest('POST', this.getResourceUrl(), data);
+			};
+
+			Carrier.update = function (data) {
+				return _doRequest('PUT', this.getResourceUrl() + '/' + data[Carrier.idField], data);
 			};
 
 			return Carrier;

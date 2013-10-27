@@ -8,7 +8,8 @@ form.form-horizontal(name="form", ng-submit="save()")
 			label.control-label Logo
 			.controls
 				input(type="file", file-upload)
-				span {{carrier.logo}}
+				img(ng-src="{{getLogoUrl()}}", ng-show="isLogoVisible()")
+				//a(ng-click="removeLogo()", ng-show="carrier.logo", href="#") Odstranit logo
 
 		.control-group
 			label.control-label Název

@@ -45,7 +45,7 @@ define([
 			if (!$scope.creatingNew) {
 				$scope.loadingData = true;
 
-				User.get({ id: $routeParams.id }).then(function (user) {
+				User.get({ _id: $routeParams.id }).then(function (user) {
 					$scope.loadingData = false;
 
 					if (!user) {

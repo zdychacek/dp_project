@@ -55,7 +55,7 @@ define([
 			};
 
 			$scope.removeCarrier = function (carrier) {
-				Carrier.remove({ id: carrier._id }).then(function () {
+				Carrier.remove({ _id: carrier._id }).then(function () {
 					loadCarriers();
 				});
 			};
@@ -70,6 +70,10 @@ define([
 						visibility: 'hidden'
 					};
 				}
+			};
+
+			$scope.makeLogoUrl = function (carrier) {
+				return '/static/img/carriersLogos/' + carrier.logo;
 			};
 
 			$scope.$watch('itemsPerPage', loadCarriers);

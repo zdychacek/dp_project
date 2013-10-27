@@ -19,43 +19,43 @@ exports.addRoutes = function (app, config) {
 		});
 
 		app.post('/', function (req, res) {
-			var carrierData = JSON.parse(req.body.data),
+			var reqBody = JSON.parse(req.body.data),
 				logoFile = req.files.logoFile;
 
-			function saveLogo (logo, callback) {
-				fs.readFile(logoFile.path, function (err, data) {
-					var newName = (+new Date()) + '_' + logoFile.name;
-
-					fs.writeFile(config.app.uploadedFilesRoot + '/carriersLogos/' + newName, data, function (err) {
-						callback(err, '/static/img/carriersLogos/' + newName);
-					});
-				});
-			};
-
-			function saveData (data, callback) {
-				var newCarrier = new Carrier(data);
-
-				newCarrier.save(function (err, carrier) {
-					callback(err, carrier);
-				});	
-			};
-
 			if (logoFile) {
-				saveLogo(logoFile, function (err, logoPath) {
-					if (err) { console.log(err); }
+				var fileName = (+new Date()) + '_' + logoFile.name;
 
-					carrierData.logo = logoPath;
+				async.parallel({
+					saveLogo: function (callback) {
+						fs.readFile(logoFile.path, function (err, data) {
+							fs.writeFile(config.app.uploadedFilesRoot + '/carriersLogos/' + fileName, data, callback);
+						});
+					},
+					saveData: function (callback) {
+						var newCarrier = new Carrier(reqBody);
+						newCarrier.logo = fileName;
 
-					saveData(carrierData, function (err, carrier) {
-						if (err) { console.log(err); }
-
-						res.json(carrier);
-					});
-				})
+						newCarrier.save(callback);	
+					}
+				}, function (err, result) {
+					if (!err) {
+						res.json(result.saveData);
+					}
+					else {
+						console.log(err);
+					}
+				});
 			}
-			// TODO
 			else {
-				saveData()
+				var newCarrier = new Carrier(reqBody);
+				newCarrier.save(function (err, carrier) {
+					if (!err) {
+						res.json(carrier);
+					}
+					else {
+						console.log(err);
+					}
+				});
 			}
 		});
 
@@ -71,18 +71,54 @@ exports.addRoutes = function (app, config) {
 			});
 		});
 
-		app.put('/', function (req, res) {
-			var carrierData = req.body,
-				id = carrierData._id;
+		// TODO: refactor s metodou app.post('/',...)
+		app.put('/:id', function (req, res) {
+			var logoFile = req.files.logoFile;
 
-			delete carrierData._id;
+			Carrier.findById(req.params.id, function (err, carrier) {
+				var reqBody = JSON.parse(req.body.data);
 
-			Carrier.findOneAndUpdate({ _id: id }, carrierData, function (err, carrier) {
-				if (err) {
-					console.log(err);
+				carrier.name = reqBody.name;
+				carrier.disabled = reqBody.disabled;
+
+				if (logoFile) {
+					var fileName = (+new Date()) + '_' + logoFile.name;
+
+					async.parallel({
+						saveLogo: function (callback) {
+							fs.readFile(logoFile.path, function (err, data) {
+								fs.writeFile(config.app.uploadedFilesRoot + '/carriersLogos/' + fileName, data, callback);
+							});
+						},
+						saveData: function (callback) {
+							carrier.logo = fileName;
+							carrier.save(function (err, carrier) {
+								callback(err, carrier);
+							});
+						}
+					}, function (err, result) {
+						if (!err) {
+							res.json(result.saveData);
+						}
+						else {
+							console.log(err);
+						}
+					});
 				}
-
-				res.json(carrier);
+				else {
+					if (reqBody.logo === '') {
+						carrier.logo = '';
+					}
+					
+					carrier.save(function (err, carrier) {
+						if (!err) {
+							res.json(carrier);
+						}
+						else {
+							console.log(err);
+						}
+					});
+				}
 			});
 		});
 
