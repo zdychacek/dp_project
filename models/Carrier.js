@@ -3,7 +3,7 @@ const mongoose = require('mongoose'),
 
 var Carrier = new mongoose.Schema({
 	name: String,
-	logo: String,
+	logo: { type: String, default: '' },
 	disabled: { type: Boolean, default: false }
 });
 

@@ -29,14 +29,33 @@ define([
 			'notifications',
 			'$location',
 		function ($scope, Carrier, $routeParams, notifications, $location) {
+			var fileReader = new FileReader(),
+				logosPath = '/static/img/carriersLogos/';
+
+			fileReader.onloadend = function (evt) {
+				$scope.$apply(function () {
+					$scope.logoSrc = evt.target.result;
+				});
+			};
+
 			$scope.creatingNew = $routeParams.id == 'new';
+
+			// zdroj nahledu loga: bud base64 vytvorena pomoci FileReaderu nebo zdroj z modelu
+			$scope.logoSrc = '';
 		
 			if (!$scope.creatingNew) {
 				$scope.loadingData = true;
 
 				Carrier.get({ _id: $routeParams.id }).then(function (carrier) {
-					$scope.carrier = carrier;
 					$scope.loadingData = false;
+
+					if (!carrier) {
+						$scope.noData = true;
+					}
+					else {
+						$scope.carrier = carrier;
+						$scope.logoSrc = logosPath + carrier.logo;
+					}
 				});
 			}
 			else {
@@ -71,32 +90,26 @@ define([
 			};
 
 			$scope.$on('fileSelected', function (event, args) {
-				$scope.$apply(function () {
-					$scope.carrier.logo = args.file;
-				});
+				$scope.carrier.logoFile = args.file;
+				fileReader.readAsDataURL(args.file);
 			});
-
-			$scope.isLogoVisible = function () {
-				return $scope.carrier && $scope.carrier.logo && !($scope.carrier.logo instanceof window.File);
-			};
-
-			$scope.getLogoUrl = function () {
-				if ($scope.carrier && typeof $scope.carrier.logo === 'string') {
-					return '/static/img/carriersLogos/' + $scope.carrier.logo;
-				}
-				else {
-					return '';
-				}
-			};
 
 			$scope.removeLogo = function () {
 				$scope.carrier.logo = '';
+				$scope.carrier.logoFile = null;
+				$scope.logoSrc = '';
+			};
+
+			$scope.addLogo = function () {
+				angular.element('input[type="file"]').trigger('click');
+			};
+
+			$scope.isLogoVisible = function () {
+				return $scope.logoSrc.length > 0 && logosPath != $scope.logoSrc;
 			};
 
 			$scope.showErrorMessage = function (field, validityType) {
-				validityType || (validityType = 'required');
-
-				return field.$error[validityType] && field.$dirty;
+				return field.$error[validityType || 'required'] && field.$dirty;
 			};
 		}]);
 });

@@ -1,4 +1,5 @@
 @import "_variables";
+@import "_admin-carriers-edit";
 
 h1 {
 	margin-bottom: 20px;
@@ -23,6 +24,12 @@ table {
 				    background: url('/static/img/desc.gif') no-repeat right center;
 				}
 			}
+		}
+	}
+
+	td {
+		&.cell-center {
+			text-align: center;
 		}
 	}
 }
@@ -61,7 +68,4 @@ tr:nth-child(even) {
 
 .content-menu {
 	padding-bottom: 20px;
-}
-
-.carrier-logo {
 }

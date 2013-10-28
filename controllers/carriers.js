@@ -3,6 +3,11 @@ const Carrier = require('../models/Carrier'),
 	fs = require('fs');
 
 exports.addRoutes = function (app, config) {
+	// k nazvu souboru prida cas
+	function makeFileName (fileName) {
+		return (+new Date()) + '_' + fileName;
+	};
+
 	app.namespace('/api/v1/carriers', function () {
 
 		app.get('/:id', function (req, res, next) {
@@ -23,7 +28,7 @@ exports.addRoutes = function (app, config) {
 				logoFile = req.files.logoFile;
 
 			if (logoFile) {
-				var fileName = (+new Date()) + '_' + logoFile.name;
+				var fileName = makeFileName(logoFile.name);
 
 				async.parallel({
 					saveLogo: function (callback) {
@@ -32,46 +37,50 @@ exports.addRoutes = function (app, config) {
 						});
 					},
 					saveData: function (callback) {
-						var newCarrier = new Carrier(reqBody);
-						newCarrier.logo = fileName;
-
-						newCarrier.save(callback);	
+						var carrier = new Carrier(reqBody);
+						carrier.logo = fileName;
+						carrier.save(function (err, carrier) {
+							callback(err, carrier);
+						});
 					}
 				}, function (err, result) {
 					if (!err) {
 						res.json(result.saveData);
 					}
-					else {
-						console.log(err);
-					}
+					else { console.log(err); }
 				});
 			}
 			else {
-				var newCarrier = new Carrier(reqBody);
-				newCarrier.save(function (err, carrier) {
+				var carrier = new Carrier(reqBody);
+				carrier.save(function (err, carrier) {
 					if (!err) {
 						res.json(carrier);
 					}
-					else {
-						console.log(err);
-					}
+					else { console.log(err); }
 				});
 			}
 		});
 
 		app.delete('/:id', function (req, res) {
-			var id = req.params.id;
+			Carrier.findById(req.params.id, function (err, carrier) {
+				if (!err) {
+					// smazu logo
+					if (carrier.logo) {
+						fs.unlink(config.app.uploadedFilesRoot + '/carriersLogos/' + carrier.logo);
+					}
 
-			Carrier.remove({ _id: id }, function (err) {
-				if (err) {
-					console.log(err);
+					// odstranim z DB
+					carrier.remove(function (err) {
+						if (!err) {
+							res.json(null);
+						}
+						else { console.log(err); }
+					})
 				}
-
-				res.json(null);
+				else { console.log(err); }
 			});
 		});
 
-		// TODO: refactor s metodou app.post('/',...)
 		app.put('/:id', function (req, res) {
 			var logoFile = req.files.logoFile;
 
@@ -82,7 +91,7 @@ exports.addRoutes = function (app, config) {
 				carrier.disabled = reqBody.disabled;
 
 				if (logoFile) {
-					var fileName = (+new Date()) + '_' + logoFile.name;
+					var fileName = makeFileName(logoFile.name);
 
 					async.parallel({
 						saveLogo: function (callback) {
@@ -100,13 +109,12 @@ exports.addRoutes = function (app, config) {
 						if (!err) {
 							res.json(result.saveData);
 						}
-						else {
-							console.log(err);
-						}
+						else { console.log(err); }
 					});
 				}
 				else {
 					if (reqBody.logo === '') {
+						fs.unlink(config.app.uploadedFilesRoot + '/carriersLogos/' + carrier.logo);
 						carrier.logo = '';
 					}
 					
@@ -114,9 +122,7 @@ exports.addRoutes = function (app, config) {
 						if (!err) {
 							res.json(carrier);
 						}
-						else {
-							console.log(err);
-						}
+						else { console.log(err); }
 					});
 				}
 			});
@@ -150,18 +156,16 @@ exports.addRoutes = function (app, config) {
 						});
 				}
 			}, function (err, result) {
-				if (err) {
-					return console.log(err);
+				if (!err) {
+					res.json({
+						items: result.carriers,
+						metadata: {
+							totalCount: result.totalCount
+						}
+					});
 				}
+				else { return console.log(err); }
 
-				var metadata = {
-					totalCount: result.totalCount
-				};
-
-				res.json({
-					items: result.carriers,
-					metadata: metadata
-				});
 			});	
 		});
 	});

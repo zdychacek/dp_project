@@ -1,6 +1,10 @@
 h1 {{formTitle}}
 
-form.form-horizontal(name="form", ng-submit="save()")
+div(ng-show="noData")
+	div.alert.alert-error Záznam nebyl nalezen.
+	a.btn.span2(ng-href="/admin/carriers") Zpět na seznam
+
+form.form-horizontal.carrier-edit(name="form", ng-hide="noData", ng-submit="save()")
 	spinner(show="loadingData", align="center")
 
 	div.wrap(ng-hide="loadingData")
@@ -8,9 +12,13 @@ form.form-horizontal(name="form", ng-submit="save()")
 			label.control-label Logo
 			.controls
 				input(type="file", file-upload)
-				img(ng-src="{{getLogoUrl()}}", ng-show="isLogoVisible()")
-				//a(ng-click="removeLogo()", ng-show="carrier.logo", href="#") Odstranit logo
-
+				img(ng-src="{{logoSrc}}", ng-show="isLogoVisible()")
+				| &nbsp;
+				a.btn(ng-click="removeLogo()", ng-show="isLogoVisible()", href="#")
+					i.icon-remove&nbsp;
+				a.btn(ng-click="addLogo()", ng-hide="isLogoVisible()", href="#")
+					i.icon-plus-sign&nbsp;
+				
 		.control-group
 			label.control-label Název
 			.controls

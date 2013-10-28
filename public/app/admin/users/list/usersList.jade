@@ -17,7 +17,9 @@ div.content-main
 				td(data-title="Jméno", sortable="firstName") {{user.firstName}}
 				td(data-title="Příjmení", sortable="lastName") {{user.lastName}}
 				td(data-title="E-mail", sortable="email") {{user.email}}
-				td(data-title="Administrátor", sortable="isAdmin") {{user.isAdmin}}
+				td.cell-center(data-title="Administrátor", sortable="isAdmin", ng-switch="user.isAdmin")
+					i.icon-ok(ng-switch-when="true")
+					i.icon-remove(ng-switch-when="false")
 				td(data-title="Vytvořeno", sortable="lastModified") {{user.lastModified | date: 'd.M.yy H:mm'}}
 				td.icon
 					a.btn.btn-info(ng-click="editUser(user)", href="#")

@@ -16,19 +16,14 @@ define([
 						'Content-Type': false
 					},
 					transformRequest: function (data) {
-						var formData = new FormData(),
-							logoFile;
+						var formData = new FormData();
 
-						if (data.logo instanceof window.File) {
-							logoFile = data.logo;
-							data.logo = logoFile.name;
+						if (data.logoFile) {
+							formData.append('logoFile', data.logoFile);
+							delete data.logoFile;
 						}
 						
 						formData.append('data', angular.toJson(data));
-						
-						if (logoFile) {
-							formData.append('logoFile', logoFile);
-						}
 
 						return formData;
 					},

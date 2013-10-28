@@ -7,3 +7,4 @@ public/app/common/mocks/mocksData.js
 public/css/*.css
 !public/css/bootstrap.css
 .nodemonignore
+public/img/carriersLogos
