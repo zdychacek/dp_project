@@ -5,8 +5,8 @@ const mongoose = require('mongoose'),
 var PathPart = new mongoose.Schema({
 	fromDestination: String,
 	toDestination: String,
-	departureTime: Date,
-	arrivalTime: Date,
+	departureTime: Number,
+	arrivalTime: Number,
 	'class': {
 		type: mongoose.Schema.ObjectId,
 		ref: Class

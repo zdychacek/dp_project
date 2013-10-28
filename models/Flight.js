@@ -3,8 +3,10 @@ const mongoose = require('mongoose'),
 
 var Flight = new mongoose.Schema({
 	path: [ PathPart ],
+	date: Date,
 	price: Number,
-	capacity: Number
+	capacity: Number,
+	note: String
 });
 
 module.exports = mongoose.model('Flight', Flight);

@@ -50,14 +50,6 @@ exports.addRoutes = function (app, config) {
 		});
 
 		app.get('/', function (req, res) {
-			var offset = req.query.offset,
-				limit = req.query.limit ? req.query.limit : 9999,
-				sort = req.query.sort || '_id',
-				dir = req.query.dir || 'asc',
-				sortObj = {};
-
-			sortObj[sort] = dir;
-
 			async.parallel({
 				totalCount: function (callback) {
 					Flight
@@ -67,14 +59,26 @@ exports.addRoutes = function (app, config) {
 						});
 				},
 				data: function (callback) {
-					Flight
-						.find({})
-						.limit(limit)
-					    .skip(offset)
-					    .sort(sortObj)
-					    .exec(function (err, flights) {
-							callback(err, flights);
-						});
+					var query = Flight.find({});
+
+					if (typeof req.query.limit === 'number') {
+						query = query.limit(req.query.limit);
+					}
+
+					if (typeof req.query.offset === 'number') {
+						query = query.skip(req.query.offset);
+					}
+
+					if (req.query.sort && req.query.dir) {
+						var sortObj = {};
+						sortObj[req.query.sort] = req.query.dir;
+
+						query = query.sort(sortObj);
+					}
+						
+					query.exec(function (err, flights) {
+						callback(err, flights);
+					});
 				}
 			}, function (err, result) {
 				if (!err) {

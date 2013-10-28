@@ -8,27 +8,30 @@ form.form-horizontal.carrier-edit(name="form", ng-hide="noData", ng-submit="save
 	spinner(show="loadingData", align="center")
 
 	div.wrap(ng-hide="loadingData")
-		.control-group
-			label.control-label Logo
-			.controls
-				input(type="file", file-upload)
-				img(ng-src="{{logoSrc}}", ng-show="isLogoVisible()")
-				| &nbsp;
-				a.btn(ng-click="removeLogo()", ng-show="isLogoVisible()", href="#")
-					i.icon-remove&nbsp;
-				a.btn(ng-click="addLogo()", ng-hide="isLogoVisible()", href="#")
-					i.icon-plus-sign&nbsp;
-				
-		.control-group
-			label.control-label Název
-			.controls
-				input(type='text', name="name", ng-model="carrier.name", required)
-				span.text-error(ng-show="showErrorMessage(form.name)") Vyplňte název.
+		fieldset
+			legend Základní údaje
+			
+			.control-group
+				label.control-label Logo
+				.controls
+					input(type="file", file-upload)
+					img(ng-src="{{logoSrc}}", ng-show="isLogoVisible()")
+					| &nbsp;
+					a.btn(ng-click="removeLogo()", ng-show="isLogoVisible()", href="#")
+						i.icon-remove&nbsp;
+					a.btn(ng-click="addLogo()", ng-hide="isLogoVisible()", href="#")
+						i.icon-plus-sign&nbsp;
+					
+			.control-group
+				label.control-label Název
+				.controls
+					input(type='text', name="name", ng-model="carrier.name", required)
+					span.text-error(ng-show="showErrorMessage(form.name)") Vyplňte název.
 
-		.control-group
-			label.control-label Zakázáno
-			.controls
-				input(type='checkbox', ng-model="carrier.disabled")
+			.control-group
+				label.control-label Zakázáno
+				.controls
+					input(type='checkbox', ng-model="carrier.disabled")
 
 		div.btn-toolbar
 			a.btn.span2(ng-href="/admin/carriers") Zpět na seznam

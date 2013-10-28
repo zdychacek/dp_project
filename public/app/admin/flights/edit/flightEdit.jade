@@ -2,34 +2,99 @@ h1 {{formTitle}}
 
 div(ng-show="noData")
 	div.alert.alert-error Záznam nebyl nalezen.
-	a.btn.span2(ng-href="/admin/carriers") Zpět na seznam
+	a.btn.span2(ng-href="/admin/flights") Zpět na seznam
 
 form.form-horizontal.carrier-edit(name="form", ng-hide="noData", ng-submit="save()")
 	spinner(show="loadingData", align="center")
 
-	div.wrap(ng-hide="loadingData")
-		.control-group
-			label.control-label Logo
-			.controls
-				input(type="file", file-upload)
-				img(ng-src="{{logoSrc}}", ng-show="isLogoVisible()")
-				| &nbsp;
-				a.btn(ng-click="removeLogo()", ng-show="isLogoVisible()", href="#")
-					i.icon-remove&nbsp;
-				a.btn(ng-click="addLogo()", ng-hide="isLogoVisible()", href="#")
-					i.icon-plus-sign&nbsp;
-				
-		.control-group
-			label.control-label Název
-			.controls
-				input(type='text', name="name", ng-model="carrier.name", required)
-				span.text-error(ng-show="showErrorMessage(form.name)") Vyplňte název.
+	div.wrap(ng-hide="loadingData")	
+		fieldset
+			legend Základní údaje
 
-		.control-group
-			label.control-label Zakázáno
-			.controls
-				input(type='checkbox', ng-model="carrier.disabled")
+			.control-group(ng-show="flight._id")
+				label.control-label Kód
+				.controls
+					span {{flight._id}}
+
+			.control-group
+				label.control-label Datum
+				.controls
+					input(type='date', name="date", ng-model="flight.date", required)
+					span.text-error(ng-show="showErrorMessage(form.date)") Vyplňte datum odletu.
+
+			.control-group
+				label.control-label Cena
+				.controls
+					input(type='number', step="any", min="0", name="price", ng-model="flight.price", required)
+					span.text-error(ng-show="showErrorMessage(form.price)") Vyplňte cenu.
+					span.text-error(ng-show="showErrorMessage(form.price, 'number')") Cena musí být číselná hodnota.
+					span.text-error(ng-show="showErrorMessage(form.price, 'min')") Cena nesmí být záporné číslo.
+
+			.control-group
+				label.control-label Kapacita letu
+				.controls
+					input(type='number', name="capacity", ng-model="flight.capacity", required)
+					span.text-error(ng-show="showErrorMessage(form.capacity)") Vyplňte kapacitu letu.
+					span.text-error(ng-show="showErrorMessage(form.capacity, 'number')") Kapacita letu musí být číselná hodnota.
+
+			.control-group
+				label.control-label Poznámka
+				.controls
+					textarea(ng-model="flight.note")
+
+			.control-group(ng-show="fromDestination")
+				label.control-label Odkud
+				.controls
+					span {{fromDestination}}
+
+			.control-group(ng-show="toDestination")
+				label.control-label Kam
+				.controls
+					span {{toDestination}}
+
+			.control-group(ng-show="totalTime")
+				label.control-label Celková délka letu
+				.controls
+					span {{totalTime}}
+
+		fieldset
+			legend Trasa letu
+
+			table.table.table-bordered
+				thead
+					tr
+						th Přepravce
+						th Odlet (čas)
+						th Odlet (destinace)
+						th Přílet (čas)
+						th Přílet (destinace)
+						th Délka cesty
+				tbody
+					tr(ng-repeat="pathPart in flight.path")
+						td
+							select(ng-options="c.name for c in carriersList", ng-model="pathPart.carrier")
+							| &nbsp;
+							img.carrier-logo(ng-show="pathPart.carrier.logo",ng-src="{{makeLogoUrl(pathPart.carrier)}}")
+						td
+							input(type="time", ng-model="pathPart.departureTime")
+						td
+							input(type="text", ng-model="pathPart.fromDestination")
+						td
+							input(type="time", ng-model="pathPart.arrivalTime")
+						td
+							input(type="text", ng-model="pathPart.toDestination")
+						td
+							span {{getPathPartLength(pathPart)}}
+
+					tr(ng-show="!flight.path.length")
+						td(colspan="6") Přidejte trasu.
+				tfoot
+					tr
+						td(colspan="6")
+							a.btn(ng-click="addPathPart()", href="#")
+								i.icon-plus-sign &nbsp;
+								| Přidat část trasy
 
 		div.btn-toolbar
-			a.btn.span2(ng-href="/admin/carriers") Zpět na seznam
+			a.btn.span2(ng-href="/admin/flights") Zpět na seznam
 			input.btn.btn-primary(type="submit", value="Uložit", ng-disabled="form.$invalid")

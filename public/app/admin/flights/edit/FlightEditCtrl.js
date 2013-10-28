@@ -1,6 +1,7 @@
 define([
 	'angular',
 	'common/resources/flight',
+	'common/resources/carrier',
 	'common/services/notifications',
 	'common/security/authorization'
 ], function (angular) {
@@ -9,7 +10,8 @@ define([
 	angular.module('admin.flights.edit', [
 		'security.authorization',
 		'services.notifications',
-		'resources.flight'
+		'resources.flight',
+		'resources.carrier'
 	])
 		.config(['$routeProvider', 'securityAuthorizationProvider', function ($routeProvider, securityAuthorizationProvider) {
 			$routeProvider.when('/admin/flights/:id', {
@@ -17,7 +19,10 @@ define([
 				templateUrl: '/static/app/admin/flights/edit/flightEdit.html',
 				controller: 'FlightEditCtrl',
 				resolve: {
-					adminUser: securityAuthorizationProvider.requireAdminUser
+					adminUser: securityAuthorizationProvider.requireAdminUser,
+					carriers: ['Carrier', function (Carrier) {
+						return Carrier.query();
+					}]
 				}
 			});
 		}])
@@ -28,8 +33,18 @@ define([
 			'$routeParams',
 			'notifications',
 			'$location',
-		function ($scope, Flight, $routeParams, notifications, $location) {
+			'carriers',
+		function ($scope, Flight, $routeParams, notifications, $location, carriers) {
+			$scope.carriersList = carriers.items;
+			console.log($scope.carriersList);
 			$scope.creatingNew = $routeParams.id == 'new';
+			
+			// defaultni hodnoty
+			$scope.flight = {
+				price: 0,
+				capacity: 10,
+				path: []
+			};
 
 			if (!$scope.creatingNew) {
 				$scope.loadingData = true;
@@ -44,9 +59,6 @@ define([
 						$scope.flight = flight;
 					}
 				});
-			}
-			else {
-				$scope.flight = {};
 			}
 
 			$scope.formTitle = $scope.creatingNew ? 'Nový let' : 'Editace letu';
@@ -78,6 +90,23 @@ define([
 
 			$scope.showErrorMessage = function (field, validityType) {
 				return field.$error[validityType || 'required'] && field.$dirty;
+			};
+
+			$scope.addPathPart = function () {
+				$scope.flight.path.push({
+					carrier: $scope.carriersList[0]
+				});
+			};
+
+			$scope.makeLogoUrl = function (carrier) {
+				return '/static/img/carriersLogos/' + carrier.logo;
+			};
+
+			$scope.getPathPartLength = function (pathPart) {
+				var departure = pathPart.departureTime,
+					arrival = pathPart.arrivalTime;
+
+				debugger;
 			};
 		}]);
 });
