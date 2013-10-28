@@ -38,16 +38,15 @@ define([
 			var loadFlights = function () {
 				$scope.loadingData = true;
 
-				$scope.flights = Flight.query({
+				Flight.query({
 					offset: ($scope.currentPage - 1) * $scope.itemsPerPage,
 					limit: $scope.itemsPerPage,
 					sort: $scope.sort.column,
 					dir: $scope.sort.dir
-				}, function (flights, responseHeadersGetter) {
-					var headers = responseHeadersGetter();
-
+				}).then(function (data) {
+					$scope.Flights = data.items;
 					$scope.loadingData = false;
-					$scope.totalItems = headers['total-count'];
+					$scope.totalItems = data.metadata.totalCount;
 				});
 			};
 
@@ -56,7 +55,7 @@ define([
 			};
 
 			$scope.removeFlight = function (flight) {
-				Flight.delete({ id: flight._id }, function () {
+				Flight.remove({ _id: flight._id }).then(function () {
 					loadFlights();
 				});
 			};

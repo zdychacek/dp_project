@@ -1,22 +1,8 @@
 const mongoose = require('mongoose'),
-	Carrier = require('./Carrier'),
-	Class = require('./Class'),
-	Transfer = require('./Transfer');
+	PathPart = require('./PathPart');
 
 var Flight = new mongoose.Schema({
-	carrier: {
-		type: mongoose.Schema.ObjectId,
-		ref: Carrier
-	},
-	fromDestination: String,
-	toDestination: String,
-	departureTime: Date,
-	arrivalTime: Date,
-	'class': {
-		type: mongoose.Schema.ObjectId,
-		ref: Class
-	},
-	transfers: [ Transfer ],
+	path: [ PathPart ],
 	price: Number,
 	capacity: Number
 });

@@ -13,7 +13,7 @@ define([
 	])
 		.config(['$routeProvider', 'securityAuthorizationProvider', function ($routeProvider, securityAuthorizationProvider) {
 			$routeProvider.when('/admin/flights/:id', {
-				title: 'admin/editace uživatele',
+				title: 'editace přepravce',
 				templateUrl: '/static/app/admin/flights/edit/flightEdit.html',
 				controller: 'FlightEditCtrl',
 				resolve: {
@@ -22,19 +22,34 @@ define([
 			});
 		}])
 
-		.controller('FlightEditCtrl', ['$scope', 'Flight', '$routeParams', 'notifications', '$location', function ($scope, Flight, $routeParams, notifications, $location) {
+		.controller('FlightEditCtrl', [
+			'$scope',
+			'Flight',
+			'$routeParams',
+			'notifications',
+			'$location',
+		function ($scope, Flight, $routeParams, notifications, $location) {
 			$scope.creatingNew = $routeParams.id == 'new';
-		
 
 			if (!$scope.creatingNew) {
 				$scope.loadingData = true;
 
-				$scope.flig = Flight.get({ id: $routeParams.id }, function () {
+				Flight.get({ _id: $routeParams.id }).then(function (flight) {
 					$scope.loadingData = false;
+
+					if (!flight) {
+						$scope.noData = true;
+					}
+					else {
+						$scope.flight = flight;
+					}
 				});
 			}
+			else {
+				$scope.flight = {};
+			}
 
-			$scope.formTitle = $scope.creatingNew ? 'Nový let' : 'Editace';
+			$scope.formTitle = $scope.creatingNew ? 'Nový let' : 'Editace letu';
 
 			$scope.save = function () {
 				if (this.form.$invalid) {
@@ -42,28 +57,27 @@ define([
 				}
 
 				if ($scope.creatingNew) {
-					$scope.flight = new Flight($scope.flight).$save(function (flight) {
+					Flight.save($scope.flight).then(function (flight) {
 						notifications.pushForNextRoute({
 							message: 'Nový let byl vytvořen.',
 							type: 'success'
 						});
-						$location.path('/admin/flights/' + flight._id);
+						$location.path('/admin/carriers/' + flight._id);
 					});
 				}
 				else {
-					$scope.flight.$update(function (flight) {
+					$scope.flight.$update().then(function (flight) {
 						notifications.pushForCurrentRoute({
 							message: 'Změny byly uloženy.',
 							type: 'success'
 						});
+						$scope.flight = flight;
 					});
 				}
 			};
 
 			$scope.showErrorMessage = function (field, validityType) {
-				validityType || (validityType = 'required');
-
-				return field.$error[validityType] && field.$dirty;
+				return field.$error[validityType || 'required'] && field.$dirty;
 			};
 		}]);
 });

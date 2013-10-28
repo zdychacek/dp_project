@@ -6,7 +6,7 @@ define([
 	
 	angular.module('resources.flight', ['resources.resource'])
 		.factory('Flight', ['resource', function (resource) {
-			var Flight = resource('/api/v1/flights/');
+			var Flight = resource('/api/v1/flights');
 			
 			return Flight;
 		}]);

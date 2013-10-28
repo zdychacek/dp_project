@@ -1,7 +1,6 @@
 require('express-namespace');
 
 const express = require('express'),
-	Resource = require('express-resource'),
 	app = express(),
 	mongoose = require('mongoose'),
 	fs = require('fs'),
@@ -56,7 +55,6 @@ app.use(config.server.staticUrl, function (req, res, next) {
 require('./controllers/security').addRoutes(app, security);
 
 // Mapovani na controllery
-//app.resource('blogposts', require('./controllers/blogposts'), { base: '/api/v1/' });
 require('./controllers/users').addRoutes(app, config);
 require('./controllers/carriers').addRoutes(app, config);
 require('./controllers/flights').addRoutes(app, config);
