@@ -10,16 +10,16 @@ exports.addRoutes = function (app, config) {
 
 	app.namespace('/api/v1/carriers', function () {
 
-		app.get('/:id', function (req, res, next) {
-			var id = req.params.id;
-
-			Carrier.findOne({ _id: id }, function (err, carrier) {
-				if (err) {
+		app.get('/:id', function (req, res) {
+			Carrier.findById(req.params.id, function (err, carrier) {
+				if (!err) {
+					res.json(carrier);	
+					
+				}
+				else {
 					console.log(err);
 					res.json(null);
 				}
-
-				res.json(carrier);
 			});
 		});
 
@@ -85,46 +85,49 @@ exports.addRoutes = function (app, config) {
 			var logoFile = req.files.logoFile;
 
 			Carrier.findById(req.params.id, function (err, carrier) {
-				var reqBody = JSON.parse(req.body.data);
+				if (!err) {
+					var reqBody = JSON.parse(req.body.data);
 
-				carrier.name = reqBody.name;
-				carrier.disabled = reqBody.disabled;
+					carrier.name = reqBody.name;
+					carrier.disabled = reqBody.disabled;
 
-				if (logoFile) {
-					var fileName = makeFileName(logoFile.name);
+					if (logoFile) {
+						var fileName = makeFileName(logoFile.name);
 
-					async.parallel({
-						saveLogo: function (callback) {
-							fs.readFile(logoFile.path, function (err, data) {
-								fs.writeFile(config.app.uploadedFilesRoot + '/carriersLogos/' + fileName, data, callback);
-							});
-						},
-						saveData: function (callback) {
-							carrier.logo = fileName;
-							carrier.save(function (err, carrier) {
-								callback(err, carrier);
-							});
-						}
-					}, function (err, result) {
-						if (!err) {
-							res.json(result.saveData);
-						}
-						else { console.log(err); }
-					});
-				}
-				else {
-					if (reqBody.logo === '') {
-						fs.unlink(config.app.uploadedFilesRoot + '/carriersLogos/' + carrier.logo);
-						carrier.logo = '';
+						async.parallel({
+							saveLogo: function (callback) {
+								fs.readFile(logoFile.path, function (err, data) {
+									fs.writeFile(config.app.uploadedFilesRoot + '/carriersLogos/' + fileName, data, callback);
+								});
+							},
+							saveData: function (callback) {
+								carrier.logo = fileName;
+								carrier.save(function (err, carrier) {
+									callback(err, carrier);
+								});
+							}
+						}, function (err, result) {
+							if (!err) {
+								res.json(result.saveData);
+							}
+							else { console.log(err); }
+						});
 					}
-					
-					carrier.save(function (err, carrier) {
-						if (!err) {
-							res.json(carrier);
+					else {
+						if (reqBody.logo === '') {
+							fs.unlink(config.app.uploadedFilesRoot + '/carriersLogos/' + carrier.logo);
+							carrier.logo = '';
 						}
-						else { console.log(err); }
-					});
+						
+						carrier.save(function (err, carrier) {
+							if (!err) {
+								res.json(carrier);
+							}
+							else { console.log(err); }
+						});
+					}
 				}
+				else { console.log(err); }
 			});
 		});
 
@@ -145,7 +148,7 @@ exports.addRoutes = function (app, config) {
 							callback(err, count);
 						});
 				},
-				carriers: function (callback) {
+				data: function (callback) {
 					Carrier
 						.find({})
 						.limit(limit)
@@ -158,14 +161,13 @@ exports.addRoutes = function (app, config) {
 			}, function (err, result) {
 				if (!err) {
 					res.json({
-						items: result.carriers,
+						items: result.data,
 						metadata: {
 							totalCount: result.totalCount
 						}
 					});
 				}
 				else { return console.log(err); }
-
 			});	
 		});
 	});

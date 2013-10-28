@@ -20,41 +20,34 @@ exports.addRoutes = function (app, config) {
 				});
 		});
 
-		app.get('/:id', function (req, res, next) {
-			var id = req.params.id;
-
-			User.findOne({ _id: id }, function (err, user) {
-				if (err) {
+		app.get('/:id', function (req, res) {
+			User.findById(req.params.id, function (err, user) {
+				if (!err) {
+					res.json(user);
+				}
+				else {
 					console.log(err);
 					res.json(null);
-				}
-
-				res.json(user);
+				}				
 			});
 		});
 
 		app.post('/', function (req, res) {
-			var userData = req.body,
-				newUser = new User(userData);
+			var user = new User(req.body);
 
-			newUser.save(function (err, user) {
-				if (err) {
-					console.log(err);
-				}
-
-				res.json(user);
+			user.save(function (err, user) {
+				if (!err) {
+					res.json(user);
+				} else { console.log(err); }
 			});
 		});
 
 		app.delete('/:id', function (req, res) {
-			var id = req.params.id;
-
-			User.remove({ _id: id }, function (err) {
-				if (err) {
-					console.log(err);
+			User.remove({ _id: req.params.id }, function (err) {
+				if (!err) {
+					res.json(null);
 				}
-
-				res.json(null);
+				else { console.log(err); }
 			});
 		});
 

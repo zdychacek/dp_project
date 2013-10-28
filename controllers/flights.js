@@ -4,55 +4,48 @@ const Flight = require('../models/Flight'),
 exports.addRoutes = function (app, config) {
 	app.namespace('/api/v1/flights', function () {
 
-		app.get('/:id', function (req, res, next) {
-			var id = req.params.id;
-
-			Flight.findOne({ _id: id }, function (err, flight) {
-				if (err) {
-					console.log(err);
+		app.get('/:id', function (req, res) {
+			Flight.findById(req.params.id, function (err, flight) {
+				if (!err) {
+					res.json(flight);
 				}
-
-				res.json(flight);
+				else { console.log(err); }
 			});
 		});
 
 		app.post('/', function (req, res) {
-			var flightData = req.body,
-				newFlight = new Flight(flightData);
+			var flight = new Flight(req.body);
 
-			newFlight.save(function (err, flight) {
-				if (err) {
-					console.log(err);
+			flight.save(function (err, flight) {
+				if (!err) {
+					res.json(flight);
 				}
-
-				res.json(flight);
+				else { console.log(err); }
 			});
 		});
 
 		app.delete('/:id', function (req, res) {
-			var id = req.params.id;
-
-			Flight.remove({ _id: id }, function (err) {
-				if (err) {
-					console.log(err);
+			Flight.remove({ _id: req.params.id }, function (err) {
+				if (!err) {
+					res.json(null);
 				}
-
-				res.json(null);
+				else { console.log(err); }
 			});
 		});
 
-		app.put('/', function (req, res) {
-			var flightData = req.body,
-				id = flightData._id;
+		app.put('/:id', function (req, res) {
+			Flight.findById(req.params.id, function (err, flight) {
+				if (!err) {
+					// TODO: update
 
-			delete flightData._id;
-
-			Flight.findOneAndUpdate({ _id: id }, flightData, function (err, flight) {
-				if (err) {
-					console.log(err);
+					flight.save(function (err, flight) {
+						if (!err) {
+							res.json(flight);
+						}
+						else { console.log(err); }
+					});
 				}
-
-				res.json(flight);
+				else { console.log(err); }
 			});
 		});
 
@@ -73,7 +66,7 @@ exports.addRoutes = function (app, config) {
 							callback(err, count);
 						});
 				},
-				flights: function (callback) {
+				data: function (callback) {
 					Flight
 						.find({})
 						.limit(limit)
@@ -84,14 +77,15 @@ exports.addRoutes = function (app, config) {
 						});
 				}
 			}, function (err, result) {
-				if (err) {
-					return console.log(err);
+				if (!err) {
+					res.json({
+						items: result.data,
+						metadata: {
+							totalCount: result.totalCount
+						}
+					});
 				}
-
-				res.set({
-					'total-count': result.totalCount
-				});
-				res.json(result.flights);
+				else { return console.log(err); }
 			});			
 		});
 	});
