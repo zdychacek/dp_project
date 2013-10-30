@@ -6,7 +6,7 @@ define([
 	
 	angular.module('resources.user', ['resources.resource'])
 		.factory('User', ['resource', '$http', function (resource, $http) {
-			var User = resource('/api/v1/users/');
+			var User = resource('users');
 			
 			User.checkLogin = function (login) {
 				return $http.get(this.getResourceUrl() + '/checkLogin', {

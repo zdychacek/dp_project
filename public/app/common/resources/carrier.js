@@ -6,7 +6,7 @@ define([
 	
 	angular.module('resources.carrier', ['resources.resource'])
 		.factory('Carrier', ['resource', '$http', function (resource, $http) {
-			var Carrier = resource('/api/v1/carriers');
+			var Carrier = resource('carriers');
 			
 			function _doRequest (method, url, data) {
 				return $http({

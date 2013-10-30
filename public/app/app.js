@@ -1,4 +1,3 @@
-// http://10.0.133.221:9000/
 require.config({
 	paths: {
 		angular: '../components/angular/angular',
@@ -30,6 +29,8 @@ require([
 	'angular',
 	//'angular-ui',
 	'angular-bootstrap',
+	
+	'config',
 
 	// directives
 	'common/directives/pagination',
@@ -62,6 +63,8 @@ require([
 	'use strict';
 
 	var app = angular.module('app', [
+		'app.config',
+
 		// directives
 		'directives.sortableTable',
 		'directives.pagination',

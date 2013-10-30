@@ -1,15 +1,23 @@
-define(['angular'], function (angular) {
+define([
+	'angular',
+	'config'
+], function (angular) {
 	'use strict';
 
-	angular.module('resources.resource', [])
-		.factory('resource', ['$http', function ($http) {
+	angular.module('resources.resource', ['app.config'])
+		.factory('resource', ['$http', 'config', function ($http, config) {
 			return function (baseUrl) {
 				// .ctor
 				var Resource = function (data) {
 					angular.extend(this, data);
 				};
 
-				// resource URL
+				// pokud URL nezacina lomitkem, tak pridam za base url z configu
+				if (baseUrl[0] != '/') {
+					baseUrl = config.baseRestApiUrl + '/' + baseUrl;
+				}
+
+				// pripadne odseknuti posledniho lomitka
 				if (baseUrl[baseUrl.length - 1] == '/') {
 					baseUrl = baseUrl.substring(0, baseUrl.length - 1);
 				}
