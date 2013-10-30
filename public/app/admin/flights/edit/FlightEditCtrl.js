@@ -99,14 +99,70 @@ define([
 			};
 
 			$scope.makeLogoUrl = function (carrier) {
-				return '/static/img/carriersLogos/' + carrier.logo;
+				if (carrier) {
+					return '/static/img/carriersLogos/' + carrier.logo;
+				}
 			};
+
+			function parseTimeData (data) {
+				if (!data) {
+					return '';
+				}
+				else {
+					var parts = data.split(':'),
+						date = new Date();
+
+					date.setHours(parts[0]);
+					date.setMinutes(parts[1] || 0);
+
+					if (parts[2] && parts[2] == 'PM') {
+						date.setHours(date.getHours() + 12);
+					}
+
+					return date;
+				}
+			}
 
 			$scope.getPathPartLength = function (pathPart) {
-				var departure = pathPart.departureTime,
-					arrival = pathPart.arrivalTime;
+				var departure = parseTimeData(pathPart.departureTime),
+					arrival = parseTimeData(pathPart.arrivalTime);
 
-				debugger;
+				if (departure && arrival) {
+					var delta = (arrival - departure) / 1000,
+						hours = Math.floor(delta / 3600) % 24,
+						minutes = Math.floor(delta / 60) % 60;
+
+					return hours + 'h ' + minutes + 'min';
+				}
+				else {
+					return '';
+				}
 			};
+
+			$scope.getFromDestination = function () {
+				if ($scope.flight.path.length) {
+					return $scope.flight.path[0].fromDestination;
+				}
+			};
+
+			$scope.getToDestination = function () {
+				var len = $scope.flight.path.length;
+
+				if (len > 0) {
+					return $scope.flight.path[len - 1].toDestination;
+				}
+			};
+
+			$scope.removePathPart = function (pathPart) {
+				var idx = $scope.flight.path.indexOf(pathPart);
+
+				if (idx > -1) {
+					$scope.flight.path.splice(idx, 1);
+				}
+			};
+
+			// init
+			// pridam jednu polozku
+			$scope.addPathPart();
 		}]);
 });

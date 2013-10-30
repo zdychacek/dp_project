@@ -42,20 +42,20 @@ form.form-horizontal.carrier-edit(name="form", ng-hide="noData", ng-submit="save
 				.controls
 					textarea(ng-model="flight.note")
 
-			.control-group(ng-show="fromDestination")
+			.control-group(ng-show="getFromDestination()")
 				label.control-label Odkud
 				.controls
-					span {{fromDestination}}
+					span {{getFromDestination()}}
 
-			.control-group(ng-show="toDestination")
+			.control-group(ng-show="getToDestination()")
 				label.control-label Kam
 				.controls
-					span {{toDestination}}
+					span {{getToDestination()}}
 
-			.control-group(ng-show="totalTime")
+			.control-group(ng-show="getTotalTime()")
 				label.control-label Celková délka letu
 				.controls
-					span {{totalTime}}
+					span {{getTotalTime()}}
 
 		fieldset
 			legend Trasa letu
@@ -68,7 +68,7 @@ form.form-horizontal.carrier-edit(name="form", ng-hide="noData", ng-submit="save
 						th Odlet (destinace)
 						th Přílet (čas)
 						th Přílet (destinace)
-						th Délka cesty
+						th Délka letu
 				tbody
 					tr(ng-repeat="pathPart in flight.path")
 						td
@@ -76,21 +76,24 @@ form.form-horizontal.carrier-edit(name="form", ng-hide="noData", ng-submit="save
 							| &nbsp;
 							img.carrier-logo(ng-show="pathPart.carrier.logo",ng-src="{{makeLogoUrl(pathPart.carrier)}}")
 						td
-							input(type="time", ng-model="pathPart.departureTime")
+							input(type="time", ng-model="pathPart.departureTime", required)
 						td
-							input(type="text", ng-model="pathPart.fromDestination")
+							input(type="text", ng-model="pathPart.fromDestination", required)
 						td
-							input(type="time", ng-model="pathPart.arrivalTime")
+							input(type="time", ng-model="pathPart.arrivalTime", required)
 						td
-							input(type="text", ng-model="pathPart.toDestination")
+							input(type="text", ng-model="pathPart.toDestination", required)
 						td
-							span {{getPathPartLength(pathPart)}}
+							span {{ getPathPartLength(pathPart) }}
+						td
+							a.btn.btn-danger(ng-click="removePathPart(pathPart)", ng-show="flight.path.length > 1", href="#")
+								span.icon-remove-sign
 
 					tr(ng-show="!flight.path.length")
-						td(colspan="6") Přidejte trasu.
+						td(colspan="7") Přidejte trasu.
 				tfoot
 					tr
-						td(colspan="6")
+						td(colspan="7")
 							a.btn(ng-click="addPathPart()", href="#")
 								i.icon-plus-sign &nbsp;
 								| Přidat část trasy
