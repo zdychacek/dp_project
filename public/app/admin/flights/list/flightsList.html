@@ -1,0 +1,23 @@
+
+<h1>Seznam letů</h1>
+<div ng-show="totalItems == 0" class="alert">Nejsou k dispozici žádné záznamy.</div>
+<div class="content-menu"><a ng-href="/admin/flights/new" class="btn btn-new"><i class="icon icon-plus-sign"></i>&nbsp;Nový let</a></div>
+<div class="content-main">
+  <spinner show="loadingData" align="center"></spinner>
+  <div ng-show="totalItems &gt; 0" class="table-container">
+    <table sortable-table="sortable-table" sort-column="sort.column" sort-dir="sort.dir" ng-style="getTableVisibilityStyle()" class="table table-bordered">
+      <tr ng-repeat="carrier in carriers">
+        <td data-title="Logo"><img ng-show="carrier.logo.length &gt; 0" ng-src="{{makeLogoUrl(carrier)}}" class="carrier-logo"/></td>
+        <td data-title="Název" sortable="name">{{carrier.name}}</td>
+        <td data-title="Status" sortable="disabled" ng-switch="carrier.disabled" class="cell-center"><i ng-switch-when="false" class="icon-ok"></i><i ng-switch-when="true" class="icon-remove"></i></td>
+        <td data-title="Vytvořeno" sortable="lastModified">{{carrier.lastModified | date: 'd.M.yy H:mm'}}</td>
+        <td class="icon"><a ng-click="editCarrier(carrier)" href="#" class="btn btn-info"><span class="icon-pencil"></span></a><a ng-click="removeCarrier(carrier)" href="#" class="btn btn-danger"><span class="icon-remove-sign"></span></a></td>
+      </tr>
+    </table>
+    <pagination total-items="totalItems" page="currentPage" max-size="5" on-select-page="selectPage(page)" items-per-page="itemsPerPage" num-pages="totalPages" boundary-links="true" class="pagination"></pagination>
+    <div class="itemsCount">Počet záznamů na stránku:
+      <select ng-model="itemsPerPage" ng-options="i for i in itemsPerPageList"></select>
+    </div>
+    <div class="total">Stránka: {{currentPage}} / {{totalPages}}</div>
+  </div>
+</div>
