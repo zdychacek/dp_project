@@ -12,3 +12,5 @@ AngularTestApp
 	- Jade syntax highlighter
 - Chrome plugins:
 	- Batarang
+
+http://letadla.herokuapp.com/
