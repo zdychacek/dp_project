@@ -36,14 +36,14 @@ define([
 			'carriers',
 		function ($scope, Flight, $routeParams, notifications, $location, carriers) {
 			$scope.carriersList = carriers.items;
-			console.log($scope.carriersList);
 			$scope.creatingNew = $routeParams.id == 'new';
-			
+
 			// defaultni hodnoty
 			$scope.flight = {
-				price: 0,
-				capacity: 10,
-				path: []
+				price: 10,
+				capacity: 100,
+				path: [],
+				date: new Date()
 			};
 
 			if (!$scope.creatingNew) {
@@ -74,7 +74,7 @@ define([
 							message: 'Nový let byl vytvořen.',
 							type: 'success'
 						});
-						$location.path('/admin/carriers/' + flight._id);
+						$location.path('/admin/flights/' + flight._id);
 					});
 				}
 				else {
@@ -93,14 +93,21 @@ define([
 			};
 
 			$scope.addPathPart = function () {
+				var pathLen = $scope.flight.path.length;
+
 				$scope.flight.path.push({
-					carrier: $scope.carriersList[0]
+					carrier: $scope.carriersList[0]._id,
+					fromDestination: pathLen ? $scope.flight.path[pathLen - 1].toDestination : ''
 				});
 			};
 
-			$scope.makeLogoUrl = function (carrier) {
-				if (carrier) {
-					return '/static/img/carriersLogos/' + carrier.logo;
+			$scope.makeLogoUrl = function (carrierId) {
+				var carrier = $scope.carriersList.filter(function (c) {
+					return c._id == carrierId;
+				});
+
+				if (carrier && carrier[0]) {
+					return '/static/img/carriersLogos/' + carrier[0].logo;
 				}
 			};
 
@@ -161,7 +168,6 @@ define([
 				}
 			};
 
-			// init
 			// pridam jednu polozku
 			$scope.addPathPart();
 		}]);

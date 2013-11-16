@@ -42,7 +42,7 @@ define([
 
 			// zdroj nahledu loga: bud base64 vytvorena pomoci FileReaderu nebo zdroj z modelu
 			$scope.logoSrc = '';
-		
+
 			if (!$scope.creatingNew) {
 				$scope.loadingData = true;
 
@@ -72,7 +72,7 @@ define([
 				if ($scope.creatingNew) {
 					Carrier.save($scope.carrier).then(function (carrier) {
 						notifications.pushForNextRoute({
-							message: 'Nový let byl vytvořen.',
+							message: 'Nový dopravce byl vytvořen.',
 							type: 'success'
 						});
 						$location.path('/admin/carriers/' + carrier._id);

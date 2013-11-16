@@ -1,13 +1,15 @@
 define([
 	'angular',
-	'common/resources/flight'
+	'common/resources/flight',
+	'common/resources/carrier'
 ], function (angular) {
 	'use strict';
 
 	angular.module('admin.flights.list', [
 		'security.authorization',
 		'services.i18nNotifications',
-		'resources.flight'
+		'resources.flight',
+		'resources.carrier'
 	])
 		.config(['$routeProvider', 'securityAuthorizationProvider', function ($routeProvider, securityAuthorizationProvider) {
 			$routeProvider.when('/admin/flights', {
@@ -15,13 +17,16 @@ define([
 				templateUrl: '/static/app/admin/flights/list/flightsList.html',
 				controller: 'FlightsListCtrl',
 				resolve: {
-					adminUser: securityAuthorizationProvider.requireAdminUser
+					adminUser: securityAuthorizationProvider.requireAdminUser,
+					carriers: ['Carrier', function (Carrier) {
+						return Carrier.query();
+					}]
 				}
 			});
 		}])
 
 		// Seznam uctu
-		.controller('FlightsListCtrl', ['$scope', 'Flight', '$location', function ($scope, Flight, $location) {
+		.controller('FlightsListCtrl', ['$scope', 'Flight', '$location', 'carriers', function ($scope, Flight, $location, carriers) {
 			$scope.itemsPerPageList = [5, 10, 15, 20];
 
 			// paging
@@ -44,7 +49,7 @@ define([
 					sort: $scope.sort.column,
 					dir: $scope.sort.dir
 				}).then(function (data) {
-					$scope.Flights = data.items;
+					$scope.flights = data.items;
 					$scope.loadingData = false;
 					$scope.totalItems = data.metadata.totalCount;
 				});
@@ -71,6 +76,32 @@ define([
 					};
 				}
 			};
+
+			$scope.isFreeCapacity = function (flight) {
+				var passengersCount = flight.passengers ? flight.passengers.length : 0;
+
+				return flight.capacity > passengersCount;
+			};
+
+			$scope.getArrivalCarrierLogo = function (flight) {
+				return getCarrierLogoUrl(flight.path[0].carrier);
+			};
+
+			$scope.getDepartureCarrierLogo = function (flight) {
+				var lastPathPart = flight.path[flight.path.length - 1];
+
+				return getCarrierLogoUrl(lastPathPart.carrier);
+			};
+
+			function getCarrierLogoUrl (carrierId) {
+				var carrier = carriers.items.filter(function (c) {
+					return c._id == carrierId;
+				});
+
+				if (carrier && carrier[0]) {
+					return '/static/img/carriersLogos/' + carrier[0].logo;
+				}
+			}
 
 			$scope.$watch('itemsPerPage', loadFlights);
 			$scope.$watch('currentPage', loadFlights);

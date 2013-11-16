@@ -5,7 +5,7 @@
 </div>
 <form name="form" ng-hide="noData" ng-submit="save()" class="form-horizontal carrier-edit">
   <spinner show="loadingData" align="center"></spinner>
-  <div ng-hide="loadingData" class="wrap">	
+  <div ng-hide="loadingData" class="wrap">
     <fieldset>
       <legend>Základní údaje</legend>
       <div ng-show="flight._id" class="control-group">
@@ -15,7 +15,7 @@
       <div class="control-group">
         <label class="control-label">Datum</label>
         <div class="controls">
-          <input type="date" name="date" ng-model="flight.date" required="required"/><span ng-show="showErrorMessage(form.date)" class="text-error">Vyplňte datum odletu.</span>
+          <input type="text" name="date" ng-model="flight.date" required="required"/><span ng-show="showErrorMessage(form.date)" class="text-error">Vyplňte datum odletu.</span>
         </div>
       </div>
       <div class="control-group">
@@ -65,7 +65,7 @@
         <tbody>
           <tr ng-repeat="pathPart in flight.path">
             <td>
-              <select ng-options="c.name for c in carriersList" ng-model="pathPart.carrier"></select>&nbsp;<img ng-show="pathPart.carrier.logo" ng-src="{{makeLogoUrl(pathPart.carrier)}}" class="carrier-logo"/>
+              <select ng-options="c._id as c.name for c in carriersList" ng-model="pathPart.carrier"></select>&nbsp;<img ng-show="makeLogoUrl(pathPart.carrier)" ng-src="{{makeLogoUrl(pathPart.carrier)}}" class="carrier-logo"/>
             </td>
             <td>
               <input type="time" ng-model="pathPart.departureTime" required="required"/>
@@ -96,5 +96,6 @@
     <div class="btn-toolbar"><a ng-href="/admin/flights" class="btn span2">Zpět na seznam</a>
       <input type="submit" value="Uložit" ng-disabled="form.$invalid" class="btn btn-primary"/>
     </div>
+    <pre>{{flight | json}}</pre>
   </div>
 </form>

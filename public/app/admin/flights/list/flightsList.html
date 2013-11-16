@@ -6,12 +6,20 @@
   <spinner show="loadingData" align="center"></spinner>
   <div ng-show="totalItems &gt; 0" class="table-container">
     <table sortable-table="sortable-table" sort-column="sort.column" sort-dir="sort.dir" ng-style="getTableVisibilityStyle()" class="table table-bordered">
-      <tr ng-repeat="carrier in carriers">
-        <td data-title="Logo"><img ng-show="carrier.logo.length &gt; 0" ng-src="{{makeLogoUrl(carrier)}}" class="carrier-logo"/></td>
-        <td data-title="Název" sortable="name">{{carrier.name}}</td>
-        <td data-title="Status" sortable="disabled" ng-switch="carrier.disabled" class="cell-center"><i ng-switch-when="false" class="icon-ok"></i><i ng-switch-when="true" class="icon-remove"></i></td>
-        <td data-title="Vytvořeno" sortable="lastModified">{{carrier.lastModified | date: 'd.M.yy H:mm'}}</td>
-        <td class="icon"><a ng-click="editCarrier(carrier)" href="#" class="btn btn-info"><span class="icon-pencil"></span></a><a ng-click="removeCarrier(carrier)" href="#" class="btn btn-danger"><span class="icon-remove-sign"></span></a></td>
+      <tr ng-repeat="flight in flights">
+        <td data-title="Odlet (destinace)" sortable="fromDestination" class="with-logo"><span>{{flight.fromDestination}}</span><img ng-src="{{getArrivalCarrierLogo(flight)}}" ng-show="getArrivalCarrierLogo(flight)"/></td>
+        <td data-title="Odlet (čas)" sortable="arrivalTime">{{flight.arrivalTime | date}}</td>
+        <td data-title="Přílet (destinace)" sortable="toDestination" class="with-logo"><span>{{flight.toDestination}}</span><img ng-src="{{getDepartureCarrierLogo(flight)}}" ng-show="getDepartureCarrierLogo(flight)"/></td>
+        <td data-title="Přílet (čas)" sortable="departureTime">{{flight.departureTime | date}}</td>
+        <td data-title="Délka letu" sortable="totalFlightDuration">{{flight.totalFlightDuration | minutesFormatter}}</td>
+        <td data-title="Cena" sortable="price">{{flight.price | currency}}</td>
+        <td data-title="Poznámka" sortable="note">{{flight.note}}</td>
+        <td data-title="Kapacita (volné místo)" sortable="capacity">{{flight.capacity}}
+          <ng-switch on="isFreeCapacity(flight)"><i ng-switch-when="true" class="icon-ok"></i><i ng-switch-when="false" class="icon-remove"></i></ng-switch>
+        </td>
+        <td data-title="Počet přestupů" sortable="transfersCount">{{flight.transfersCount}}</td>
+        <td data-title="Vytvořeno" sortable="lastModified">{{flight.lastModified | date: 'd.M.yy H:mm'}}</td>
+        <td class="icon"><a ng-click="editFlight(flight)" href="#" class="btn btn-info"><span class="icon-pencil"></span></a><a ng-click="removeFlight(flight)" href="#" class="btn btn-danger"><span class="icon-remove-sign"></span></a></td>
       </tr>
     </table>
     <pagination total-items="totalItems" page="currentPage" max-size="5" on-select-page="selectPage(page)" items-per-page="itemsPerPage" num-pages="totalPages" boundary-links="true" class="pagination"></pagination>

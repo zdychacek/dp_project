@@ -1,4 +1,5 @@
 const Flight = require('../models/Flight'),
+	PathPart = require('../models/PathPart'),
 	async = require('async');
 
 exports.addRoutes = function (app, config) {
@@ -36,7 +37,11 @@ exports.addRoutes = function (app, config) {
 		app.put('/:id', function (req, res) {
 			Flight.findById(req.params.id, function (err, flight) {
 				if (!err) {
-					// TODO: update
+					flight.date = req.body.date;
+					flight.price = req.body.price;
+					flight.capacity = req.body.capacity;
+					flight.note = req.body.note;
+					flight.path = req.body.path;
 
 					flight.save(function (err, flight) {
 						if (!err) {
@@ -75,7 +80,7 @@ exports.addRoutes = function (app, config) {
 
 						query = query.sort(sortObj);
 					}
-						
+
 					query.exec(function (err, flights) {
 						callback(err, flights);
 					});
@@ -90,7 +95,7 @@ exports.addRoutes = function (app, config) {
 					});
 				}
 				else { return console.log(err); }
-			});			
+			});
 		});
 	});
 };

@@ -29,7 +29,7 @@ require([
 	'angular',
 	//'angular-ui',
 	'angular-bootstrap',
-	
+
 	'config',
 
 	// directives
@@ -40,8 +40,10 @@ require([
 	'common/directives/uniqueLogin',
 	'common/directives/fileUpload',
 
+	'common/filters/minutesFormatter',
+
 	'common/security/index',
-	
+
 	// controllers
 	'base/MainCtrl',
 	'base/HeaderCtrl',
@@ -72,6 +74,7 @@ require([
 		'directives.spinner',
 		'directives.uniqueLogin',
 		'directives.fileUpload',
+		'filters.minutesFormatter',
 
 		'security',
 
