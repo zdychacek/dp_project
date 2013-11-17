@@ -80,7 +80,7 @@ form.form-horizontal.flight-edit(name="form", ng-hide="noData", ng-submit="save(
 						td
 							input(type="text", ng-model="pathPart.toDestination", required)
 						td
-							span {{ getPathPartLength(pathPart) }}
+							span {{ getPathPartLength(pathPart) | minutesFormatter: 'n/a' }}
 						td
 							a.btn.btn-danger(ng-click="removePathPart(pathPart)", ng-show="flight.path.length > 1", href="#")
 								span.icon-remove-sign

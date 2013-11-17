@@ -43,19 +43,18 @@ define([
 
 			// defaultni hodnoty
 			$scope.flight = {
-				'price': 10,
-				'capacity': 100,
-				'path': [
+				price: 10,
+				capacity: 100,
+				note: '',
+				path: [
 					{
-					'carrier': '5287920ac5fb006956000002',
-					'fromDestination': 'Praha',
-					'departureTime': moment().toDate(),
-					'arrivalTime': moment().add('hours', 2).toDate(),
-					'toDestination': 'Mexiko'
+						carrier: $scope.carriersList[0]._id,
+						fromDestination: '',
+						departureTime: moment().toDate(),
+						arrivalTime: moment().add('hours', 2).toDate(),
+						toDestination: ''
 					}
-				],
-				date: moment().format('YYYY-MM-DD'),
-				'note': 'Super let !'
+				]
 			};
 
 			if (!$scope.creatingNew) {
@@ -86,7 +85,7 @@ define([
 							message: 'Nový let byl vytvořen.',
 							type: 'success'
 						});
-						$location.path('/admin/flights/' + flight._id);
+						$location.path('/flights/' + flight._id);
 					});
 				}
 				else {
@@ -123,34 +122,15 @@ define([
 				}
 			};
 
-			function parseTimeData (data) {
-				if (!data) {
-					return '';
-				}
-				else {
-					var parts = data.split(':'),
-						date = new Date();
-
-					date.setHours(parts[0]);
-					date.setMinutes(parts[1] || 0);
-
-					if (parts[2] && parts[2] == 'PM') {
-						date.setHours(date.getHours() + 12);
-					}
-
-					return date;
-				}
-			}
-
 			$scope.getPathPartLength = function (pathPart) {
 				if (!pathPart.departureTime || !pathPart.arrivalTime) {
-					return 'n/a';
+					return 0;
 				}
 
 				var departure = moment(pathPart.departureTime),
 					arrival = moment(pathPart.arrivalTime);
 
-				return arrival.subtract(departure).format('h[h] m[m]');
+				return arrival.diff(departure, 'minutes');
 			};
 
 			$scope.getFromDestination = function () {

@@ -73,7 +73,7 @@
             <td>
               <input type="text" ng-model="pathPart.toDestination" required="required"/>
             </td>
-            <td><span>{{ getPathPartLength(pathPart) }}</span></td>
+            <td><span>{{ getPathPartLength(pathPart) | minutesFormatter: 'n/a' }}</span></td>
             <td><a ng-click="removePathPart(pathPart)" ng-show="flight.path.length &gt; 1" href="#" class="btn btn-danger"><span class="icon-remove-sign"></span></a></td>
           </tr>
           <tr ng-show="!flight.path.length">

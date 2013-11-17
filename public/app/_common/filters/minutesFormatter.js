@@ -3,11 +3,16 @@ define(['angular'], function (angular) {
 
 	angular.module('filters.minutesFormatter', [])
 		.filter('minutesFormatter', function () {
-			return function (minutes) {
-				var hoursPart = Math.floor(minutes / 60),
-					minutesPart = minutes % 60;
+			return function (minutes, nullLabel) {
+				if (!minutes && nullLabel) {
+					return nullLabel;
+				}
+				else {
+					var hoursPart = Math.floor(minutes / 60),
+						minutesPart = minutes % 60;
 
-				return hoursPart + 'h ' + minutesPart + 'm';
+					return hoursPart + 'h ' + minutesPart + 'm';
+				}
 			};
 		});
 });

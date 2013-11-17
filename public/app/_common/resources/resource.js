@@ -6,9 +6,15 @@ define([
 
 	angular.module('resources.resource', ['app.config'])
 		.factory('resource', ['$http', 'config', function ($http, config) {
-			return function (baseUrl) {
+			return function (baseUrl, options) {
+				options || (options = {});
+
 				// .ctor
 				var Resource = function (data) {
+					if (typeof options.fromServerConverter === 'function') {
+						data = options.fromServerConverter(data);
+					}
+
 					angular.extend(this, data);
 				};
 
@@ -64,7 +70,7 @@ define([
 							return {
 								items: items,
 								metadata: metadata
-							};	
+							};
 						}
 						else {
 							return items;
@@ -139,7 +145,7 @@ define([
 				Resource.prototype.$remove = function (data) {
 					return Resource.remove(this);
 				};
-				
+
 				Resource.prototype.$id = function () {
 					return this[Resource.idField];
 				};

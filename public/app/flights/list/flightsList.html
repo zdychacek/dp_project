@@ -62,9 +62,9 @@
     <table sortable-table="sortable-table" sort-column="sort.column" sort-dir="sort.dir" ng-style="getTableVisibilityStyle()" class="table table-bordered">
       <tr ng-repeat="flight in flights">
         <td data-title="Odlet (destinace)" sortable="fromDestination" class="with-logo"><span>{{flight.fromDestination}}</span><img ng-src="{{getArrivalCarrierLogo(flight)}}" ng-show="getArrivalCarrierLogo(flight)"/></td>
-        <td data-title="Odlet (čas)" sortable="arrivalTime">{{flight.arrivalTime | date}}</td>
+        <td data-title="Odlet (čas)" sortable="arrivalTime">{{flight.arrivalTime | date: 'medium'}}</td>
         <td data-title="Přílet (destinace)" sortable="toDestination" class="with-logo"><span>{{flight.toDestination}}</span><img ng-src="{{getDepartureCarrierLogo(flight)}}" ng-show="getDepartureCarrierLogo(flight)"/></td>
-        <td data-title="Přílet (čas)" sortable="departureTime">{{flight.departureTime | date}}</td>
+        <td data-title="Přílet (čas)" sortable="departureTime">{{flight.departureTime | date: 'medium'}}</td>
         <td data-title="Délka letu" sortable="totalFlightDuration">{{flight.totalFlightDuration | minutesFormatter}}</td>
         <td data-title="Cena" sortable="price">{{flight.price | currency}}</td>
         <td data-title="Poznámka" sortable="note">{{flight.note}}</td>

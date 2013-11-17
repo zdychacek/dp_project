@@ -63,13 +63,13 @@ div.content-main
 					span {{flight.fromDestination}}
 					img(ng-src="{{getArrivalCarrierLogo(flight)}}", ng-show="getArrivalCarrierLogo(flight)")
 
-				td(data-title="Odlet (čas)", sortable="arrivalTime") {{flight.arrivalTime | date}}
+				td(data-title="Odlet (čas)", sortable="arrivalTime") {{flight.arrivalTime | date: 'medium'}}
 
 				td.with-logo(data-title="Přílet (destinace)", sortable="toDestination")
 					span {{flight.toDestination}}
 					img(ng-src="{{getDepartureCarrierLogo(flight)}}", ng-show="getDepartureCarrierLogo(flight)")
 
-				td(data-title="Přílet (čas)", sortable="departureTime") {{flight.departureTime | date}}
+				td(data-title="Přílet (čas)", sortable="departureTime") {{flight.departureTime | date: 'medium'}}
 
 				td(data-title="Délka letu", sortable="totalFlightDuration") {{flight.totalFlightDuration | minutesFormatter}}
 
