@@ -1,0 +1,66 @@
+h1 Seznam letů
+
+div.alert(ng-show="totalItems == 0") Nejsou k dispozici žádné záznamy.
+
+div.content-menu
+	a.btn.btn-new(ng-href="/flights/new")
+		i.icon.icon-plus-sign
+		| &nbsp;Nový let
+
+div.content-main
+	spinner(show="loadingData", align="center")
+
+	div.table-container(ng-show="totalItems > 0")
+		table.table.table-bordered(sortable-table, sort-column="sort.column", sort-dir="sort.dir", ng-style="getTableVisibilityStyle()")
+			tr(ng-repeat="flight in flights")
+				td.with-logo(data-title="Odlet (destinace)", sortable="fromDestination")
+					span {{flight.fromDestination}}
+					img(ng-src="{{getArrivalCarrierLogo(flight)}}", ng-show="getArrivalCarrierLogo(flight)")
+
+				td(data-title="Odlet (čas)", sortable="arrivalTime") {{flight.arrivalTime | date}}
+
+				td.with-logo(data-title="Přílet (destinace)", sortable="toDestination")
+					span {{flight.toDestination}}
+					img(ng-src="{{getDepartureCarrierLogo(flight)}}", ng-show="getDepartureCarrierLogo(flight)")
+
+				td(data-title="Přílet (čas)", sortable="departureTime") {{flight.departureTime | date}}
+
+				td(data-title="Délka letu", sortable="totalFlightDuration") {{flight.totalFlightDuration | minutesFormatter}}
+
+				td(data-title="Cena", sortable="price") {{flight.price | currency}}
+
+				td(data-title="Poznámka", sortable="note") {{flight.note}}
+
+				td(data-title="Kapacita (volné místo)", sortable="capacity")
+					{{flight.capacity}}
+
+					ng-switch(on="isFreeCapacity(flight)")
+						i.icon-ok(ng-switch-when="true")
+						i.icon-remove(ng-switch-when="false")
+
+				td(data-title="Počet přestupů", sortable="transfersCount") {{flight.transfersCount}}
+
+				td(data-title="Vytvořeno", sortable="lastModified") {{flight.lastModified | date: 'd.M.yy H:mm'}}
+
+				td.icon
+					a.btn.btn-info(ng-click="editFlight(flight)", href="#")
+						span.icon-pencil
+
+					a.btn.btn-danger(ng-click="removeFlight(flight)", href="#")
+						span.icon-remove-sign
+
+		pagination.pagination(
+			total-items="totalItems",
+			page="currentPage",
+			max-size="maxSize",
+			on-select-page="selectPage(page)",
+			items-per-page="itemsPerPage",
+			num-pages="totalPages",
+			boundary-links="true",
+			max-size="5"
+		)
+
+		div.itemsCount Počet záznamů na stránku:
+			select(ng-model="itemsPerPage", ng-options="i for i in itemsPerPageList")
+
+		div.total Stránka: {{currentPage}} / {{totalPages}}

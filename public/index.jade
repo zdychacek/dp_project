@@ -7,9 +7,9 @@ html(lang="en", ng-controller="MainCtrl")
 		link(rel="stylesheet", href="/static/css/app.css")
 
 	body
-		div(ng-include="'/static/app/base/header.html'")
-		div.container-fluid(ng-include="'/static/app/base/notifications.html'", ng-show="notifications.getCurrent().length")
+		div(ng-include="'/static/app/_base/header.html'")
+		div.container-fluid(ng-include="'/static/app/_base/notifications.html'", ng-show="notifications.getCurrent().length")
 		<!-- HLAVNI VIEW-->
 		div.container-fluid(ng-view)
-		
+
 		script(data-main="/static/app/app", src="/static/components/requirejs/require.js")

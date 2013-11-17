@@ -1,0 +1,37 @@
+div.navbar(ng-controller="HeaderCtrl")
+	div.navbar-inner.clearfix
+		a.brand.pull-left(ng-click="home()") Letecká společnost s.r.o.
+
+		// autentizovany uzivatel
+		ul.nav.pull-left(ng-if="isAuthenticated()")
+			li(ng-class="{active:isNavbarActive('flights')}")
+				a(href="/flights") Seznam letů
+
+			//li(ng-class="{active:isNavbarActive('account')}")
+				a(href="/account") Nastavení účtu
+
+			// admin only
+			li(ng-class="{active:isNavbarActive('users')}", ng-if="isAdmin()")
+				a(href="/users") Editace uživatelů
+
+			li(ng-class="{active:isNavbarActive('carriers')}", ng-if="isAdmin()")
+				a(href="/carriers") Editace dopravců
+
+			li(ng-class="{active:isNavbarActive('voice-portal-settings')}", ng-if="isAdmin()")
+				a(href="/voice-portal-settings") Nastavení hlasového portálu
+
+
+		login-toolbar
+
+		ul.nav.pull-right
+			li.spinner-wrap
+				spinner(size="small", show="hasPendingRequests()")
+
+	div
+		ul.breadcrumb
+			li(ng-repeat="breadcrumb in breadcrumbs.getAll()")
+				span.divider
+				ng-switch(on="$last")
+					span(ng-switch-when="true") {{breadcrumb.name}}
+					span(ng-switch-default)
+						a(href="{{breadcrumb.path}}") {{breadcrumb.name}}

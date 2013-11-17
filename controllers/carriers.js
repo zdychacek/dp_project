@@ -13,8 +13,8 @@ exports.addRoutes = function (app, config) {
 		app.get('/:id', function (req, res) {
 			Carrier.findById(req.params.id, function (err, carrier) {
 				if (!err) {
-					res.json(carrier);	
-					
+					res.json(carrier);
+
 				}
 				else {
 					console.log(err);
@@ -118,7 +118,7 @@ exports.addRoutes = function (app, config) {
 							fs.unlink(config.app.uploadedFilesRoot + '/carriersLogos/' + carrier.logo);
 							carrier.logo = '';
 						}
-						
+
 						carrier.save(function (err, carrier) {
 							if (!err) {
 								res.json(carrier);
@@ -168,7 +168,7 @@ exports.addRoutes = function (app, config) {
 					});
 				}
 				else { return console.log(err); }
-			});	
+			});
 		});
 	});
 };

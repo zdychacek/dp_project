@@ -28,32 +28,32 @@ require([
 	'config',
 
 	// directives
-	'common/directives/pagination',
-	'common/directives/sortableTable',
-	'common/directives/repeat',
-	'common/directives/spinner',
-	'common/directives/uniqueLogin',
-	'common/directives/fileUpload',
-	'common/filters/minutesFormatter',
-	'common/security/index',
+	'_common/directives/pagination',
+	'_common/directives/sortableTable',
+	'_common/directives/repeat',
+	'_common/directives/spinner',
+	'_common/directives/uniqueLogin',
+	'_common/directives/fileUpload',
+	'_common/filters/minutesFormatter',
+	'_common/security/index',
+
+	'_base/MainCtrl',
+	'_base/HeaderCtrl',
 
 	// controllers
-	'base/MainCtrl',
-	'base/HeaderCtrl',
 	'dashboard/DashboardCtrl',
 	'account/AccountCtrl',
-	'flights/FlightsCtrl',
 
-	'admin/users/list/UsersListCtrl',
-	'admin/users/edit/UserEditCtrl',
+	'users/list/UsersListCtrl',
+	'users/edit/UserEditCtrl',
 
-	'admin/flights/list/FlightsListCtrl',
-	'admin/flights/edit/FlightEditCtrl',
+	'flights/list/FlightsListCtrl',
+	'flights/detail/FlightDetailCtrl',
 
-	'admin/carriers/list/CarriersListCtrl',
-	'admin/carriers/edit/CarrierEditCtrl',
+	'carriers/list/CarriersListCtrl',
+	'carriers/edit/CarrierEditCtrl',
 
-	'admin/voicePortalSettings/VoicePortalSettingsCtrl'
+	'voicePortalSettings/VoicePortalSettingsCtrl'
 ], function (angular) {
 	'use strict';
 
@@ -77,18 +77,17 @@ require([
 		'base.HeaderCtrl',
 		'dashboard',
 		'account',
-		'flights',
 
-		'admin.users.list',
-		'admin.users.edit',
+		'flights.list',
+		'flights.detail',
 
-		'admin.flights.list',
-		'admin.flights.edit',
+		'users.list',
+		'users.edit',
 
-		'admin.carriers.list',
-		'admin.carriers.edit',
+		'carriers.list',
+		'carriers.edit',
 
-		'admin.voicePortalSettings',
+		'voicePortalSettings',
 
 		// sablonky proo boostrapovske komponenty
 		'template/modal/window.html',

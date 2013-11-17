@@ -1,0 +1,28 @@
+
+<div ng-controller="HeaderCtrl" class="navbar">
+  <div class="navbar-inner clearfix"><a ng-click="home()" class="brand pull-left">Letecká společnost s.r.o.</a>
+    <!-- autentizovany uzivatel-->
+    <ul ng-if="isAuthenticated()" class="nav pull-left">
+      <li ng-class="{active:isNavbarActive('flights')}"><a href="/flights">Seznam letů</a></li>
+      <!--li(ng-class="{active:isNavbarActive('account')}")<a href="/account">Nastavení účtu</a>
+      -->
+      <!-- admin only-->
+      <li ng-class="{active:isNavbarActive('users')}" ng-if="isAdmin()"><a href="/users">Editace uživatelů</a></li>
+      <li ng-class="{active:isNavbarActive('carriers')}" ng-if="isAdmin()"><a href="/carriers">Editace dopravců</a></li>
+      <li ng-class="{active:isNavbarActive('voice-portal-settings')}" ng-if="isAdmin()"><a href="/voice-portal-settings">Nastavení hlasového portálu</a></li>
+    </ul>
+    <login-toolbar></login-toolbar>
+    <ul class="nav pull-right">
+      <li class="spinner-wrap">
+        <spinner size="small" show="hasPendingRequests()"></spinner>
+      </li>
+    </ul>
+  </div>
+  <div>
+    <ul class="breadcrumb">
+      <li ng-repeat="breadcrumb in breadcrumbs.getAll()"><span class="divider"></span>
+        <ng-switch on="$last"><span ng-switch-when="true">{{breadcrumb.name}}</span><span ng-switch-default="ng-switch-default"><a href="{{breadcrumb.path}}">{{breadcrumb.name}}</a></span></ng-switch>
+      </li>
+    </ul>
+  </div>
+</div>

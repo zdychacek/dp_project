@@ -1,0 +1,101 @@
+
+<h1>{{formTitle}}</h1>
+<div ng-show="noData">
+  <div class="alert alert-error">Záznam nebyl nalezen.</div><a ng-href="/flights" class="btn span2">Zpět na seznam</a>
+</div>
+<form name="form" ng-hide="noData" ng-submit="save()" class="form-horizontal carrier-edit">
+  <spinner show="loadingData" align="center"></spinner>
+  <div ng-hide="loadingData" class="wrap">
+    <fieldset>
+      <legend>Základní údaje</legend>
+      <div ng-show="flight._id" class="control-group">
+        <label class="control-label">Kód</label>
+        <div class="controls"><span>{{flight._id}}</span></div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">Datum</label>
+        <div class="controls">
+          <input type="text" name="date" ng-model="flight.date" required="required"/><span ng-show="showErrorMessage(form.date)" class="text-error">Vyplňte datum odletu.</span>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">Cena</label>
+        <div class="controls">
+          <input type="number" step="any" min="0" name="price" ng-model="flight.price" required="required"/><span ng-show="showErrorMessage(form.price)" class="text-error">Vyplňte cenu.</span><span ng-show="showErrorMessage(form.price, 'number')" class="text-error">Cena musí být číselná hodnota.</span><span ng-show="showErrorMessage(form.price, 'min')" class="text-error">Cena nesmí být záporné číslo.</span>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">Kapacita letu</label>
+        <div class="controls">
+          <input type="number" name="capacity" ng-model="flight.capacity" required="required"/><span ng-show="showErrorMessage(form.capacity)" class="text-error">Vyplňte kapacitu letu.</span><span ng-show="showErrorMessage(form.capacity, 'number')" class="text-error">Kapacita letu musí být číselná hodnota.</span>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">Poznámka</label>
+        <div class="controls">
+          <textarea ng-model="flight.note"></textarea>
+        </div>
+      </div>
+      <div ng-show="getFromDestination()" class="control-group">
+        <label class="control-label">Odkud</label>
+        <div class="controls"><span>{{getFromDestination()}}</span></div>
+      </div>
+      <div ng-show="getToDestination()" class="control-group">
+        <label class="control-label">Kam</label>
+        <div class="controls"><span>{{getToDestination()}}</span></div>
+      </div>
+      <div ng-show="getTotalTime()" class="control-group">
+        <label class="control-label">Celková délka letu</label>
+        <div class="controls"><span>{{getTotalTime()}}</span></div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Trasa letu</legend>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Přepravce</th>
+            <th>Odlet (čas)</th>
+            <th>Odlet (destinace)</th>
+            <th>Přílet (čas)</th>
+            <th>Přílet (destinace)</th>
+            <th>Délka letu</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="pathPart in flight.path">
+            <td>
+              <select ng-options="c._id as c.name for c in carriersList" ng-model="pathPart.carrier"></select>&nbsp;<img ng-show="makeLogoUrl(pathPart.carrier)" ng-src="{{makeLogoUrl(pathPart.carrier)}}" class="carrier-logo"/>
+            </td>
+            <td>
+              <input type="time" ng-model="pathPart.departureTime" required="required"/>
+            </td>
+            <td>
+              <input type="text" ng-model="pathPart.fromDestination" required="required"/>
+            </td>
+            <td>
+              <input type="time" ng-model="pathPart.arrivalTime" required="required"/>
+            </td>
+            <td>
+              <input type="text" ng-model="pathPart.toDestination" required="required"/>
+            </td>
+            <td><span>{{ getPathPartLength(pathPart) }}</span></td>
+            <td><a ng-click="removePathPart(pathPart)" ng-show="flight.path.length &gt; 1" href="#" class="btn btn-danger"><span class="icon-remove-sign"></span></a></td>
+          </tr>
+          <tr ng-show="!flight.path.length">
+            <td colspan="7">Přidejte trasu.</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7"><a ng-click="addPathPart()" href="#" class="btn"><i class="icon-plus-sign">&nbsp;</i>Přidat část trasy</a></td>
+          </tr>
+        </tfoot>
+      </table>
+    </fieldset>
+    <div class="btn-toolbar"><a ng-href="/flights" class="btn span2">Zpět na seznam</a>
+      <input type="submit" value="Uložit" ng-disabled="form.$invalid" class="btn btn-primary"/>
+    </div>
+    <pre>{{flight | json}}</pre>
+  </div>
+</form>

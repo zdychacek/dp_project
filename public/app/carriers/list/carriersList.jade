@@ -1,0 +1,47 @@
+h1 Seznam přepravců
+
+div.alert(ng-show="totalItems == 0") Nejsou k dispozici žádné záznamy.
+
+div.content-menu
+	a.btn.btn-new(ng-href="/carriers/new")
+		i.icon.icon-plus-sign
+		| &nbsp;Nový přepravce
+
+div.content-main
+	spinner(show="loadingData", align="center")
+
+	div.table-container(ng-show="totalItems > 0")
+		table.table.table-bordered(sortable-table, sort-column="sort.column", sort-dir="sort.dir", ng-style="getTableVisibilityStyle()")
+			tr(ng-repeat="carrier in carriers")
+				td(data-title="Logo")
+					img.carrier-logo(ng-show="carrier.logo.length > 0",ng-src="{{makeLogoUrl(carrier)}}")
+
+				td(data-title="Název", sortable="name") {{carrier.name}}
+
+				td.cell-center(data-title="Status", sortable="disabled", ng-switch="carrier.disabled")
+					i.icon-ok(ng-switch-when="false")
+					i.icon-remove(ng-switch-when="true")
+
+				td(data-title="Vytvořeno", sortable="lastModified") {{carrier.lastModified | date: 'd.M.yy H:mm'}}
+
+				td.icon
+					a.btn.btn-info(ng-click="editCarrier(carrier)", href="#")
+						span.icon-pencil
+
+					a.btn.btn-danger(ng-click="removeCarrier(carrier)", href="#")
+						span.icon-remove-sign
+
+		pagination.pagination(
+						total-items="totalItems",
+						page="currentPage",
+						max-size="maxSize",
+						on-select-page="selectPage(page)",
+						items-per-page="itemsPerPage",
+						num-pages="totalPages",
+						boundary-links="true",
+						max-size="5")
+
+		div.itemsCount Počet záznamů na stránku:
+			select(ng-model="itemsPerPage", ng-options="i for i in itemsPerPageList")
+
+		div.total Stránka: {{currentPage}} / {{totalPages}}
