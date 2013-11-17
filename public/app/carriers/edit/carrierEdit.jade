@@ -34,5 +34,5 @@ form.form-horizontal.carrier-edit(name="form", ng-hide="noData", ng-submit="save
 					input(type='checkbox', ng-model="carrier.disabled")
 
 		div.btn-toolbar
-			a.btn.span2(ng-href="/carriers") Zpět na seznam
+			a.btn(ng-href="/carriers") Zpět na seznam
 			input.btn.btn-primary(type="submit", value="Uložit", ng-disabled="form.$invalid")

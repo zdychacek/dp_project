@@ -15,7 +15,7 @@
       <div class="control-group">
         <label class="control-label">Datum</label>
         <div class="controls">
-          <input type="text" name="date" ng-model="flight.date" required="required"/><span ng-show="showErrorMessage(form.date)" class="text-error">Vyplňte datum odletu.</span>
+          <input type="date" name="date" ng-model="flight.date" required="required"/><span ng-show="showErrorMessage(form.date)" class="text-error">Vyplňte datum odletu.</span>
         </div>
       </div>
       <div class="control-group">
@@ -93,7 +93,7 @@
         </tfoot>
       </table>
     </fieldset>
-    <div class="btn-toolbar"><a ng-href="/flights" class="btn span2">Zpět na seznam</a>
+    <div class="btn-toolbar"><a ng-href="/flights" class="btn">Zpět na seznam</a>
       <input type="submit" value="Uložit" ng-disabled="form.$invalid" class="btn btn-primary"/>
     </div>
     <pre>{{flight | json}}</pre>

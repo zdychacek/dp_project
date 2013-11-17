@@ -68,5 +68,5 @@ form.form-horizontal(name="form", ng-hide="noData", ng-submit="save()")
 					span.text-error(ng-show="showErrorMessage(form.passwordConfirmaton, 'repeat')") Heslo se neshoduje.
 
 		div.btn-toolbar
-			a.btn.span2(ng-href="/users") Zpět na seznam
+			a.btn(ng-href="/users") Zpět na seznam
 			input.btn.btn-primary(type="submit", ng-disabled="form.$invalid || form.login.requestRunning", value="Uložit")

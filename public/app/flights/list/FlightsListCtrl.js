@@ -1,9 +1,10 @@
 define([
 	'angular',
+	'moment',
 	'_common/resources/flight',
 	'_common/resources/carrier',
 	'_common/security/security'
-], function (angular) {
+], function (angular, moment) {
 	'use strict';
 
 	angular.module('flights.list', [
@@ -26,13 +27,38 @@ define([
 				}
 			});
 		}])
-
-		// Seznam uctu
-		.controller('FlightsListCtrl', ['$scope', 'Flight', '$location', 'carriers', 'security', function ($scope, Flight, $location, carriers, security) {
-			$scope.itemsPerPageList = [5, 10, 15, 20];
+		.controller('FlightsListCtrl', [
+			'$scope',
+			'Flight',
+			'$location',
+			'carriers',
+			'security',
+		function ($scope, Flight, $location, carriers, security) {
+			$scope.carriersList = carriers.items;
 			$scope.isAdmin = security.isAdmin();
 
-			console.log('isAdmin', $scope.isAdmin);
+			var filterDefaults = {
+				fromDestination: '',
+				toDestination: '',
+				departureTime: moment().format('YYYY-MM-DD'),
+				arrivalTime: moment().add('days', 1).format('YYYY-MM-DD')
+			};
+
+			// vyhledavaci filtr
+			$scope.filter = null;
+
+			$scope.doFilter = function () {
+				$scope.filter = angular.copy($scope._filter);
+			};
+
+			$scope.resetFilter = function () {
+				$scope._filter = angular.copy(filterDefaults);
+				$scope.filter = null;
+			};
+
+			$scope.resetFilter();
+
+			$scope.itemsPerPageList = [5, 10, 15, 20];
 
 			// paging
 			$scope.itemsPerPage = $scope.itemsPerPageList[1],
@@ -41,19 +67,25 @@ define([
 
 			// sorting
 			$scope.sort = {
-				column: 'login',
+				column: '_id',
 				dir: 'asc'
 			};
 
 			var loadFlights = function () {
 				$scope.loadingData = true;
 
-				Flight.query({
+				var params = {
 					offset: ($scope.currentPage - 1) * $scope.itemsPerPage,
 					limit: $scope.itemsPerPage,
 					sort: $scope.sort.column,
 					dir: $scope.sort.dir
-				}).then(function (data) {
+				};
+
+				if ($scope.filter) {
+					params.filter = $scope.filter
+				}
+
+				Flight.query(params).then(function (data) {
 					$scope.flights = data.items;
 					$scope.loadingData = false;
 					$scope.totalItems = data.metadata.totalCount;
@@ -111,5 +143,6 @@ define([
 			$scope.$watch('itemsPerPage', loadFlights);
 			$scope.$watch('currentPage', loadFlights);
 			$scope.$watch('sort', loadFlights, true);
+			$scope.$watch('filter', loadFlights);
 		}]);
 });

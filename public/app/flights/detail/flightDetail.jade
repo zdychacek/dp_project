@@ -19,7 +19,7 @@ form.form-horizontal.carrier-edit(name="form", ng-hide="noData", ng-submit="save
 			.control-group
 				label.control-label Datum
 				.controls
-					input(type="text", name="date", ng-model="flight.date", required)
+					input(type="text", name="date", type="date", ng-model="flight.date", required)
 					span.text-error(ng-show="showErrorMessage(form.date)") Vyplňte datum odletu.
 
 			.control-group
@@ -99,7 +99,7 @@ form.form-horizontal.carrier-edit(name="form", ng-hide="noData", ng-submit="save
 								| Přidat část trasy
 
 		div.btn-toolbar
-			a.btn.span2(ng-href="/flights") Zpět na seznam
+			a.btn(ng-href="/flights") Zpět na seznam
 			input.btn.btn-primary(type="submit", value="Uložit", ng-disabled="form.$invalid")
 
 		pre {{flight | json}}

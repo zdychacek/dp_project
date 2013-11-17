@@ -1,10 +1,12 @@
 define([
 	'angular',
+	'moment',
 	'_common/resources/flight',
 	'_common/resources/carrier',
 	'_common/services/notifications',
-	'_common/security/authorization'
-], function (angular) {
+	'_common/security/authorization',
+	'_common/security/security'
+], function (angular, moment) {
 	'use strict';
 
 	angular.module('flights.detail', [
@@ -19,14 +21,13 @@ define([
 				templateUrl: '/static/app/flights/detail/flightDetail.html',
 				controller: 'FlightDetailCtrl',
 				resolve: {
-					//adminUser: securityAuthorizationProvider.requireAdminUser,
+					authorization: securityAuthorizationProvider.requireAuthenticatedUser,
 					carriers: ['Carrier', function (Carrier) {
 						return Carrier.query();
 					}]
 				}
 			});
 		}])
-
 		.controller('FlightDetailCtrl', [
 			'$scope',
 			'Flight',
@@ -34,16 +35,18 @@ define([
 			'notifications',
 			'$location',
 			'carriers',
-		function ($scope, Flight, $routeParams, notifications, $location, carriers) {
+			'security',
+		function ($scope, Flight, $routeParams, notifications, $location, carriers, security) {
 			$scope.carriersList = carriers.items;
 			$scope.creatingNew = $routeParams.id == 'new';
+			$scope.isAdmin = security.isAdmin();
 
 			// defaultni hodnoty
 			$scope.flight = {
 				price: 10,
 				capacity: 100,
 				path: [],
-				date: new Date()
+				date: moment().format('YYYY-MM-DD')
 			};
 
 			if (!$scope.creatingNew) {

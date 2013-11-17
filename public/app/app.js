@@ -5,6 +5,7 @@ require.config({
 		'angular-ui': '../components/angular-ui/build/angular-ui.min',
 		'angular-route': '../components/angular-route/angular-route.min',
 		'angular-bootstrap': '../components/angular-bootstrap/ui-bootstrap-tpls.min',
+		'moment': '../components/momentjs/moment',
 		'spin': '../components/spin.js/spin'
 	},
 	shim: {

@@ -2,8 +2,53 @@ h1 Seznam letů
 
 div.alert(ng-show="totalItems == 0") Nejsou k dispozici žádné záznamy.
 
+div.filter
+	fieldset
+		legend Vyhledávání
+
+		form.control-group(name="filterForm", ng-submit="doFilter()")
+			div.row
+				div.control-group.span3
+					label.control-label Odkud
+					div.controls
+						input(type="text", name="fromDestination", ng-model="_filter.fromDestination")
+
+				div.control-group.span3
+					label.control-label Odlet
+					div.controls
+						input(type="text", name="departureTime", type="date", ng-model="_filter.departureTime")
+
+			div.row
+				div.control-group.span3
+					label.control-label Kam
+					div.controls
+						input(type="text", name="toDestination", ng-model="_filter.toDestination")
+
+				div.control-group.span3
+					label.control-label Přílet
+					div.controls
+						input(type="text", name="arrivalTime", type="date", ng-model="_filter.arrivalTime")
+
+			div.row
+				div.control-group.span3
+					label.control-label Dopravce
+					div.controls
+						select(ng-options="c._id as c.name for c in carriersList", ng-model="_filter.carrier")
+							option(value="") - vyberte -
+
+			div.btn-toolbar
+				input.btn.btn-primary(type="submit", value="Vyhledat", ng-disabled="form.$invalid")
+				a.btn(ng-click="resetFilter()") Smazat filtr
+
+	div _filter
+	pre {{_filter | json}}
+
+	div filter
+	pre {{filter | json}}
+
+
 div.content-menu
-	a.btn.btn-new(ng-href="/flights/new")
+	a.btn.btn-new(ng-href="/flights/new", ng-if="isAdmin")
 		i.icon.icon-plus-sign
 		| &nbsp;Nový let
 
