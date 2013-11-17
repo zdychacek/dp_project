@@ -14,8 +14,7 @@ module.exports = function (grunt) {
 		'/.git/',
 		'/node_modules/',
 		'/public/',
-		'/dist/',
-		'/temp/'
+		'/dist/'
 	];
 
 	grunt.initConfig({
@@ -46,10 +45,6 @@ module.exports = function (grunt) {
 					'<%= appConfig.app %>/images/**/*.{png,jpg,jpeg,webp}'
 				]
 			},
-			apiary: {
-				files: ['apiary.apib'],
-				tasks: ['apiary2js']
-			},
 			html: {
 				files: [
 					'<%= appConfig.app %>/*.html',
@@ -62,11 +57,6 @@ module.exports = function (grunt) {
 					'<%= appConfig.app %>/app/**/*.jade'
 				],
 				tasks: ['jade']
-			}
-		},
-		open: {
-			server: {
-				path: 'http://localhost:9000'
 			}
 		},
 		clean: {
@@ -84,14 +74,6 @@ module.exports = function (grunt) {
 					'<%= appConfig.app %>/*.html',
 					'<%= appConfig.app %>/app/**/*.html'
 				]
-			}
-		},
-		shell: {
-			mongo: {
-				command: 'mongod --master --dbpath data/db > /dev/null',
-				options: {
-					async: true
-				}
 			}
 		},
 		jshint: {
@@ -297,25 +279,11 @@ module.exports = function (grunt) {
 		}
 	});
 
-	grunt.registerTask('apiary2js', 'Generate js version of apiary file.', function () {
-		var parser  = require('apiary-blueprint-parser')
-		  , content = grunt.file.read('apiary.apib')
-		  , blueprint = parser.parse(content)
-		  , json = JSON.stringify(blueprint.sections, null, 2);
-
-		grunt.file.write('public/app/common/mocks/mocksData.js', 'define([], function() { return ' + json + '; });');
-	});
-
 	grunt.registerTask('default', [
 		'jade:development',
 		'less:development',
-		'apiary2js',
 		'jshint',
 		'concurrent:nodemon'
-	]);
-
-	grunt.registerTask('mongo', [
-		'shell:mongo'
 	]);
 
 	grunt.registerTask('build', [

@@ -8,6 +8,6 @@ define(['angular'], function (angular) {
 					minutesPart = minutes % 60;
 
 				return hoursPart + 'h ' + minutesPart + 'm';
-			}
+			};
 		});
 });

@@ -1,22 +1,18 @@
 require.config({
 	paths: {
-		angular: '../components/angular/angular',
-		jquery: '../components/jquery/jquery',
-		lodash: '../components/lodash/dist/lodash',
-		'angular-mocks': '../components/angular-mocks/angular-mocks',
-		'angular-ui': '../components/angular-ui/build/angular-ui.',
-		'angular-bootstrap': '../components/angular-bootstrap/ui-bootstrap-tpls',
-		'spin': '../components/spinjs/spin'
+		angular: '../components/angular/angular.min',
+		jquery: '../components/jquery/jquery.min',
+		'angular-ui': '../components/angular-ui/build/angular-ui.min',
+		'angular-route': '../components/angular-route/angular-route.min',
+		'angular-bootstrap': '../components/angular-bootstrap/ui-bootstrap-tpls.min',
+		'spin': '../components/spin.js/spin'
 	},
 	shim: {
 		angular: {
 			deps: ['jquery'],
 			exports: 'angular'
 		},
-		'angular-mocks': {
-			deps: ['angular']
-		},
-		'angular-ui': {
+		'angular-route': {
 			deps: ['angular']
 		},
 		'angular-bootstrap': {
@@ -27,9 +23,8 @@ require.config({
 
 require([
 	'angular',
-	//'angular-ui',
+	'angular-route',
 	'angular-bootstrap',
-
 	'config',
 
 	// directives
@@ -39,9 +34,7 @@ require([
 	'common/directives/spinner',
 	'common/directives/uniqueLogin',
 	'common/directives/fileUpload',
-
 	'common/filters/minutesFormatter',
-
 	'common/security/index',
 
 	// controllers
@@ -65,6 +58,7 @@ require([
 	'use strict';
 
 	var app = angular.module('app', [
+		'ngRoute',
 		'app.config',
 
 		// directives

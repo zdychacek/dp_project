@@ -46,3 +46,6 @@ tr:nth-child(even) {
 .content-menu {
   padding-bottom: 20px;
 }
+td.with-logo img {
+  padding-left: 10px;
+}

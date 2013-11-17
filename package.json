@@ -1,13 +1,12 @@
 {
-  "name": "grunt-express-workflow",
-  "version": "0.3.6",
+  "name": "dp_project",
+  "version": "0.0.1",
   "private": true,
   "dependencies": {
     "express": "3.3.x",
     "mongoose": "~3.6.19",
     "express-namespace": "~0.1.1",
-    "async": "~0.2.9",
-    "open": "0.0.4"
+    "async": "~0.2.9"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -21,13 +20,10 @@
     "grunt-contrib-clean": "~0.4.0",
     "grunt-contrib-htmlmin": "~0.1.3",
     "grunt-rev": "~0.1.0",
-    "grunt-open": "~0.2.0",
     "grunt-concurrent": "~0.2.0",
     "matchdep": "~0.1.1",
     "grunt-nodemon": "0.0.2",
     "grunt-contrib-watch": "~0.5.1",
-    "apiary-blueprint-parser": "~0.4.4",
-    "grunt-shell-spawn": "~0.2.4",
     "bower": "~1.2.6",
     "node-inspector": "~0.4.0",
     "grunt-contrib-jade": "~0.8.0",
