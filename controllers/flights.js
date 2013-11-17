@@ -5,6 +5,16 @@ const Flight = require('../models/Flight'),
 exports.addRoutes = function (app, config) {
 	app.namespace('/api/v1/flights', function () {
 
+		app.get('/generate/:count', function (req, res) {
+			var count = req.params.count;
+
+			Flight.generate(count);
+
+			res.json({
+				count: count
+			});
+		});
+
 		app.get('/:id', function (req, res) {
 			Flight.findById(req.params.id, function (err, flight) {
 				if (!err) {
