@@ -4,7 +4,7 @@ define(['angular'], function (angular) {
 	angular.module('security.login.form', ['services.localizedMessages'])
 		.controller('LoginFormCtrl', ['$scope', 'security', 'localizedMessages', function ($scope, security, localizedMessages) {
 			$scope.user = {
-				email: 'test@test.cz',
+				email: 'admin',
 				password: '12345'
 			};
 
@@ -14,7 +14,7 @@ define(['angular'], function (angular) {
 			// The reason that we are being asked to login - for instance because we tried to access something to which we are not authorized
 			// We could do something diffent for each reason here but to keep it simple...
 			$scope.authReason = null;
-			
+
 			if (security.getLoginReason()) {
 				$scope.authReason = security.isAuthenticated() ? localizedMessages.get('login.reason.notAuthorized') : localizedMessages.get('login.reason.notAuthenticated');
 			}

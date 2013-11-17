@@ -1,11 +1,13 @@
 define([
 	'angular',
 	'_common/resources/flight',
-	'_common/resources/carrier'
+	'_common/resources/carrier',
+	'_common/security/security'
 ], function (angular) {
 	'use strict';
 
 	angular.module('flights.list', [
+		'security.service',
 		'security.authorization',
 		'services.i18nNotifications',
 		'resources.flight',
@@ -26,8 +28,11 @@ define([
 		}])
 
 		// Seznam uctu
-		.controller('FlightsListCtrl', ['$scope', 'Flight', '$location', 'carriers', function ($scope, Flight, $location, carriers) {
+		.controller('FlightsListCtrl', ['$scope', 'Flight', '$location', 'carriers', 'security', function ($scope, Flight, $location, carriers, security) {
 			$scope.itemsPerPageList = [5, 10, 15, 20];
+			$scope.isAdmin = security.isAdmin();
+
+			console.log('isAdmin', $scope.isAdmin);
 
 			// paging
 			$scope.itemsPerPage = $scope.itemsPerPageList[1],

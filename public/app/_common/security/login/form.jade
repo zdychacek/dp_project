@@ -1,17 +1,17 @@
 form.login-form(name='form', novalidate='novalidate')
-    .modal-header
-        h4 Přihlášení
-      .modal-body
-        .alert.alert-warning(ng-show='authReason')
-          | {{authReason}}
-        .alert.alert-error(ng-show='authError')
-          | {{authError}}
-        .alert.alert-info Vyplňte, prosím, vaše přihlašovací údaje
-        label E-mail
-        input(name='login', type='email', ng-model='user.email', required='required', autofocus='autofocus')
-        label Password
-        input(name='pass', type='password', ng-model='user.password', required='required')
-      .modal-footer
-        button.btn.btn-primary.login(ng-click='login()', ng-disabled='form.$invalid') Přihlásit se
-        button.btn.clear(ng-click='clearForm()') Smazat
-        button.btn.btn-warning.cancel(ng-click='cancelLogin()') Zavřít
+		.modal-header
+				h4 Přihlášení
+			.modal-body
+				.alert.alert-warning(ng-show='authReason')
+					| {{authReason}}
+				.alert.alert-error(ng-show='authError')
+					| {{authError}}
+				.alert.alert-info Vyplňte, prosím, vaše přihlašovací údaje
+				label Login
+				input(name='login', type="text", ng-model='user.email', required='required', autofocus='autofocus')
+				label Heslo
+				input(name='pass', type='password', ng-model='user.password', required='required')
+			.modal-footer
+				button.btn.btn-primary.login(ng-click='login()', ng-disabled='form.$invalid') Přihlásit se
+				button.btn.clear(ng-click='clearForm()') Smazat
+				button.btn.btn-warning.cancel(ng-click='cancelLogin()') Zavřít
