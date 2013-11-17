@@ -43,10 +43,19 @@ define([
 
 			// defaultni hodnoty
 			$scope.flight = {
-				price: 10,
-				capacity: 100,
-				path: [],
-				date: moment().format('YYYY-MM-DD')
+				'price': 10,
+				'capacity': 100,
+				'path': [
+					{
+					'carrier': '5287920ac5fb006956000002',
+					'fromDestination': 'Praha',
+					'departureTime': moment().toDate(),
+					'arrivalTime': moment().add('hours', 2).toDate(),
+					'toDestination': 'Mexiko'
+					}
+				],
+				date: moment().format('YYYY-MM-DD'),
+				'note': 'Super let !'
 			};
 
 			if (!$scope.creatingNew) {
@@ -134,19 +143,14 @@ define([
 			}
 
 			$scope.getPathPartLength = function (pathPart) {
-				var departure = parseTimeData(pathPart.departureTime),
-					arrival = parseTimeData(pathPart.arrivalTime);
-
-				if (departure && arrival) {
-					var delta = (arrival - departure) / 1000,
-						hours = Math.floor(delta / 3600) % 24,
-						minutes = Math.floor(delta / 60) % 60;
-
-					return hours + 'h ' + minutes + 'min';
+				if (!pathPart.departureTime || !pathPart.arrivalTime) {
+					return 'n/a';
 				}
-				else {
-					return '';
-				}
+
+				var departure = moment(pathPart.departureTime),
+					arrival = moment(pathPart.arrivalTime);
+
+				return arrival.subtract(departure).format('h[h] m[m]');
 			};
 
 			$scope.getFromDestination = function () {
@@ -172,6 +176,6 @@ define([
 			};
 
 			// pridam jednu polozku
-			$scope.addPathPart();
+			//$scope.addPathPart();
 		}]);
 });

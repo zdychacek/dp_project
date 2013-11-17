@@ -1,7 +1,5 @@
 h1 Seznam letů
 
-div.alert(ng-show="totalItems == 0") Nejsou k dispozici žádné záznamy.
-
 div.filter
 	fieldset
 		legend Vyhledávání
@@ -16,7 +14,7 @@ div.filter
 				div.control-group.span3
 					label.control-label Odlet
 					div.controls
-						input(type="text", name="departureTime", type="date", ng-model="_filter.departureTime")
+						input(type="datetime", date-time, ng-model="_filter.departureTime", name="departureTime", required, max-view="date")
 
 			div.row
 				div.control-group.span3
@@ -27,7 +25,7 @@ div.filter
 				div.control-group.span3
 					label.control-label Přílet
 					div.controls
-						input(type="text", name="arrivalTime", type="date", ng-model="_filter.arrivalTime")
+						input(type="datetime", date-time, ng-model="_filter.arrivalTime", name="arrivalTime", required, max-view="date")
 
 			div.row
 				div.control-group.span3
@@ -40,12 +38,15 @@ div.filter
 				input.btn.btn-primary(type="submit", value="Vyhledat", ng-disabled="form.$invalid")
 				a.btn(ng-click="resetFilter()") Smazat filtr
 
-	div _filter
-	pre {{_filter | json}}
+	//div
+		div _filter
+		pre {{_filter | json}}
 
-	div filter
-	pre {{filter | json}}
+		div filter
+		pre {{filter | json}}
 
+
+div.alert(ng-show="totalItems == 0") Nejsou k dispozici žádné záznamy.
 
 div.content-menu
 	a.btn.btn-new(ng-href="/flights/new", ng-if="isAdmin")

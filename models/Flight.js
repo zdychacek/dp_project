@@ -5,7 +5,6 @@ const mongoose = require('mongoose'),
 
 var Flight = new mongoose.Schema({
 	path: [ PathPart.schema ],
-	date: Date,
 	price: Number,
 	capacity: Number,
 	note: String,
@@ -15,8 +14,8 @@ var Flight = new mongoose.Schema({
 	// generovane hodnoty pri ulozeni modelu
 	fromDestination: String,
 	toDestination: String,
-	arrivalTime: String,
-	departureTime: String,
+	arrivalDate: Date,
+	departureDate: Date,
 	transfersCount: Number,
 	totalFlightDuration: Number	// v minutach
 });
@@ -30,15 +29,17 @@ function parseTime (time) {
 }
 
 Flight.pre('save', function (next) {
+	console.log('Flight', this);
+
 	var firstPathPart = this.path[0],
-		lastPathPart = this.path[this.path.length - 1],
+		lastPathPart = this.path.length > 1 ? this.path[this.path.length - 1] : this.path[0],
 		startTime = 0,
 		endTime = 0;
 
 	if (firstPathPart) {
 		this.fromDestination = firstPathPart.fromDestination;
 		this.departureTime = firstPathPart.departureTime;
-		startTime = parseTime(firstPathPart.departureTime);
+		//startTime = parseTime(firstPathPart.departureTime);
 	}
 	else {
 		this.fromDestination = '';
@@ -48,7 +49,7 @@ Flight.pre('save', function (next) {
 	if (lastPathPart) {
 		this.toDestination = lastPathPart.toDestination;
 		this.arrivalTime = lastPathPart.arrivalTime;
-		endTime = parseTime(lastPathPart.arrivalTime);
+		//endTime = parseTime(lastPathPart.arrivalTime);
 	}
 	else {
 		this.toDestination = '';
@@ -60,8 +61,6 @@ Flight.pre('save', function (next) {
 
 	// celkova delka letu
 	this.totalFlightDuration = endTime - startTime;
-
-	console.log('totalFlightDuration', this.totalFlightDuration);
 
 	next();
 });

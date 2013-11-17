@@ -40,8 +40,8 @@ define([
 			var filterDefaults = {
 				fromDestination: '',
 				toDestination: '',
-				departureTime: moment().format('YYYY-MM-DD'),
-				arrivalTime: moment().add('days', 1).format('YYYY-MM-DD')
+				departureTime: moment().toDate(),
+				arrivalTime: moment().add('days', 1).toDate()
 			};
 
 			// vyhledavaci filtr
@@ -82,7 +82,7 @@ define([
 				};
 
 				if ($scope.filter) {
-					params.filter = $scope.filter
+					params.filter = $scope.filter;
 				}
 
 				Flight.query(params).then(function (data) {

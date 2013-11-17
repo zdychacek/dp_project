@@ -1,10 +1,11 @@
 require.config({
 	paths: {
-		angular: '../components/angular/angular.min',
+		angular: '../components/angular/angular',
 		jquery: '../components/jquery/jquery.min',
 		'angular-ui': '../components/angular-ui/build/angular-ui.min',
 		'angular-route': '../components/angular-route/angular-route.min',
 		'angular-bootstrap': '../components/angular-bootstrap/ui-bootstrap-tpls.min',
+		'angular-datepicker': '../components/angular-datepicker/dist/index',
 		'moment': '../components/momentjs/moment',
 		'spin': '../components/spin.js/spin'
 	},
@@ -18,6 +19,9 @@ require.config({
 		},
 		'angular-bootstrap': {
 			deps: ['angular']
+		},
+		'angular-datepicker': {
+			deps: ['angular']
 		}
 	}
 });
@@ -26,6 +30,7 @@ require([
 	'angular',
 	'angular-route',
 	'angular-bootstrap',
+	'angular-datepicker',
 	'config',
 
 	// directives
@@ -60,6 +65,7 @@ require([
 
 	var app = angular.module('app', [
 		'ngRoute',
+		'datePicker',
 		'app.config',
 
 		// directives

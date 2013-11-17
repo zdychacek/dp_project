@@ -3,7 +3,7 @@
 <div ng-show="noData">
   <div class="alert alert-error">Záznam nebyl nalezen.</div><a ng-href="/flights" class="btn span2">Zpět na seznam</a>
 </div>
-<form name="form" ng-hide="noData" ng-submit="save()" class="form-horizontal carrier-edit">
+<form name="form" ng-hide="noData" ng-submit="save()" class="form-horizontal flight-edit">
   <spinner show="loadingData" align="center"></spinner>
   <div ng-hide="loadingData" class="wrap">
     <fieldset>
@@ -13,14 +13,8 @@
         <div class="controls"><span>{{flight._id}}</span></div>
       </div>
       <div class="control-group">
-        <label class="control-label">Datum</label>
-        <div class="controls">
-          <input type="date" name="date" ng-model="flight.date" required="required"/><span ng-show="showErrorMessage(form.date)" class="text-error">Vyplňte datum odletu.</span>
-        </div>
-      </div>
-      <div class="control-group">
         <label class="control-label">Cena</label>
-        <div class="controls">
+        <div class="controls"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
           <input type="number" step="any" min="0" name="price" ng-model="flight.price" required="required"/><span ng-show="showErrorMessage(form.price)" class="text-error">Vyplňte cenu.</span><span ng-show="showErrorMessage(form.price, 'number')" class="text-error">Cena musí být číselná hodnota.</span><span ng-show="showErrorMessage(form.price, 'min')" class="text-error">Cena nesmí být záporné číslo.</span>
         </div>
       </div>
@@ -51,7 +45,7 @@
     </fieldset>
     <fieldset>
       <legend>Trasa letu</legend>
-      <table class="table table-bordered">
+      <table class="table table-bordered path">
         <thead>
           <tr>
             <th>Přepravce</th>
@@ -68,13 +62,13 @@
               <select ng-options="c._id as c.name for c in carriersList" ng-model="pathPart.carrier"></select>&nbsp;<img ng-show="makeLogoUrl(pathPart.carrier)" ng-src="{{makeLogoUrl(pathPart.carrier)}}" class="carrier-logo"/>
             </td>
             <td>
-              <input type="time" ng-model="pathPart.departureTime" required="required"/>
+              <input type="datetime" date-time="date-time" ng-model="pathPart.departureTime" required="required" view="hours"/>
             </td>
             <td>
               <input type="text" ng-model="pathPart.fromDestination" required="required"/>
             </td>
             <td>
-              <input type="time" ng-model="pathPart.arrivalTime" required="required"/>
+              <input type="datetime" date-time="date-time" ng-model="pathPart.arrivalTime" required="required" view="hours"/>
             </td>
             <td>
               <input type="text" ng-model="pathPart.toDestination" required="required"/>

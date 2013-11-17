@@ -1,6 +1,12 @@
 .carrier-edit input[type="file"] {
   display: none;
 }
+.flight-edit table.path input[type="date"] {
+  width: 130px;
+}
+.flight-edit table.path input[type="time"] {
+  width: 95px;
+}
 h1 {
   margin-bottom: 20px;
 }

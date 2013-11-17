@@ -5,7 +5,7 @@ html(lang="en", ng-controller="MainCtrl")
 		title(ng-bind="'Letecká společnost s.r.o. - ' + title")
 		link(rel="stylesheet", href="/static/css/bootstrap.css")
 		link(rel="stylesheet", href="/static/css/app.css")
-
+		link(rel="stylesheet", href="/static/components/angular-datepicker/dist/index.css")
 	body
 		div(ng-include="'/static/app/_base/header.html'")
 		div.container-fluid(ng-include="'/static/app/_base/notifications.html'", ng-show="notifications.getCurrent().length")

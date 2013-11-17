@@ -1,6 +1,5 @@
 
 <h1>Seznam letů</h1>
-<div ng-show="totalItems == 0" class="alert">Nejsou k dispozici žádné záznamy.</div>
 <div class="filter">
   <fieldset>
     <legend>Vyhledávání</legend>
@@ -15,7 +14,7 @@
         <div class="control-group span3">
           <label class="control-label">Odlet</label>
           <div class="controls">
-            <input type="date" name="departureTime" ng-model="_filter.departureTime"/>
+            <input type="datetime" date-time="date-time" ng-model="_filter.departureTime" name="departureTime" required="required" max-view="date"/>
           </div>
         </div>
       </div>
@@ -29,7 +28,7 @@
         <div class="control-group span3">
           <label class="control-label">Přílet</label>
           <div class="controls">
-            <input type="date" name="arrivalTime" ng-model="_filter.arrivalTime"/>
+            <input type="datetime" date-time="date-time" ng-model="_filter.arrivalTime" name="arrivalTime" required="required" max-view="date"/>
           </div>
         </div>
       </div>
@@ -48,11 +47,14 @@
       </div>
     </form>
   </fieldset>
+  <!--div
   <div>_filter</div>
   <pre>{{_filter | json}}</pre>
   <div>filter</div>
   <pre>{{filter | json}}</pre>
+  -->
 </div>
+<div ng-show="totalItems == 0" class="alert">Nejsou k dispozici žádné záznamy.</div>
 <div class="content-menu"><a ng-href="/flights/new" ng-if="isAdmin" class="btn btn-new"><i class="icon icon-plus-sign"></i>&nbsp;Nový let</a></div>
 <div class="content-main">
   <spinner show="loadingData" align="center"></spinner>

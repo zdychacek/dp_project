@@ -4,7 +4,7 @@ div(ng-show="noData")
 	div.alert.alert-error Záznam nebyl nalezen.
 	a.btn.span2(ng-href="/flights") Zpět na seznam
 
-form.form-horizontal.carrier-edit(name="form", ng-hide="noData", ng-submit="save()")
+form.form-horizontal.flight-edit(name="form", ng-hide="noData", ng-submit="save()")
 	spinner(show="loadingData", align="center")
 
 	div.wrap(ng-hide="loadingData")
@@ -17,14 +17,10 @@ form.form-horizontal.carrier-edit(name="form", ng-hide="noData", ng-submit="save
 					span {{flight._id}}
 
 			.control-group
-				label.control-label Datum
-				.controls
-					input(type="text", name="date", type="date", ng-model="flight.date", required)
-					span.text-error(ng-show="showErrorMessage(form.date)") Vyplňte datum odletu.
-
-			.control-group
 				label.control-label Cena
 				.controls
+					span.input-group-addon
+						i.glyphicon.glyphicon-calendar
 					input(type='number', step="any", min="0", name="price", ng-model="flight.price", required)
 					span.text-error(ng-show="showErrorMessage(form.price)") Vyplňte cenu.
 					span.text-error(ng-show="showErrorMessage(form.price, 'number')") Cena musí být číselná hodnota.
@@ -60,7 +56,7 @@ form.form-horizontal.carrier-edit(name="form", ng-hide="noData", ng-submit="save
 		fieldset
 			legend Trasa letu
 
-			table.table.table-bordered
+			table.table.table-bordered.path
 				thead
 					tr
 						th Přepravce
@@ -76,11 +72,11 @@ form.form-horizontal.carrier-edit(name="form", ng-hide="noData", ng-submit="save
 							| &nbsp;
 							img.carrier-logo(ng-show="makeLogoUrl(pathPart.carrier)", ng-src="{{makeLogoUrl(pathPart.carrier)}}")
 						td
-							input(type="time", ng-model="pathPart.departureTime", required)
+							input(type="datetime", date-time, ng-model="pathPart.departureTime", required, view="hours")
 						td
 							input(type="text", ng-model="pathPart.fromDestination", required)
 						td
-							input(type="time", ng-model="pathPart.arrivalTime", required)
+							input(type="datetime", date-time, ng-model="pathPart.arrivalTime", required, view="hours")
 						td
 							input(type="text", ng-model="pathPart.toDestination", required)
 						td
