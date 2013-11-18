@@ -123,7 +123,7 @@ FlightSchema.statics.generate = function (count) {
 				var pathLen = getRnd(1, 5);
 
 				var flight = new self({
-					price: getRnd(7, 150),
+					price: getRnd(10, 999),
 					capacity: getRnd(10, 200),
 					note: 'Poznamka ze dne ' + moment().format('MMM Do YYYY, hh:mm'),
 					passengers: [],

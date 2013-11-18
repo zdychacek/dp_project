@@ -73,46 +73,90 @@ exports.addRoutes = function (app, config) {
 		});
 
 		app.get('/', function (req, res) {
-			async.parallel({
-				totalCount: function (callback) {
-					Flight
-						.find({})
-						.count(function (err, count) {
-							callback(err, count);
+			var filter = {};
+
+			if (req.query.filter) {
+				try {
+					filter = JSON.parse(req.query.filter);
+				}
+				catch (ex) { }
+			}
+
+			console.log(filter);
+
+			var query = Flight.count({});
+
+			// vyfiltrovani podle kriterii
+			if (filter.fromDestination) {
+				query = query.where('fromDestination').equals(filter.fromDestination);
+			}
+
+			if (filter.toDestination) {
+				query = query.where('toDestination').equals(filter.toDestination);
+			}
+
+			if (filter.maxTransfersCount !== undefined) {
+				query = query.where('transfersCount').lte(filter.maxTransfersCount);
+			}
+
+			if (filter.departureTimeFrom) {
+				query = query.where('departureTime').gte(new Date(filter.departureTimeFrom));
+			}
+
+			if (filter.departureTimeTo) {
+				query = query.where('departureTime').lte(new Date(filter.departureTimeTo));
+			}
+
+			if (filter.arrivalTimeFrom) {
+				query = query.where('arrivalTime').gte(new Date(filter.arrivalTimeFrom));
+			}
+
+			if (filter.arrivalTimeTo) {
+				query = query.where('arrivalTime').lte(new Date(filter.arrivalTimeTo));
+			}
+
+			if (filter.totalFlightDuration) {
+				query = query.where('totalFlightDuration').lte(filter.totalFlightDuration);
+			}
+
+			if (filter.priceFrom) {
+				query = query.where('price').gte(filter.priceFrom);
+			}
+
+			if (filter.priceTo) {
+				query = query.where('price').lte(filter.priceTo);
+			}
+
+			query.exec(function (err, totalCount) {
+				query.find();
+
+				// strankovani a sortovani
+				if (req.query.limit) {
+					query = query.limit(req.query.limit);
+				}
+
+				if (req.query.offset) {
+					query = query.skip(req.query.offset);
+				}
+
+				if (req.query.sort && req.query.dir) {
+					var sortObj = {};
+					sortObj[req.query.sort] = req.query.dir;
+
+					query = query.sort(sortObj);
+				}
+
+				query.exec(function (err, flights) {
+					if (!err) {
+						res.json({
+							items: flights,
+							metadata: {
+								totalCount: totalCount
+							}
 						});
-				},
-				data: function (callback) {
-					var query = Flight.find({});
-
-					if (req.query.limit) {
-						query = query.limit(req.query.limit);
 					}
-
-					if (req.query.offset) {
-						query = query.skip(req.query.offset);
-					}
-
-					if (req.query.sort && req.query.dir) {
-						var sortObj = {};
-						sortObj[req.query.sort] = req.query.dir;
-
-						query = query.sort(sortObj);
-					}
-
-					query.exec(function (err, flights) {
-						callback(err, flights);
-					});
-				}
-			}, function (err, result) {
-				if (!err) {
-					res.json({
-						items: result.data,
-						metadata: {
-							totalCount: result.totalCount
-						}
-					});
-				}
-				else { return console.log(err); }
+					else { return console.log(err); }
+				});
 			});
 		});
 	});

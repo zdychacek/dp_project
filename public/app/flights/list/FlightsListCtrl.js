@@ -41,30 +41,67 @@ define([
 		function ($scope, Flight, Destination, $location, carriers, security, $http, limitToFilter) {
 			$scope.carriersList = carriers.items;
 			$scope.isAdmin = security.isAdmin();
+			$scope.isFilterOn = true;
 
 			var filterDefaults = {
 				fromDestination: '',
 				toDestination: '',
 				onlyDirectFlight: false,
-				maxTranfersCount: 2,
-				departureTimeFrom: moment().toDate(),
+				maxTransfersCount: 5,
+				priceFrom: 0,
+				priceTo: 9999
+				/*departureTimeFrom: moment().toDate(),
 				departureTimeTo: moment().add('days', 10).toDate(),
 				arrivalTimeFrom: moment().toDate(),
-				arrivalTimeTo: moment().add('days', 10).toDate(),
+				arrivalTimeTo: moment().add('days', 10).toDate()*/
 			};
 
-			$scope.$watch('_filter.onlyDirectFlight', function (value) {
-				if (value) {
-					$scope._filter.maxTranfersCount = 0;
+			$scope.$watch('_filter.departureTimeFrom.getTime()', function (value) {
+				if ($scope._filter.arrivalTimeFrom < value) {
+					$scope._filter.arrivalTimeFrom = new Date(value);
 				}
 			});
 
+			$scope.$watch('_filter.departureTimeTo.getTime()', function (value) {
+				if ($scope._filter.arrivalTimeTo < value) {
+					$scope._filter.arrivalTimeTo = new Date(value);
+				}
+			});
+
+			$scope.$watch('_filter.arrivalTimeFrom.getTime()', function (value) {
+				if ($scope._filter.departureTimeFrom > value) {
+					$scope._filter.departureTimeFrom = new Date(value);
+				}
+			});
+
+			$scope.$watch('_filter.arrivalTimeTo.getTime()', function (value) {
+				if ($scope._filter.departureTimeTo > value) {
+					$scope._filter.departureTimeTo = new Date(value);
+				}
+			});
+
+			$scope.$watch('_filter.onlyDirectFlight', function (value) {
+				if (value) {
+					$scope._filter.maxTransfersCount = 0;
+				}
+				else {
+					$scope._filter.maxTransfersCount = filterDefaults.maxTransfersCount;
+				}
+			});
+
+			$scope.cancelDateFilter = function (type) {
+				if (type == 'departure') {
+					$scope._filter.departureTimeFrom = null;
+					$scope._filter.departureTimeTo = null;
+				}
+				else if (type == 'arrival') {
+					$scope._filter.arrivalTimeFrom = null;
+					$scope._filter.arrivalTimeTo = null;
+				}
+			};
+
 			// vyhledavaci filtr
 			$scope.filter = null;
-
-			$scope.directFlightChange = function (value) {
-				console.log('directFlightChange', value);
-			};
 
 			$scope.getCities = function (value) {
 				return Destination.filter(value);

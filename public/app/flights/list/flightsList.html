@@ -6,43 +6,59 @@
     <div ng-show="!isFilterOn &amp;&amp; filter" class="alert">Máte nastaven filtr.</div><a ng-click="isFilterOn = true" ng-hide="isFilterOn" href="#" class="btn">Zobrazit filtr</a>
     <form ng-show="isFilterOn" name="filterForm" ng-submit="doFilter()" class="control-group">
       <div class="row">
-        <div class="control-group span3">
+        <div class="control-group span4">
           <label class="control-label">Odkud</label>
           <div class="controls">
             <input type="text" name="fromDestination" ng-model="_filter.fromDestination" typeahead="suggestion for suggestion in getCities($viewValue)"/>
           </div>
         </div>
-        <div class="control-group span3">
+        <div class="control-group span4">
           <label class="control-label">Odlet</label>
-          <div class="dropdown"><a class="dropdown-toggle btn">{{ _filter.departureTimeFrom | date }} - {{ _filter.departureTimeTo | date }}</a>
-            <div ng-click="$event.preventDefault();$event.stopPropagation()" class="dropdown-menu">
-              <div date-range="date-range" start="_filter.departureTimeFrom" end="_filter.departureTimeTo"></div>
-            </div>
+          <div class="range-selection">
+            <div class="dropdown"><a class="dropdown-toggle btn"><span ng-if="_filter.departureTimeFrom &amp;&amp; _filter.departureTimeTo">{{ _filter.departureTimeFrom | date }} - {{ _filter.departureTimeTo | date }}</span><span ng-if="!_filter.departureTimeFrom || !_filter.departureTimeTo">Vyberte...</span></a>
+              <div ng-click="$event.preventDefault();$event.stopPropagation()" class="dropdown-menu">
+                <div date-range="date-range" start="_filter.departureTimeFrom" end="_filter.departureTimeTo"></div>
+              </div>
+            </div><a href="#" ng-click="cancelDateFilter('departure')" ng-show="_filter.departureTimeFrom &amp;&amp; _filter.departureTimeTo" class="clear btn btn-danger"><i class="icon-remove-sign"></i></a>
           </div>
         </div>
-        <div class="control-group span3">
+        <div class="control-group span4">
+          <label class="control-label">Cena</label>
+          <div class="controls">
+            <div range-slider="range-slider" min="10" max="999" model-min="_filter.priceFrom" model-max="_filter.priceTo" filter="currency"></div>
+          </div>
+        </div>
+        <div class="control-group span4">
           <label class="control-label">Maximální počet přestupů</label>
           <label class="checkbox">
             <input type="checkbox" ng-model="_filter.onlyDirectFlight"/>pouze přímé lety
           </label>
           <div class="controls">
-            <input type="number" ng-model="_filter.maxTranfersCount" name="maxTranfersCount" ng-disabled="_filter.onlyDirectFlight"/>
+            <input type="number" ng-model="_filter.maxTransfersCount" name="maxTransfersCount" ng-hide="_filter.onlyDirectFlight"/>
           </div>
         </div>
       </div>
       <div class="row">
-        <div class="control-group span3">
+        <div class="control-group span4">
           <label class="control-label">Kam</label>
           <div class="controls">
             <input type="text" name="toDestination" ng-model="_filter.toDestination" typeahead="suggestion for suggestion in getCities($viewValue)"/>
           </div>
         </div>
-        <div class="control-group span3">
+        <div class="control-group span4">
           <label class="control-label">Přílet</label>
-          <div class="dropdown"><a class="dropdown-toggle btn">{{ _filter.arrivalTimeFrom | date }} - {{ _filter.arrivalTimeTo | date }}</a>
-            <div ng-click="$event.preventDefault();$event.stopPropagation()" class="dropdown-menu">
-              <div date-range="date-range" start="_filter.arrivalTimeFrom" end="_filter.arrivalTimeTo"></div>
-            </div>
+          <div class="range-selection">
+            <div class="dropdown"><a class="dropdown-toggle btn"><span ng-if="_filter.arrivalTimeFrom &amp;&amp; _filter.arrivalTimeTo">{{ _filter.arrivalTimeFrom | date }} - {{ _filter.arrivalTimeTo | date }}</span><span ng-if="!_filter.arrivalTimeFrom || !_filter.arrivalTimeTo">Vyberte...</span></a>
+              <div ng-click="$event.preventDefault();$event.stopPropagation()" class="dropdown-menu">
+                <div date-range="date-range" start="_filter.arrivalTimeFrom" end="_filter.arrivalTimeTo"></div>
+              </div>
+            </div><a href="#" ng-click="cancelDateFilter('arrival')" ng-show="_filter.arrivalTimeFrom &amp;&amp; _filter.arrivalTimeTo" class="clear btn btn-danger"><i class="icon-remove-sign"></i></a>
+          </div>
+        </div>
+        <div class="control-group span4">
+          <label class="control-label">Maximální délka letu (v hodinách)</label>
+          <div class="controls">
+            <input type="number" name="totalFlightDuration" ng-model="_filter.totalFlightDuration"/>
           </div>
         </div>
       </div>

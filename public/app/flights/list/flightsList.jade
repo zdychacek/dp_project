@@ -15,38 +15,58 @@ div.filter
 
 		form.control-group(ng-show="isFilterOn", name="filterForm", ng-submit="doFilter()")
 			div.row
-				div.control-group.span3
+				div.control-group.span4
 					label.control-label Odkud
 					div.controls
 						input(type="text", name="fromDestination", ng-model="_filter.fromDestination", typeahead="suggestion for suggestion in getCities($viewValue)")
 
-				div.control-group.span3
+				div.control-group.span4
 					label.control-label Odlet
-					div.dropdown
-						a.dropdown-toggle.btn {{ _filter.departureTimeFrom | date }} - {{ _filter.departureTimeTo | date }}
-						div.dropdown-menu(ng-click="$event.preventDefault();$event.stopPropagation()")
-							div(date-range, start="_filter.departureTimeFrom", end="_filter.departureTimeTo")
+					div.range-selection
+						div.dropdown
+							a.dropdown-toggle.btn
+								span(ng-if="_filter.departureTimeFrom && _filter.departureTimeTo") {{ _filter.departureTimeFrom | date }} - {{ _filter.departureTimeTo | date }}
+								span(ng-if="!_filter.departureTimeFrom || !_filter.departureTimeTo") Vyberte...
+							div.dropdown-menu(ng-click="$event.preventDefault();$event.stopPropagation()")
+								div(date-range, start="_filter.departureTimeFrom", end="_filter.departureTimeTo")
+						a.clear.btn.btn-danger(href="#", ng-click="cancelDateFilter('departure')", ng-show="_filter.departureTimeFrom && _filter.departureTimeTo")
+							i.icon-remove-sign
 
-				div.control-group.span3
+				div.control-group.span4
+					label.control-label Cena
+					div.controls
+						div(range-slider, min="10", max="999", model-min="_filter.priceFrom", model-max="_filter.priceTo", filter="currency")
+
+				div.control-group.span4
 					label.control-label Maximální počet přestupů
 					label.checkbox
 						input(type="checkbox", ng-model="_filter.onlyDirectFlight")
 						| pouze přímé lety
 					div.controls
-						input(type="number", ng-model="_filter.maxTranfersCount", name="maxTranfersCount", ng-disabled="_filter.onlyDirectFlight")
+						input(type="number", ng-model="_filter.maxTransfersCount", name="maxTransfersCount", ng-hide="_filter.onlyDirectFlight")
 
 			div.row
-				div.control-group.span3
+				div.control-group.span4
 					label.control-label Kam
 					div.controls
 						input(type="text", name="toDestination", ng-model="_filter.toDestination", typeahead="suggestion for suggestion in getCities($viewValue)")
 
-				div.control-group.span3
+				div.control-group.span4
 					label.control-label Přílet
-					div.dropdown
-						a.dropdown-toggle.btn {{ _filter.arrivalTimeFrom | date }} - {{ _filter.arrivalTimeTo | date }}
-						div.dropdown-menu(ng-click="$event.preventDefault();$event.stopPropagation()")
-							div(date-range, start="_filter.arrivalTimeFrom", end="_filter.arrivalTimeTo")
+					div.range-selection
+						div.dropdown
+							a.dropdown-toggle.btn
+								span(ng-if="_filter.arrivalTimeFrom && _filter.arrivalTimeTo") {{ _filter.arrivalTimeFrom | date }} - {{ _filter.arrivalTimeTo | date }}
+								span(ng-if="!_filter.arrivalTimeFrom || !_filter.arrivalTimeTo") Vyberte...
+							div.dropdown-menu(ng-click="$event.preventDefault();$event.stopPropagation()")
+								div(date-range, start="_filter.arrivalTimeFrom", end="_filter.arrivalTimeTo")
+						a.clear.btn.btn-danger(href="#", ng-click="cancelDateFilter('arrival')", ng-show="_filter.arrivalTimeFrom && _filter.arrivalTimeTo")
+							i.icon-remove-sign
+
+				div.control-group.span4
+					label.control-label Maximální délka letu (v hodinách)
+					div.controls
+						input(type="number", name="totalFlightDuration", ng-model="_filter.totalFlightDuration")
 
 			div.btn-toolbar
 				input.btn.btn-primary(type="submit", value="Vyhledat", ng-disabled="filterForm.$invalid")

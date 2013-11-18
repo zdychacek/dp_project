@@ -7,6 +7,7 @@ require.config({
 		'angular-animate': '../components/angular-animate/angular-animate.min',
 		'angular-bootstrap': '../components/angular-bootstrap/ui-bootstrap-tpls.min',
 		'angular-datepicker': '../components/angular-datepicker/dist/index',
+		'angular-rangeslider': '../components/angular-rangeslider/angular.rangeSlider',
 		'moment': '../components/momentjs/moment',
 		'spin': '../components/spin.js/spin'
 	},
@@ -26,6 +27,9 @@ require.config({
 		},
 		'angular-datepicker': {
 			deps: ['angular']
+		},
+		'angular-rangeslider': {
+			deps: ['angular']
 		}
 	}
 });
@@ -36,6 +40,7 @@ require([
 	'angular-animate',
 	'angular-bootstrap',
 	'angular-datepicker',
+	'angular-rangeslider',
 	'config',
 
 	// directives
@@ -74,6 +79,7 @@ require([
 		'datePicker',
 		'app.config',
 		'ui.bootstrap',
+		'ui-rangeSlider',
 
 		// directives
 		'directives.sortableTable',

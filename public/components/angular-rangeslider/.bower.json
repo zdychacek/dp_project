@@ -1,0 +1,19 @@
+{
+  "name": "angular-rangeslider",
+  "main": "./angular.rangeSlider.js",
+  "dependencies": {
+    "unstable-angular-complete": ">=1.1.4",
+    "jquery": ">=1.7"
+  },
+  "homepage": "https://github.com/danielcrisp/angular-rangeslider",
+  "_release": "master",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "4672016236f74419aa36399831df8b9642b1b99d"
+  },
+  "_source": "git://github.com/danielcrisp/angular-rangeslider.git",
+  "_target": "*",
+  "_originalSource": "angular-rangeslider",
+  "_direct": true
+}
