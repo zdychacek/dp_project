@@ -5,6 +5,10 @@
 <div class="content-main">
   <spinner show="loadingData" align="center"></spinner>
   <div ng-show="totalItems &gt; 0" class="table-container">
+    <div class="table-pager">
+      <my-pagination></my-pagination><span class="items-count">Počet záznamů na stránku:
+        <select ng-model="itemsPerPage" ng-options="i for i in itemsPerPageList"></select></span>
+    </div>
     <table sortable-table="sortable-table" sort-column="sort.column" sort-dir="sort.dir" ng-style="getTableVisibilityStyle()" class="table table-bordered">
       <tr ng-repeat="carrier in carriers">
         <td data-title="Logo"><img ng-show="carrier.logo.length &gt; 0" ng-src="{{makeLogoUrl(carrier)}}" class="carrier-logo"/></td>
@@ -14,10 +18,9 @@
         <td class="icon"><a ng-click="editCarrier(carrier)" href="#" class="btn btn-info"><span class="icon-pencil"></span></a><a ng-click="removeCarrier(carrier)" href="#" class="btn btn-danger"><span class="icon-remove-sign"></span></a></td>
       </tr>
     </table>
-    <my-pagination></my-pagination>
-    <div class="itemsCount">Počet záznamů na stránku:
-      <select ng-model="itemsPerPage" ng-options="i for i in itemsPerPageList"></select>
+    <div class="table-pager">
+      <my-pagination></my-pagination><span class="items-count">Počet záznamů na stránku:
+        <select ng-model="itemsPerPage" ng-options="i for i in itemsPerPageList"></select></span>
     </div>
-    <div class="total">Stránka: {{currentPage}} / {{totalPages}}</div>
   </div>
 </div>

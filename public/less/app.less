@@ -37,6 +37,25 @@ table {
 
 .pagination {
 	cursor: pointer;
+	margin-top: 0px;
+}
+
+.table-pager {
+	overflow: hidden;
+
+	.pagination {
+		cursor: pointer;
+		float: left;
+	}
+
+	.items-count {
+		display: inline-block;
+		float: right;
+
+		select {
+			width: 60px;
+		}
+	}
 }
 
 .control-group {

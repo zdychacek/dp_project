@@ -1,9 +1,10 @@
 
-<h1>Seznam letů</h1>
+<h1>Seznam letů</h1><a ng-href="/flights/new" ng-if="isAdmin" class="btn btn-success"><i class="icon icon-plus-sign"></i>&nbsp;Nový let</a>
 <div class="filter">
   <fieldset>
-    <legend>Vyhledávání</legend>
-    <form name="filterForm" ng-submit="doFilter()" class="control-group">
+    <legend>Filtr</legend>
+    <div ng-show="!isFilterOn &amp;&amp; filter" class="alert">Máte nastaven filtr.</div><a ng-click="isFilterOn = true" ng-hide="isFilterOn" href="#" class="btn">Zobrazit filtr</a>
+    <form ng-show="isFilterOn" name="filterForm" ng-submit="doFilter()" class="control-group">
       <div class="row">
         <div class="control-group span3">
           <label class="control-label">Odkud</label>
@@ -13,8 +14,19 @@
         </div>
         <div class="control-group span3">
           <label class="control-label">Odlet</label>
+          <div class="dropdown"><a class="dropdown-toggle btn">{{ _filter.departureTimeFrom | date }} - {{ _filter.departureTimeTo | date }}</a>
+            <div ng-click="$event.preventDefault();$event.stopPropagation()" class="dropdown-menu">
+              <div date-range="date-range" start="_filter.departureTimeFrom" end="_filter.departureTimeTo"></div>
+            </div>
+          </div>
+        </div>
+        <div class="control-group span3">
+          <label class="control-label">Maximální počet přestupů</label>
+          <label class="checkbox">
+            <input type="checkbox" ng-model="_filter.onlyDirectFlight"/>pouze přímé lety
+          </label>
           <div class="controls">
-            <input type="datetime" date-time="date-time" ng-model="_filter.departureTime" name="departureTime" required="required" max-view="date"/>
+            <input type="number" ng-model="_filter.maxTranfersCount" name="maxTranfersCount" ng-disabled="_filter.onlyDirectFlight"/>
           </div>
         </div>
       </div>
@@ -27,25 +39,15 @@
         </div>
         <div class="control-group span3">
           <label class="control-label">Přílet</label>
-          <div class="controls">
-            <input type="datetime" date-time="date-time" ng-model="_filter.arrivalTime" name="arrivalTime" required="required" max-view="date"/>
+          <div class="dropdown"><a class="dropdown-toggle btn">{{ _filter.arrivalTimeFrom | date }} - {{ _filter.arrivalTimeTo | date }}</a>
+            <div ng-click="$event.preventDefault();$event.stopPropagation()" class="dropdown-menu">
+              <div date-range="date-range" start="_filter.arrivalTimeFrom" end="_filter.arrivalTimeTo"></div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="control-group span3">
-          <label class="control-label">Maximální počet přestupů</label>
-          <label class="checkbox">
-            <input type="checkbox" ng-model="_filter.onlyDirectFlight"/>Přímý let
-          </label>
-          <div class="controls">
-            <input type="number" ng-model="_filter.maxTranfersCount" name="maxTranfersCount" ng-disabled="_filter.onlyDirectFlight"/>
-          </div>
-        </div>
-        <div class="control-group span3"></div>
       </div>
       <div class="btn-toolbar">
-        <input type="submit" value="Vyhledat" ng-disabled="filterForm.$invalid" class="btn btn-primary"/><a ng-click="resetFilter()" class="btn">Smazat filtr</a>
+        <input type="submit" value="Vyhledat" ng-disabled="filterForm.$invalid" class="btn btn-primary"/><a ng-click="resetFilter()" class="btn btn-danger">Smazat filtr</a><a ng-click="isFilterOn = false" class="btn">Skrýt filtr</a>
       </div>
     </form>
   </fieldset>
@@ -57,31 +59,38 @@
   -->
 </div>
 <div ng-show="totalItems == 0 &amp;&amp; !loadingData" class="alert">Nejsou k dispozici žádné záznamy.</div>
-<div class="content-menu"><a ng-href="/flights/new" ng-if="isAdmin" class="btn btn-new"><i class="icon icon-plus-sign"></i>&nbsp;Nový let</a></div>
 <div class="content-main">
   <spinner show="loadingData" align="center"></spinner>
   <div ng-show="totalItems &gt; 0" class="table-container">
-    <table sortable-table="sortable-table" sort-column="sort.column" sort-dir="sort.dir" ng-style="getTableVisibilityStyle()" class="table table-bordered">
-      <tr ng-repeat="flight in flights">
-        <td data-title="Odlet (destinace)" sortable="fromDestination" class="with-logo"><span>{{flight.fromDestination}}</span><img ng-src="{{getArrivalCarrierLogo(flight)}}" ng-show="getArrivalCarrierLogo(flight)"/></td>
-        <td data-title="Odlet (čas)" sortable="departureTime">{{flight.departureTime | date: 'medium'}}</td>
-        <td data-title="Přílet (destinace)" sortable="toDestination" class="with-logo"><span>{{flight.toDestination}}</span><img ng-src="{{getDepartureCarrierLogo(flight)}}" ng-show="getDepartureCarrierLogo(flight)"/></td>
-        <td data-title="Přílet (čas)" sortable="arrivalTime">{{flight.arrivalTime | date: 'medium'}}</td>
-        <td data-title="Délka letu" sortable="totalFlightDuration">{{flight.totalFlightDuration | minutesFormatter}}</td>
-        <td data-title="Cena" sortable="price">{{flight.price | currency}}</td>
-        <td data-title="Poznámka" sortable="note">{{flight.note}}</td>
-        <td data-title="Kapacita (volné místo)" sortable="capacity">{{flight.capacity}}
-          <ng-switch on="isFreeCapacity(flight)"><i ng-switch-when="true" class="icon-ok"></i><i ng-switch-when="false" class="icon-remove"></i></ng-switch>
-        </td>
-        <td data-title="Počet přestupů" sortable="transfersCount">{{flight.transfersCount}}</td>
-        <td data-title="Vytvořeno" sortable="lastModified">{{flight.lastModified | date: 'd.M.yy H:mm'}}</td>
-        <td class="icon"><a ng-click="editFlight(flight)" href="#" class="btn btn-info"><span class="icon-pencil"></span></a><a ng-click="removeFlight(flight)" href="#" class="btn btn-danger"><span class="icon-remove-sign"></span></a></td>
-      </tr>
-    </table>
-    <my-pagination></my-pagination>
-    <div class="itemsCount">Počet záznamů na stránku:
-      <select ng-model="itemsPerPage" ng-options="i for i in itemsPerPageList"></select>
-    </div>
-    <div class="total">Stránka: {{currentPage}} / {{totalPages}}</div>
+    <fieldset>
+      <legend>Vyhledané záznamy ({{ totalItems }})</legend>
+      <div class="table-pager">
+        <my-pagination></my-pagination><span class="items-count">Počet záznamů na stránku:
+          <select ng-model="itemsPerPage" ng-options="i for i in itemsPerPageList"></select></span>
+      </div>
+      <table sortable-table="sortable-table" sort-column="sort.column" sort-dir="sort.dir" ng-style="getTableVisibilityStyle()" class="table table-bordered">
+        <tr ng-repeat="flight in flights">
+          <td data-title="Odlet (destinace)" sortable="fromDestination" class="with-logo"><span>{{flight.fromDestination}}</span><img ng-src="{{getArrivalCarrierLogo(flight)}}" ng-show="getArrivalCarrierLogo(flight)"/></td>
+          <td data-title="Odlet (čas)" sortable="departureTime">{{flight.departureTime | date: 'medium'}}</td>
+          <td data-title="Přílet (destinace)" sortable="toDestination" class="with-logo"><span>{{flight.toDestination}}</span><img ng-src="{{getDepartureCarrierLogo(flight)}}" ng-show="getDepartureCarrierLogo(flight)"/></td>
+          <td data-title="Přílet (čas)" sortable="arrivalTime">{{flight.arrivalTime | date: 'medium'}}</td>
+          <td data-title="Délka letu" sortable="totalFlightDuration">{{flight.totalFlightDuration | minutesFormatter}}</td>
+          <td data-title="Cena" sortable="price">{{flight.price | currency}}</td>
+          <td data-title="Poznámka" sortable="note">{{flight.note}}</td>
+          <td data-title="Kapacita (volné místo)" sortable="capacity">{{flight.capacity}}
+            <ng-switch on="isFreeCapacity(flight)"><i ng-switch-when="true" class="icon-ok"></i><i ng-switch-when="false" class="icon-remove"></i></ng-switch>
+          </td>
+          <td data-title="Počet přestupů" sortable="transfersCount">
+            <ng-switch on="flight.transfersCount"><span ng-switch-when="0">přímý let</span><span ng-switch-default="false">{{flight.transfersCount}}</span></ng-switch>
+          </td>
+          <td data-title="Vytvořeno" sortable="lastModified">{{flight.lastModified | date: 'd.M.yy H:mm'}}</td>
+          <td class="icon"><a ng-click="editFlight(flight)" href="#" class="btn btn-info"><span class="icon-pencil"></span></a><a ng-click="removeFlight(flight)" href="#" class="btn btn-danger"><span class="icon-remove-sign"></span></a></td>
+        </tr>
+      </table>
+      <div class="table-pager">
+        <my-pagination></my-pagination><span class="items-count">Počet záznamů na stránku:
+          <select ng-model="itemsPerPage" ng-options="i for i in itemsPerPageList"></select></span>
+      </div>
+    </fieldset>
   </div>
 </div>

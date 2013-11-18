@@ -46,9 +46,11 @@ define([
 				fromDestination: '',
 				toDestination: '',
 				onlyDirectFlight: false,
-				maxTranfersCount: 1,
-				departureTime: moment().toDate(),
-				arrivalTime: moment().add('days', 1).toDate()
+				maxTranfersCount: 2,
+				departureTimeFrom: moment().toDate(),
+				departureTimeTo: moment().add('days', 10).toDate(),
+				arrivalTimeFrom: moment().toDate(),
+				arrivalTimeTo: moment().add('days', 10).toDate(),
 			};
 
 			$scope.$watch('_filter.onlyDirectFlight', function (value) {

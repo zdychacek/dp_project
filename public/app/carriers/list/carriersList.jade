@@ -11,6 +11,12 @@ div.content-main
 	spinner(show="loadingData", align="center")
 
 	div.table-container(ng-show="totalItems > 0")
+		div.table-pager
+			my-pagination
+
+			span.items-count Počet záznamů na stránku:
+				select(ng-model="itemsPerPage", ng-options="i for i in itemsPerPageList")
+
 		table.table.table-bordered(sortable-table, sort-column="sort.column", sort-dir="sort.dir", ng-style="getTableVisibilityStyle()")
 			tr(ng-repeat="carrier in carriers")
 				td(data-title="Logo")
@@ -31,9 +37,8 @@ div.content-main
 					a.btn.btn-danger(ng-click="removeCarrier(carrier)", href="#")
 						span.icon-remove-sign
 
-		my-pagination
+		div.table-pager
+			my-pagination
 
-		div.itemsCount Počet záznamů na stránku:
-			select(ng-model="itemsPerPage", ng-options="i for i in itemsPerPageList")
-
-		div.total Stránka: {{currentPage}} / {{totalPages}}
+			span.items-count Počet záznamů na stránku:
+				select(ng-model="itemsPerPage", ng-options="i for i in itemsPerPageList")
