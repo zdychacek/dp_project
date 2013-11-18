@@ -83,7 +83,7 @@ module.exports = function (grunt) {
 				'es5': true,
 				'esnext': true,
 				'bitwise': true,
-				'camelcase': true,
+				//'camelcase': true,
 				'curly': true,
 				'eqeqeq': true,
 				'immed': true,

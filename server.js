@@ -4,7 +4,6 @@ const express = require('express'),
 	app = express(),
 	mongoose = require('mongoose'),
 	fs = require('fs'),
-	// MOCK
 	security = require('./lib/security.js'),
 	config = require('./config.js');
 
@@ -51,10 +50,8 @@ app.use(config.server.staticUrl, function (req, res, next) {
 	res.send(404);
 });
 
-// -------------- Security routes
-require('./controllers/security').addRoutes(app, security);
-
 // Mapovani na controllery
+require('./controllers/security').addRoutes(app, security);
 require('./controllers/users').addRoutes(app, config);
 require('./controllers/carriers').addRoutes(app, config);
 require('./controllers/flights').addRoutes(app, config);

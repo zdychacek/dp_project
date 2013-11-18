@@ -76,10 +76,12 @@ define([
 				}
 				else {
 					$scope.user.$update().then(function (user) {
+						var serverErrors = user.getServerErrors();
+
 						notifications.removeAll();
 
-						if (user && user.getServerErrors()) {
-							user._errors_.forEach(function (error) {
+						if (user && serverErrors) {
+							serverErrors.forEach(function (error) {
 								notifications.pushForCurrentRoute(error);
 							});
 						}

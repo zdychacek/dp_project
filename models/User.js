@@ -9,14 +9,15 @@ var User = new mongoose.Schema({
 	isAdmin: { type: Boolean, default: false },
 	password: String,
 	isEnabled: { type: Boolean, default: true },
-	bannedSince: { type: Date, default: new Date() }
+	bannedSince: Date,
+	badLoginCounter: Number
 });
 
 User.plugin(lastModified);
 
 User.pre('save', function (next) {
 	if (this.isEnabled) {
-		this.bannedSince = null;
+		//this.bannedSince = null;
 	}
 
 	next();
