@@ -76,10 +76,21 @@ define([
 				}
 				else {
 					$scope.user.$update().then(function (user) {
-						notifications.pushForCurrentRoute({
-							message: 'Změny byly uloženy.',
-							type: 'success'
-						});
+						notifications.removeAll();
+
+						if (user && user.getServerErrors()) {
+							user._errors_.forEach(function (error) {
+								notifications.pushForCurrentRoute(error);
+							});
+						}
+						else {
+							notifications.pushForCurrentRoute({
+								message: 'Změny byly uloženy.',
+								type: 'success'
+							});
+						}
+
+						$scope.user = user;
 					});
 				}
 			};

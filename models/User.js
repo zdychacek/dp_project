@@ -7,9 +7,19 @@ var User = new mongoose.Schema({
 	lastName: String,
 	email: String,
 	isAdmin: { type: Boolean, default: false },
-	password: String
+	password: String,
+	isEnabled: { type: Boolean, default: true },
+	bannedSince: { type: Date, default: new Date() }
 });
 
 User.plugin(lastModified);
+
+User.pre('save', function (next) {
+	if (this.isEnabled) {
+		this.bannedSince = null;
+	}
+
+	next();
+});
 
 module.exports = mongoose.model('User', User);

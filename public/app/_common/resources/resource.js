@@ -160,6 +160,10 @@ define([
 					return Resource.getResourceUrl();
 				};
 
+				Resource.prototype.getServerErrors = function () {
+					return this._errors_;
+				};
+
 				return Resource;
 		};
 	}]);

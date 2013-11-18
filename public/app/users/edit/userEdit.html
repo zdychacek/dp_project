@@ -41,6 +41,12 @@
           <input type="checkbox" ng-model="user.isAdmin"/>
         </div>
       </div>
+      <div class="control-group">
+        <label class="control-label">Přihlášení povoleno</label>
+        <div class="controls">
+          <input type="checkbox" ng-model="user.isEnabled"/><span ng-show="user.bannedSince" class="label label-important">Uživatel je zablokován od: {{ user.bannedSince | date }}</span>
+        </div>
+      </div>
     </fieldset>
     <fieldset>
       <legend>Zabezpečení</legend>

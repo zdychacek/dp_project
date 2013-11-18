@@ -45,6 +45,12 @@ form.form-horizontal(name="form", ng-hide="noData", ng-submit="save()")
 				.controls
 					input(type='checkbox', ng-model="user.isAdmin")
 
+			.control-group
+				label.control-label Přihlášení povoleno
+				.controls
+					input(type='checkbox', ng-model="user.isEnabled")
+					span.label.label-important(ng-show="user.bannedSince") Uživatel je zablokován od: {{ user.bannedSince | date }}
+
 		fieldset
 			legend Zabezpečení
 

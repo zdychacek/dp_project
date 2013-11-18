@@ -28,7 +28,7 @@ exports.addRoutes = function (app, config) {
 				else {
 					console.log(err);
 					res.json(null);
-				}				
+				}
 			});
 		});
 
@@ -52,17 +52,54 @@ exports.addRoutes = function (app, config) {
 		});
 
 		app.put('/:id', function (req, res) {
-			var userData = req.body,
-				id = req.params.id;
+			var errors = [];
 
-			delete userData._id;
+			User.findById(req.params.id, function (err, user) {
+				var originalUser = user.toObject();
 
-			User.findOneAndUpdate({ _id: id }, userData, function (err, user) {
-				if (err) {
-					console.log(err);
+				if (!err) {
+					user.email = req.body.email;
+					user.firstName = req.body.firstName;
+					user.lastName = req.body.lastName;
+					user.login = req.body.login;
+					user.isAdmin = req.body.isAdmin;
+
+					if (req.body.isEnabled !== undefined) {
+						user.isEnabled = req.body.isEnabled;
+					}
+
+					var oldPassword = req.body.oldPassword,
+						passwordConfirmaton = req.body.passwordConfirmaton;
+
+					if (oldPassword !== undefined && passwordConfirmaton !== undefined) {
+						if (oldPassword === user.password) {
+							console.log('Changing password from', oldPassword, ' to ', req.body.password)
+							user.password = req.body.password;
+						}
+						else {
+							errors.push({
+								type: 'error',
+								message: 'Zadali jste špatné původní heslo. Změna hesla se nezdařila.'
+							});
+						}
+					}
+
+					// nastali chyby
+					if (errors.length) {
+						originalUser['_errors_'] = errors;
+						res.json(originalUser);
+					}
+					// vse probehlo v poradku
+					else {
+						user.save(function (err, user) {
+							if (!err) {
+								res.json(user);
+							}
+							else { console.log(err); }
+						});
+					}
 				}
-
-				res.json(user);
+				else { console.log(err); }
 			});
 		});
 
