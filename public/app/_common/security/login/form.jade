@@ -6,8 +6,8 @@ form.login-form(name="form", novalidate="novalidate")
 			.alert.alert-warning(ng-show="authReason")
 				| {{authReason}}
 
-			.alert.alert-error(ng-show="authError")
-				| {{authError}}
+			.alert.alert-error(ng-show="authErrors.length")
+				div.msg(ng-repeat="err in authErrors") {{err}}
 
 			.alert.alert-info Vyplňte, prosím, vaše přihlašovací údaje
 

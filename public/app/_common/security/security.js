@@ -91,17 +91,16 @@ define([
 					return request.then(function (response) {
 						var data = response.data;
 
-						/*debugger;
-
-						if (data._errors_ && data._errors_.length > 0) {
-							service.logginErrors
-						}*/
-
 						service.currentUser = data.user;
 
 						if (service.isAuthenticated()) {
 							closeLoginDialog(true);
 						}
+
+						return {
+							loggedIn: !!service.currentUser,
+							errors: data._errors_ || null
+						};
 					});
 				},
 

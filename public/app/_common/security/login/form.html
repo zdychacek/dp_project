@@ -5,7 +5,9 @@
   </div>
   <div class="modal-body">
     <div ng-show="authReason" class="alert alert-warning">{{authReason}}</div>
-    <div ng-show="authError" class="alert alert-error">{{authError}}</div>
+    <div ng-show="authErrors.length" class="alert alert-error">
+      <div ng-repeat="err in authErrors" class="msg">{{err}}</div>
+    </div>
     <div class="alert alert-info">Vyplňte, prosím, vaše přihlašovací údaje</div>
     <label>Login</label>
     <input name="login" type="text" ng-model="user.login" required="required" autofocus="autofocus"/>
