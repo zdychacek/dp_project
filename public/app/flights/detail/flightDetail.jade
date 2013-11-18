@@ -48,10 +48,15 @@ form.form-horizontal.flight-edit(name="form", ng-hide="noData", ng-submit="save(
 				.controls
 					span {{getToDestination()}}
 
-			.control-group(ng-show="getTotalTime()")
+			.control-group
 				label.control-label Celková délka letu
 				.controls
-					span {{getTotalTime()}}
+					span {{getTotalTime() | minutesFormatter: 'n/a'}}
+
+			.control-group
+				label.control-label Počet přestupů
+				.controls
+					span {{flight.path.length - 1}}
 
 		fieldset
 			legend Trasa letu
@@ -74,11 +79,11 @@ form.form-horizontal.flight-edit(name="form", ng-hide="noData", ng-submit="save(
 						td
 							input(type="datetime", date-time, ng-model="pathPart.departureTime", required, view="hours")
 						td
-							input(type="text", ng-model="pathPart.fromDestination", required)
+							input(type="text", ng-model="pathPart.fromDestination", required, typeahead="suggestion for suggestion in getCities($viewValue)")
 						td
 							input(type="datetime", date-time, ng-model="pathPart.arrivalTime", required, view="hours")
 						td
-							input(type="text", ng-model="pathPart.toDestination", required)
+							input(type="text", ng-model="pathPart.toDestination", required, typeahead="suggestion for suggestion in getCities($viewValue)")
 						td
 							span {{ getPathPartLength(pathPart) | minutesFormatter: 'n/a' }}
 						td
@@ -98,4 +103,4 @@ form.form-horizontal.flight-edit(name="form", ng-hide="noData", ng-submit="save(
 			a.btn(ng-href="/flights") Zpět na seznam
 			input.btn.btn-primary(type="submit", value="Uložit", ng-disabled="form.$invalid")
 
-		pre {{flight | json}}
+		//pre {{flight | json}}

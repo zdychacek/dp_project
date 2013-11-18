@@ -38,9 +38,13 @@
         <label class="control-label">Kam</label>
         <div class="controls"><span>{{getToDestination()}}</span></div>
       </div>
-      <div ng-show="getTotalTime()" class="control-group">
+      <div class="control-group">
         <label class="control-label">Celková délka letu</label>
-        <div class="controls"><span>{{getTotalTime()}}</span></div>
+        <div class="controls"><span>{{getTotalTime() | minutesFormatter: 'n/a'}}</span></div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">Počet přestupů</label>
+        <div class="controls"><span>{{flight.path.length - 1}}</span></div>
       </div>
     </fieldset>
     <fieldset>
@@ -65,13 +69,13 @@
               <input type="datetime" date-time="date-time" ng-model="pathPart.departureTime" required="required" view="hours"/>
             </td>
             <td>
-              <input type="text" ng-model="pathPart.fromDestination" required="required"/>
+              <input type="text" ng-model="pathPart.fromDestination" required="required" typeahead="suggestion for suggestion in getCities($viewValue)"/>
             </td>
             <td>
               <input type="datetime" date-time="date-time" ng-model="pathPart.arrivalTime" required="required" view="hours"/>
             </td>
             <td>
-              <input type="text" ng-model="pathPart.toDestination" required="required"/>
+              <input type="text" ng-model="pathPart.toDestination" required="required" typeahead="suggestion for suggestion in getCities($viewValue)"/>
             </td>
             <td><span>{{ getPathPartLength(pathPart) | minutesFormatter: 'n/a' }}</span></td>
             <td><a ng-click="removePathPart(pathPart)" ng-show="flight.path.length &gt; 1" href="#" class="btn btn-danger"><span class="icon-remove-sign"></span></a></td>
@@ -90,6 +94,6 @@
     <div class="btn-toolbar"><a ng-href="/flights" class="btn">Zpět na seznam</a>
       <input type="submit" value="Uložit" ng-disabled="form.$invalid" class="btn btn-primary"/>
     </div>
-    <pre>{{flight | json}}</pre>
+    <!--pre {{flight | json}}-->
   </div>
 </form>

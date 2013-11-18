@@ -9,7 +9,7 @@ div.filter
 				div.control-group.span3
 					label.control-label Odkud
 					div.controls
-						input(type="text", name="fromDestination", ng-model="_filter.fromDestination")
+						input(type="text", name="fromDestination", ng-model="_filter.fromDestination", typeahead="suggestion for suggestion in getCities($viewValue)")
 
 				div.control-group.span3
 					label.control-label Odlet
@@ -20,7 +20,7 @@ div.filter
 				div.control-group.span3
 					label.control-label Kam
 					div.controls
-						input(type="text", name="toDestination", ng-model="_filter.toDestination")
+						input(type="text", name="toDestination", ng-model="_filter.toDestination", typeahead="suggestion for suggestion in getCities($viewValue)")
 
 				div.control-group.span3
 					label.control-label Přílet
@@ -29,13 +29,17 @@ div.filter
 
 			div.row
 				div.control-group.span3
-					label.control-label Dopravce
+					label.control-label Maximální počet přestupů
+					label.checkbox
+						input(type="checkbox", ng-model="_filter.onlyDirectFlight")
+						| Přímý let
 					div.controls
-						select(ng-options="c._id as c.name for c in carriersList", ng-model="_filter.carrier")
-							option(value="") - vyberte -
+						input(type="number", ng-model="_filter.maxTranfersCount", name="maxTranfersCount", ng-disabled="_filter.onlyDirectFlight")
+
+				div.control-group.span3
 
 			div.btn-toolbar
-				input.btn.btn-primary(type="submit", value="Vyhledat", ng-disabled="form.$invalid")
+				input.btn.btn-primary(type="submit", value="Vyhledat", ng-disabled="filterForm.$invalid")
 				a.btn(ng-click="resetFilter()") Smazat filtr
 
 	//div
@@ -46,7 +50,7 @@ div.filter
 		pre {{filter | json}}
 
 
-div.alert(ng-show="totalItems == 0") Nejsou k dispozici žádné záznamy.
+div.alert(ng-show="totalItems == 0 && !loadingData") Nejsou k dispozici žádné záznamy.
 
 div.content-menu
 	a.btn.btn-new(ng-href="/flights/new", ng-if="isAdmin")
@@ -63,13 +67,13 @@ div.content-main
 					span {{flight.fromDestination}}
 					img(ng-src="{{getArrivalCarrierLogo(flight)}}", ng-show="getArrivalCarrierLogo(flight)")
 
-				td(data-title="Odlet (čas)", sortable="arrivalTime") {{flight.arrivalTime | date: 'medium'}}
+				td(data-title="Odlet (čas)", sortable="departureTime") {{flight.departureTime | date: 'medium'}}
 
 				td.with-logo(data-title="Přílet (destinace)", sortable="toDestination")
 					span {{flight.toDestination}}
 					img(ng-src="{{getDepartureCarrierLogo(flight)}}", ng-show="getDepartureCarrierLogo(flight)")
 
-				td(data-title="Přílet (čas)", sortable="departureTime") {{flight.departureTime | date: 'medium'}}
+				td(data-title="Přílet (čas)", sortable="arrivalTime") {{flight.arrivalTime | date: 'medium'}}
 
 				td(data-title="Délka letu", sortable="totalFlightDuration") {{flight.totalFlightDuration | minutesFormatter}}
 
@@ -95,16 +99,7 @@ div.content-main
 					a.btn.btn-danger(ng-click="removeFlight(flight)", href="#")
 						span.icon-remove-sign
 
-		pagination.pagination(
-			total-items="totalItems",
-			page="currentPage",
-			max-size="maxSize",
-			on-select-page="selectPage(page)",
-			items-per-page="itemsPerPage",
-			num-pages="totalPages",
-			boundary-links="true",
-			max-size="5"
-		)
+		my-pagination
 
 		div.itemsCount Počet záznamů na stránku:
 			select(ng-model="itemsPerPage", ng-options="i for i in itemsPerPageList")

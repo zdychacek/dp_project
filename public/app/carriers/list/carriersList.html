@@ -1,6 +1,6 @@
 
 <h1>Seznam přepravců</h1>
-<div ng-show="totalItems == 0" class="alert">Nejsou k dispozici žádné záznamy.</div>
+<div ng-show="totalItems == 0 &amp;&amp; !loadingData" class="alert">Nejsou k dispozici žádné záznamy.</div>
 <div class="content-menu"><a ng-href="/carriers/new" class="btn btn-new"><i class="icon icon-plus-sign"></i>&nbsp;Nový přepravce</a></div>
 <div class="content-main">
   <spinner show="loadingData" align="center"></spinner>
@@ -14,7 +14,7 @@
         <td class="icon"><a ng-click="editCarrier(carrier)" href="#" class="btn btn-info"><span class="icon-pencil"></span></a><a ng-click="removeCarrier(carrier)" href="#" class="btn btn-danger"><span class="icon-remove-sign"></span></a></td>
       </tr>
     </table>
-    <pagination total-items="totalItems" page="currentPage" max-size="5" on-select-page="selectPage(page)" items-per-page="itemsPerPage" num-pages="totalPages" boundary-links="true" class="pagination"></pagination>
+    <my-pagination></my-pagination>
     <div class="itemsCount">Počet záznamů na stránku:
       <select ng-model="itemsPerPage" ng-options="i for i in itemsPerPageList"></select>
     </div>

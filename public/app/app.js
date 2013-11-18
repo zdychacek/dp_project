@@ -4,6 +4,7 @@ require.config({
 		jquery: '../components/jquery/jquery.min',
 		'angular-ui': '../components/angular-ui/build/angular-ui.min',
 		'angular-route': '../components/angular-route/angular-route.min',
+		'angular-animate': '../components/angular-animate/angular-animate.min',
 		'angular-bootstrap': '../components/angular-bootstrap/ui-bootstrap-tpls.min',
 		'angular-datepicker': '../components/angular-datepicker/dist/index',
 		'moment': '../components/momentjs/moment',
@@ -15,6 +16,9 @@ require.config({
 			exports: 'angular'
 		},
 		'angular-route': {
+			deps: ['angular']
+		},
+		'angular-animate': {
 			deps: ['angular']
 		},
 		'angular-bootstrap': {
@@ -29,12 +33,13 @@ require.config({
 require([
 	'angular',
 	'angular-route',
+	'angular-animate',
 	'angular-bootstrap',
 	'angular-datepicker',
 	'config',
 
 	// directives
-	'_common/directives/pagination',
+	'_common/directives/myPagination',
 	'_common/directives/sortableTable',
 	'_common/directives/repeat',
 	'_common/directives/spinner',
@@ -65,12 +70,14 @@ require([
 
 	var app = angular.module('app', [
 		'ngRoute',
+		'ngAnimate',
 		'datePicker',
 		'app.config',
+		'ui.bootstrap',
 
 		// directives
 		'directives.sortableTable',
-		'directives.pagination',
+		'directives.myPagination',
 		'directives.repeat',
 		'directives.spinner',
 		'directives.uniqueLogin',
@@ -98,7 +105,9 @@ require([
 
 		// sablonky proo boostrapovske komponenty
 		'template/modal/window.html',
-		'template/modal/backdrop.html'
+		'template/modal/backdrop.html',
+		//'template/typeahead/typeahead.html',
+		'template/typeahead/typeahead-popup.html'
 	]);
 
 	//TODO: vytahnout do samostatneho souboru

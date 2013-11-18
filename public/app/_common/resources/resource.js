@@ -63,7 +63,13 @@ define([
 
 						// vytvoreni jednotlivych instanci
 						angular.forEach(collectionToIterate, function (value, key) {
-							items[key] = new Resource(value);
+							if (typeof value === 'object') {
+								items[key] = new Resource(value);
+							}
+							// primitivni hodnoty
+							else {
+								items[key] = value;
+							}
 						});
 
 						if (metadata) {

@@ -15,6 +15,14 @@ exports.addRoutes = function (app, config) {
 			});
 		});
 
+		app.get('/delete', function (req, res) {
+			var count = req.params.count;
+
+			Flight.remove({}, function () {
+				res.send('deleted');
+			});
+		});
+
 		app.get('/:id', function (req, res) {
 			Flight.findById(req.params.id, function (err, flight) {
 				if (!err) {
@@ -76,11 +84,11 @@ exports.addRoutes = function (app, config) {
 				data: function (callback) {
 					var query = Flight.find({});
 
-					if (typeof req.query.limit === 'number') {
+					if (req.query.limit) {
 						query = query.limit(req.query.limit);
 					}
 
-					if (typeof req.query.offset === 'number') {
+					if (req.query.offset) {
 						query = query.skip(req.query.offset);
 					}
 

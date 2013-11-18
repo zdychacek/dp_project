@@ -42,7 +42,7 @@ if (app.get('env') === 'production') {
 if (app.get('env') === 'development') {
 	console.log(config.server.staticUrl, config.server.appFolder);
 	app.use(config.server.staticUrl, express.static(config.server.appFolder));
-	
+
 } else {
 	app.use(config.server.staticUrl, express.static(config.server.distFolder));
 }
@@ -58,6 +58,7 @@ require('./controllers/security').addRoutes(app, security);
 require('./controllers/users').addRoutes(app, config);
 require('./controllers/carriers').addRoutes(app, config);
 require('./controllers/flights').addRoutes(app, config);
+require('./controllers/destinations').addRoutes(app, config);
 
 // pro podporu HTML5 location api
 app.all('/*', function(req, res) {

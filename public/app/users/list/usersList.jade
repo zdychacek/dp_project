@@ -1,6 +1,6 @@
 h1 Seznam uživatelů
 
-div.alert(ng-show="totalItems == 0") Nejsou k dispozici žádné záznamy.
+div.alert(ng-show="totalItems == 0 && !loadingData") Nejsou k dispozici žádné záznamy.
 
 div.content-menu
 	a.btn.btn-new(ng-href="/users/new")
@@ -28,15 +28,7 @@ div.content-main
 					a.btn.btn-danger(ng-click="removeUser(user)", href="#")
 						span.icon-remove-sign
 
-		pagination.pagination(
-						total-items="totalItems",
-						page="currentPage",
-						max-size="maxSize",
-						on-select-page="selectPage(page)",
-						items-per-page="itemsPerPage",
-						num-pages="totalPages",
-						boundary-links="true",
-						max-size="5")
+		my-pagination
 
 		div.itemsCount Počet záznamů na stránku:
 			select(ng-model="itemsPerPage", ng-options="i for i in itemsPerPageList")

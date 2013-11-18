@@ -3,6 +3,7 @@ define([
 	'moment',
 	'_common/resources/flight',
 	'_common/resources/carrier',
+	'_common/resources/destination',
 	'_common/security/security'
 ], function (angular, moment) {
 	'use strict';
@@ -12,6 +13,7 @@ define([
 		'security.authorization',
 		'services.i18nNotifications',
 		'resources.flight',
+		'resources.destination',
 		'resources.carrier'
 	])
 		.config(['$routeProvider', 'securityAuthorizationProvider', function ($routeProvider, securityAuthorizationProvider) {
@@ -30,22 +32,41 @@ define([
 		.controller('FlightsListCtrl', [
 			'$scope',
 			'Flight',
+			'Destination',
 			'$location',
 			'carriers',
 			'security',
-		function ($scope, Flight, $location, carriers, security) {
+			'$http',
+			'limitToFilter',
+		function ($scope, Flight, Destination, $location, carriers, security, $http, limitToFilter) {
 			$scope.carriersList = carriers.items;
 			$scope.isAdmin = security.isAdmin();
 
 			var filterDefaults = {
 				fromDestination: '',
 				toDestination: '',
+				onlyDirectFlight: false,
+				maxTranfersCount: 1,
 				departureTime: moment().toDate(),
 				arrivalTime: moment().add('days', 1).toDate()
 			};
 
+			$scope.$watch('_filter.onlyDirectFlight', function (value) {
+				if (value) {
+					$scope._filter.maxTranfersCount = 0;
+				}
+			});
+
 			// vyhledavaci filtr
 			$scope.filter = null;
+
+			$scope.directFlightChange = function (value) {
+				console.log('directFlightChange', value);
+			};
+
+			$scope.getCities = function (value) {
+				return Destination.filter(value);
+			};
 
 			$scope.doFilter = function () {
 				$scope.filter = angular.copy($scope._filter);

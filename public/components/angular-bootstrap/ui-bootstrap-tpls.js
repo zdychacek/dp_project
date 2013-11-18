@@ -109,7 +109,7 @@ angular.module('ui.bootstrap.collapse',['ui.bootstrap.transition'])
       var initialAnimSkip = true;
       scope.$watch(function (){ return element[0].scrollHeight; }, function (value) {
         //The listener is called when scollHeight changes
-        //It actually does on 2 scenarios: 
+        //It actually does on 2 scenarios:
         // 1. Parent is set to display none
         // 2. angular bindings inside are resolved
         //When we have a change of scrollHeight we are setting again the correct height if the group is opened
@@ -123,7 +123,7 @@ angular.module('ui.bootstrap.collapse',['ui.bootstrap.transition'])
           }
         }
       });
-      
+
       scope.$watch(attrs.collapse, function(value) {
         if (value) {
           collapse();
@@ -131,7 +131,7 @@ angular.module('ui.bootstrap.collapse',['ui.bootstrap.transition'])
           expand();
         }
       });
-      
+
 
       var currentTransition;
       var doTransition = function(change) {
@@ -164,7 +164,7 @@ angular.module('ui.bootstrap.collapse',['ui.bootstrap.transition'])
         }
         isCollapsed = false;
       };
-      
+
       var collapse = function() {
         isCollapsed = true;
         if (initialAnimSkip) {
@@ -186,7 +186,7 @@ angular.module('ui.bootstrap.accordion', ['ui.bootstrap.collapse'])
 })
 
 .controller('AccordionController', ['$scope', '$attrs', 'accordionConfig', function ($scope, $attrs, accordionConfig) {
-  
+
   // This array keeps track of the accordion groups
   this.groups = [];
 
@@ -201,7 +201,7 @@ angular.module('ui.bootstrap.accordion', ['ui.bootstrap.collapse'])
       });
     }
   };
-  
+
   // This is called from the accordion-group directive to add itself to the accordion
   this.addGroup = function(groupScope) {
     var that = this;
@@ -254,7 +254,7 @@ angular.module('ui.bootstrap.accordion', ['ui.bootstrap.collapse'])
       accordionCtrl.addGroup(scope);
 
       scope.isOpen = false;
-      
+
       if ( attrs.isOpen ) {
         getIsOpen = $parse(attrs.isOpen);
         setIsOpen = getIsOpen.assign;
@@ -263,7 +263,7 @@ angular.module('ui.bootstrap.accordion', ['ui.bootstrap.collapse'])
           function watchIsOpen() { return getIsOpen(scope.$parent); },
           function updateOpen(value) { scope.isOpen = value; }
         );
-        
+
         scope.isOpen = getIsOpen ? getIsOpen(scope.$parent) : false;
       }
 
@@ -1912,7 +1912,7 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
 
   // The options specified to the provider globally.
   var globalOptions = {};
-  
+
   /**
    * `options({})` allows global configuration of all tooltips in the
    * application.
@@ -1981,7 +1981,7 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
 
       var startSym = $interpolate.startSymbol();
       var endSym = $interpolate.endSymbol();
-      var template = 
+      var template =
         '<'+ directiveName +'-popup '+
           'title="'+startSym+'tt_title'+endSym+'" '+
           'content="'+startSym+'tt_content'+endSym+'" '+
@@ -2014,7 +2014,7 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
               hideTooltipBind();
             }
           }
-          
+
           // Show the tooltip with delay if specified, otherwise show it immediately
           function showTooltipBind() {
             if ( scope.tt_popupDelay ) {
@@ -2029,7 +2029,7 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
               hide();
             });
           }
-          
+
           // Show the tooltip popup element.
           function show() {
             var position,
@@ -2047,11 +2047,11 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
             if ( transitionTimeout ) {
               $timeout.cancel( transitionTimeout );
             }
-            
+
             // Set the initial positioning.
             tooltip.css({ top: 0, left: 0, display: 'block' });
-            
-            // Now we add it to the DOM because need some info about it. But it's not 
+
+            // Now we add it to the DOM because need some info about it. But it's not
             // visible yet anyway.
             if ( appendToBody ) {
                 $body = $body || $document.find( 'body' );
@@ -2066,7 +2066,7 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
             // Get the height and width of the tooltip so we can center it.
             ttWidth = tooltip.prop( 'offsetWidth' );
             ttHeight = tooltip.prop( 'offsetHeight' );
-            
+
             // Calculate the tooltip's top and left coordinates to center it with
             // this directive.
             switch ( scope.tt_placement ) {
@@ -2101,11 +2101,11 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
 
             // Now set the calculated positioning.
             tooltip.css( ttPosition );
-              
+
             // And show the tooltip.
             scope.tt_isOpen = true;
           }
-          
+
           // Hide the tooltip popup element.
           function hide() {
             // First things first: we don't show it anymore.
@@ -2113,8 +2113,8 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
 
             //if tooltip is going to be shown after delay, we must cancel this
             $timeout.cancel( popupTimeout );
-            
-            // And now we remove it from the DOM. However, if we have animation, we 
+
+            // And now we remove it from the DOM. However, if we have animation, we
             // need to wait for it to expire beforehand.
             // FIXME: this is a placeholder for a port of the transitions library.
             if ( angular.isDefined( scope.tt_animation ) && scope.tt_animation() ) {
@@ -3075,7 +3075,6 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
       };
 
       var getMatchesAsync = function(inputValue) {
-
         var locals = {$viewValue: inputValue};
         isLoadingSetter(originalScope, true);
         $q.when(parserResult.source(scope, locals)).then(function(matches) {
@@ -3120,7 +3119,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
       //we need to propagate user's query so we can higlight matches
       scope.query = undefined;
 
-      //Declare the timeout promise var outside the function scope so that stacked calls can be cancelled later 
+      //Declare the timeout promise var outside the function scope so that stacked calls can be cancelled later
       var timeoutPromise;
 
       //plug into $parsers pipeline to open a typeahead on view changes initiated from DOM
