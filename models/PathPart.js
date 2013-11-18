@@ -1,5 +1,4 @@
 const mongoose = require('mongoose'),
-	Class = require('./Class'),
 	Carrier = require('./Carrier');
 
 var PathPart = new mongoose.Schema({
@@ -7,10 +6,6 @@ var PathPart = new mongoose.Schema({
 	toDestination: String,
 	departureTime: Date,
 	arrivalTime: Date,
-	'class': {
-		type: mongoose.Schema.ObjectId,
-		ref: Class
-	},
 	carrier: {
 		type: mongoose.Schema.ObjectId,
 		ref: Carrier
