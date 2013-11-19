@@ -2,7 +2,7 @@ define(['angular'], function (angular) {
 	'use strict';
 
 	angular.module('services.notifications', [])
-		.factory('notifications', ['$rootScope', function ($rootScope) {
+		.factory('notifications', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
 			var notifications = {
 				'STICKY': [],
 				'ROUTE_CURRENT': [],
@@ -30,6 +30,15 @@ define(['angular'], function (angular) {
 
 					notificationsArray.push(notification);
 				});
+
+				// po určité době zprývy schováme
+				$timeout(function () {
+					for (var i = notificationsArray.length - 1; i >= 0; i--) {
+						if (notifications.indexOf(notificationsArray[i]) > -1) {
+							notificationsArray.splice(i, 1);
+						}
+					}
+				}, 5000);
 
 				return notifications;
 			};

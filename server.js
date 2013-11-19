@@ -58,10 +58,10 @@ app.use(config.server.staticUrl, function (req, res, next) {
 
 // Mapovani na controllery
 require('./controllers/security').addRoutes(app, security);
-require('./controllers/users').addRoutes(app, config);
-require('./controllers/carriers').addRoutes(app, config);
-require('./controllers/flights').addRoutes(app, config, io);
-require('./controllers/destinations').addRoutes(app, config);
+require('./controllers/users').addRoutes(app, config, security);
+require('./controllers/carriers').addRoutes(app, config, security);
+require('./controllers/flights').addRoutes(app, config, security, io);
+require('./controllers/destinations').addRoutes(app, config, security);
 
 // pro podporu HTML5 location api
 app.all('/*', function(req, res) {

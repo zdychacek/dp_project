@@ -1,7 +1,7 @@
 
 <ul class="nav pull-right">
   <li class="divider-vertical">
-    <li ng-show="isAuthenticated()"><a href="#">{{currentUser.firstName}} {{currentUser.lastName}}</a></li>
+    <li ng-show="isAuthenticated()"><a href="#">{{currentUser.firstName}} {{currentUser.lastName}}<span ng-if="isAdmin()">&nbsp;(administrátor)</span></a></li>
     <li ng-show="isAuthenticated()" class="logout">
       <form class="navbar-form">
         <button ng-click="logout()" class="btn logout">Odhlásit</button>

@@ -17,7 +17,7 @@
         <td data-title="E-mail" sortable="email">{{user.email}}</td>
         <td data-title="Administrátor" sortable="isAdmin" ng-switch="user.isAdmin" class="cell-center"><i ng-switch-when="true" class="icon-ok"></i><i ng-switch-when="false" class="icon-remove"></i></td>
         <td data-title="Vytvořeno" sortable="lastModified">{{user.lastModified | date: 'd.M.yy H:mm'}}</td>
-        <td class="icon"><a ng-click="editUser(user)" href="#" class="btn btn-info"><span class="icon-pencil"></span></a><a ng-click="removeUser(user)" href="#" class="btn btn-danger"><span class="icon-remove-sign"></span></a></td>
+        <td class="icon btn-toolbar"><a ng-click="editUser(user)" href="#" class="btn btn-info"><span class="icon-pencil"></span></a><a ng-click="removeUser(user)" href="#" class="btn btn-danger"><span class="icon-remove-sign"></span></a></td>
       </tr>
     </table>
     <div class="table-pager">

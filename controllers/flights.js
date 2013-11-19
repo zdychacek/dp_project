@@ -1,9 +1,8 @@
 const Flight = require('../models/Flight'),
 	PathPart = require('../models/PathPart'),
-	security = require('../lib/security'),
 	async = require('async');
 
-exports.addRoutes = function (app, config, io) {
+exports.addRoutes = function (app, config, security, io) {
 	app.namespace('/api/v1/flights', function () {
 
 		app.get('/generate/:count', function (req, res) {
@@ -23,18 +22,21 @@ exports.addRoutes = function (app, config, io) {
 				res = params.res,
 				errors = [];
 
-			function _sendResponse (res, flight, errors) {
+			function _sendResponse (res, flight, errors, notifyClients) {
 				var flightData = flight.serializeWithContext(user);
 				errors.length && (flightData._errors_ = errors);
 
-				io.sockets.emit('flight:changed', flightData);
+				if (notifyClients) {
+					io.sockets.emit('flight:changed', flightData);
+				}
+
 				res.json(flightData)
 			};
 
 			function _saveFlightAndSendResponse (res, flight, errors) {
 				flight.save(function (err, flight) {
 					if (!err) {
-						_sendResponse(res, flight, errors);
+						_sendResponse(res, flight, errors, true);
 					}
 					else {
 						console.log(err);
@@ -73,8 +75,14 @@ exports.addRoutes = function (app, config, io) {
 					else {
 						if (create) {
 							// pridam rezervaci
-							passengers.push(user._id);
-							_saveFlightAndSendResponse(res, flight, errors);
+							if (flight.freeCapacity > 0) {
+								passengers.push(user._id);
+								_saveFlightAndSendResponse(res, flight, errors);
+							}
+							else {
+								errors.push(_makeErrorMsg('Let je již plně obsazen. Nelze vytvořit rezervaci.'));
+								_sendResponse(res, flight, errors);
+							}
 						}
 						else {
 							errors.push(_makeErrorMsg('Nelze zrušit rezervaci, která neexistuje.'));
@@ -273,7 +281,9 @@ exports.addRoutes = function (app, config, io) {
 								}
 							});
 						}
-						else { return console.log(err); }
+						else {
+							return console.log(err);
+						}
 					});
 				});
 			});

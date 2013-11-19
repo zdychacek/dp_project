@@ -1,6 +1,6 @@
 div.navbar(ng-controller="HeaderCtrl")
 	div.navbar-inner.clearfix
-		a.brand.pull-left(ng-click="home()") Letecká společnost s.r.o.
+		a.brand.pull-left(ng-click="home()", href="#") Letecká společnost s.r.o.
 
 		// autentizovany uzivatel
 		ul.nav.pull-left(ng-if="isAuthenticated()")

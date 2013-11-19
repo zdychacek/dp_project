@@ -177,6 +177,12 @@ define([
 				}
 			};
 
+			$scope.deleteFlight = function () {
+				$scope.flight.$remove().then(function () {
+					$location.path('/flights');
+				});
+			}
+
 			if ($scope.creatingNew) {
 				// pridam jednu polozku
 				$scope.addPathPart();

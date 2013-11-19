@@ -92,7 +92,7 @@
       </table>
     </fieldset>
     <div class="btn-toolbar"><a ng-href="/flights" class="btn">Zpět na seznam</a>
-      <input type="submit" value="Uložit" ng-disabled="form.$invalid" class="btn btn-primary"/>
+      <input type="submit" value="Uložit" ng-disabled="form.$invalid" class="btn btn-primary"/><a ng-click="deleteFlight()" href="#" class="btn btn-danger"><i class="icon-trash"></i>&nbsp;Smazat</a>
     </div>
     <!--pre {{flight | json}}-->
   </div>

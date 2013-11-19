@@ -1,6 +1,6 @@
 
 <div ng-controller="HeaderCtrl" class="navbar">
-  <div class="navbar-inner clearfix"><a ng-click="home()" class="brand pull-left">Letecká společnost s.r.o.</a>
+  <div class="navbar-inner clearfix"><a ng-click="home()" href="#" class="brand pull-left">Letecká společnost s.r.o.</a>
     <!-- autentizovany uzivatel-->
     <ul ng-if="isAuthenticated()" class="nav pull-left">
       <li ng-class="{active:isNavbarActive('flights')}"><a href="/flights">Seznam letů</a></li>

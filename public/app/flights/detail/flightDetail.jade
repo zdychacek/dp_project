@@ -102,5 +102,8 @@ form.form-horizontal.flight-edit(name="form", ng-hide="noData", ng-submit="save(
 		div.btn-toolbar
 			a.btn(ng-href="/flights") Zpět na seznam
 			input.btn.btn-primary(type="submit", value="Uložit", ng-disabled="form.$invalid")
+			a.btn.btn-danger(ng-click="deleteFlight()", href="#")
+				i.icon-trash
+				| &nbsp;Smazat
 
 		//pre {{flight | json}}
