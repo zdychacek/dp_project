@@ -191,7 +191,7 @@ define([
 				$scope.flight.$remove().then(function () {
 					$location.path('/flights');
 				});
-			}
+			};
 
 			if ($scope.creatingNew) {
 				// pridam jednu polozku

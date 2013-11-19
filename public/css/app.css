@@ -1,1 +1,95 @@
-.carrier-edit input[type="file"]{display:none}.flight-edit table.path input[type="date"]{width:130px}.flight-edit table.path input[type="time"]{width:95px}.flights-list .table-container table tr td.note{font-size:13px}.flights-list .table-container table tr td.big{width:200px}.flights-list .table-container table tr td.medium{width:120px}.flights-list .table-container table tr td.small{width:100px;text-align:center}.flights-list .table-container table tr td.icon{vertical-align:middle}h1{margin-bottom:20px}table.loading{transition:opacity .25s ease-in-out;-moz-transition:opacity .25s ease-in-out;-webkit-transition:opacity .25s ease-in-out;opacity:.5}table thead th.sortable{background:url('/static/img/sortable.gif') no-repeat center right;cursor:pointer}table thead th.sorted{background-color:#f5f5f5!important}table thead th.sorted.asc{background:url('/static/img/asc.gif') no-repeat right center}table thead th.sorted.desc{background:url('/static/img/desc.gif') no-repeat right center}table td.cell-center{text-align:center}.pagination{cursor:pointer;margin-top:0}.table-pager{overflow:hidden}.table-pager .pagination{cursor:pointer;float:left}.table-pager .items-count{display:inline-block;float:right}.table-pager .items-count select{width:60px}.control-group .text-error{padding-left:10px}.content-main{position:relative}.spinner-wrap{margin-top:20px;width:15px;margin-left:15px}td.icon{text-align:center;width:130px}tr:nth-child(even){background:#f9f9f9}.content-menu{padding-bottom:20px}.range-selection .dropdown{float:left}.range-selection a.clear{float:left}
+.carrier-edit input[type="file"] {
+  display: none;
+}
+.flight-edit table.path input[type="date"] {
+  width: 130px;
+}
+.flight-edit table.path input[type="time"] {
+  width: 95px;
+}
+.flights-list .table-container table tr td.note {
+  font-size: 13px;
+}
+.flights-list .table-container table tr td.big {
+  width: 200px;
+}
+.flights-list .table-container table tr td.medium {
+  width: 120px;
+}
+.flights-list .table-container table tr td.small {
+  width: 100px;
+  text-align: center;
+}
+.flights-list .table-container table tr td.icon {
+  vertical-align: middle;
+}
+h1 {
+  margin-bottom: 20px;
+}
+table.loading {
+  transition: opacity 0.25s ease-in-out;
+  -moz-transition: opacity 0.25s ease-in-out;
+  -webkit-transition: opacity 0.25s ease-in-out;
+  opacity: 0.5;
+}
+table thead th.sortable {
+  background: url('/static/img/sortable.gif') no-repeat center right;
+  cursor: pointer;
+}
+table thead th.sorted {
+  background-color: #F5F5F5 !important;
+}
+table thead th.sorted.asc {
+  background: url('/static/img/asc.gif') no-repeat right center;
+}
+table thead th.sorted.desc {
+  background: url('/static/img/desc.gif') no-repeat right center;
+}
+table td.cell-center {
+  text-align: center;
+}
+.pagination {
+  cursor: pointer;
+  margin-top: 0px;
+}
+.table-pager {
+  overflow: hidden;
+}
+.table-pager .pagination {
+  cursor: pointer;
+  float: left;
+}
+.table-pager .items-count {
+  display: inline-block;
+  float: right;
+}
+.table-pager .items-count select {
+  width: 60px;
+}
+.control-group .text-error {
+  padding-left: 10px;
+}
+.content-main {
+  position: relative;
+}
+.spinner-wrap {
+  margin-top: 20px;
+  width: 15px;
+  margin-left: 15px;
+}
+td.icon {
+  text-align: center;
+  width: 130px;
+}
+tr:nth-child(even) {
+  background: #f9f9f9;
+}
+.content-menu {
+  padding-bottom: 20px;
+}
+.range-selection .dropdown {
+  float: left;
+}
+.range-selection a.clear {
+  float: left;
+}

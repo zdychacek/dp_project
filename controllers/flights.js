@@ -15,112 +15,53 @@ exports.addRoutes = function (app, config, security, io) {
 			});
 		});
 
-		function setReservationState (params /*state = vytvorit novou, flightId, user, res*/) {
-			var create = params.state,
-				flightId = params.flightId,
-				user = params.user,
-				res = params.res,
-				errors = [];
-
-			function _sendResponse (res, flight, errors, notifyClients) {
-				var flightData = flight.serializeWithContext(user);
-				errors.length && (flightData._errors_ = errors);
-
-				if (notifyClients) {
-					io.sockets.emit('flight:changed', flightData);
-				}
-
-				res.json(flightData)
-			};
-
-			function _saveFlightAndSendResponse (res, flight, errors) {
-				flight.save(function (err, flight) {
+		app.get('/:id/make-reservation', function (req, res) {
+			security.isAuthorized(req, res, function (user) {
+				Flight.findById(req.params.id, function (err, flight) {
 					if (!err) {
-						_sendResponse(res, flight, errors, true);
+						flight.addReservationForUser(user, function (err, flight) {
+							var data = flight.serializeWithContext(user);
+
+							if (err) {
+								data._errors_ = err;
+							}
+							else {
+								io.sockets.emit('flight:changed', data);
+							}
+							res.json(data);
+						});
 					}
 					else {
 						console.log(err);
 					}
 				});
-			};
-
-			function _makeErrorMsg (message) {
-				return {
-					type: 'error',
-					message: message
-				};
-			};
-
-			Flight.findById(flightId, function (err, flight) {
-				if (!err) {
-					var passengers = flight.passengers,
-						reservationAlreadyExists = flight.passengers.some(function (passenger) {
-							return passenger.equals(user._id);
-						});
-
-					// rezervace jiz existuje
-					if (reservationAlreadyExists) {
-						// chystam se vytvorit rezervaci
-						if (create) {
-							errors.push(_makeErrorMsg('Nelze vytvořit rezervaci, která už byla vytvořena.'));
-							_sendResponse(res, flight, errors);
-						}
-						// chystam se smazat rezervaci
-						else {
-							passengers.remove(user._id)
-							_saveFlightAndSendResponse(res, flight, errors);
-						}
-					}
-					// rezervace NEexistuje
-					else {
-						if (create) {
-							// pridam rezervaci
-							if (flight.freeCapacity > 0) {
-								passengers.push(user._id);
-								_saveFlightAndSendResponse(res, flight, errors);
-							}
-							else {
-								errors.push(_makeErrorMsg('Let je již plně obsazen. Nelze vytvořit rezervaci.'));
-								_sendResponse(res, flight, errors);
-							}
-						}
-						else {
-							errors.push(_makeErrorMsg('Nelze zrušit rezervaci, která neexistuje.'));
-							_sendResponse(res, flight, errors);
-						}
-					}
-				}
-				else {
-					console.log(err)
-				};
-			});
-		};
-
-		app.get('/make-reservation/:id', function (req, res) {
-			security.isAuthorized(req, res, function (user) {
-				setReservationState({
-					state: true,
-					flightId: req.params.id,
-					user: user,
-					res: res
-				});
 			});
 		});
 
-		app.get('/cancel-reservation/:id', function (req, res) {
+		app.get('/:id/cancel-reservation', function (req, res) {
 			security.isAuthorized(req, res, function (user) {
-				setReservationState({
-					state: false,
-					flightId: req.params.id,
-					user: user,
-					res: res
+				Flight.findById(req.params.id, function (err, flight) {
+					if (!err) {
+						flight.cancelReservationForUser(user, function (err, flight) {
+							var data = flight.serializeWithContext(user);
+
+							if (err) {
+								data._errors_ = err;
+							}
+							else {
+								io.sockets.emit('flight:changed', data);
+							}
+							res.json(data);
+						});
+					}
+					else {
+						console.log(err);
+					}
 				});
 			});
 		});
 
 		app.get('/delete', function (req, res) {
-			var count = req.params.count;
-
 			security.isAdmin(req, res, function () {
 				Flight.remove({}, function () {
 					res.send('deleted');

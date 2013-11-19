@@ -20,7 +20,7 @@ define([
 			});
 
 			Flight.prototype.makeReservation = function () {
-				var url = this.getResourceUrl() + '/make-reservation/' + this.$id();
+				var url = this.getResourceUrl() + '/' + this.$id() + '/make-reservation';
 
 				return $http.get(url).then(function (response) {
 					return Flight._parseResponse(response);
@@ -28,7 +28,7 @@ define([
 			};
 
 			Flight.prototype.cancelReservation = function () {
-				var url = this.getResourceUrl() + '/cancel-reservation/' + this.$id();
+				var url = this.getResourceUrl() + '/' + this.$id() + '/cancel-reservation';
 
 				return $http.get(url).then(function (response) {
 					return Flight._parseResponse(response);

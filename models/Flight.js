@@ -55,10 +55,87 @@ FlightSchema.pre('save', function (next) {
 	// celkova delka letu
 	this.totalFlightDuration = moment(this.arrivalTime).diff(this.departureTime, 'minutes');
 
-	console.log('totalFlightDuration', this.totalFlightDuration);
-
 	next();
 });
+
+// Zeserializuje object a prida k nemu kontextova data (napr. dataq z aktualniho usera)
+FlightSchema.methods.serializeWithContext = function (user) {
+	var data = this.toObject();
+
+	if (user) {
+		data['hasReservation'] = this.passengers.some(function (passenger) {
+			return passenger.equals(user._id);
+		});
+	}
+
+	return data;
+};
+
+FlightSchema.methods.addReservationForUser = function (user, callback) {
+	var passengers = this.passengers,
+		self = this,
+		reservationAlreadyExists = passengers.some(function (passenger) {
+			return passenger.equals(user._id);
+		}), errors = [];
+
+	if (reservationAlreadyExists) {
+		errors.push({
+			type: 'error',
+			message: 'Nelze vytvořit rezervaci, která už byla vytvořena.'
+		});
+
+		callback(errors, this);
+	}
+	else {
+		if (this.freeCapacity > 0) {
+			passengers.push(user._id);
+
+			this.save(function (err, data) {
+				if (!err) {
+					callback(null, self);
+				}
+				else {
+					console.log(err)
+				}
+			});
+		}
+		else {
+			errors.push({
+				type: 'error',
+				message: 'Let je již plně obsazen. Nelze vytvořit rezervaci.'
+			});
+			callback(errors, this);
+		}
+	}
+};
+
+FlightSchema.methods.cancelReservationForUser = function (user, callback) {
+	var passengers = this.passengers,
+		self = this,
+		reservationAlreadyExists = passengers.some(function (passenger) {
+			return passenger.equals(user._id);
+		}), errors = [];
+
+	if (reservationAlreadyExists) {
+		passengers.remove(user._id)
+
+		this.save(function (err, data) {
+			if (!err) {
+				callback(null, self);
+			}
+			else {
+				console.log(err)
+			}
+		});
+	}
+	else {
+		errors.push({
+			type: 'error',
+			message: 'Nelze zrušit rezervaci, která neexistuje.'
+		});
+		callback(errors, this);
+	}
+};
 
 var destinations = require('./Destination').getAll();
 
@@ -114,19 +191,6 @@ function getRnd (from, to, decimal) {
 	else {
 		return Math.floor(Math.random() * to) + from;
 	}
-};
-
-// Zeserializuje object a prida k nemu kontextova data (napr. dataq z aktualniho usera)
-FlightSchema.methods.serializeWithContext = function (user) {
-	var data = this.toObject();
-
-	if (user) {
-		data['hasReservation'] = this.passengers.some(function (passenger) {
-			return passenger.equals(user._id);
-		});
-	}
-
-	return data;
 };
 
 FlightSchema.statics.generate = function (count) {

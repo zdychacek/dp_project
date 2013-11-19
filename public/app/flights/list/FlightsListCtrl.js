@@ -234,7 +234,7 @@ define([
 				});
 
 				return index;
-			};
+			}
 
 			// notifikace ze socketu
 			$scope.$on('flight:changed', function (e, flightData) {
