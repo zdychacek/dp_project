@@ -98,7 +98,8 @@ module.exports = function (grunt) {
 				'globals': {
 					'jQuery': true,
 					'angular': true,
-					'define': true
+					'define': true,
+					'io': true
 				},
 				'-W087': true,
 				'-W064': true,

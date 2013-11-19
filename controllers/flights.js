@@ -3,7 +3,7 @@ const Flight = require('../models/Flight'),
 	security = require('../lib/security'),
 	async = require('async');
 
-exports.addRoutes = function (app, config) {
+exports.addRoutes = function (app, config, io) {
 	app.namespace('/api/v1/flights', function () {
 
 		app.get('/generate/:count', function (req, res) {
@@ -26,6 +26,8 @@ exports.addRoutes = function (app, config) {
 			function _sendResponse (res, flight, errors) {
 				var flightData = flight.serializeWithContext(user);
 				errors.length && (flightData._errors_ = errors);
+
+				io.sockets.emit('flight:changed', flightData);
 				res.json(flightData)
 			};
 
@@ -119,22 +121,28 @@ exports.addRoutes = function (app, config) {
 		});
 
 		app.get('/:id', function (req, res) {
-			Flight.findById(req.params.id, function (err, flight) {
-				if (!err) {
-					res.json(flight);
-				}
-				else { console.log(err); }
+			security.isAuthorized(req, res, function (user) {
+				Flight.findById(req.params.id, function (err, flight) {
+					if (!err) {
+						res.json(flight.serializeWithContext(user));
+					}
+					else { console.log(err); }
+				});
 			});
 		});
 
 		app.post('/', function (req, res) {
-			var flight = new Flight(req.body);
+			security.isAdmin(req, res, function (user) {
+				var flight = new Flight(req.body);
 
-			flight.save(function (err, flight) {
-				if (!err) {
-					res.json(flight);
-				}
-				else { console.log(err); }
+				flight.save(function (err, flight) {
+					if (!err) {
+						var flightData = flight.serializeWithContext(user);
+						io.sockets.emit('flight:created', flightData);
+						res.json(flightData);
+					}
+					else { console.log(err); }
+				});
 			});
 		});
 
@@ -142,6 +150,7 @@ exports.addRoutes = function (app, config) {
 			security.isAdmin(req, res, function () {
 				Flight.remove({ _id: req.params.id }, function (err) {
 					if (!err) {
+						io.sockets.emit('flight:deleted', req.params.id);
 						res.json(null);
 					}
 					else { console.log(err); }
@@ -150,22 +159,26 @@ exports.addRoutes = function (app, config) {
 		});
 
 		app.put('/:id', function (req, res) {
-			Flight.findById(req.params.id, function (err, flight) {
-				if (!err) {
-					flight.date = req.body.date;
-					flight.price = req.body.price;
-					flight.capacity = req.body.capacity;
-					flight.note = req.body.note;
-					flight.path = req.body.path;
+			security.isAdmin(req, res, function (user) {
+				Flight.findById(req.params.id, function (err, flight) {
+					if (!err) {
+						flight.date = req.body.date;
+						flight.price = req.body.price;
+						flight.capacity = req.body.capacity;
+						flight.note = req.body.note;
+						flight.path = req.body.path;
 
-					flight.save(function (err, flight) {
-						if (!err) {
-							res.json(flight);
-						}
-						else { console.log(err); }
-					});
-				}
-				else { console.log(err); }
+						flight.save(function (err, flight) {
+							if (!err) {
+								var flightData = flight.serializeWithContext(user);
+								io.sockets.emit('flight:changed', flightData);
+								res.json(flightData);
+							}
+							else { console.log(err); }
+						});
+					}
+					else { console.log(err); }
+				});
 			});
 		});
 
@@ -264,6 +277,6 @@ exports.addRoutes = function (app, config) {
 					});
 				});
 			});
-			});
+		});
 	});
 };

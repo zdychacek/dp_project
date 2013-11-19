@@ -202,17 +202,7 @@ define([
 						});
 					}
 
-					var index = -1;
-
-					$scope.flights.forEach(function (fl, i) {
-						if (fl.$id() == flight.$id()) {
-							return (index = i);
-						}
-					});
-
-					if (index > -1) {
-						$scope.flights[index] = flight;
-					}
+					updateFlightInCollection(flight);
 				});
 			};
 
@@ -225,6 +215,39 @@ define([
 					return '/static/img/carriersLogos/' + carrier[0].logo;
 				}
 			}
+
+			function updateFlightInCollection (flight) {
+				var index = getFlightIndexInCollection(flight.$id());
+
+				if (index > -1) {
+					$scope.flights[index] = flight;
+				}
+			}
+
+			function getFlightIndexInCollection (flightId) {
+				var index = -1;
+
+				$scope.flights.forEach(function (fl, i) {
+					if (fl._id == flightId) {
+						return (index = i);
+					}
+				});
+
+				return index;
+			};
+
+			// notifikace ze socketu
+			$scope.$on('flight:changed', function (e, flightData) {
+				loadFlights();
+			});
+
+			$scope.$on('flight:deleted', function (e, flightId) {
+				loadFlights();
+			});
+
+			$scope.$on('flight:created', function (e, flightData) {
+				loadFlights();
+			});
 
 			$scope.$watch('itemsPerPage', loadFlights);
 			$scope.$watch('currentPage', loadFlights);

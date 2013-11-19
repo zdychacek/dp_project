@@ -5,7 +5,13 @@ const express = require('express'),
 	mongoose = require('mongoose'),
 	fs = require('fs'),
 	security = require('./lib/security.js'),
-	config = require('./config.js');
+	config = require('./config.js'),
+	server = require('http').createServer(app),
+	io = require('socket.io').listen(server);
+
+io.on('connect', function () {
+	console.log('client has been connected...');
+});
 
 if (process.env.NODE_ENV === 'production' || process.argv[2] === 'production') {
 	app.set('db uri', config.mongo.distUrl);
@@ -54,7 +60,7 @@ app.use(config.server.staticUrl, function (req, res, next) {
 require('./controllers/security').addRoutes(app, security);
 require('./controllers/users').addRoutes(app, config);
 require('./controllers/carriers').addRoutes(app, config);
-require('./controllers/flights').addRoutes(app, config);
+require('./controllers/flights').addRoutes(app, config, io);
 require('./controllers/destinations').addRoutes(app, config);
 
 // pro podporu HTML5 location api
@@ -73,5 +79,5 @@ app.use(function (req, res, next) {
 	res.type('txt').send('Not found');
 });
 
-app.listen(config.server.listenPort);
+server.listen(config.server.listenPort);
 console.log('Express started on port ' + config.server.listenPort);

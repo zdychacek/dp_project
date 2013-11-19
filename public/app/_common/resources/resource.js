@@ -15,7 +15,7 @@ define([
 						data = options.fromServerConverter(data);
 					}
 
-					angular.extend(this, data);
+					this.setData(data);
 				};
 
 				// pokud URL nezacina lomitkem, tak pridam za base url z configu
@@ -140,6 +140,10 @@ define([
 				};
 
 				// intancni metody
+				Resource.prototype.setData = function (data) {
+					angular.extend(this, data);
+				};
+
 				Resource.prototype.$save = function (data) {
 					return Resource.save(this);
 				};
