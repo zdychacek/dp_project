@@ -64,14 +64,6 @@ define([
 				$scope.currentPage = pageNum;
 			};
 
-			$scope.getTableVisibilityStyle = function () {
-				if ($scope.loadingData) {
-					return {
-						visibility: 'hidden'
-					};
-				}
-			};
-
 			$scope.$watch('itemsPerPage', loadUsers);
 			$scope.$watch('currentPage', loadUsers);
 			$scope.$watch('sort', loadUsers, true);

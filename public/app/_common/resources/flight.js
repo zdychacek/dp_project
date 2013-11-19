@@ -5,7 +5,7 @@ define([
 	'use strict';
 
 	angular.module('resources.flight', ['resources.resource'])
-		.factory('Flight', ['resource', function (resource) {
+		.factory('Flight', ['resource', '$http', function (resource, $http) {
 			var Flight = resource('flights', {
 				fromServerConverter: function (flight) {
 					if (flight.path) {
@@ -18,6 +18,22 @@ define([
 					return flight;
 				}
 			});
+
+			Flight.prototype.makeReservation = function () {
+				var url = this.getResourceUrl() + '/make-reservation/' + this.$id();
+
+				return $http.get(url).then(function (response) {
+					return Flight._parseResponse(response);
+				});
+			};
+
+			Flight.prototype.cancelReservation = function () {
+				var url = this.getResourceUrl() + '/cancel-reservation/' + this.$id();
+
+				return $http.get(url).then(function (response) {
+					return Flight._parseResponse(response);
+				});
+			};
 
 			return Flight;
 		}]);

@@ -17,7 +17,12 @@ div.content-main
 			span.items-count Počet záznamů na stránku:
 				select(ng-model="itemsPerPage", ng-options="i for i in itemsPerPageList")
 
-		table.table.table-bordered(sortable-table, sort-column="sort.column", sort-dir="sort.dir", ng-style="getTableVisibilityStyle()")
+		table.table.table-bordered(
+			sortable-table,
+			sort-column="sort.column",
+			sort-dir="sort.dir",
+			ng-class="{loading: loadingData}"
+		)
 			tr(ng-repeat="user in users")
 				td(data-title="Login", sortable="login") {{user.login}}
 

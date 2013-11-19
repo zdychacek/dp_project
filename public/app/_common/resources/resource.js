@@ -164,6 +164,10 @@ define([
 					return this._errors_;
 				};
 
+				Resource.prototype.hasServerErrors = function () {
+					return this._errors_ && this._errors_.length;
+				};
+
 				return Resource;
 		};
 	}]);

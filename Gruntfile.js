@@ -104,7 +104,9 @@ module.exports = function (grunt) {
 				'-W064': true,
 				// type coersion
 				'-W116': true,
-				'-W030': true
+				'-W030': true,
+				// W093: Did you mean to return a conditional instead of an assignment?
+				'-W093': true
 			},
 			all: [
 				'<%= appConfig.app %>/app/**/*.js',

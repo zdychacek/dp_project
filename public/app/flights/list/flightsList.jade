@@ -1,143 +1,164 @@
-h1 Seznam letů
+div.flights-list
+	h1 Seznam letů
 
-a.btn.btn-success(ng-href="/flights/new", ng-if="isAdmin")
-	i.icon.icon-plus-sign
-	| &nbsp;Nový let
+	a.btn.btn-success(ng-href="/flights/new", ng-if="isAdmin")
+		i.icon.icon-plus-sign
+		| &nbsp;Nový let
 
-div.filter
+	div.filter
 
-	fieldset
-		legend Filtr
-
-		div.alert(ng-show="!isFilterOn && filter") Máte nastaven filtr.
-
-		a.btn(ng-click="isFilterOn = true", ng-hide="isFilterOn", href="#") Zobrazit filtr
-
-		form.control-group(ng-show="isFilterOn", name="filterForm", ng-submit="doFilter()")
-			div.row
-				div.control-group.span4
-					label.control-label Odkud
-					div.controls
-						input(type="text", name="fromDestination", ng-model="_filter.fromDestination", typeahead="suggestion for suggestion in getCities($viewValue)")
-
-				div.control-group.span4
-					label.control-label Odlet
-					div.range-selection
-						div.dropdown
-							a.dropdown-toggle.btn
-								span(ng-if="_filter.departureTimeFrom && _filter.departureTimeTo") {{ _filter.departureTimeFrom | date }} - {{ _filter.departureTimeTo | date }}
-								span(ng-if="!_filter.departureTimeFrom || !_filter.departureTimeTo") Vyberte...
-							div.dropdown-menu(ng-click="$event.preventDefault();$event.stopPropagation()")
-								div(date-range, start="_filter.departureTimeFrom", end="_filter.departureTimeTo")
-						a.clear.btn.btn-danger(href="#", ng-click="cancelDateFilter('departure')", ng-show="_filter.departureTimeFrom && _filter.departureTimeTo")
-							i.icon-remove-sign
-
-				div.control-group.span4
-					label.control-label Cena
-					div.controls
-						div(range-slider, min="10", max="999", model-min="_filter.priceFrom", model-max="_filter.priceTo", filter="currency")
-
-				div.control-group.span4
-					label.control-label Maximální počet přestupů
-					label.checkbox
-						input(type="checkbox", ng-model="_filter.onlyDirectFlight")
-						| pouze přímé lety
-					div.controls
-						input(type="number", ng-model="_filter.maxTransfersCount", name="maxTransfersCount", ng-hide="_filter.onlyDirectFlight")
-
-			div.row
-				div.control-group.span4
-					label.control-label Kam
-					div.controls
-						input(type="text", name="toDestination", ng-model="_filter.toDestination", typeahead="suggestion for suggestion in getCities($viewValue)")
-
-				div.control-group.span4
-					label.control-label Přílet
-					div.range-selection
-						div.dropdown
-							a.dropdown-toggle.btn
-								span(ng-if="_filter.arrivalTimeFrom && _filter.arrivalTimeTo") {{ _filter.arrivalTimeFrom | date }} - {{ _filter.arrivalTimeTo | date }}
-								span(ng-if="!_filter.arrivalTimeFrom || !_filter.arrivalTimeTo") Vyberte...
-							div.dropdown-menu(ng-click="$event.preventDefault();$event.stopPropagation()")
-								div(date-range, start="_filter.arrivalTimeFrom", end="_filter.arrivalTimeTo")
-						a.clear.btn.btn-danger(href="#", ng-click="cancelDateFilter('arrival')", ng-show="_filter.arrivalTimeFrom && _filter.arrivalTimeTo")
-							i.icon-remove-sign
-
-				div.control-group.span4
-					label.control-label Maximální délka letu (v hodinách)
-					div.controls
-						input(type="number", name="totalFlightDuration", ng-model="_filter.totalFlightDuration")
-
-			div.btn-toolbar
-				input.btn.btn-primary(type="submit", value="Vyhledat", ng-disabled="filterForm.$invalid")
-				a.btn.btn-danger(ng-click="resetFilter()") Smazat filtr
-				a.btn(ng-click="isFilterOn = false") Skrýt filtr
-
-	//div
-		div _filter
-		pre {{_filter | json}}
-
-		div filter
-		pre {{filter | json}}
-
-div.alert(ng-show="totalItems == 0 && !loadingData") Nejsou k dispozici žádné záznamy.
-
-div.content-main
-	spinner(show="loadingData", align="center")
-
-	div.table-container(ng-show="totalItems > 0")
 		fieldset
-			legend Vyhledané záznamy ({{ totalItems }})
+			legend Vyhledávání
 
-			div.table-pager
-				my-pagination
+			div.alert(ng-show="!isFilterOn && filter") Máte nastaven filtr.
 
-				span.items-count Počet záznamů na stránku:
-					select(ng-model="itemsPerPage", ng-options="i for i in itemsPerPageList")
+			a.btn(ng-click="isFilterOn = true", ng-hide="isFilterOn", href="#") Zobrazit filtr
 
-			table.table.table-bordered(sortable-table, sort-column="sort.column", sort-dir="sort.dir", ng-style="getTableVisibilityStyle()")
-				tr(ng-repeat="flight in flights")
-					td.with-logo(data-title="Odlet (destinace)", sortable="fromDestination")
-						span {{flight.fromDestination}}
-						img(ng-src="{{getArrivalCarrierLogo(flight)}}", ng-show="getArrivalCarrierLogo(flight)")
+			form.control-group(ng-show="isFilterOn", name="filterForm", ng-submit="doFilter()")
+				div.row
+					div.control-group.span4
+						label.control-label Odkud
+						div.controls
+							input(type="text", name="fromDestination", ng-model="_filter.fromDestination", typeahead="suggestion for suggestion in getCities($viewValue)")
 
-					td(data-title="Odlet (čas)", sortable="departureTime") {{flight.departureTime | date: 'medium'}}
+					div.control-group.span4
+						label.control-label Odlet
+						div.range-selection
+							div.dropdown
+								a.dropdown-toggle.btn
+									span(ng-if="_filter.departureTimeFrom && _filter.departureTimeTo") {{ _filter.departureTimeFrom | date }} - {{ _filter.departureTimeTo | date }}
+									span(ng-if="!_filter.departureTimeFrom || !_filter.departureTimeTo") Vyberte...
+								div.dropdown-menu(ng-click="$event.preventDefault();$event.stopPropagation()")
+									div(date-range, start="_filter.departureTimeFrom", end="_filter.departureTimeTo")
+							a.clear.btn.btn-danger(href="#", ng-click="cancelDateFilter('departure')", ng-show="_filter.departureTimeFrom && _filter.departureTimeTo")
+								i.icon-remove-sign
 
-					td.with-logo(data-title="Přílet (destinace)", sortable="toDestination")
-						span {{flight.toDestination}}
-						img(ng-src="{{getDepartureCarrierLogo(flight)}}", ng-show="getDepartureCarrierLogo(flight)")
+					div.control-group.span4
+						label.control-label Cena
+						div.controls
+							div(range-slider, min="10", max="999", model-min="_filter.priceFrom", model-max="_filter.priceTo", filter="currency")
 
-					td(data-title="Přílet (čas)", sortable="arrivalTime") {{flight.arrivalTime | date: 'medium'}}
+					div.control-group.span4
+						label.control-label Maximální počet přestupů
+						label.checkbox
+							input(type="checkbox", ng-model="_filter.onlyDirectFlight")
+							| pouze přímé lety
+						div.controls
+							input(type="number", ng-model="_filter.maxTransfersCount", name="maxTransfersCount", ng-hide="_filter.onlyDirectFlight")
 
-					td(data-title="Délka letu", sortable="totalFlightDuration") {{flight.totalFlightDuration | minutesFormatter}}
+				div.row
+					div.control-group.span4
+						label.control-label Kam
+						div.controls
+							input(type="text", name="toDestination", ng-model="_filter.toDestination", typeahead="suggestion for suggestion in getCities($viewValue)")
 
-					td(data-title="Cena", sortable="price") {{flight.price | currency}}
+					div.control-group.span4
+						label.control-label Přílet
+						div.range-selection
+							div.dropdown
+								a.dropdown-toggle.btn
+									span(ng-if="_filter.arrivalTimeFrom && _filter.arrivalTimeTo") {{ _filter.arrivalTimeFrom | date }} - {{ _filter.arrivalTimeTo | date }}
+									span(ng-if="!_filter.arrivalTimeFrom || !_filter.arrivalTimeTo") Vyberte...
+								div.dropdown-menu(ng-click="$event.preventDefault();$event.stopPropagation()")
+									div(date-range, start="_filter.arrivalTimeFrom", end="_filter.arrivalTimeTo")
+							a.clear.btn.btn-danger(href="#", ng-click="cancelDateFilter('arrival')", ng-show="_filter.arrivalTimeFrom && _filter.arrivalTimeTo")
+								i.icon-remove-sign
 
-					td(data-title="Poznámka", sortable="note") {{flight.note}}
+					div.control-group.span4
+						label.control-label Maximální délka letu (v hodinách)
+						div.controls
+							input(type="number", name="totalFlightDuration", ng-model="_filter.totalFlightDuration")
 
-					td(data-title="Kapacita (volné místo)", sortable="capacity")
-						{{flight.capacity}}
+				div.row
+					div.control-group.span4
+						label.checkbox
+							input(type="checkbox", ng-model="_filter.onlyMyReservation")
+							| zobrazit pouze moje rezervace
 
-						ng-switch(on="isFreeCapacity(flight)")
-							i.icon-ok(ng-switch-when="true")
-							i.icon-remove(ng-switch-when="false")
+				div.btn-toolbar
+					input.btn.btn-primary(type="submit", value="Vyhledat", ng-disabled="filterForm.$invalid")
+					a.btn.btn-danger(ng-click="resetFilter()") Smazat filtr
+					a.btn(ng-click="isFilterOn = false") Skrýt filtr
 
-					td(data-title="Počet přestupů", sortable="transfersCount")
-						ng-switch(on="flight.transfersCount")
-							span(ng-switch-when="0") přímý let
-							span(ng-switch-default="false") {{flight.transfersCount}}
+		//div
+			div _filter
+			pre {{_filter | json}}
 
-					td(data-title="Vytvořeno", sortable="lastModified") {{flight.lastModified | date: 'd.M.yy H:mm'}}
+			div filter
+			pre {{filter | json}}
 
-					td.icon
-						a.btn.btn-info(ng-click="editFlight(flight)", href="#")
-							span.icon-pencil
+	div.alert(ng-show="totalItems == 0 && !loadingData") Nejsou k dispozici žádné záznamy.
 
-						a.btn.btn-danger(ng-click="removeFlight(flight)", href="#")
-							span.icon-remove-sign
+	div.content-main
+		spinner(show="loadingData", align="center")
 
-			div.table-pager
-				my-pagination
+		div.table-container(ng-show="totalItems > 0")
+			fieldset
+				legend Vyhledané záznamy ({{ totalItems }})
 
-				span.items-count Počet záznamů na stránku:
-					select(ng-model="itemsPerPage", ng-options="i for i in itemsPerPageList")
+				div.table-pager
+					my-pagination
+
+					span.items-count Počet záznamů na stránku:
+						select(ng-model="itemsPerPage", ng-options="i for i in itemsPerPageList")
+
+				table.table.table-bordered(
+					sortable-table,
+					sort-column="sort.column",
+					sort-dir="sort.dir",
+					ng-class="{loading: loadingData}"
+				)
+					tr(ng-repeat="flight in flights", ng-class="{'success': flight.hasReservation}")
+						td.big(data-title="Odlet (destinace)", sortable="fromDestination")
+							div {{flight.fromDestination}}
+							img(ng-src="{{getArrivalCarrierLogo(flight)}}", ng-show="getArrivalCarrierLogo(flight)")
+
+						td.medium(data-title="Odlet (čas)", sortable="departureTime") {{flight.departureTime | date: 'dd.MM.yyyy HH:mm'}}
+
+						td.big(data-title="Přílet (destinace)", sortable="toDestination")
+							div {{flight.toDestination}}
+							img(ng-src="{{getDepartureCarrierLogo(flight)}}", ng-show="getDepartureCarrierLogo(flight)")
+
+						td.medium(data-title="Přílet (čas)", sortable="arrivalTime") {{flight.arrivalTime | date: 'dd.MM.yyyy HH:mm'}}
+
+						td.small(data-title="Délka letu", sortable="totalFlightDuration") {{flight.totalFlightDuration | minutesFormatter}}
+
+						td.small(data-title="Cena", sortable="price") {{flight.price | currency}}
+
+						td.medium.note(data-title="Poznámka", sortable="note") {{flight.note}}
+
+						td.small(data-title="Kapacita", sortable="capacity")
+							{{flight.capacity}}
+
+							//ng-switch(on="isFreeCapacity(flight)")
+								i.icon-ok(ng-switch-when="true")
+								i.icon-remove(ng-switch-when="false")
+
+						td.small(data-title="Volných míst", sortable="freCapacity")
+							{{flight.freeCapacity}}
+
+						td.medium(data-title="Počet přestupů", sortable="transfersCount")
+							ng-switch(on="flight.transfersCount")
+								span(ng-switch-when="0") přímý let
+								span(ng-switch-default="false") {{flight.transfersCount}}
+
+						td.medium(data-title="Vytvořeno", sortable="lastModified") {{flight.lastModified | date: 'd.M.yy H:mm'}}
+
+						td.icon.btn-toolbar
+							a.btn.btn-info(ng-click="editFlight(flight)", href="#")
+								i.icon-wrench
+
+							a.btn.btn-danger(ng-click="removeFlight(flight)", href="#")
+								i.icon-trash
+
+							a.btn.btn-success(ng-click="setReservationState(true, flight)", ng-hide="flight.hasReservation", href="#")
+								i.icon-ok
+
+							a.btn.btn-danger(ng-click="setReservationState(false, flight)", ng-hide="!flight.hasReservation", href="#")
+								i.icon-remove-sign
+
+				div.table-pager
+					my-pagination
+
+					span.items-count Počet záznamů na stránku:
+						select(ng-model="itemsPerPage", ng-options="i for i in itemsPerPageList")

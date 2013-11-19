@@ -10,8 +10,8 @@ var FlightSchema = new mongoose.Schema({
 	price: Number,
 	capacity: Number,
 	note: String,
-	// TODO: passangers
-	passengers: [ User.schema ],
+	freeCapacity: Number,
+	passengers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 
 	// generovane hodnoty pri ulozeni modelu
 	fromDestination: String,
@@ -45,6 +45,9 @@ FlightSchema.pre('save', function (next) {
 		this.toDestination = null;
 		this.arrivalTime = null;
 	}
+
+	// volna mista
+	this.freeCapacity = this.capacity - this.passengers.length;
 
 	// pocet prestupu
 	this.transfersCount = this.path.length > 1 ?  this.path.length - 1 : 0;
@@ -111,6 +114,19 @@ function getRnd (from, to, decimal) {
 	else {
 		return Math.floor(Math.random() * to) + from;
 	}
+};
+
+// Zeserializuje object a prida k nemu kontextova data (napr. dataq z aktualniho usera)
+FlightSchema.methods.serializeWithContext = function (user) {
+	var data = this.toObject();
+
+	if (user) {
+		data['hasReservation'] = this.passengers.some(function (passenger) {
+			return passenger.equals(user._id);
+		});
+	}
+
+	return data;
 };
 
 FlightSchema.statics.generate = function (count) {

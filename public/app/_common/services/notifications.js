@@ -10,13 +10,28 @@ define(['angular'], function (angular) {
 			};
 			var notificationsService = {};
 
-			var addNotification = function (notificationsArray, notificationObj) {
-				if (!angular.isObject(notificationObj)) {
-					throw new Error('Only object can be added to the notification service');
+			var addNotification = function (notificationsArray, notifications, removeQueue) {
+				if (!notifications) {
+					return;
 				}
-				
-				notificationsArray.push(notificationObj);
-				return notificationObj;
+
+				if (!angular.isArray(notifications)) {
+					notifications = [ notifications ];
+				}
+
+				if (removeQueue) {
+					notificationsArray.length = 0;
+				}
+
+				notifications.forEach(function (notification) {
+					if (!angular.isObject(notification)) {
+						throw new Error('Only object can be added to the notification service');
+					}
+
+					notificationsArray.push(notification);
+				});
+
+				return notifications;
 			};
 
 			$rootScope.$on('$routeChangeSuccess', function () {
@@ -29,22 +44,22 @@ define(['angular'], function (angular) {
 				return [].concat(notifications.STICKY, notifications.ROUTE_CURRENT);
 			};
 
-			notificationsService.pushSticky = function (notification) {
-				return addNotification(notifications.STICKY, notification);
+			notificationsService.pushSticky = function (notification, removeQueue) {
+				return addNotification(notifications.STICKY, notification, removeQueue);
 			};
 
-			notificationsService.pushForCurrentRoute = function (notification) {
-				return addNotification(notifications.ROUTE_CURRENT, notification);
+			notificationsService.pushForCurrentRoute = function (notification, removeQueue) {
+				return addNotification(notifications.ROUTE_CURRENT, notification, removeQueue);
 			};
 
-			notificationsService.pushForNextRoute = function (notification) {
-				return addNotification(notifications.ROUTE_NEXT, notification);
+			notificationsService.pushForNextRoute = function (notification, removeQueue) {
+				return addNotification(notifications.ROUTE_NEXT, notification, removeQueue);
 			};
 
 			notificationsService.remove = function (notification) {
 				angular.forEach(notifications, function (notificationsByType) {
 					var idx = notificationsByType.indexOf(notification);
-					
+
 					if (idx>-1){
 						notificationsByType.splice(idx,1);
 					}

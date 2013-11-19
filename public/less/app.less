@@ -1,12 +1,17 @@
 @import "_variables";
 @import "_carriers-edit";
 @import "_flights-edit.less";
+@import "_flights-list.less";
 
 h1 {
 	margin-bottom: 20px;
 }
 
 table {
+	&.loading {
+		opacity: 0.5;
+	}
+
 	thead {
 		th {
 			&.sortable {
@@ -75,11 +80,7 @@ table {
 }
 
 td.icon {
-	width: 85px;
-
-	.btn-info {
-		margin-right: 5px;
-	}
+	width: 130px;
 }
 
 tr:nth-child(even) {
@@ -88,12 +89,6 @@ tr:nth-child(even) {
 
 .content-menu {
 	padding-bottom: 20px;
-}
-
-td.with-logo {
-	img {
-		padding-left: 10px;
-	}
 }
 
 .range-selection {

@@ -4,6 +4,7 @@ define([
 	'_common/resources/flight',
 	'_common/resources/carrier',
 	'_common/resources/destination',
+	'_common/services/notifications',
 	'_common/security/security'
 ], function (angular, moment) {
 	'use strict';
@@ -11,7 +12,7 @@ define([
 	angular.module('flights.list', [
 		'security.service',
 		'security.authorization',
-		'services.i18nNotifications',
+		'services.notifications',
 		'resources.flight',
 		'resources.destination',
 		'resources.carrier'
@@ -37,11 +38,11 @@ define([
 			'carriers',
 			'security',
 			'$http',
-			'limitToFilter',
-		function ($scope, Flight, Destination, $location, carriers, security, $http, limitToFilter) {
+			'notifications',
+		function ($scope, Flight, Destination, $location, carriers, security, $http, notifications) {
 			$scope.carriersList = carriers.items;
 			$scope.isAdmin = security.isAdmin();
-			$scope.isFilterOn = true;
+			$scope.isFilterOn = false;
 
 			var filterDefaults = {
 				fromDestination: '',
@@ -166,14 +167,6 @@ define([
 				$scope.currentPage = pageNum;
 			};
 
-			$scope.getTableVisibilityStyle = function () {
-				if ($scope.loadingData) {
-					return {
-						visibility: 'hidden'
-					};
-				}
-			};
-
 			$scope.isFreeCapacity = function (flight) {
 				var passengersCount = flight.passengers ? flight.passengers.length : 0;
 
@@ -188,6 +181,39 @@ define([
 				var lastPathPart = flight.path[flight.path.length - 1];
 
 				return getCarrierLogoUrl(lastPathPart.carrier);
+			};
+
+			$scope.setReservationState = function (state, flight) {
+				var methodName;
+
+				state && (methodName = 'makeReservation');
+				!state && (methodName = 'cancelReservation');
+
+				flight[methodName]().then(function (flight) {
+					notifications.removeAll();
+
+					if (flight.hasServerErrors()) {
+						notifications.pushForCurrentRoute(flight.getServerErrors());
+					}
+					else {
+						notifications.pushForCurrentRoute({
+							type: 'success',
+							message: state ? 'Rezervace byla úspěšně vytvořena.' : 'Rezervace byla úspěšně zrušena.'
+						});
+					}
+
+					var index = -1;
+
+					$scope.flights.forEach(function (fl, i) {
+						if (fl.$id() == flight.$id()) {
+							return (index = i);
+						}
+					});
+
+					if (index > -1) {
+						$scope.flights[index] = flight;
+					}
+				});
 			};
 
 			function getCarrierLogoUrl (carrierId) {

@@ -64,14 +64,6 @@ define([
 				$scope.currentPage = pageNum;
 			};
 
-			$scope.getTableVisibilityStyle = function () {
-				if ($scope.loadingData) {
-					return {
-						visibility: 'hidden'
-					};
-				}
-			};
-
 			$scope.makeLogoUrl = function (carrier) {
 				return '/static/img/carriersLogos/' + carrier.logo;
 			};

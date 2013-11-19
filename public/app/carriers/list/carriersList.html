@@ -9,7 +9,7 @@
       <my-pagination></my-pagination><span class="items-count">Počet záznamů na stránku:
         <select ng-model="itemsPerPage" ng-options="i for i in itemsPerPageList"></select></span>
     </div>
-    <table sortable-table="sortable-table" sort-column="sort.column" sort-dir="sort.dir" ng-style="getTableVisibilityStyle()" class="table table-bordered">
+    <table sortable-table="sortable-table" sort-column="sort.column" sort-dir="sort.dir" ng-class="{loading: loadingData}" class="table table-bordered">
       <tr ng-repeat="carrier in carriers">
         <td data-title="Logo"><img ng-show="carrier.logo.length &gt; 0" ng-src="{{makeLogoUrl(carrier)}}" class="carrier-logo"/></td>
         <td data-title="Název" sortable="name">{{carrier.name}}</td>
