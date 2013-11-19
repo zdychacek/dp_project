@@ -145,17 +145,17 @@ div.flights-list
 						td.medium(data-title="Vytvořeno", sortable="lastModified") {{flight.lastModified | date: 'd.M.yy H:mm'}}
 
 						td.icon.btn-toolbar
-							a.btn.btn-info(ng-click="editFlight(flight)", href="#")
-								i.icon-wrench
-
-							a.btn.btn-danger(ng-click="removeFlight(flight)", href="#")
-								i.icon-trash
-
 							a.btn.btn-success(ng-click="setReservationState(true, flight)", ng-hide="flight.hasReservation || !flight.freeCapacity", href="#")
 								i.icon-ok
 
 							a.btn.btn-danger(ng-click="setReservationState(false, flight)", ng-hide="!flight.hasReservation", href="#")
-								i.icon-remove-sign
+								i.icon-remove
+
+							a.btn.btn-info(ng-click="editFlight(flight)", href="#")
+								i(ng-class="{'icon-edit': isAdmin, 'icon-info-sign': !isAdmin}")
+
+							a.btn.btn-danger(ng-click="removeFlight(flight)", ng-if="isAdmin", href="#")
+								i.icon-trash
 
 				div.table-pager
 					my-pagination

@@ -19,24 +19,30 @@ form.form-horizontal.flight-edit(name="form", ng-hide="noData", ng-submit="save(
 			.control-group
 				label.control-label Cena
 				.controls
-					span.input-group-addon
-						i.glyphicon.glyphicon-calendar
-					input(type='number', step="any", min="0", name="price", ng-model="flight.price", required)
-					span.text-error(ng-show="showErrorMessage(form.price)") Vyplňte cenu.
-					span.text-error(ng-show="showErrorMessage(form.price, 'number')") Cena musí být číselná hodnota.
-					span.text-error(ng-show="showErrorMessage(form.price, 'min')") Cena nesmí být záporné číslo.
+					div(ng-if="isAdmin")
+						input(type='number', step="any", min="0", name="price", ng-model="flight.price", required)
+						span.text-error(ng-show="showErrorMessage(form.price)") Vyplňte cenu.
+						span.text-error(ng-show="showErrorMessage(form.price, 'number')") Cena musí být číselná hodnota.
+						span.text-error(ng-show="showErrorMessage(form.price, 'min')") Cena nesmí být záporné číslo.
+
+					span(ng-if="!isAdmin") {{flight.price | currency}}
 
 			.control-group
 				label.control-label Kapacita letu
 				.controls
-					input(type='number', name="capacity", ng-model="flight.capacity", required)
-					span.text-error(ng-show="showErrorMessage(form.capacity)") Vyplňte kapacitu letu.
-					span.text-error(ng-show="showErrorMessage(form.capacity, 'number')") Kapacita letu musí být číselná hodnota.
+					div(ng-if="isAdmin")
+						input(type='number', name="capacity", ng-model="flight.capacity", required)
+						span.text-error(ng-show="showErrorMessage(form.capacity)") Vyplňte kapacitu letu.
+						span.text-error(ng-show="showErrorMessage(form.capacity, 'number')") Kapacita letu musí být číselná hodnota.
+
+					span(ng-if="!isAdmin") {{flight.capacity}}
 
 			.control-group
 				label.control-label Poznámka
 				.controls
-					textarea(ng-model="flight.note")
+					textarea(ng-model="flight.note", ng-if="isAdmin")
+
+					span(ng-if="!isAdmin") {{flight.note}}
 
 			.control-group(ng-show="getFromDestination()")
 				label.control-label Odkud
@@ -73,26 +79,38 @@ form.form-horizontal.flight-edit(name="form", ng-hide="noData", ng-submit="save(
 				tbody
 					tr(ng-repeat="pathPart in flight.path")
 						td
-							select(ng-options="c._id as c.name for c in carriersList", ng-model="pathPart.carrier")
+							select(ng-options="c._id as c.name for c in carriersList", ng-model="pathPart.carrier", ng-if="isAdmin")
+							span(ng-if="!isAdmin") {{ getCarrierNameById(pathPart.carrier) }}
 							| &nbsp;
 							img.carrier-logo(ng-show="makeLogoUrl(pathPart.carrier)", ng-src="{{makeLogoUrl(pathPart.carrier)}}")
+
 						td
-							input(type="datetime", date-time, ng-model="pathPart.departureTime", required, view="hours")
+							input(type="datetime", date-time, ng-model="pathPart.departureTime", required, view="hours", ng-if="isAdmin")
+							span(ng-if="!isAdmin") {{ pathPart.departureTime | date: 'dd.MM.yyyy HH:mm' }}
+
 						td
-							input(type="text", ng-model="pathPart.fromDestination", required, typeahead="suggestion for suggestion in getCities($viewValue)")
+							input(type="text", ng-model="pathPart.fromDestination", required, typeahead="suggestion for suggestion in getCities($viewValue)", ng-if="isAdmin")
+							span(ng-if="!isAdmin") {{ pathPart.fromDestination }}
+
 						td
-							input(type="datetime", date-time, ng-model="pathPart.arrivalTime", required, view="hours")
+							input(type="datetime", date-time, ng-model="pathPart.arrivalTime", required, view="hours", ng-if="isAdmin")
+							span(ng-if="!isAdmin") {{ pathPart.arrivalTime | date: 'dd.MM.yyyy HH:mm' }}
+
 						td
-							input(type="text", ng-model="pathPart.toDestination", required, typeahead="suggestion for suggestion in getCities($viewValue)")
+							input(type="text", ng-model="pathPart.toDestination", required, typeahead="suggestion for suggestion in getCities($viewValue)", ng-if="isAdmin")
+							span(ng-if="!isAdmin") {{ pathPart.toDestination }}
+
 						td
 							span {{ getPathPartLength(pathPart) | minutesFormatter: 'n/a' }}
-						td
+
+						td(ng-if="isAdmin")
 							a.btn.btn-danger(ng-click="removePathPart(pathPart)", ng-show="flight.path.length > 1", href="#")
 								span.icon-remove-sign
 
 					tr(ng-show="!flight.path.length")
 						td(colspan="7") Přidejte trasu.
-				tfoot
+
+				tfoot(ng-if="isAdmin")
 					tr
 						td(colspan="7")
 							a.btn(ng-click="addPathPart()", href="#")
@@ -101,8 +119,8 @@ form.form-horizontal.flight-edit(name="form", ng-hide="noData", ng-submit="save(
 
 		div.btn-toolbar
 			a.btn(ng-href="/flights") Zpět na seznam
-			input.btn.btn-primary(type="submit", value="Uložit", ng-disabled="form.$invalid")
-			a.btn.btn-danger(ng-click="deleteFlight()", href="#")
+			input.btn.btn-primary(type="submit", value="Uložit", ng-disabled="form.$invalid", ng-if="isAdmin")
+			a.btn.btn-danger(ng-click="deleteFlight()", ng-if="isAdmin", href="#")
 				i.icon-trash
 				| &nbsp;Smazat
 

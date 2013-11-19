@@ -14,20 +14,24 @@
       </div>
       <div class="control-group">
         <label class="control-label">Cena</label>
-        <div class="controls"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-          <input type="number" step="any" min="0" name="price" ng-model="flight.price" required="required"/><span ng-show="showErrorMessage(form.price)" class="text-error">Vyplňte cenu.</span><span ng-show="showErrorMessage(form.price, 'number')" class="text-error">Cena musí být číselná hodnota.</span><span ng-show="showErrorMessage(form.price, 'min')" class="text-error">Cena nesmí být záporné číslo.</span>
+        <div class="controls">
+          <div ng-if="isAdmin">
+            <input type="number" step="any" min="0" name="price" ng-model="flight.price" required="required"/><span ng-show="showErrorMessage(form.price)" class="text-error">Vyplňte cenu.</span><span ng-show="showErrorMessage(form.price, 'number')" class="text-error">Cena musí být číselná hodnota.</span><span ng-show="showErrorMessage(form.price, 'min')" class="text-error">Cena nesmí být záporné číslo.</span>
+          </div><span ng-if="!isAdmin">{{flight.price | currency}}</span>
         </div>
       </div>
       <div class="control-group">
         <label class="control-label">Kapacita letu</label>
         <div class="controls">
-          <input type="number" name="capacity" ng-model="flight.capacity" required="required"/><span ng-show="showErrorMessage(form.capacity)" class="text-error">Vyplňte kapacitu letu.</span><span ng-show="showErrorMessage(form.capacity, 'number')" class="text-error">Kapacita letu musí být číselná hodnota.</span>
+          <div ng-if="isAdmin">
+            <input type="number" name="capacity" ng-model="flight.capacity" required="required"/><span ng-show="showErrorMessage(form.capacity)" class="text-error">Vyplňte kapacitu letu.</span><span ng-show="showErrorMessage(form.capacity, 'number')" class="text-error">Kapacita letu musí být číselná hodnota.</span>
+          </div><span ng-if="!isAdmin">{{flight.capacity}}</span>
         </div>
       </div>
       <div class="control-group">
         <label class="control-label">Poznámka</label>
         <div class="controls">
-          <textarea ng-model="flight.note"></textarea>
+          <textarea ng-model="flight.note" ng-if="isAdmin"></textarea><span ng-if="!isAdmin">{{flight.note}}</span>
         </div>
       </div>
       <div ng-show="getFromDestination()" class="control-group">
@@ -63,28 +67,28 @@
         <tbody>
           <tr ng-repeat="pathPart in flight.path">
             <td>
-              <select ng-options="c._id as c.name for c in carriersList" ng-model="pathPart.carrier"></select>&nbsp;<img ng-show="makeLogoUrl(pathPart.carrier)" ng-src="{{makeLogoUrl(pathPart.carrier)}}" class="carrier-logo"/>
+              <select ng-options="c._id as c.name for c in carriersList" ng-model="pathPart.carrier" ng-if="isAdmin"></select><span ng-if="!isAdmin">{{ getCarrierNameById(pathPart.carrier) }}</span>&nbsp;<img ng-show="makeLogoUrl(pathPart.carrier)" ng-src="{{makeLogoUrl(pathPart.carrier)}}" class="carrier-logo"/>
             </td>
             <td>
-              <input type="datetime" date-time="date-time" ng-model="pathPart.departureTime" required="required" view="hours"/>
+              <input type="datetime" date-time="date-time" ng-model="pathPart.departureTime" required="required" view="hours" ng-if="isAdmin"/><span ng-if="!isAdmin">{{ pathPart.departureTime | date: 'dd.MM.yyyy HH:mm' }}</span>
             </td>
             <td>
-              <input type="text" ng-model="pathPart.fromDestination" required="required" typeahead="suggestion for suggestion in getCities($viewValue)"/>
+              <input type="text" ng-model="pathPart.fromDestination" required="required" typeahead="suggestion for suggestion in getCities($viewValue)" ng-if="isAdmin"/><span ng-if="!isAdmin">{{ pathPart.fromDestination }}</span>
             </td>
             <td>
-              <input type="datetime" date-time="date-time" ng-model="pathPart.arrivalTime" required="required" view="hours"/>
+              <input type="datetime" date-time="date-time" ng-model="pathPart.arrivalTime" required="required" view="hours" ng-if="isAdmin"/><span ng-if="!isAdmin">{{ pathPart.arrivalTime | date: 'dd.MM.yyyy HH:mm' }}</span>
             </td>
             <td>
-              <input type="text" ng-model="pathPart.toDestination" required="required" typeahead="suggestion for suggestion in getCities($viewValue)"/>
+              <input type="text" ng-model="pathPart.toDestination" required="required" typeahead="suggestion for suggestion in getCities($viewValue)" ng-if="isAdmin"/><span ng-if="!isAdmin">{{ pathPart.toDestination }}</span>
             </td>
             <td><span>{{ getPathPartLength(pathPart) | minutesFormatter: 'n/a' }}</span></td>
-            <td><a ng-click="removePathPart(pathPart)" ng-show="flight.path.length &gt; 1" href="#" class="btn btn-danger"><span class="icon-remove-sign"></span></a></td>
+            <td ng-if="isAdmin"><a ng-click="removePathPart(pathPart)" ng-show="flight.path.length &gt; 1" href="#" class="btn btn-danger"><span class="icon-remove-sign"></span></a></td>
           </tr>
           <tr ng-show="!flight.path.length">
             <td colspan="7">Přidejte trasu.</td>
           </tr>
         </tbody>
-        <tfoot>
+        <tfoot ng-if="isAdmin">
           <tr>
             <td colspan="7"><a ng-click="addPathPart()" href="#" class="btn"><i class="icon-plus-sign">&nbsp;</i>Přidat část trasy</a></td>
           </tr>
@@ -92,7 +96,7 @@
       </table>
     </fieldset>
     <div class="btn-toolbar"><a ng-href="/flights" class="btn">Zpět na seznam</a>
-      <input type="submit" value="Uložit" ng-disabled="form.$invalid" class="btn btn-primary"/><a ng-click="deleteFlight()" href="#" class="btn btn-danger"><i class="icon-trash"></i>&nbsp;Smazat</a>
+      <input type="submit" value="Uložit" ng-disabled="form.$invalid" ng-if="isAdmin" class="btn btn-primary"/><a ng-click="deleteFlight()" ng-if="isAdmin" href="#" class="btn btn-danger"><i class="icon-trash"></i>&nbsp;Smazat</a>
     </div>
     <!--pre {{flight | json}}-->
   </div>

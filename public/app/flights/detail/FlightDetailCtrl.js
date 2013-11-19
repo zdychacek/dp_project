@@ -125,6 +125,16 @@ define([
 				}
 			};
 
+			$scope.getCarrierNameById = function (carrierId) {
+				var carrier = $scope.carriersList.filter(function (c) {
+					return c._id == carrierId;
+				});
+
+				if (carrier && carrier[0]) {
+					return carrier[0].name;
+				}
+			};
+
 			$scope.getPathPartLength = function (pathPart) {
 				if (!pathPart.departureTime || !pathPart.arrivalTime) {
 					return 0;

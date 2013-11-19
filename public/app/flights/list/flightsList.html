@@ -114,7 +114,7 @@
               <ng-switch on="flight.transfersCount"><span ng-switch-when="0">přímý let</span><span ng-switch-default="false">{{flight.transfersCount}}</span></ng-switch>
             </td>
             <td data-title="Vytvořeno" sortable="lastModified" class="medium">{{flight.lastModified | date: 'd.M.yy H:mm'}}</td>
-            <td class="icon btn-toolbar"><a ng-click="editFlight(flight)" href="#" class="btn btn-info"><i class="icon-wrench"></i></a><a ng-click="removeFlight(flight)" href="#" class="btn btn-danger"><i class="icon-trash"></i></a><a ng-click="setReservationState(true, flight)" ng-hide="flight.hasReservation || !flight.freeCapacity" href="#" class="btn btn-success"><i class="icon-ok"></i></a><a ng-click="setReservationState(false, flight)" ng-hide="!flight.hasReservation" href="#" class="btn btn-danger"><i class="icon-remove-sign"></i></a></td>
+            <td class="icon btn-toolbar"><a ng-click="setReservationState(true, flight)" ng-hide="flight.hasReservation || !flight.freeCapacity" href="#" class="btn btn-success"><i class="icon-ok"></i></a><a ng-click="setReservationState(false, flight)" ng-hide="!flight.hasReservation" href="#" class="btn btn-danger"><i class="icon-remove"></i></a><a ng-click="editFlight(flight)" href="#" class="btn btn-info"><i ng-class="{'icon-edit': isAdmin, 'icon-info-sign': !isAdmin}"></i></a><a ng-click="removeFlight(flight)" ng-if="isAdmin" href="#" class="btn btn-danger"><i class="icon-trash"></i></a></td>
           </tr>
         </table>
         <div class="table-pager">
