@@ -30,6 +30,30 @@ mongoose.connect(app.get('db uri'), function (err) {
 	}
 });
 
+app.use(function (req, res, next) {
+	res.sendData = function (obj) {
+		var format = req.query.format || 'json';
+
+		// TODO:
+		res.json(obj);
+
+		/*if (format == 'json') {
+			res.header('Content-Type', 'application/json');
+			res.send(obj);
+		}
+		else if (format == 'xml') {
+			res.header('Content-Type', 'text/xml');
+			var xml = easyxml.render(obj);
+			res.send(xml);
+		}
+		else {
+			res.send(406);
+		}*/
+	};
+
+	next();
+});
+
 app.use(express.favicon());
 app.use(express.cookieParser(config.server.secret));
 app.use(express.session({

@@ -5,7 +5,7 @@ const mongoose = require('mongoose'),
 	Carrier = require('./Carrier'),
 	User = require('./User');
 
-var FlightSchema = new mongoose.Schema({
+var Flight = new mongoose.Schema({
 	path: [ PathPart.schema ],
 	price: Number,
 	capacity: Number,
@@ -22,9 +22,9 @@ var FlightSchema = new mongoose.Schema({
 	totalFlightDuration: Number	// v minutach
 });
 
-FlightSchema.plugin(lastModified);
+Flight.plugin(lastModified);
 
-FlightSchema.pre('save', function (next) {
+Flight.pre('save', function (next) {
 	var firstPathPart = this.path[0],
 		lastPathPart = this.path.length > 1 ? this.path[this.path.length - 1] : this.path[0];
 
@@ -59,7 +59,7 @@ FlightSchema.pre('save', function (next) {
 });
 
 // Zeserializuje object a prida k nemu kontextova data (napr. dataq z aktualniho usera)
-FlightSchema.methods.serializeWithContext = function (user) {
+Flight.methods.serializeWithContext = function (user) {
 	var data = this.toObject();
 
 	if (user) {
@@ -71,7 +71,7 @@ FlightSchema.methods.serializeWithContext = function (user) {
 	return data;
 };
 
-FlightSchema.methods.addReservationForUser = function (user, callback) {
+Flight.methods.addReservationForUser = function (user, callback) {
 	var passengers = this.passengers,
 		self = this,
 		reservationAlreadyExists = passengers.some(function (passenger) {
@@ -79,10 +79,7 @@ FlightSchema.methods.addReservationForUser = function (user, callback) {
 		}), errors = [];
 
 	if (reservationAlreadyExists) {
-		errors.push({
-			type: 'error',
-			message: 'Nelze vytvořit rezervaci, která už byla vytvořena.'
-		});
+		errors.push('Nelze vytvořit rezervaci, která už byla vytvořena.');
 
 		callback(errors, this);
 	}
@@ -95,21 +92,21 @@ FlightSchema.methods.addReservationForUser = function (user, callback) {
 					callback(null, self);
 				}
 				else {
-					console.log(err)
+					callback([{
+						type: 'error',
+						message: err.toString()
+					}], null);
 				}
 			});
 		}
 		else {
-			errors.push({
-				type: 'error',
-				message: 'Let je již plně obsazen. Nelze vytvořit rezervaci.'
-			});
+			errors.push('Let je již plně obsazen. Nelze vytvořit rezervaci.');
 			callback(errors, this);
 		}
 	}
 };
 
-FlightSchema.methods.cancelReservationForUser = function (user, callback) {
+Flight.methods.cancelReservationForUser = function (user, callback) {
 	var passengers = this.passengers,
 		self = this,
 		reservationAlreadyExists = passengers.some(function (passenger) {
@@ -124,17 +121,99 @@ FlightSchema.methods.cancelReservationForUser = function (user, callback) {
 				callback(null, self);
 			}
 			else {
-				console.log(err)
+				callback([{
+					type: 'error',
+					message: err.toString()
+				}], null);
 			}
 		});
 	}
 	else {
-		errors.push({
-			type: 'error',
-			message: 'Nelze zrušit rezervaci, která neexistuje.'
-		});
+		errors.push('Nelze zrušit rezervaci, která neexistuje.');
 		callback(errors, this);
 	}
+};
+
+Flight.statics.filter = function (filter, pagerSorter, callback) {
+	var query = this.count({});
+	pagerSorter || (pagerSorter = {});
+
+	// vyfiltrovani podle kriterii
+	if (filter) {
+		if (filter.fromDestination) {
+			query = query.where('fromDestination').equals(filter.fromDestination);
+		}
+
+		if (filter.toDestination) {
+			query = query.where('toDestination').equals(filter.toDestination);
+		}
+
+		if (filter.maxTransfersCount !== undefined) {
+			query = query.where('transfersCount').lte(filter.maxTransfersCount);
+		}
+
+		if (filter.departureTimeFrom) {
+			query = query.where('departureTime').gte(new Date(filter.departureTimeFrom));
+		}
+
+		if (filter.departureTimeTo) {
+			query = query.where('departureTime').lte(new Date(filter.departureTimeTo));
+		}
+
+		if (filter.arrivalTimeFrom) {
+			query = query.where('arrivalTime').gte(new Date(filter.arrivalTimeFrom));
+		}
+
+		if (filter.arrivalTimeTo) {
+			query = query.where('arrivalTime').lte(new Date(filter.arrivalTimeTo));
+		}
+
+		if (filter.totalFlightDuration) {
+			query = query.where('totalFlightDuration').lte(filter.totalFlightDuration);
+		}
+
+		if (filter.priceFrom) {
+			query = query.where('price').gte(filter.priceFrom);
+		}
+
+		if (filter.priceTo) {
+			query = query.where('price').lte(filter.priceTo);
+		}
+
+		// vyfiltrovani pouze mych rezervaci
+		if (filter.userId) {
+			query.where('passengers').in([ filter.userId ]);
+		}
+	}
+
+	query.exec(function (err, totalCount) {
+		query.find();
+
+		// strankovani a sortovani
+		if (pagerSorter.limit) {
+			query = query.limit(pagerSorter.limit);
+		}
+
+		if (pagerSorter.offset) {
+			query = query.skip(pagerSorter.offset);
+		}
+
+		if (pagerSorter.sort && pagerSorter.dir) {
+			var sortObj = {};
+			sortObj[pagerSorter.sort] = pagerSorter.dir;
+
+			query = query.sort(sortObj);
+		}
+
+		query.exec(function (err, flights) {
+			callback(err, {
+				items: flights,
+				metadata: {
+					totalCount: totalCount
+				}
+			});
+		});
+	});
 };
 
 var destinations = require('./Destination').getAll();
@@ -193,7 +272,7 @@ function getRnd (from, to, decimal) {
 	}
 };
 
-FlightSchema.statics.generate = function (count) {
+Flight.statics.generate = function (count) {
 	var self = this;
 
 	Carrier.find({}, function (err, carriers) {
@@ -219,4 +298,4 @@ FlightSchema.statics.generate = function (count) {
 	});
 };
 
-module.exports = mongoose.model('Flight', FlightSchema);
+module.exports = mongoose.model('Flight', Flight);

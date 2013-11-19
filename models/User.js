@@ -1,4 +1,5 @@
 const mongoose = require('mongoose'),
+	Flight = require('./Flight'),
 	lastModified = require('./plugins/lastModified');
 
 var User = new mongoose.Schema({
@@ -15,12 +16,14 @@ var User = new mongoose.Schema({
 
 User.plugin(lastModified);
 
-User.pre('save', function (next) {
-	if (this.isEnabled) {
-		//this.bannedSince = null;
-	}
-
-	next();
-});
+User.methods.listReservations = function (callback) {
+	Flight.find({
+		passengers: {
+			$in: [this._id]
+		}
+	}, function (err, flights) {
+		callback.apply(null, arguments);
+	});
+};
 
 module.exports = mongoose.model('User', User);

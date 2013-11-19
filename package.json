@@ -8,7 +8,8 @@
     "express-namespace": "~0.1.1",
     "async": "~0.2.9",
     "moment": "~2.4.0",
-    "socket.io": "~0.9.16"
+    "socket.io": "~0.9.16",
+    "easyxml": "0.0.4"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

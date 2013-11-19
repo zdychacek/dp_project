@@ -1,4 +1,5 @@
 const User = require('../models/User'),
+	Flight = require('../models/Flight'),
 	async = require('async');
 
 exports.addRoutes = function (app, config, security) {
@@ -18,6 +19,26 @@ exports.addRoutes = function (app, config, security) {
 					res.json({
 						isValid: count == 0
 					});
+				});
+			});
+		});
+
+		app.get('/:id/list-reservations', function (req, res) {
+			security.isAdminOrUserWithIdIsLogged(req.params.id, req, res, function (user) {
+				User.findById(req.params.id, function (err, user) {
+					if (!err) {
+						user.listReservations(function (err, flights) {
+							if (!err) {
+								res.sendData(flights);
+							}
+							else {
+								console.log(err);
+							}
+						});
+					}
+					else {
+						console.log(err);
+					}
 				});
 			});
 		});

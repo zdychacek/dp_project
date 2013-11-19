@@ -19,15 +19,21 @@ exports.addRoutes = function (app, config, security, io) {
 			security.isAuthorized(req, res, function (user) {
 				Flight.findById(req.params.id, function (err, flight) {
 					if (!err) {
-						flight.addReservationForUser(user, function (err, flight) {
+						flight.addReservationForUser(user, function (errors, flight) {
 							var data = flight.serializeWithContext(user);
 
 							if (err) {
-								data._errors_ = err;
+								data._errors_ = errors.map(function (err) {
+									return {
+										type: 'error',
+										message: err
+									};
+								});
 							}
 							else {
 								io.sockets.emit('flight:changed', data);
 							}
+
 							res.json(data);
 						});
 					}
@@ -42,15 +48,21 @@ exports.addRoutes = function (app, config, security, io) {
 			security.isAuthorized(req, res, function (user) {
 				Flight.findById(req.params.id, function (err, flight) {
 					if (!err) {
-						flight.cancelReservationForUser(user, function (err, flight) {
+						flight.cancelReservationForUser(user, function (errors, flight) {
 							var data = flight.serializeWithContext(user);
 
 							if (err) {
-								data._errors_ = err;
+								data._errors_ = errors.map(function (err) {
+									return {
+										type: 'error',
+										message: err
+									};
+								});
 							}
 							else {
 								io.sockets.emit('flight:changed', data);
 							}
+
 							res.json(data);
 						});
 					}
@@ -132,9 +144,9 @@ exports.addRoutes = function (app, config, security, io) {
 		});
 
 		app.get('/', function (req, res) {
-			var filter = {};
-
 			security.isAuthorized(req, res, function (user) {
+				var filter = {};
+
 				if (req.query.filter) {
 					try {
 						filter = JSON.parse(req.query.filter);
@@ -142,90 +154,20 @@ exports.addRoutes = function (app, config, security, io) {
 					catch (ex) { }
 				}
 
-				var query = Flight.count({});
-
-				// vyfiltrovani podle kriterii
-				if (filter.fromDestination) {
-					query = query.where('fromDestination').equals(filter.fromDestination);
-				}
-
-				if (filter.toDestination) {
-					query = query.where('toDestination').equals(filter.toDestination);
-				}
-
-				if (filter.maxTransfersCount !== undefined) {
-					query = query.where('transfersCount').lte(filter.maxTransfersCount);
-				}
-
-				if (filter.departureTimeFrom) {
-					query = query.where('departureTime').gte(new Date(filter.departureTimeFrom));
-				}
-
-				if (filter.departureTimeTo) {
-					query = query.where('departureTime').lte(new Date(filter.departureTimeTo));
-				}
-
-				if (filter.arrivalTimeFrom) {
-					query = query.where('arrivalTime').gte(new Date(filter.arrivalTimeFrom));
-				}
-
-				if (filter.arrivalTimeTo) {
-					query = query.where('arrivalTime').lte(new Date(filter.arrivalTimeTo));
-				}
-
-				if (filter.totalFlightDuration) {
-					query = query.where('totalFlightDuration').lte(filter.totalFlightDuration);
-				}
-
-				if (filter.priceFrom) {
-					query = query.where('price').gte(filter.priceFrom);
-				}
-
-				if (filter.priceTo) {
-					query = query.where('price').lte(filter.priceTo);
-				}
-
-				// vyfiltrovani pouze mych rezervaci
 				if (filter.onlyMyReservation) {
-					query.where('passengers').in([ user._id ]);
+					filter.userId = user._id;
 				}
 
-				query.exec(function (err, totalCount) {
-					query.find();
-
-					// strankovani a sortovani
-					if (req.query.limit) {
-						query = query.limit(req.query.limit);
+				Flight.filter(filter, req.query, function (err, result) {
+					if (!err) {
+						result.items = (result.items || []).map(function (flight) {
+							return flight.serializeWithContext(user);
+						})
+						res.json(result);
 					}
-
-					if (req.query.offset) {
-						query = query.skip(req.query.offset);
+					else {
+						console.log(err);
 					}
-
-					if (req.query.sort && req.query.dir) {
-						var sortObj = {};
-						sortObj[req.query.sort] = req.query.dir;
-
-						query = query.sort(sortObj);
-					}
-
-					query.exec(function (err, flights) {
-						if (!err) {
-							flights = flights.map(function (flight) {
-								return flight.serializeWithContext(user);
-							});
-
-							res.json({
-								items: flights,
-								metadata: {
-									totalCount: totalCount
-								}
-							});
-						}
-						else {
-							return console.log(err);
-						}
-					});
 				});
 			});
 		});
