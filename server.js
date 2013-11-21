@@ -4,8 +4,9 @@ const express = require('express'),
 	app = express(),
 	mongoose = require('mongoose'),
 	fs = require('fs'),
-	security = require('./lib/security.js'),
-	config = require('./config.js'),
+	security = require('./lib/security'),
+	config = require('./config'),
+	Json2Xml = require('./lib/Json2Xml'),
 	server = require('http').createServer(app),
 	io = require('socket.io').listen(server);
 
