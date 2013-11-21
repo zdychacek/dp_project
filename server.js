@@ -10,6 +10,21 @@ const express = require('express'),
 	server = require('http').createServer(app),
 	io = require('socket.io').listen(server);
 
+console.log(Proxy);
+
+var gen = new(function* () {
+	yield 'a';
+	yield 'h';
+	yield 'o';
+	yield 'j';
+});
+
+console.log(gen.next());
+console.log(gen.next());
+console.log(gen.next());
+console.log(gen.next());
+console.log(gen.next());
+
 io.on('connect', function () {
 	console.log('client has been connected...');
 });
