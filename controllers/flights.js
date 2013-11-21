@@ -1,175 +1,171 @@
 const Flight = require('../models/Flight'),
 	PathPart = require('../models/PathPart'),
-	async = require('async');
+	suspend = require('suspend');
 
 exports.addRoutes = function (app, config, security, io) {
 	app.namespace('/api/v1/flights', function () {
 
 		app.get('/generate/:count', function (req, res) {
-			var count = req.params.count;
-
 			Flight.generate(count);
-
-			res.json({
-				count: count
-			});
+			res.json(null);
 		});
 
 		app.get('/:id/make-reservation', function (req, res) {
-			security.isAuthorized(req, res, function (user) {
-				Flight.findById(req.params.id, function (err, flight) {
-					if (!err) {
-						flight.addReservationForUser(user, function (errors, flight) {
-							var data = flight.serializeWithContext(user);
+			suspend(function* (resume) {
+				try {
+					var user = yield security.isAuthorized(req, res, resume),
+						flight = yield Flight.findById(req.params.id, resume);
 
-							if (err) {
-								data._errors_ = errors.map(function (err) {
-									return {
-										type: 'error',
-										message: err
-									};
-								});
-							}
-							else {
-								io.sockets.emit('flight:changed', data);
-							}
+					flight = yield flight.addReservationForUser(user, resume);
+					flight = flight.serializeWithContext(user);
 
-							res.json(data);
-						});
-					}
-					else {
-						console.log(err);
-					}
-				});
-			});
+					io.sockets.emit('flight:changed', flight);
+				}
+				catch (ex) {
+					flight._errors_ = [{
+						type: 'error',
+						message: ex
+					}];
+				}
+				finally {
+					res.json(flight);
+				}
+			})();
 		});
 
 		app.get('/:id/cancel-reservation', function (req, res) {
-			security.isAuthorized(req, res, function (user) {
-				Flight.findById(req.params.id, function (err, flight) {
-					if (!err) {
-						flight.cancelReservationForUser(user, function (errors, flight) {
-							var data = flight.serializeWithContext(user);
+			suspend(function* (resume) {
+				try {
+					var user = yield security.isAuthorized(req, res, resume),
+						flight = yield Flight.findById(req.params.id, resume);
 
-							if (err) {
-								data._errors_ = errors.map(function (err) {
-									return {
-										type: 'error',
-										message: err
-									};
-								});
-							}
-							else {
-								io.sockets.emit('flight:changed', data);
-							}
+					flight = yield flight.cancelReservationForUser(user, resume);
+					flight = flight.serializeWithContext(user);
 
-							res.json(data);
-						});
-					}
-					else {
-						console.log(err);
-					}
-				});
-			});
+					io.sockets.emit('flight:changed', flight);
+				}
+				catch (ex) {
+					flight._errors_ = [{
+						type: 'error',
+						message: ex
+					}];
+				}
+				finally {
+					res.json(flight);
+				}
+			})();
 		});
 
 		app.get('/delete', function (req, res) {
-			security.isAdmin(req, res, function () {
-				Flight.remove({}, function () {
-					res.send('deleted');
-				});
+			suspend(function* (resume) {
+				try {
+					var user = yield security.isAdmin(req, res, resume);
+					yield Flight.remove({}, remove);
+
+					res.send(null);
+				}
+				catch (ex) {
+					console.log(ex);
+				}
 			});
 		});
 
 		app.get('/:id', function (req, res) {
-			security.isAuthorized(req, res, function (user) {
-				Flight.findById(req.params.id, function (err, flight) {
-					if (!err) {
-						res.json(flight.serializeWithContext(user));
-					}
-					else { console.log(err); }
-				});
-			});
+			suspend(function* (resume) {
+				try {
+					var user = yield security.isAuthorized(req, res, resume),
+						flight = yield Flight.findById(req.params.id, resume);
+
+					res.json(flight.serializeWithContext(user));
+				}
+				catch (ex) {
+					console.log(ex);
+				}
+			})();
 		});
 
 		app.post('/', function (req, res) {
-			security.isAdmin(req, res, function (user) {
-				var flight = new Flight(req.body);
+			suspend(function* (resume) {
+				try {
+					var user = yield security.isAdmin(req, res, resume),
+						flight = new Flight(req.body);
 
-				flight.save(function (err, flight) {
-					if (!err) {
-						var flightData = flight.serializeWithContext(user);
-						io.sockets.emit('flight:created', flightData);
-						res.json(flightData);
-					}
-					else { console.log(err); }
-				});
-			});
+					flight = yield flight.save(resume);
+					flight = flight.serializeWithContext(user);
+
+					io.sockets.emit('flight:created', flight);
+					res.json(flight);
+				}
+				catch (ex) {
+					console.log(ex);
+				}
+			})();
 		});
 
 		app.delete('/:id', function (req, res) {
-			security.isAdmin(req, res, function () {
-				Flight.remove({ _id: req.params.id }, function (err) {
-					if (!err) {
-						io.sockets.emit('flight:deleted', req.params.id);
-						res.json(null);
-					}
-					else { console.log(err); }
-				});
-			});
+			suspend(function* (resume) {
+				try {
+					var user = yield security.isAdmin(req, res, resume);
+					yield Flight.remove({ _id: req.params.id }, resume);
+
+					io.sockets.emit('flight:deleted', req.params.id);
+					res.json(null);
+				}
+				catch (ex) {
+					console.log(ex);
+				}
+			})();
 		});
 
 		app.put('/:id', function (req, res) {
-			security.isAdmin(req, res, function (user) {
-				Flight.findById(req.params.id, function (err, flight) {
-					if (!err) {
-						flight.date = req.body.date;
-						flight.price = req.body.price;
-						flight.capacity = req.body.capacity;
-						flight.note = req.body.note;
-						flight.path = req.body.path;
+			suspend(function* (resume) {
+				try {
+					var user = yield security.isAdmin(req, res, resume),
+						flight = yield Flight.findById(req.params.id, resume);
 
-						flight.save(function (err, flight) {
-							if (!err) {
-								var flightData = flight.serializeWithContext(user);
-								io.sockets.emit('flight:changed', flightData);
-								res.json(flightData);
-							}
-							else { console.log(err); }
-						});
-					}
-					else { console.log(err); }
-				});
-			});
+					flight.date = req.body.date;
+					flight.price = req.body.price;
+					flight.capacity = req.body.capacity;
+					flight.note = req.body.note;
+					flight.path = req.body.path;
+
+					flight = yield flight.save(resume);
+					flight = flight.serializeWithContext(user);
+
+					io.sockets.emit('flight:changed', flight);
+					res.json(flight);
+				}
+				catch (ex) {
+					console.log(ex);
+				}
+			})();
 		});
 
 		app.get('/', function (req, res) {
-			security.isAuthorized(req, res, function (user) {
-				var filter = {};
+			suspend(function* (resume) {
+				try {
+					var filter = {},
+						user = yield security.isAuthorized(req, res, resume);
 
-				if (req.query.filter) {
-					try {
+					if (req.query.filter) {
 						filter = JSON.parse(req.query.filter);
 					}
-					catch (ex) { }
-				}
 
-				if (filter.onlyMyReservation) {
-					filter.userId = user._id;
-				}
+					if (filter.onlyMyReservation) {
+						filter.userId = user._id;
+					}
 
-				Flight.filter(filter, req.query, function (err, result) {
-					if (!err) {
-						result.items = (result.items || []).map(function (flight) {
-							return flight.serializeWithContext(user);
-						})
-						res.json(result);
-					}
-					else {
-						console.log(err);
-					}
-				});
-			});
+					var result = yield Flight.filter(filter, req.query, resume);
+
+					result.items = (result.items || []).map(function (flight) {
+						return flight.serializeWithContext(user);
+					})
+					res.json(result);
+				}
+				catch (ex) {
+					console.log(ex);
+				}
+			})();
 		});
 	});
 };

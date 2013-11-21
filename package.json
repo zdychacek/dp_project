@@ -30,7 +30,8 @@
     "bower": "~1.2.6",
     "node-inspector": "~0.4.0",
     "grunt-contrib-jade": "~0.8.0",
-    "grunt-contrib-less": "~0.7.0"
+    "grunt-contrib-less": "~0.7.0",
+    "suspend": "~0.3.1"
   },
   "engines": {
     "node": ">=0.8.0"
