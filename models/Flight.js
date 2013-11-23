@@ -141,43 +141,43 @@ Flight.statics.filter = function (filter, pagerSorter, callback) {
 	// vyfiltrovani podle kriterii
 	if (filter) {
 		if (filter.fromDestination) {
-			query = query.where('fromDestination').equals(filter.fromDestination);
+			query.where('fromDestination').equals(filter.fromDestination);
 		}
 
 		if (filter.toDestination) {
-			query = query.where('toDestination').equals(filter.toDestination);
+			query.where('toDestination').equals(filter.toDestination);
 		}
 
 		if (filter.maxTransfersCount !== undefined) {
-			query = query.where('transfersCount').lte(filter.maxTransfersCount);
+			query.where('transfersCount').lte(filter.maxTransfersCount);
 		}
 
 		if (filter.departureTimeFrom) {
-			query = query.where('departureTime').gte(new Date(filter.departureTimeFrom));
+			query.where('departureTime').gte(new Date(filter.departureTimeFrom));
 		}
 
 		if (filter.departureTimeTo) {
-			query = query.where('departureTime').lte(new Date(filter.departureTimeTo));
+			query.where('departureTime').lte(new Date(filter.departureTimeTo));
 		}
 
 		if (filter.arrivalTimeFrom) {
-			query = query.where('arrivalTime').gte(new Date(filter.arrivalTimeFrom));
+			query.where('arrivalTime').gte(new Date(filter.arrivalTimeFrom));
 		}
 
 		if (filter.arrivalTimeTo) {
-			query = query.where('arrivalTime').lte(new Date(filter.arrivalTimeTo));
+			query.where('arrivalTime').lte(new Date(filter.arrivalTimeTo));
 		}
 
 		if (filter.totalFlightDuration) {
-			query = query.where('totalFlightDuration').lte(filter.totalFlightDuration);
+			query.where('totalFlightDuration').lte(filter.totalFlightDuration);
 		}
 
 		if (filter.priceFrom) {
-			query = query.where('price').gte(filter.priceFrom);
+			query.where('price').gte(filter.priceFrom);
 		}
 
 		if (filter.priceTo) {
-			query = query.where('price').lte(filter.priceTo);
+			query.where('price').lte(filter.priceTo);
 		}
 
 		// vyfiltrovani pouze mych rezervaci
@@ -191,11 +191,11 @@ Flight.statics.filter = function (filter, pagerSorter, callback) {
 
 		// strankovani a sortovani
 		if (pagerSorter.limit) {
-			query = query.limit(pagerSorter.limit);
+			query.limit(pagerSorter.limit);
 		}
 
 		if (pagerSorter.offset) {
-			query = query.skip(pagerSorter.offset);
+			query.skip(pagerSorter.offset);
 		}
 
 		if (pagerSorter.sort && pagerSorter.dir) {

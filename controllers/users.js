@@ -1,182 +1,191 @@
 const User = require('../models/User'),
 	Flight = require('../models/Flight'),
-	async = require('async');
+	async = require('async'),
+	suspend = require('suspend');
 
 exports.addRoutes = function (app, config, security) {
 	app.namespace('/api/v1/users', function () {
 
 		app.get('/checkLogin', function (req, res) {
-			security.isAuthorized(req, res, function () {
-				var login = req.query.login;
+			suspend(function* (resume) {
+				try {
+					yield security.isAuthorized(req, res, resume);
 
-				User.find({
-					login: login
-				}).count(function (err, count) {
-					if (err) {
-						return console.log(err);
-					}
+					var login = req.query.login,
+						count = yield User.find({ login: login }).count(resume);
 
 					res.json({
 						isValid: count == 0
 					});
-				});
-			});
+				}
+				catch (ex) {
+					console.log(ex);
+				}
+			})();
 		});
 
 		app.get('/:id/list-reservations', function (req, res) {
-			security.isAdminOrUserWithIdIsLogged(req.params.id, req, res, function (user) {
-				User.findById(req.params.id, function (err, user) {
-					if (!err) {
-						user.listReservations(function (err, flights) {
-							if (!err) {
-								res.sendData(flights);
-							}
-							else {
-								console.log(err);
-							}
-						});
-					}
-					else {
-						console.log(err);
-					}
-				});
-			});
+			suspend(function* (resume) {
+				try {
+					yield security.isAdminOrUserWithIdIsLogged(req.params.id, req, res, resume);
+
+					var user = yield User.findById(req.params.id, resume),
+						flights = yield user.listReservations(resume);
+
+					res.sendData(flights);
+				}
+				catch (ex) {
+					console.log(ex);
+				}
+			})();
 		});
 
+		function asyncCallback(gen) {
+			return function() {
+				return Q.async(gen).apply(null, arguments).done();
+			};
+		}
+
 		app.get('/:id', function (req, res) {
-			security.isAuthorized(req, res, function () {
-				User.findById(req.params.id, function (err, user) {
-					if (!err) {
-						res.json(user);
-					}
-					else {
-						console.log(err);
-						res.json(null);
-					}
-				});
-			});
+			suspend(function* (resume) {
+				try {
+					yield security.isAuthorized(req, res, resume);
+
+					res.json(yield User.findById(req.params.id, resume));
+				}
+				catch (ex) {
+					console.log(ex);
+				}
+			})();
 		});
 
 		app.post('/', function (req, res) {
-			security.isAdmin(req, res, function () {
-				var user = new User(req.body);
+			suspend(function* (resume) {
+				try {
+					yield security.isAdmin(req, res, resume);
 
-				user.save(function (err, user) {
-					if (!err) {
-						res.json(user);
-					} else { console.log(err); }
-				});
-			});
+					var user = new User(req.body);
+					user = yield user.save(resume);
+					res.json(user);
+				}
+				catch (ex) {
+					console.log(ex);
+				}
+			})();
 		});
 
 		app.delete('/:id', function (req, res) {
-			security.isAdmin(req, res, function () {
-				User.remove({ _id: req.params.id }, function (err) {
-					if (!err) {
-						res.json(null);
-					}
-					else { console.log(err); }
-				});
-			});
+			suspend(function* (resume) {
+				try {
+					yield security.isAdmin(req, res, resume);
+
+					yield User.remove({ _id: req.params.id }, resume);
+					res.json(null);
+				}
+				catch (ex) {
+					console.log(ex);
+				}
+			})();
 		});
 
 		app.put('/:id', function (req, res) {
-			security.isAuthorized(req, res, function () {
-				var errors = [];
+			suspend(function* (resume) {
+				try {
+					yield security.isAuthorized(req, res, resume);
 
-				User.findById(req.params.id, function (err, user) {
-					var originalUser = user.toObject();
+					var errors = [],
+						user = yield User.findById(req.params.id, resume),
+						originalUser = user.toObject();
 
-					if (!err) {
-						user.email = req.body.email;
-						user.firstName = req.body.firstName;
-						user.lastName = req.body.lastName;
-						user.login = req.body.login;
-						user.isAdmin = req.body.isAdmin;
+					user.email = req.body.email;
+					user.firstName = req.body.firstName;
+					user.lastName = req.body.lastName;
+					user.login = req.body.login;
+					user.isAdmin = req.body.isAdmin;
 
-						if (req.body.isEnabled !== undefined) {
-							user.isEnabled = req.body.isEnabled;
+					if (req.body.isEnabled !== undefined) {
+						user.isEnabled = req.body.isEnabled;
+					}
+
+					var oldPassword = req.body.oldPassword,
+						passwordConfirmaton = req.body.passwordConfirmaton;
+
+					if (oldPassword !== undefined && passwordConfirmaton !== undefined) {
+						if (oldPassword === user.password) {
+							user.password = req.body.password;
 						}
-
-						var oldPassword = req.body.oldPassword,
-							passwordConfirmaton = req.body.passwordConfirmaton;
-
-						if (oldPassword !== undefined && passwordConfirmaton !== undefined) {
-							if (oldPassword === user.password) {
-								console.log('Changing password from', oldPassword, ' to ', req.body.password)
-								user.password = req.body.password;
-							}
-							else {
-								errors.push({
-									type: 'error',
-									message: 'Zadali jste špatné původní heslo. Změna hesla se nezdařila.'
-								});
-							}
-						}
-
-						// nastali chyby
-						if (errors.length) {
-							originalUser['_errors_'] = errors;
-							res.json(originalUser);
-						}
-						// vse probehlo v poradku
 						else {
-							user.save(function (err, user) {
-								if (!err) {
-									res.json(user);
-								}
-								else { console.log(err); }
+							errors.push({
+								type: 'error',
+								message: 'Zadali jste špatné původní heslo. Změna hesla se nezdařila.'
 							});
 						}
 					}
-					else { console.log(err); }
-				});
-			});
+
+					// nastaly chyby
+					if (errors.length) {
+						originalUser._errors_ = errors;
+						res.json(originalUser);
+					}
+					// vse probehlo v poradku
+					else {
+						res.json(yield user.save(resume));
+					}
+				}
+				catch (ex) {
+					console.log(ex);
+				}
+			})();
 		});
 
 		app.get('/', function (req, res) {
-			security.isAdmin(req, res, function () {
-				var offset = req.query.offset,
-					limit = req.query.limit ? req.query.limit : 9999,
-					sort = req.query.sort || '_id',
-					dir = req.query.dir || 'asc',
-					sortObj = {};
+			suspend(function* (resume) {
+				try {
+					yield security.isAdmin(req, res, resume);
 
-				sortObj[sort] = dir;
+					var offset = req.query.offset,
+						limit = req.query.limit,
+						sort = req.query.sort,
+						dir = req.query.dir;
 
-				async.parallel({
-					totalCount: function (callback) {
-						User
-							.find({})
-							.count(function (err, count) {
-								callback(err, count);
-							});
-					},
-					users: function (callback) {
-						User
-							.find({})
-							.limit(limit)
-						    .skip(offset)
-						    .sort(sortObj)
-						    .exec(function (err, users) {
-								callback(err, users);
-							});
-					}
-				}, function (err, result) {
-					if (err) {
-						return console.log(err);
-					}
+					var result = yield async.parallel({
+						totalCount: function (callback) {
+							User.find({})
+								.count(callback);
+						},
+						users: function (callback) {
+							var query = User.find({});
 
-					var metadata = {
-						totalCount: result.totalCount
-					};
+							if (limit) {
+								query.limit(limit);
+							}
+
+							if (offset) {
+							    query.skip(offset);
+							}
+
+							if (sort && dir) {
+								var sortObj = {};
+								sortObj[sort] = dir;
+
+								query.sort(sortObj);
+							}
+
+						    query.exec(callback);
+						}
+					}, resume);
 
 					res.json({
 						items: result.users,
-						metadata: metadata
+						metadata: {
+							totalCount: result.totalCount
+						}
 					});
-				});
-			});
+				}
+				catch (ex) {
+					console.log(ex);
+				}
+			})();
 		});
 	});
 };

@@ -1,6 +1,7 @@
 const Carrier = require('../models/Carrier'),
 	async = require('async'),
-	fs = require('fs');
+	fs = require('fs'),
+	suspend = require('suspend');
 
 exports.addRoutes = function (app, config, security) {
 	// k nazvu souboru prida cas
@@ -11,97 +12,94 @@ exports.addRoutes = function (app, config, security) {
 	app.namespace('/api/v1/carriers', function () {
 
 		app.get('/:id', function (req, res) {
-			security.isAuthorized(req, res, function () {
-				Carrier.findById(req.params.id, function (err, carrier) {
-					if (!err) {
-						res.json(carrier);
+			suspend(function* (resume) {
+				try {
+					yield security.isAuthorized(req, res, resume);
 
-					}
-					else {
-						console.log(err);
-						res.json(null);
-					}
-				});
-			});
+					res.json(yield Carrier.findById(req.params.id, resume));
+				}
+				catch (ex) {
+					console.log(ex);
+				}
+			})();
 		});
 
 		app.post('/', function (req, res) {
-			security.isAdmin(req, res, function () {
-				var reqBody = JSON.parse(req.body.data),
-					logoFile = req.files.logoFile;
+			suspend(function* (resume) {
+				try {
+					yield security.isAdmin(req, res, resume);
 
-				if (logoFile) {
-					var fileName = makeFileName(logoFile.name);
+					var reqBody = JSON.parse(req.body.data),
+						logoFile = req.files.logoFile;
 
-					async.parallel({
-						saveLogo: function (callback) {
-							fs.readFile(logoFile.path, function (err, data) {
-								fs.writeFile(config.app.uploadedFilesRoot + '/carriersLogos/' + fileName, data, callback);
-							});
-						},
-						saveData: function (callback) {
-							var carrier = new Carrier(reqBody);
-							carrier.logo = fileName;
-							carrier.save(function (err, carrier) {
-								callback(err, carrier);
-							});
-						}
-					}, function (err, result) {
-						if (!err) {
-							res.json(result.saveData);
-						}
-						else { console.log(err); }
-					});
+					if (logoFile) {
+						var fileName = makeFileName(logoFile.name);
+
+						var result = yield async.parallel({
+							saveLogo: function (callback) {
+								fs.readFile(logoFile.path, function (err, data) {
+									fs.writeFile(config.app.uploadedFilesRoot + '/carriersLogos/' + fileName, data, callback);
+								});
+							},
+							saveData: function (callback) {
+								var carrier = new Carrier(reqBody);
+								carrier.logo = fileName;
+								carrier.save(function (err, carrier) {
+									callback(err, carrier);
+								});
+							}
+						}, resume);
+
+						res.json(result.saveData);
+					}
+					else {
+						var carrier = new Carrier(reqBody);
+						res.json(yield carrier.save(resume));
+					}
 				}
-				else {
-					var carrier = new Carrier(reqBody);
-					carrier.save(function (err, carrier) {
-						if (!err) {
-							res.json(carrier);
-						}
-						else { console.log(err); }
-					});
+				catch (ex) {
+					console.log(ex);
 				}
-			});
+			})();
 		});
 
 		app.delete('/:id', function (req, res) {
-			security.isAdmin(req, res, function () {
-				Carrier.findById(req.params.id, function (err, carrier) {
-					if (!err) {
-						// smazu logo
-						if (carrier.logo) {
-							fs.unlink(config.app.uploadedFilesRoot + '/carriersLogos/' + carrier.logo);
-						}
+			suspend(function* (resume) {
+				try {
+					yield security.isAdmin(req, res, resume);
 
-						// odstranim z DB
-						carrier.remove(function (err) {
-							if (!err) {
-								res.json(null);
-							}
-							else { console.log(err); }
-						})
+					var carrier = yield Carrier.findById(req.params.id, resume);
+
+					// smazu logo
+					if (carrier.logo) {
+						fs.unlink(config.app.uploadedFilesRoot + '/carriersLogos/' + carrier.logo);
 					}
-					else { console.log(err); }
-				});
-			});
+
+					// odstranim z DB
+					yield carrier.remove(resume);
+					res.json(null);
+				}
+				catch (ex) {
+					console.log(ex);
+				}
+			})();
 		});
 
 		app.put('/:id', function (req, res) {
-			security.isAdmin(req, res, function () {
-				var logoFile = req.files.logoFile;
+			suspend(function* (resume) {
+				try {
+					yield security.isAdmin(req, res, resume);
 
-				Carrier.findById(req.params.id, function (err, carrier) {
-					if (!err) {
-						var reqBody = JSON.parse(req.body.data);
+					var logoFile = req.files.logoFile,
+						carrier = yield Carrier.findById(req.params.id, resume),
+						reqBody = JSON.parse(req.body.data);
 
-						carrier.name = reqBody.name;
-						carrier.disabled = reqBody.disabled;
+					carrier.name = reqBody.name;
+					carrier.disabled = reqBody.disabled;
 
-						if (logoFile) {
-							var fileName = makeFileName(logoFile.name);
-
-							async.parallel({
+					if (logoFile) {
+						var fileName = makeFileName(logoFile.name),
+							result = yield async.parallel({
 								saveLogo: function (callback) {
 									fs.readFile(logoFile.path, function (err, data) {
 										fs.writeFile(config.app.uploadedFilesRoot + '/carriersLogos/' + fileName, data, callback);
@@ -113,72 +111,72 @@ exports.addRoutes = function (app, config, security) {
 										callback(err, carrier);
 									});
 								}
-							}, function (err, result) {
-								if (!err) {
-									res.json(result.saveData);
-								}
-								else { console.log(err); }
-							});
-						}
-						else {
-							if (reqBody.logo === '') {
-								fs.unlink(config.app.uploadedFilesRoot + '/carriersLogos/' + carrier.logo);
-								carrier.logo = '';
-							}
+							}, resume);
 
-							carrier.save(function (err, carrier) {
-								if (!err) {
-									res.json(carrier);
-								}
-								else { console.log(err); }
-							});
-						}
+						res.json(result.saveData);
 					}
-					else { console.log(err); }
-				});
-			});
+					else {
+						if (reqBody.logo) {
+							fs.unlink(config.app.uploadedFilesRoot + '/carriersLogos/' + carrier.logo);
+							carrier.logo = '';
+						}
+
+						res.json(yield carrier.save(resume));
+					}
+				}
+				catch (ex) {
+					console.log(ex);
+				}
+			})();
 		});
 
 		app.get('/', function (req, res) {
-			security.isAuthorized(req, res, function () {
-				var offset = req.query.offset,
-					limit = req.query.limit ? req.query.limit : 9999,
-					sort = req.query.sort || '_id',
-					dir = req.query.dir || 'asc',
-					sortObj = {};
+			suspend(function* (resume) {
+				try {
+					yield security.isAuthorized(req, res, resume);
 
-				sortObj[sort] = dir;
+					var offset = req.query.offset,
+						limit = req.query.limit,
+						sort = req.query.sort,
+						dir = req.query.dir;
 
-				async.parallel({
-					totalCount: function (callback) {
-						Carrier
-							.find({})
-							.count(function (err, count) {
-								callback(err, count);
-							});
-					},
-					data: function (callback) {
-						Carrier
-							.find({})
-							.limit(limit)
-						    .skip(offset)
-						    .sort(sortObj)
-						    .exec(function (err, carriers) {
-								callback(err, carriers);
-							});
-					}
-				}, function (err, result) {
-					if (!err) {
-						res.json({
-							items: result.data,
-							metadata: {
-								totalCount: result.totalCount
+					var result = yield async.parallel({
+						totalCount: function (callback) {
+							Carrier.find({}).count(callback);
+						},
+						carriers: function (callback) {
+							var query = Carrier.find({});
+
+							if (limit) {
+								query.limit(limit);
 							}
-						});
-					}
-					else { return console.log(err); }
-				});
-			});
+
+							if (offset) {
+							    query.skip(offset);
+							}
+
+							if (sort && dir) {
+								var sortObj = {};
+								sortObj[sort] = dir;
+
+								query.sort(sortObj);
+							}
+
+						    query.exec(callback);
+						}
+					}, resume);
+
+					res.json({
+						items: result.carriers,
+						metadata: {
+							totalCount: result.totalCount
+						}
+					});
+				}
+				catch (ex) {
+					console.log(ex);
+				}
+			})();
 		});
 	});
 };
