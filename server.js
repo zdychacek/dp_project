@@ -35,21 +35,17 @@ app.use(function (req, res, next) {
 	res.sendData = function (obj) {
 		var format = req.query.format || 'json';
 
-		// TODO:
-		res.json(obj);
-
-		/*if (format == 'json') {
+		if (format == 'json') {
 			res.header('Content-Type', 'application/json');
 			res.send(obj);
 		}
 		else if (format == 'xml') {
 			res.header('Content-Type', 'text/xml');
-			var xml = easyxml.render(obj);
-			res.send(xml);
+			res.send(Json2Xml.toXml(obj));
 		}
 		else {
 			res.send(406);
-		}*/
+		}
 	};
 
 	next();
@@ -87,6 +83,7 @@ require('./controllers/users').addRoutes(app, config, security);
 require('./controllers/carriers').addRoutes(app, config, security);
 require('./controllers/flights').addRoutes(app, config, security, io);
 require('./controllers/destinations').addRoutes(app, config, security);
+require('./controllers/test').addRoutes(app, config, security);
 
 // pro podporu HTML5 location api
 app.all('/*', function(req, res) {
