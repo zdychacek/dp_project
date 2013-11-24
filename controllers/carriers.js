@@ -16,7 +16,7 @@ exports.addRoutes = function (app, config, security) {
 				try {
 					yield security.isAuthorized(req, res, resume);
 
-					res.json(yield Carrier.findById(req.params.id, resume));
+					res.sendData(yield Carrier.findById(req.params.id, resume));
 				}
 				catch (ex) {
 					console.log(ex);
@@ -50,11 +50,11 @@ exports.addRoutes = function (app, config, security) {
 							}
 						}, resume);
 
-						res.json(result.saveData);
+						res.sendData(result.saveData);
 					}
 					else {
 						var carrier = new Carrier(reqBody);
-						res.json(yield carrier.save(resume));
+						res.sendData(yield carrier.save(resume));
 					}
 				}
 				catch (ex) {
@@ -77,7 +77,7 @@ exports.addRoutes = function (app, config, security) {
 
 					// odstranim z DB
 					yield carrier.remove(resume);
-					res.json(null);
+					res.sendData(null);
 				}
 				catch (ex) {
 					console.log(ex);
@@ -113,7 +113,7 @@ exports.addRoutes = function (app, config, security) {
 								}
 							}, resume);
 
-						res.json(result.saveData);
+						res.sendData(result.saveData);
 					}
 					else {
 						if (reqBody.logo) {
@@ -121,7 +121,7 @@ exports.addRoutes = function (app, config, security) {
 							carrier.logo = '';
 						}
 
-						res.json(yield carrier.save(resume));
+						res.sendData(yield carrier.save(resume));
 					}
 				}
 				catch (ex) {
@@ -166,7 +166,7 @@ exports.addRoutes = function (app, config, security) {
 						}
 					}, resume);
 
-					res.json({
+					res.sendData({
 						items: result.carriers,
 						metadata: {
 							totalCount: result.totalCount

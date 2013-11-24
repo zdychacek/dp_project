@@ -32,16 +32,26 @@ mongoose.connect(app.get('db uri'), function (err) {
 });
 
 app.use(function (req, res, next) {
-	res.sendData = function (obj) {
-		var format = req.query.format || 'json';
+	res.sendData = function (objOrCode, data) {
+		var format = req.query.format || 'json',
+				obj,
+				statusCode = 200;
+
+		if (arguments.length == 2) {
+			statusCode = objOrCode;
+			obj = data;
+		}
+		else {
+			obj = objOrCode;
+		}
 
 		if (format == 'json') {
 			res.header('Content-Type', 'application/json');
-			res.send(obj);
+			res.send(statusCode, obj);
 		}
 		else if (format == 'xml') {
 			res.header('Content-Type', 'text/xml');
-			res.send(Json2Xml.toXml(obj));
+			res.send(statusCode, Json2Xml.toXml(obj));
 		}
 		else {
 			res.send(406);

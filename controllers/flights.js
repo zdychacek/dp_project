@@ -7,7 +7,7 @@ exports.addRoutes = function (app, config, security, io) {
 
 		app.get('/generate/:count', function (req, res) {
 			Flight.generate(count);
-			res.json(null);
+			res.sendData(null);
 		});
 
 		app.get('/:id/make-reservation', function (req, res) {
@@ -28,7 +28,7 @@ exports.addRoutes = function (app, config, security, io) {
 					}];
 				}
 				finally {
-					res.json(flight);
+					res.sendData(flight);
 				}
 			})();
 		});
@@ -51,7 +51,7 @@ exports.addRoutes = function (app, config, security, io) {
 					}];
 				}
 				finally {
-					res.json(flight);
+					res.sendData(flight);
 				}
 			})();
 		});
@@ -62,7 +62,7 @@ exports.addRoutes = function (app, config, security, io) {
 					var user = yield security.isAdmin(req, res, resume);
 					yield Flight.remove({}, remove);
 
-					res.send(null);
+					res.sendData(null);
 				}
 				catch (ex) {
 					console.log(ex);
@@ -76,7 +76,7 @@ exports.addRoutes = function (app, config, security, io) {
 					var user = yield security.isAuthorized(req, res, resume),
 						flight = yield Flight.findById(req.params.id, resume);
 
-					res.json(flight.serializeWithContext(user));
+					res.sendData(flight.serializeWithContext(user));
 				}
 				catch (ex) {
 					console.log(ex);
@@ -94,7 +94,7 @@ exports.addRoutes = function (app, config, security, io) {
 					flight = flight.serializeWithContext(user);
 
 					io.sockets.emit('flight:created', flight);
-					res.json(flight);
+					res.sendData(flight);
 				}
 				catch (ex) {
 					console.log(ex);
@@ -109,7 +109,7 @@ exports.addRoutes = function (app, config, security, io) {
 					yield Flight.remove({ _id: req.params.id }, resume);
 
 					io.sockets.emit('flight:deleted', req.params.id);
-					res.json(null);
+					res.sendData(null);
 				}
 				catch (ex) {
 					console.log(ex);
@@ -133,7 +133,7 @@ exports.addRoutes = function (app, config, security, io) {
 					flight = flight.serializeWithContext(user);
 
 					io.sockets.emit('flight:changed', flight);
-					res.json(flight);
+					res.sendData(flight);
 				}
 				catch (ex) {
 					console.log(ex);
@@ -160,7 +160,7 @@ exports.addRoutes = function (app, config, security, io) {
 					result.items = (result.items || []).map(function (flight) {
 						return flight.serializeWithContext(user);
 					})
-					res.json(result);
+					res.sendData(result);
 				}
 				catch (ex) {
 					console.log(ex);

@@ -14,7 +14,7 @@ exports.addRoutes = function (app, config, security) {
 					var login = req.query.login,
 						count = yield User.find({ login: login }).count(resume);
 
-					res.json({
+					res.sendData({
 						isValid: count == 0
 					});
 				}
@@ -51,7 +51,7 @@ exports.addRoutes = function (app, config, security) {
 				try {
 					yield security.isAuthorized(req, res, resume);
 
-					res.json(yield User.findById(req.params.id, resume));
+					res.sendData(yield User.findById(req.params.id, resume));
 				}
 				catch (ex) {
 					console.log(ex);
@@ -66,7 +66,7 @@ exports.addRoutes = function (app, config, security) {
 
 					var user = new User(req.body);
 					user = yield user.save(resume);
-					res.json(user);
+					res.sendData(user);
 				}
 				catch (ex) {
 					console.log(ex);
@@ -80,7 +80,7 @@ exports.addRoutes = function (app, config, security) {
 					yield security.isAdmin(req, res, resume);
 
 					yield User.remove({ _id: req.params.id }, resume);
-					res.json(null);
+					res.sendData(null);
 				}
 				catch (ex) {
 					console.log(ex);
@@ -125,11 +125,11 @@ exports.addRoutes = function (app, config, security) {
 					// nastaly chyby
 					if (errors.length) {
 						originalUser._errors_ = errors;
-						res.json(originalUser);
+						res.sendData(originalUser);
 					}
 					// vse probehlo v poradku
 					else {
-						res.json(yield user.save(resume));
+						res.sendData(yield user.save(resume));
 					}
 				}
 				catch (ex) {
@@ -175,7 +175,7 @@ exports.addRoutes = function (app, config, security) {
 						}
 					}, resume);
 
-					res.json({
+					res.sendData({
 						items: result.users,
 						metadata: {
 							totalCount: result.totalCount

@@ -6,7 +6,7 @@ exports.addRoutes = function (app, config) {
 			var query = req.query.q;
 
 			Destination.filter(query, function (list) {
-				res.json(list);
+				res.sendData(list);
 			});
 		});
 	});

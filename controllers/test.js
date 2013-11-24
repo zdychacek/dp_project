@@ -19,10 +19,7 @@ exports.addRoutes = function (app, config, security) {
 				]
 			};
 
-			res.header('Content-Type', 'text/xml');
-
-			var xml = Json2Xml.toXml(obj);
-			res.send(xml);
+			res.sendData(obj);
 		});
 	});
 };
