@@ -7,7 +7,7 @@ exports.addRoutes = function (app, config, security) {
 	app.namespace('/api/v1/users', function () {
 
 		app.get('/checkLogin', function (req, res) {
-			suspend(function* (resume) {
+			suspend(function*(resume) {
 				try {
 					yield security.isAuthorized(req, res, resume);
 

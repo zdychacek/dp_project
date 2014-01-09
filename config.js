@@ -7,7 +7,6 @@ module.exports = {
 		distUrl: 'mongodb://test:12345@paulo.mongohq.com:10029/DP'
 	},
 	server: {
-		listenPort: process.env.PORT || 9000,
 		distFolder: __dirname + '/dist',
 		appFolder: __dirname + '/public',
 		staticUrl: '/static',

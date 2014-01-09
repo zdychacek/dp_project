@@ -216,14 +216,18 @@ module.exports = function (grunt) {
 		nodemon: {
 			dev: {
 				options: {
-					file: 'server.js',
-					args: ['development'],
+					file: 'index.js',
+					nodeArgs: ['--harmony'],
+					args: ['--debug'],
 					watchedExtensions: [
 						'js'
 					],
 					debug: true,
 					delayTime: 1,
-					ignoredFiles: nodemonIgnoredFiles
+					ignoredFiles: nodemonIgnoredFiles,
+					env: {
+						PORT: '9000'
+					}
 				}
 			},
 			nodeInspector: {

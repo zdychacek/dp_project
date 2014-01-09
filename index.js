@@ -111,5 +111,5 @@ app.use(function (req, res, next) {
 	res.type('txt').send('Not found');
 });
 
-server.listen(config.server.listenPort);
-console.log('Express started on port ' + config.server.listenPort);
+server.listen(process.env.PORT);
+console.log('Express started on port ' + process.env.PORT);
