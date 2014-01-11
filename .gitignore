@@ -1,3 +1,5 @@
 node_modules
 .nodemonignore
-public/img/carriersLogos/
+public/img/carriersLogos
+public/img/logos
+lib/vxml
