@@ -1,0 +1,17 @@
+doctype 5
+html(lang="en", ng-controller="MainCtrl")
+	head
+		meta(charset="utf-8")
+		title(ng-bind="'Letecká společnost s.r.o. - ' + title")
+		link(rel="stylesheet", href="/static/css/bootstrap.css")
+		link(rel="stylesheet", href="/static/css/app.css")
+		link(rel="stylesheet", href="/static/components/angular-datepicker/dist/index.css")
+		link(rel="stylesheet", href="/static/components/angular-rangeslider/angular.rangeSlider.css")
+	body
+		div(ng-include="'/static/app/_base/header.html'")
+		div.container-fluid(ng-include="'/static/app/_base/notifications.html'", ng-show="notifications.getCurrent().length")
+		<!-- HLAVNI VIEW-->
+		div.container-fluid(ng-view)
+
+		//script(src="/socket.io/socket.io.js")
+		script(data-main="/static/app/app", src="/static/components/requirejs/require.js")

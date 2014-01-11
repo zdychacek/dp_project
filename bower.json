@@ -11,7 +11,8 @@
     "momentjs": "~2.4.0",
     "angular-datepicker": "~1.0.2",
     "angular-animate": "~1.2.1",
-    "angular-rangeslider": "*"
+    "angular-rangeslider": "*",
+    "socket.io-client": "~0.9.16"
   },
   "devDependencies": {}
 }

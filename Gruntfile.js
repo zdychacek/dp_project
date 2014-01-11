@@ -4,7 +4,7 @@ module.exports = function (grunt) {
 	require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
 	var appConfig = {
-		app: 'public',
+		app: 'static',
 		dist: 'dist'
 	};
 
@@ -13,7 +13,7 @@ module.exports = function (grunt) {
 		'node-inspector.js',
 		'/.git/',
 		'/node_modules/',
-		'/public/',
+		'/static/',
 		'/dist/'
 	];
 
@@ -247,17 +247,17 @@ module.exports = function (grunt) {
 					pretty: true
 				},
 				files: (function () {
-					var files = grunt.file.expandMapping(['**/*.jade'], 'public/app/', {
-						cwd: 'public/app',
+					var files = grunt.file.expandMapping(['**/*.jade'], 'static/app/', {
+						cwd: 'static/app',
 						rename: function (destBase, destPath) {
 							return destBase + destPath.replace(/\.jade$/, '.html');
 						}
 					});
 
-					// public/index.jade
+					// static/index.jade
 					files.push({
-						src: 'public/index.jade',
-						dest: 'public/index.html'
+						src: 'static/index.jade',
+						dest: 'static/index.html'
 					});
 
 					return files;

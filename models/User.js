@@ -16,6 +16,11 @@ var User = new mongoose.Schema({
 
 User.plugin(lastModified);
 
+User.statics = {
+	BAN_PERIOD: 15 * 1000,
+	BAD_LOGIN_THRESHOLD: 3
+};
+
 User.methods.listReservations = function (callback) {
 	Flight.find({
 		passengers: {
@@ -24,6 +29,10 @@ User.methods.listReservations = function (callback) {
 	}, function (err, flights) {
 		callback.apply(null, arguments);
 	});
+};
+
+User.methods.isBanned = function () {
+	return this.bannedSince && new Date(this.bannedSince.valueOf() + User.BAN_PERIOD) > new Date();
 };
 
 module.exports = mongoose.model('User', User);

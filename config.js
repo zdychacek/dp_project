@@ -7,8 +7,7 @@ module.exports = {
 		distUrl: 'mongodb://test:12345@paulo.mongohq.com:10029/DP'
 	},
 	server: {
-		distFolder: __dirname + '/dist',
-		appFolder: __dirname + '/public',
+		appFolder: __dirname + '/static',
 		staticUrl: '/static',
 		secret: 'leteckaspolecnost'
 	},

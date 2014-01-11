@@ -4,11 +4,23 @@
   "private": true,
   "dependencies": {
     "express": "3.3.x",
-    "mongoose": "~3.6.19",
     "express-namespace": "~0.1.1",
     "async": "~0.2.9",
     "moment": "~2.4.0",
-    "socket.io": "~0.9.16"
+    "socket.io": "~0.9.16",
+    "koa": "~0.2.1",
+    "koa-logger": "~1.1.0",
+    "koa-send": "~1.2.2",
+    "koa-route": "~1.0.2",
+    "koa-favicon": "~1.0.1",
+    "koa-session": "~1.2.0",
+    "koa-compress": "~1.0.0",
+    "co-views": "~0.1.0",
+    "co-body": "0.0.1",
+    "koa-static": "~1.4.2",
+    "koa-trie-router": "~1.0.3",
+    "mongoose": "~3.6.19",
+    "thunkify": "0.0.1"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
