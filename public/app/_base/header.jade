@@ -12,10 +12,13 @@ div.navbar(ng-controller="HeaderCtrl")
 
 			// admin only
 			li(ng-class="{active:isNavbarActive('users')}", ng-if="isAdmin()")
-				a(href="/users") Editace uživatelů
+				a(href="/users") Uživatelé
 
 			li(ng-class="{active:isNavbarActive('carriers')}", ng-if="isAdmin()")
-				a(href="/carriers") Editace dopravců
+				a(href="/carriers") Přepravci
+
+			li(ng-class="{active:isNavbarActive('destinations')}", ng-if="isAdmin()")
+				a(href="/destinations") Správa destinací
 
 			li(ng-class="{active:isNavbarActive('voice-portal-settings')}", ng-if="isAdmin()")
 				a(href="/voice-portal-settings") Nastavení hlasového portálu

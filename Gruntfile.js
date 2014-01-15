@@ -110,8 +110,7 @@ module.exports = function (grunt) {
 				'-W093': true
 			},
 			all: [
-				'<%= appConfig.app %>/app/**/*.js',
-				'!<%= appConfig.app %>/app/common/mocks/mocksData.js'
+				'<%= appConfig.app %>/app/**/*.js'
 			]
 		},
 		rev: {

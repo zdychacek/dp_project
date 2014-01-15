@@ -8,6 +8,7 @@ const express = require('express'),
 	config = require('./config'),
 	Json2Xml = require('./lib/Json2Xml'),
 	server = require('http').createServer(app),
+	vxml = require('./lib/vxml'),
 	io = require('socket.io').listen(server);
 
 io.on('connect', function () {
@@ -95,21 +96,22 @@ require('./controllers/flights').addRoutes(app, config, security, io);
 require('./controllers/destinations').addRoutes(app, config, security);
 require('./controllers/test').addRoutes(app, config, security);
 
+// vytvoreni VXML aplikace
+vxml.Application.create({
+	server: app,
+	route: '/vxml',
+	controller: require('./controllers/voicePortalApp')
+});
+
 // pro podporu HTML5 location api
 app.all('/*', function(req, res) {
 	res.sendfile('index.html', { root: config.server.appFolder });
 });
 
-app.use(function (req, res, next) {
-	res.status(404);
-
-	if (req.accepts('json')) {
-		return res.send({ error: 'Not found' });
-	}
-
-	// default to plain-text. send()
-	res.type('txt').send('Not found');
-});
+app.use(express.errorHandler({
+	dumpExceptions: true,
+	showStack: true
+}));
 
 server.listen(process.env.PORT);
 console.log('Express started on port ' + process.env.PORT);

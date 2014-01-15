@@ -69,6 +69,8 @@ require([
 	'carriers/list/CarriersListCtrl',
 	'carriers/edit/CarrierEditCtrl',
 
+	'destinations/DestinationsCtrl',
+
 	'voicePortalSettings/VoicePortalSettingsCtrl'
 ], function (angular) {
 	'use strict';
@@ -106,6 +108,8 @@ require([
 
 		'carriers.list',
 		'carriers.edit',
+
+		'destinations',
 
 		'voicePortalSettings',
 
