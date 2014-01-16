@@ -12,7 +12,7 @@ exports.addRoutes = function (app, config, security) {
 					yield security.isAuthorized(req, res, resume);
 
 					var login = req.query.login,
-						count = yield User.find({ login: login }).count(resume);
+						count = yield User.find({ login: login }).count().exec();
 
 					res.sendData({
 						isValid: count == 0
@@ -29,8 +29,8 @@ exports.addRoutes = function (app, config, security) {
 				try {
 					yield security.isAdminOrUserWithIdIsLogged(req.params.id, req, res, resume);
 
-					var user = yield User.findById(req.params.id, resume),
-						flights = yield user.listReservations(resume);
+					var user = yield User.findById(req.params.id).exec(),
+						flights = yield user.listReservations();
 
 					res.sendData(flights);
 				}
@@ -51,7 +51,7 @@ exports.addRoutes = function (app, config, security) {
 				try {
 					yield security.isAuthorized(req, res, resume);
 
-					res.sendData(yield User.findById(req.params.id, resume));
+					res.sendData(yield User.findById(req.params.id).exec());
 				}
 				catch (ex) {
 					console.log(ex);
