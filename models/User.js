@@ -33,13 +33,13 @@ User.methods.isUserBanned = function () {
 	return this.bannedSince && new Date(this.bannedSince.valueOf() + User.BAN_PERIOD) > new Date();
 };
 
-User.methods.addCallHistoryItem = function (sessionId, startTime, duration) {
+User.methods.addCallHistoryItem = function (sessionId, startTime) {
 	var deferred = Q.defer();
 
 	this.callsHistory.push(new CallHistoryItem({
 		sessionId: sessionId,
 		startTime: startTime,
-		duration: duration
+		endTime: new Date()
 	}));
 
 	this.save(function (err, data) {

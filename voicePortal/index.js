@@ -86,13 +86,17 @@ VoicePortalApp.prototype.create = function *() {
 				var user = null;
 
 				try {
-					user = yield cf.loggedUser.addCallHistoryItem(cf.$sessionId, cf.callStartTime, new Date());
+					user = yield cf.loggedUser.addCallHistoryItem(cf.$sessionId, cf.callStartTime);
 				}
 				catch (ex) {
 					console.log(ex);
 				}
 
 				var history = user.callsHistory;
+
+				history.forEach(function (item) {
+					console.log(item.duration);
+				});
 
 				console.log(history);
 			})
