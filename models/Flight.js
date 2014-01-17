@@ -13,13 +13,13 @@ var Flight = new mongoose.Schema({
 	freeCapacity: Number,
 	passengers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 
-	// generovane hodnoty pri ulozeni modelu
+	// computed values while saving model
 	fromDestination: String,
 	toDestination: String,
 	arrivalTime: Date,
 	departureTime: Date,
 	transfersCount: Number,
-	totalFlightDuration: Number	// v minutach
+	totalFlightDuration: Number	// in minutes
 });
 
 Flight.plugin(lastModified);
@@ -46,19 +46,14 @@ Flight.pre('save', function (next) {
 		this.arrivalTime = null;
 	}
 
-	// volna mista
 	this.freeCapacity = this.capacity - this.passengers.length;
-
-	// pocet prestupu
 	this.transfersCount = this.path.length > 1 ?  this.path.length - 1 : 0;
-
-	// celkova delka letu
 	this.totalFlightDuration = moment(this.arrivalTime).diff(this.departureTime, 'minutes');
 
 	next();
 });
 
-// Zeserializuje object a prida k nemu kontextova data (napr. dataq z aktualniho usera)
+// Serialize object and add context data (logged user info)
 Flight.methods.serializeWithContext = function (user) {
 	var data = this.toObject();
 
@@ -138,7 +133,7 @@ Flight.statics.filter = function (filter, pagerSorter, callback) {
 	var query = this.count({});
 	pagerSorter || (pagerSorter = {});
 
-	// vyfiltrovani podle kriterii
+	// filtering
 	if (filter) {
 		if (filter.fromDestination) {
 			query.where('fromDestination').equals(filter.fromDestination);
@@ -189,7 +184,7 @@ Flight.statics.filter = function (filter, pagerSorter, callback) {
 	query.exec(function (err, totalCount) {
 		query.find();
 
-		// strankovani a sortovani
+		// paging and sorting
 		if (pagerSorter.limit) {
 			query.limit(pagerSorter.limit);
 		}

@@ -49,7 +49,7 @@ User.statics.tryLogin = function (login, password) {
 						else if (user.isUserBanned()) {
 							errors.push({ type: 'banned', data: new Date(user.bannedSince.valueOf() + self.BAN_PERIOD)});
 						}
-						// prihlasen
+						// logged in
 						else {
 							user.badLoginCounter = 0;
 							user.bannedSince = null;
@@ -84,7 +84,7 @@ User.statics.tryLogin = function (login, password) {
 					}
 				}
 
-				// ulozim udaje o badLoginCounteru atd.
+				// save badLoginCounter state
 				if (user) {
 					user.save(function (err, user) {
 						if (!err) {
