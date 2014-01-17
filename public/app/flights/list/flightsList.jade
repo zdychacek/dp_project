@@ -142,7 +142,7 @@ div.flights-list
 								span(ng-switch-when="0") přímý let
 								span(ng-switch-default="false") {{flight.transfersCount}}
 
-						td.medium(data-title="Vytvořeno", sortable="lastModified") {{flight.lastModified | date: 'd.M.yy H:mm'}}
+						td.medium(data-title="Změněno", sortable="lastModified") {{flight.lastModified | date: 'd.M.yy H:mm'}}
 
 						td.icon.btn-toolbar
 							a.btn.btn-success(ng-click="setReservationState(true, flight)", ng-hide="flight.hasReservation || !flight.freeCapacity", href="#")

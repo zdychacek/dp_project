@@ -33,7 +33,7 @@ div.content-main
 					i.icon-ok(ng-switch-when="false")
 					i.icon-remove(ng-switch-when="true")
 
-				td(data-title="Vytvořeno", sortable="lastModified") {{carrier.lastModified | date: 'd.M.yy H:mm'}}
+				td(data-title="Změněno", sortable="lastModified") {{carrier.lastModified | date: 'd.M.yy H:mm'}}
 
 				td.icon.btn-toolbar
 					a.btn.btn-info(ng-click="editCarrier(carrier)", href="#")

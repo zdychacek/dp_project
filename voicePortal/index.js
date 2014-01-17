@@ -1,8 +1,8 @@
 'use strict';
 
 var util = require('util'),
-	User = require('../../models/User'),
-	vxml = require('../../lib/vxml');
+	User = require('../models/User'),
+	vxml = require('../lib/vxml');
 
 var VoicePortalApp = function () {
 	vxml.CallFlow.call(this);
@@ -15,8 +15,7 @@ util.inherits(VoicePortalApp, vxml.CallFlow);
 
 // vytvoreni callflow
 VoicePortalApp.prototype.create = function *() {
-	var login = null,
-		password = null;
+	var login = null;
 
 	// 1. ziskam login
 	this.addState(
@@ -27,7 +26,6 @@ VoicePortalApp.prototype.create = function *() {
 				length: 6
 			})
 		}), 'getPassword')
-		// TODO: nastavovat event type
 		.addOnExitAction(function * (cf, state, event) {
 			login = event.data;
 		})
@@ -43,11 +41,17 @@ VoicePortalApp.prototype.create = function *() {
 			})
 		}))
 		.addOnExitAction(function * (cf, state, event) {
-			var password = event.data,
-				result = yield User.tryLogin(login, '12345');
+			var loginInfo = yield User.tryLogin(login, event.data),
+				user = loginInfo.user,
+				errors = loginInfo.errors;
 
-			cf.loggedUser = result.user || null;
-			console.log(JSON.stringify(cf.loggedUser));
+			if (user) {
+				cf.loggedUser = user;
+				console.log(JSON.stringify(cf.loggedUser));
+			}
+			else {
+				console.log(JSON.stringify(errors));
+			}
 		})
 	);
 }

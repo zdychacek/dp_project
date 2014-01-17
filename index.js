@@ -100,7 +100,7 @@ require('./controllers/test').addRoutes(app, config, security);
 vxml.Application.create({
 	server: app,
 	route: '/vxml',
-	controller: require('./controllers/voicePortalApp')
+	controller: require('./voicePortal')
 });
 
 // pro podporu HTML5 location api

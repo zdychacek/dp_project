@@ -36,7 +36,7 @@ div.content-main
 					i.icon-ok(ng-switch-when="true")
 					i.icon-remove(ng-switch-when="false")
 
-				td(data-title="Vytvořeno", sortable="lastModified") {{user.lastModified | date: 'd.M.yy H:mm'}}
+				td(data-title="Změněno", sortable="lastModified") {{user.lastModified | date: 'd.M.yy H:mm'}}
 
 				td.icon.btn-toolbar
 					a.btn.btn-info(ng-click="editUser(user)", href="#")

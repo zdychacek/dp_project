@@ -1,9 +1,7 @@
 const mongoose = require('mongoose'),
 	Q = require('q'),
 	Flight = require('./Flight'),
-	lastModified = require('./plugins/lastModified'),
-	BAN_PERIOD = 15 * 1000,
-	BAD_LOGIN_THRESHOLD = 3;
+	lastModified = require('./plugins/lastModified');
 
 var User = new mongoose.Schema({
 	login: String,
@@ -28,11 +26,15 @@ User.methods.listReservations = function () {
 };
 
 User.methods.isUserBanned = function () {
-	return this.bannedSince && new Date(this.bannedSince.valueOf() + BAN_PERIOD) > new Date();
+	return this.bannedSince && new Date(this.bannedSince.valueOf() + User.BAN_PERIOD) > new Date();
 };
+
+User.statics.BAN_PERIOD = 15 * 1000;
+User.statics.BAD_LOGIN_THRESHOLD = 3;
 
 User.statics.tryLogin = function (login, password) {
 	var deferred = Q.defer(),
+		self = this,
 		errors = [];
 
 		this.findOne({ login: login }, function (err, user) {
@@ -45,7 +47,7 @@ User.statics.tryLogin = function (login, password) {
 							errors.push({ type: 'disabled' });
 						}
 						else if (user.isUserBanned()) {
-							errors.push({ type: 'banned', data: new Date(user.bannedSince.valueOf() + BAN_PERIOD)});
+							errors.push({ type: 'banned', data: new Date(user.bannedSince.valueOf() + self.BAN_PERIOD)});
 						}
 						// prihlasen
 						else {
@@ -56,14 +58,14 @@ User.statics.tryLogin = function (login, password) {
 					}
 					else {
 						if (user.isUserBanned()) {
-							errors.push({ type: 'banned', data: new Date(user.bannedSince.valueOf() + BAN_PERIOD)});
+							errors.push({ type: 'banned', data: new Date(user.bannedSince.valueOf() + self.BAN_PERIOD)});
 						}
 						else if (user.isEnabled) {
-							if (++user.badLoginCounter >= BAD_LOGIN_THRESHOLD) {
+							if (++user.badLoginCounter >= self.BAD_LOGIN_THRESHOLD) {
 								if (!user.bannedSince) {
 									user.bannedSince = new Date();
 
-									errors.push({ type: 'banned', data: new Date(user.bannedSince.valueOf() + BAN_PERIOD)});
+									errors.push({ type: 'banned', data: new Date(user.bannedSince.valueOf() + self.BAN_PERIOD)});
 								}
 								else {
 									user.badLoginCounter = 1;
@@ -99,6 +101,7 @@ User.statics.tryLogin = function (login, password) {
 				else {
 					errors.push({type: 'badLogin' });
 					deferred.resolve({
+						user: null,
 						errors: errors
 					});
 				}
