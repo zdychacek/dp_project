@@ -1,6 +1,7 @@
 const mongoose = require('mongoose'),
 	Q = require('q'),
 	Flight = require('./Flight'),
+	CallHistoryItem = require('./CallHistoryItem'),
 	lastModified = require('./plugins/lastModified');
 
 var User = new mongoose.Schema({
@@ -12,7 +13,10 @@ var User = new mongoose.Schema({
 	password: String,
 	isEnabled: { type: Boolean, default: true },
 	bannedSince: Date,
-	badLoginCounter: Number
+	badLoginCounter: Number,
+
+	// history of calls
+	callsHistory: [ CallHistoryItem.schema ]
 });
 
 User.plugin(lastModified);
@@ -27,6 +31,27 @@ User.methods.listReservations = function () {
 
 User.methods.isUserBanned = function () {
 	return this.bannedSince && new Date(this.bannedSince.valueOf() + User.BAN_PERIOD) > new Date();
+};
+
+User.methods.addCallHistoryItem = function (sessionId, startTime, duration) {
+	var deferred = Q.defer();
+
+	this.callsHistory.push(new CallHistoryItem({
+		sessionId: sessionId,
+		startTime: startTime,
+		duration: duration
+	}));
+
+	this.save(function (err, data) {
+		if (!err) {
+			deferred.resolve(data);
+		}
+		else {
+			deferred.refect(err);
+		}
+	});
+
+	return deferred.promise;
 };
 
 User.statics.BAN_PERIOD = 15 * 1000;

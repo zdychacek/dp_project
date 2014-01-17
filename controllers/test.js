@@ -1,5 +1,3 @@
-const Json2Xml = require('../lib/Json2Xml');
-
 exports.addRoutes = function (app, config, security) {
 	app.namespace('/api/v1/test', function () {
 		app.get('/', function (req, res) {
