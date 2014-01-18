@@ -23,8 +23,8 @@ var SAVE_CALL_HISTORY = false;
 var VoicePortalApp = function () {
 	vxml.CallFlow.call(this);
 
-	this._user = null;
-	this._callHistoryItem = null;
+	this.user = null;
+	this.callHistoryItem = null;
 }
 
 util.inherits(VoicePortalApp, vxml.CallFlow);
@@ -58,23 +58,29 @@ VoicePortalApp.prototype.create = function* () {
 					yield cf.fireEvent('badLogin', loginResult.errors);
 				}
 				else {
-					yield cf.fireEvent('loggedIn', loginResult.user);
+					cf.user = loginResult.user;
+					yield cf.fireEvent('loggedIn');
 				}
 			})
 	);
 
+	var loggedInPrompt = new vxml.Prompt();
+	loggedInPrompt.audios = [
+		new vxml.TtsMessage('You are logged in "'),
+		new vxml.Var(this, 'user.firstName', ' '),
+		new vxml.Var(this, 'user.lastName', '".'),
+	];
+
 	// user was successfully logged in
 	this.addState(
-		vxml.ViewStateBuilder.create('loggedIn', new vxml.Say('You are logged in!'), 'getDate')
+		vxml.ViewStateBuilder.create('loggedIn', new vxml.Say(loggedInPrompt), 'getDate')
 			.addOnEntryAction(function* (cf, state, event) {
-				cf._user = event.data;
-
 				// if set, save information about call
 				if (SAVE_CALL_HISTORY) {
-					cf._callHistoryItem = yield cf._user.insertCallHistoryItem(cf.$sessionId, new Date());
+					cf.callHistoryItem = yield cf.user.insertCallHistoryItem(cf.$sessionId, new Date());
 				}
 
-				console.log('user:', event.data);
+				console.log('user:', cf.user);
 			})
 	);
 
@@ -102,8 +108,8 @@ VoicePortalApp.prototype.create = function* () {
 		vxml.ViewStateBuilder.create('goodbye', new vxml.Exit('Thank you for calling! Goodbye.'))
 			.addOnEntryAction(function* (cf, state, event) {
 				// if set, save information about call
-				if (SAVE_CALL_HISTORY && cf._user) {
-					yield cf._user.commitCallHistoryItem(cf._callHistoryItem);
+				if (SAVE_CALL_HISTORY && cf.user) {
+					yield cf.user.commitCallHistoryItem(cf.callHistoryItem);
 				}
 			})
 	);

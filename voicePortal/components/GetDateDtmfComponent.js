@@ -49,9 +49,9 @@ GetDateDtmfComponent.prototype.create = function *() {
 	// build confirmation prompt
 	var confirmPrompt = new vxml.Prompt();
 	confirmPrompt.audios = [
-		new vxml.TtsMessage('You Entered'),
-		new vxml.TtsMessage(new vxml.Var(this, 'voiceDate.day')),
-		new vxml.TtsMessage(new vxml.Var(this, 'voiceDate.month')),
+		new vxml.TtsMessage('You Entered '),
+		new vxml.TtsMessage(new vxml.Var(this, 'voiceDate.day', ' ')),
+		new vxml.TtsMessage(new vxml.Var(this, 'voiceDate.month', ' ')),
 		new vxml.TtsMessage(new vxml.Var(this, 'voiceDate.year')),
 		new vxml.Silence(1000)
 	];
