@@ -1,8 +1,8 @@
 'use strict';
 
 var util = require('util'),
-	helpers = require('../../lib/helpers'),
-	vxml = require('../../lib/vxml');
+	helpers = require('../lib/helpers'),
+	vxml = require('../lib/vxml');
 
 var GetDateDtmfComponent = function (askDatePrompt) {
 	vxml.CallFlow.call(this);
@@ -15,8 +15,6 @@ var GetDateDtmfComponent = function (askDatePrompt) {
 util.inherits(GetDateDtmfComponent, vxml.CallFlow);
 
 GetDateDtmfComponent.prototype.create = function *() {
-	yield helpers.delay(250);
-
 	// 1. get an input
 	this.addState(
 		vxml.ViewStateBuilder.create('getDate', new vxml.Ask({
@@ -69,7 +67,7 @@ GetDateDtmfComponent.prototype.create = function *() {
 		vxml.ViewStateBuilder.create('invalidDate', new vxml.Say('You entered and invalid date.'), 'getDate')
 	);
 };
-		
+
 GetDateDtmfComponent.prototype.getDate = function () {
 	return this.selectedDate;
 };
@@ -93,7 +91,7 @@ GetDateDtmfComponent.prototype.validateDate = function (sDate) {
 	};
 };
 
-GetDateDtmfComponent.prototype.convert = function (date) {	
+GetDateDtmfComponent.prototype.convert = function (date) {
 	var months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
 
 	return {

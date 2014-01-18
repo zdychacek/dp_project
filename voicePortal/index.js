@@ -4,7 +4,9 @@ var util = require('util'),
 	User = require('../models/User'),
 	vxml = require('../lib/vxml'),
 	helpers = require('../lib/helpers'),
-	GetDateDtmfComponent = require('./components/GetDateDtmfComponent');
+
+	WelcomeFlow = require('./welcomeFlow'),
+	LoginFlow = require('./loginFlow');
 
 var SAVE_HISTORY = false;
 
@@ -20,54 +22,27 @@ var SAVE_HISTORY = false;
 var VoicePortalApp = function () {
 	vxml.CallFlow.call(this);
 
-	this.user = null;
-	this.callHistoryItem = null;
+	this._user = null;
+	this._callHistoryItem = null;
 }
 
 util.inherits(VoicePortalApp, vxml.CallFlow);
 
 // create app main callflow
-VoicePortalApp.prototype.create = function *() {
-	var login = null;
+VoicePortalApp.prototype.create = function* () {
+	this.addState(new vxml.State('welcome', 'login').addNestedCallFlow(new WelcomeFlow()));
 
-	// 1. get user login
 	this.addState(
-		vxml.ViewStateBuilder.create('getLogin', new vxml.Ask({
-			prompt: 'Enter your login.',
-			grammar: new vxml.BuiltinGrammar({
-				type: 'digits',
-				length: 6
+		new vxml.State('login', 'testState')
+			.addNestedCallFlow(new LoginFlow())
+			.addOnEntryAction(function* (cf, state, event) {
+				console.log('login ENTRY');
 			})
-		}), 'getPassword')
-		.addOnExitAction(function * (cf, state, event) {
-			login = event.data;
-		})
-	);
+			.addOnExitAction(function* (cf, state, event) {
+				var result = yield state.nestedCF.getLoginResult();
 
-	// 2. get user password
-	this.addState(
-		vxml.ViewStateBuilder.create('getPassword', new vxml.Ask({
-			prompt: 'Enter your password.',
-			grammar: new vxml.BuiltinGrammar({
-				type: 'digits',
-				length: 6
+				console.log('result:', result);
 			})
-		}), 'testState')
-		.addOnExitAction(function* (cf, state, event) {
-			var loginInfo = yield User.tryLogin(login, event.data),
-				user = loginInfo.user,
-				errors = loginInfo.errors;
-
-			if (user) {
-				cf.user = user;
-				cf.callHistoryItem = yield user.insertCallHistoryItem(cf.$sessionId, new Date());
-
-				console.log(JSON.stringify(cf.user));
-			}
-			else {
-				console.log(JSON.stringify(errors));
-			}
-		})
 	);
 
 	this.addState(
