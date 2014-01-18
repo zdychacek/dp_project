@@ -6,6 +6,8 @@ var util = require('util'),
 	helpers = require('../lib/helpers'),
 	GetDateDtmfComponent = require('./components/GetDateDtmfComponent');
 
+var SAVE_HISTORY = false;
+
 /*
 	Application main outline:
 	1. Login state
@@ -18,8 +20,8 @@ var util = require('util'),
 var VoicePortalApp = function () {
 	vxml.CallFlow.call(this);
 
-	this.loggedUser = null;
-	this.callStartTime = null;
+	this.user = null;
+	this.callHistoryItem = null;
 }
 
 util.inherits(VoicePortalApp, vxml.CallFlow);
@@ -50,22 +52,26 @@ VoicePortalApp.prototype.create = function *() {
 				type: 'digits',
 				length: 6
 			})
-		}), 'goodbye'/* 'getDate'*/)
+		}), 'testState')
 		.addOnExitAction(function* (cf, state, event) {
 			var loginInfo = yield User.tryLogin(login, event.data),
 				user = loginInfo.user,
 				errors = loginInfo.errors;
 
 			if (user) {
-				cf.loggedUser = user;
-				// remember login
-				cf.callStartTime = new Date();
-				console.log(JSON.stringify(cf.loggedUser));
+				cf.user = user;
+				cf.callHistoryItem = yield user.insertCallHistoryItem(cf.$sessionId, new Date());
+
+				console.log(JSON.stringify(cf.user));
 			}
 			else {
 				console.log(JSON.stringify(errors));
 			}
 		})
+	);
+
+	this.addState(
+		vxml.ViewStateBuilder.create('testState', new vxml.Say('Hi there!'), 'goodbye')
 	);
 
 	// nested cvallflow (component) test
@@ -83,24 +89,15 @@ VoicePortalApp.prototype.create = function *() {
 	this.addState(
 		vxml.ViewStateBuilder.create('goodbye', new vxml.Exit('Thank you for calling! Goodbye.'))
 			.addOnEntryAction(function* (cf, state, event) {
-				var user = null;
-
-				try {
-					user = yield cf.loggedUser.addCallHistoryItem(cf.$sessionId, cf.callStartTime);
+				if (SAVE_HISTORY && cf._isUserLogged()) {
+					yield cf.user.commitCallHistoryItem(cf.callHistoryItem);
 				}
-				catch (ex) {
-					console.log(ex);
-				}
-
-				var history = user.callsHistory;
-
-				history.forEach(function (item) {
-					console.log(item.duration);
-				});
-
-				console.log(history);
 			})
 	);
+};
+
+VoicePortalApp.prototype._isUserLogged = function () {
+	return !!this.user;
 };
 
 module.exports = VoicePortalApp;

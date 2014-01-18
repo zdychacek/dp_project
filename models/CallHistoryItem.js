@@ -7,7 +7,7 @@ var CallHistoryItem = new mongoose.Schema({
 });
 
 CallHistoryItem.virtual('duration').get(function () {
-	return new Date(this.endTime - this.startTime);
+	return this.endTime - this.startTime;
 });
 
 module.exports = mongoose.model('CallHistoryItem', CallHistoryItem);
