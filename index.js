@@ -9,7 +9,7 @@ const express = require('express'),
 	Json2Xml = require('./lib/Json2Xml'),
 	server = require('http').createServer(app),
 	vxml = require('./lib/vxml'),
-	io = require('socket.io').listen(server);
+	io = require('socket.io').listen(server, { log: false });
 
 if (process.env.NODE_ENV === 'production' || process.argv[2] === 'production') {
 	app.set('db uri', config.mongo.distUrl);
