@@ -1,8 +1,8 @@
 'use strict';
 
 var util = require('util'),
-	helpers = require('../lib/helpers'),
-	vxml = require('../lib/vxml');
+	helpers = require('../../lib/helpers'),
+	vxml = require('../../lib/vxml');
 
 var GetDateDtmfComponent = function (askDatePrompt) {
 	vxml.CallFlow.call(this);

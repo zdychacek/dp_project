@@ -47,7 +47,7 @@ User.methods.insertCallHistoryItem = function (sessionId, startTime) {
 			deferred.resolve(historyItem);
 		}
 		else {
-			deferred.refect(err);
+			deferred.reject(err);
 		}
 	});
 
@@ -69,7 +69,7 @@ User.methods.commitCallHistoryItem = function (historyItem) {
 		});
 	}
 	else {
-		deferred.refect(new Error('Missing history item.'));
+		deferred.reject(new Error('Missing history item.'));
 	}
 
 	return deferred.promise;
@@ -136,7 +136,7 @@ User.statics.tryLogin = function (login, password) {
 						if (!err) {
 							deferred.resolve({
 								user: loggedUser,
-								errors: errors
+								errors: errors.length > 0? errors : null
 							});
 						}
 						else {

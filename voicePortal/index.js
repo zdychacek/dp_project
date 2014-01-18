@@ -5,10 +5,11 @@ var util = require('util'),
 	vxml = require('../lib/vxml'),
 	helpers = require('../lib/helpers'),
 
+	GetDateDtmfComponent = require('./components/GetDateDtmfComponent'),
 	WelcomeFlow = require('./welcomeFlow'),
 	LoginFlow = require('./loginFlow');
 
-var SAVE_HISTORY = false;
+var SAVE_CALL_HISTORY = false;
 
 /*
 	Application main outline:
@@ -30,27 +31,63 @@ util.inherits(VoicePortalApp, vxml.CallFlow);
 
 // create app main callflow
 VoicePortalApp.prototype.create = function* () {
-	this.addState(new vxml.State('welcome', 'login').addNestedCallFlow(new WelcomeFlow()));
+	var loginResult = null;
 
+	// say welcome message
 	this.addState(
-		new vxml.State('login', 'testState')
+		new vxml.State('welcome', 'login')
+			.addNestedCallFlow(new WelcomeFlow())
+	);
+
+	// get user login data and try to log in
+	this.addState(
+		new vxml.State('login', 'testIfLoggedIn')
 			.addNestedCallFlow(new LoginFlow())
-			.addOnEntryAction(function* (cf, state, event) {
-				console.log('login ENTRY');
-			})
 			.addOnExitAction(function* (cf, state, event) {
-				var result = yield state.nestedCF.getLoginResult();
-
-				console.log('result:', result);
+				loginResult = yield state.nestedCF.getLoginResult();
 			})
 	);
 
+	// make test if user was successfully logged in or entered bad login information
 	this.addState(
-		vxml.ViewStateBuilder.create('testState', new vxml.Say('Hi there!'), 'goodbye')
+		new vxml.State('testIfLoggedIn', 'getDate')
+			.addTransition('badLogin', 'loginFailed')
+			.addTransition('loggedIn', 'loggedIn')
+			.addOnEntryAction(function* (cf, state, event) {
+				if (loginResult.errors) {
+					yield cf.fireEvent('badLogin', loginResult.errors);
+				}
+				else {
+					yield cf.fireEvent('loggedIn', loginResult.user);
+				}
+			})
 	);
 
-	// nested cvallflow (component) test
-	/*this.addState(
+	// user was successfully logged in
+	this.addState(
+		vxml.ViewStateBuilder.create('loggedIn', new vxml.Say('You are logged in!'), 'getDate')
+			.addOnEntryAction(function* (cf, state, event) {
+				cf._user = event.data;
+
+				// if set, save information about call
+				if (SAVE_CALL_HISTORY) {
+					cf._callHistoryItem = yield cf._user.insertCallHistoryItem(cf.$sessionId, new Date());
+				}
+
+				console.log('user:', event.data);
+			})
+	);
+
+	// user entered bad login data
+	this.addState(
+		vxml.ViewStateBuilder.create('loginFailed', new vxml.Say('Bad login!'), 'getDate')
+			.addOnEntryAction(function* (cf, state, event) {
+				console.log('errors:', event.data);
+			})
+	);
+
+	// nested callflow (component) test
+	this.addState(
 		new vxml.State('getDate', 'goodbye')
 			.addNestedCallFlow(
 				new GetDateDtmfComponent('Enter the date as a eight digit number.')
@@ -58,21 +95,18 @@ VoicePortalApp.prototype.create = function* () {
 			.addOnExitAction(function* (cf, state, event) {
 				cf.startDate = state.nestedCF.getDate();
 			})
-	);*/
+	);
 
 	// application exit point
 	this.addState(
 		vxml.ViewStateBuilder.create('goodbye', new vxml.Exit('Thank you for calling! Goodbye.'))
 			.addOnEntryAction(function* (cf, state, event) {
-				if (SAVE_HISTORY && cf._isUserLogged()) {
-					yield cf.user.commitCallHistoryItem(cf.callHistoryItem);
+				// if set, save information about call
+				if (SAVE_CALL_HISTORY && cf._user) {
+					yield cf._user.commitCallHistoryItem(cf._callHistoryItem);
 				}
 			})
 	);
-};
-
-VoicePortalApp.prototype._isUserLogged = function () {
-	return !!this.user;
 };
 
 module.exports = VoicePortalApp;

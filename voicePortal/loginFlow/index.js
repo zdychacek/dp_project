@@ -15,21 +15,15 @@ util.inherits(LoginFlow, vxml.CallFlow);
 
 LoginFlow.prototype.create = function* () {
 	var login = null;
+
 	// 1. get user login
 	this.addState(
 		vxml.ViewStateBuilder.create('getLogin', new vxml.Ask({
 			prompt: 'Enter your login.',
-			grammar: new vxml.BuiltinGrammar({
-				type: 'digits',
-				length: 6
-			})
+			grammar: new vxml.BuiltinGrammar({ type: 'digits', length: 6 })
 		}), 'getPassword')
-		.addOnEntryAction(function* (cf, state, event) {
-			console.log('getLogin ENTRY');
-		})
 		.addOnExitAction(function* (cf, state, event) {
 			login = event.data;
-			console.log('login:', event.data);
 		})
 	);
 
@@ -37,10 +31,7 @@ LoginFlow.prototype.create = function* () {
 	this.addState(
 		vxml.ViewStateBuilder.create('getPassword', new vxml.Ask({
 			prompt: 'Enter your password.',
-			grammar: new vxml.BuiltinGrammar({
-				type: 'digits',
-				length: 6
-			})
+			grammar: new vxml.BuiltinGrammar({ type: 'digits', length: 6 })
 		}))
 		.addOnExitAction(function* (cf, state, event) {
 			cf._loginResult = yield User.tryLogin(login, event.data);
