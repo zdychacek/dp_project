@@ -17,7 +17,7 @@ util.inherits(GetDateDtmfComponent, vxml.CallFlow);
 GetDateDtmfComponent.prototype.create = function *() {
 	// 1. get an input
 	this.addState(
-		vxml.ViewStateBuilder.create('getDate', new vxml.Ask({
+		vxml.State.create('getDate', new vxml.Ask({
 			prompt: this.askDatePrompt,
 			grammar: new vxml.BuiltinGrammar({
 				type: 'digits',
@@ -59,12 +59,12 @@ GetDateDtmfComponent.prototype.create = function *() {
 
 	// 3.1 say date confirmation
 	this.addState(
-		vxml.ViewStateBuilder.create('confirmDate', new vxml.Say(confirmPrompt))
+		vxml.State.create('confirmDate', new vxml.Say(confirmPrompt))
 	);
 
 	// 3.2 invalid date entered
 	this.addState(
-		vxml.ViewStateBuilder.create('invalidDate', new vxml.Say('You entered and invalid date.'), 'getDate')
+		vxml.State.create('invalidDate', new vxml.Say('You entered and invalid date.'), 'getDate')
 	);
 };
 

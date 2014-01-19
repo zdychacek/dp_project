@@ -10,9 +10,9 @@ var WelcomeFlow = function () {
 
 util.inherits(WelcomeFlow, vxml.CallFlow);
 
-WelcomeFlow.prototype.create = function *() {
+WelcomeFlow.prototype.create = function* () {
 	this.addState(
-		vxml.ViewStateBuilder.create('welcomeMessage', new vxml.Say('Welcome to the Airlines voice information system. Please enter your login information.'))
+		vxml.State.create('welcomeMessage', new vxml.Say('Welcome to the Airlines voice information system.'))
 	);
 };
 
