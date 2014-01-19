@@ -9,6 +9,10 @@ var ReservationsListState = function (id) {
 	this.setModel(
 		new vxml.Say('ReservationsListState menu')
 	);
+
+  /* To repeat information, say repeat.
+  To go back to main menu, say main menu.
+  To exit call, say exit. */
 }
 
 util.inherits(ReservationsListState, vxml.State);
