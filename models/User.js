@@ -1,5 +1,6 @@
 const mongoose = require('mongoose'),
 	Q = require('q'),
+	async = require('async'),
 	Flight = require('./Flight'),
 	CallHistoryItem = require('./CallHistoryItem'),
 	lastModified = require('./plugins/lastModified');
@@ -27,6 +28,49 @@ User.methods.listReservations = function () {
 			$in: [this._id]
 		}
 	}).exec();
+};
+
+User.methods.cancelAllReservations = function () {
+	var deferred = Q.defer(),
+		user = this;
+
+	Flight.find({
+		passengers: {
+			$in: [this._id]
+		}
+	}, function (err, flights) {
+		if (!err) {
+			var batch = [];
+
+			flights.forEach(function (flight) {
+				flight.passengers.forEach(function (passenger, i) {
+					if (passenger.equals(user._id)) {
+						flight.passengers.splice(i, 1);
+					}
+				});
+
+				batch.push(function (cb) {
+					flight.save(function (err, data) {
+						cb(err, data);
+					});
+				});
+			});
+
+			async.parallel(batch, function (err, data) {
+				if (err) {
+					deferred.resolve();
+				}
+				else {
+					deferred.reject();
+				}
+			});
+		}
+		else {
+			deferred.reject(err);
+		}
+	});
+
+	return deferred.promise;
 };
 
 User.methods.isUserBanned = function () {

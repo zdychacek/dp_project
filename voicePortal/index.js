@@ -15,7 +15,7 @@ var util = require('util'),
 	DashboardState = require('./DashboardState'),
 	MainMenuState = require('./MainMenuState'),
 	ReservationsListState = require('./ReservationsListState'),
-	CancelAllReservationsState = require('./CancelAllReservationsState'),
+	CancelAllReservationsState = require('./cancelAllReservationsState'),
 	MakeNewReservationState = require('./MakeNewReservationState'),
 	GoodbyeState = require('./GoodbyeState');
 
@@ -47,7 +47,7 @@ VoicePortalApp.prototype.create = function* () {
 		// list users active reservations
 		reservationsListState = new ReservationsListState('reservationsList'),
 		// cancel users all active reservations
-		cancelAllReservationsState = new CancelAllReservationsState('cancelAllReservations'),
+		cancelAllReservationsState = new CancelAllReservationsState('cancelAllReservations', new vxml.Var(this, 'user')),
 		// create new reservation
 		makeNewReservationState = new MakeNewReservationState('makeNewReservation'),
 		// application exit point
@@ -56,12 +56,12 @@ VoicePortalApp.prototype.create = function* () {
 	// application main menu
 	var mainMenuState = new MainMenuState('mainMenu', [
 		{
-			prompt: 'To list your reservations',
-			targetState: reservationsListState
-		},
-		{
 			prompt: 'To cancel your all reservations',
 			targetState: cancelAllReservationsState
+		},
+		{
+			prompt: 'To list your reservations',
+			targetState: reservationsListState
 		},
 		{
 			prompt: 'To make new reservation',
