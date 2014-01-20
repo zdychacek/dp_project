@@ -10,7 +10,6 @@ var GoodbyeState = function (id) {
 	this.setModel(
 		new vxml.Exit('Thank you for calling! Goodbye.')
 	);
-	this.addOnEntryAction(this.onEntryAction);
 }
 
 util.inherits(GoodbyeState, vxml.State);

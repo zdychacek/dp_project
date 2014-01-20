@@ -6,8 +6,6 @@ var util = require('util'),
 
 var TryToLoginState = function (id) {
 	vxml.State.call(this, id);
-
-	this.addOnEntryAction(this.onEntryAction);
 }
 
 util.inherits(TryToLoginState, vxml.State);

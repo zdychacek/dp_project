@@ -8,7 +8,6 @@ var GetLoginDataState = function (id) {
 	vxml.State.call(this, id);
 
 	this.addNestedCallFlow(new GetLoginDataFlow());
-	this.addOnExitAction(this.onExitAction);
 }
 
 util.inherits(GetLoginDataState, vxml.State);

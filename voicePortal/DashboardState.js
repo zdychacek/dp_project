@@ -6,8 +6,6 @@ var util = require('util'),
 
 var DashboardState = function (id) {
 	vxml.State.call(this, id);
-
-	this.addOnEntryAction(this.onEntryAction);
 }
 
 util.inherits(DashboardState, vxml.State);
@@ -23,7 +21,9 @@ DashboardState.prototype.afterToCallFlowInsertion = function (cf) {
 
 	// TODO: add information about reservations total count
 
-	this.setModel(new vxml.Say(loggedInPrompt));
+	this.setModel(
+		new vxml.Say(loggedInPrompt)
+	);
 };
 
 DashboardState.prototype.onEntryAction = function* (cf, state, event) {
@@ -32,7 +32,7 @@ DashboardState.prototype.onEntryAction = function* (cf, state, event) {
 		cf.callHistoryItem = yield cf.user.insertCallHistoryItem(cf.$sessionId, new Date());
 	}
 
-	console.log('user:', cf.user);
+	//console.log('user:', cf.user);
 };
 
 module.exports = DashboardState;

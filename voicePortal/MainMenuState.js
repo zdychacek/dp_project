@@ -25,7 +25,9 @@ var MainMenuState = function (id, menuDef) {
 		});
 
 		// go back to main menu
-		option.targetState.addTransition('mainMenu', this);
+		if (option.targetState.dataModel.viewName !== 'exit') {
+			option.targetState.addTransition('continue', this);
+		}
 	}, this);
 
 	this.setModel(
