@@ -5,12 +5,13 @@ var util = require('util'),
 
 var WelcomeState = function (id) {
 	vxml.State.call(this, id);
-
-	this.setModel(
-		new vxml.Say('Welcome to the Airlines voice information system.')
-	);
 }
 
 util.inherits(WelcomeState, vxml.State);
+
+WelcomeState.prototype.createModel = function () {
+	console.log('creating');
+	return new vxml.Say('Welcome to the Airlines voice information system.');
+}
 
 module.exports = WelcomeState;

@@ -10,6 +10,8 @@ var util = require('util'),
 	GetLoginDataState = require('./getLoginDataState'),
 	TryToLoginState = require('./TryToLoginState'),
 	BadLoginState = require('./BadLoginState'),
+	UserDisabledState = require('./UserDisabledState'),
+	UserBannedState = require('./UserBannedState'),
 	DashboardState = require('./DashboardState'),
 	MainMenuState = require('./MainMenuState'),
 	ReservationsListState = require('./ReservationsListState'),
@@ -36,6 +38,10 @@ VoicePortalApp.prototype.create = function* () {
 		tryToLoginState = new TryToLoginState('tryToLogin'),
 		// user entered bad login data
 		badLoginState = new BadLoginState('badLogin'),
+		// user is disabled
+		userDisabledState = new UserDisabledState('userDisabled'),
+		// user is banned
+		userBannedState = new UserBannedState('userBanned'),
 		// user was successfully logged in
 		dashboardState = new DashboardState('dashboard'),
 		// list users active reservations
@@ -71,8 +77,10 @@ VoicePortalApp.prototype.create = function* () {
 	welcomeState.addTransition('continue', getLoginDataState);
 	getLoginDataState.addTransition('continue', tryToLoginState);
 	tryToLoginState
-		.addTransition('loginFailed', badLoginState)
-		.addTransition('loginOK', dashboardState);
+		.addTransition('loginOK', dashboardState)
+		.addTransition('badLogin', badLoginState)
+		.addTransition('disabled', userDisabledState) // -> exit state
+		.addTransition('banned', userBannedState); // -> exit state
 	badLoginState
 		.addTransition('continue', getLoginDataState, function (result) {
 			return result == 1;
@@ -81,6 +89,9 @@ VoicePortalApp.prototype.create = function* () {
 			return result == 2;
 		});
 	dashboardState.addTransition('continue', mainMenuState);
+	reservationsListState.addTransition('continue', mainMenuState);
+	cancelAllReservationsState.addTransition('continue', mainMenuState);
+	makeNewReservationState.addTransition('continue', mainMenuState);
 
 	// add states
 	this
@@ -88,6 +99,8 @@ VoicePortalApp.prototype.create = function* () {
 		.addState(getLoginDataState)
 		.addState(tryToLoginState)
 		.addState(badLoginState)
+		.addState(userDisabledState)
+		.addState(userBannedState)
 		.addState(dashboardState)
 		.addState(mainMenuState)
 		.addState(reservationsListState)

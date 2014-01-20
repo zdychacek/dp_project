@@ -6,7 +6,11 @@ var util = require('util'),
 
 var BadLoginState = function (id) {
 	vxml.State.call(this, id);
+}
 
+util.inherits(BadLoginState, vxml.State);
+
+BadLoginState.prototype.createModel = function () {
 	var badLoginPrompt = new vxml.Prompt();
 
 	badLoginPrompt.audios = [
@@ -15,17 +19,11 @@ var BadLoginState = function (id) {
 		new vxml.TtsMessage('Press one if you would like to try it again, otherwise press two.')
 	];
 
-	this.setModel(
-		new AskWithNoInputPrompt({
-			prompt: badLoginPrompt,
-			grammar: new vxml.BuiltinGrammar({ type: 'digits', length: 1 })
-		})
-	);
-
-	this.addOnEntryAction(this.onEntryAction);
-}
-
-util.inherits(BadLoginState, vxml.State);
+	return new AskWithNoInputPrompt({
+		prompt: badLoginPrompt,
+		grammar: new vxml.BuiltinGrammar({ type: 'digits', length: 1 })
+	})
+};
 
 BadLoginState.prototype.onEntryAction = function* (cf, state, event) {
 	console.log('errors:', event.data);

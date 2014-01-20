@@ -5,12 +5,12 @@ var util = require('util'),
 
 var CancelAllReservationsState = function (id) {
 	vxml.State.call(this, id);
-
-	this.setModel(
-		new vxml.Say('CancelAllReservationsState menu')
-	);
 }
 
 util.inherits(CancelAllReservationsState, vxml.State);
+
+CancelAllReservationsState.prototype.createModel = function () {
+	return new vxml.Say('CancelAllReservationsState menu');
+}
 
 module.exports = CancelAllReservationsState;

@@ -18,7 +18,11 @@ TryToLoginState.prototype.onEntryAction = function* (cf, state, event) {
 		yield cf.fireEvent('loginOK');
 	}
 	else {
-		yield cf.fireEvent('loginFailed', loginResult.errors);
+		var status = loginResult.status;
+
+		console.log('User login failed with status:', status.type, status.data);
+		// badLogin, disabled, banned
+		yield cf.fireEvent(status.type, status.data);
 	}
 };
 

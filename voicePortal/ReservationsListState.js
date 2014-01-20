@@ -5,16 +5,15 @@ var util = require('util'),
 
 var ReservationsListState = function (id) {
 	vxml.State.call(this, id);
-
-	this.setModel(
-		new vxml.Say('ReservationsListState menu')
-	);
-
-  /* To repeat information, say repeat.
-  To go back to main menu, say main menu.
-  To exit call, say exit. */
 }
 
 util.inherits(ReservationsListState, vxml.State);
+
+ReservationsListState.prototype.createModel = function () {
+  /* To repeat information, say repeat.
+  To go back to main menu, say main menu.
+  To exit call, say exit. */
+	return new vxml.Say('ReservationsListState menu');
+};
 
 module.exports = ReservationsListState;

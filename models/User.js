@@ -81,7 +81,7 @@ User.statics.BAD_LOGIN_THRESHOLD = 3;
 User.statics.tryLogin = function (login, password) {
 	var deferred = Q.defer(),
 		self = this,
-		errors = [];
+		status = null;
 
 		this.findOne({ login: login }, function (err, user) {
 			var loggedUser = null;
@@ -90,10 +90,10 @@ User.statics.tryLogin = function (login, password) {
 				if (user) {
 					if (user.password == password) {
 						if (!user.isEnabled) {
-							errors.push({ type: 'disabled' });
+							status = { type: 'disabled' };
 						}
 						else if (user.isUserBanned()) {
-							errors.push({ type: 'banned', data: new Date(user.bannedSince.valueOf() + self.BAN_PERIOD)});
+							status = { type: 'banned', data: new Date(user.bannedSince.valueOf() + self.BAN_PERIOD) };
 						}
 						// logged in
 						else {
@@ -104,28 +104,28 @@ User.statics.tryLogin = function (login, password) {
 					}
 					else {
 						if (user.isUserBanned()) {
-							errors.push({ type: 'banned', data: new Date(user.bannedSince.valueOf() + self.BAN_PERIOD)});
+							status = { type: 'banned', data: new Date(user.bannedSince.valueOf() + self.BAN_PERIOD) };
 						}
 						else if (user.isEnabled) {
 							if (++user.badLoginCounter >= self.BAD_LOGIN_THRESHOLD) {
 								if (!user.bannedSince) {
 									user.bannedSince = new Date();
 
-									errors.push({ type: 'banned', data: new Date(user.bannedSince.valueOf() + self.BAN_PERIOD)});
+									status = { type: 'banned', data: new Date(user.bannedSince.valueOf() + self.BAN_PERIOD) };
 								}
 								else {
 									user.badLoginCounter = 1;
 									user.bannedSince = null;
 
-									errors.push({type: 'badLogin' });
+									status = { type: 'badLogin' };
 								}
 							}
 							else {
-								errors.push({type: 'badLogin' });
+								status = { type: 'badLogin' };
 							}
 						}
 						else {
-							errors.push({type: 'badLogin' });
+							status = { type: 'badLogin' };
 						}
 					}
 				}
@@ -136,7 +136,12 @@ User.statics.tryLogin = function (login, password) {
 						if (!err) {
 							deferred.resolve({
 								user: loggedUser,
-								errors: errors.length > 0? errors : null
+								status: status
+								/*user: null,
+								status: {
+									type: 'banned',
+									data: new Date()
+								}*/
 							});
 						}
 						else {
@@ -145,10 +150,10 @@ User.statics.tryLogin = function (login, password) {
 					});
 				}
 				else {
-					errors.push({type: 'badLogin' });
+					status = { type: 'badLogin' };
 					deferred.resolve({
 						user: null,
-						errors: errors
+						status: status
 					});
 				}
 			}

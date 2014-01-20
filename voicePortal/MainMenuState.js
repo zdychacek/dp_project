@@ -8,7 +8,11 @@ var MainMenuState = function (id, menuDef) {
 	vxml.State.call(this, id);
 
 	this._menuDef = menuDef;
+}
 
+util.inherits(MainMenuState, vxml.State);
+
+MainMenuState.prototype.createModel = function () {
 	var menuOptionsPrompt = new vxml.Prompt();
 
 	// Build the prompts for the menu options form the meta-data
@@ -23,22 +27,13 @@ var MainMenuState = function (id, menuDef) {
 		this.addTransition('continue', option.targetState, function (result) {
 			return result == number;
 		});
-
-		// go back to main menu
-		if (option.targetState.dataModel.viewName !== 'exit') {
-			option.targetState.addTransition('continue', this);
-		}
 	}, this);
 
-	this.setModel(
-		new vxml.Ask({
-			prompt: menuOptionsPrompt,
-			grammar: new vxml.BuiltinGrammar({ type: 'digits', length: 1 })
-		})
-	);
-}
-
-util.inherits(MainMenuState, vxml.State);
+	return new vxml.Ask({
+		prompt: menuOptionsPrompt,
+		grammar: new vxml.BuiltinGrammar({ type: 'digits', length: 1 })
+	});
+};
 
 MainMenuState.prototype._getSelectionPrompt = function(selectNum) {
 	var numbers = [ 'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine' ];

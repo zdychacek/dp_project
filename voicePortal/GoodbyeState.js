@@ -6,13 +6,13 @@ var util = require('util'),
 
 var GoodbyeState = function (id) {
 	vxml.State.call(this, id);
-
-	this.setModel(
-		new vxml.Exit('Thank you for calling! Goodbye.')
-	);
 }
 
 util.inherits(GoodbyeState, vxml.State);
+
+GoodbyeState.prototype.createModel = function () {
+	return new vxml.Exit('Thank you for calling! Goodbye.');
+};
 
 GoodbyeState.prototype.onEntryAction = function* (cf, state, event) {
 	// if set, save information about call
