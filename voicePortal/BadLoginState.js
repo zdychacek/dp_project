@@ -2,7 +2,7 @@
 
 var util = require('util'),
 	vxml = require('../lib/vxml'),
-	AskWithNoInputPrompt = require('./components/AskWithNoInputPrompt');
+	AskWithNoInputPrompt = require('./common/AskWithNoInputPrompt');
 
 var BadLoginState = function (id) {
 	vxml.State.call(this, id);
