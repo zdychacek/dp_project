@@ -22,7 +22,7 @@ BadLoginState.prototype.createModel = function () {
 	return new AskWithNoInputPrompt({
 		prompt: badLoginPrompt,
 		grammar: new vxml.BuiltinGrammar({ type: 'digits', length: 1 })
-	})
+	});
 };
 
 BadLoginState.prototype.onEntryAction = function* (cf, state, event) {

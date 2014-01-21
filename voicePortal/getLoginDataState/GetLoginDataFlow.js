@@ -1,11 +1,11 @@
 'use strict';
 
 var util = require('util'),
-	config = require('./../config'),
-	User = require('../../models/User'),
-	helpers = require('../../lib/helpers'),
 	vxml = require('../../lib/vxml'),
-	AskWithNoInputPrompt = require('../components/AskWithNoInputPrompt');
+
+	GetLoginState = require('./GetLoginState'),
+	ConfirmLoginState = require('./ConfirmLoginState'),
+	GetPasswordState = require('./GetPasswordState');
 
 var GetLoginDataFlow = function () {
 	vxml.CallFlow.call(this);
@@ -17,57 +17,28 @@ var GetLoginDataFlow = function () {
 util.inherits(GetLoginDataFlow, vxml.CallFlow);
 
 GetLoginDataFlow.prototype.create = function* () {
-	// 1. get user login
-	this.addState(
-		vxml.State.create('getLogin', new AskWithNoInputPrompt({
-			prompt: 'Enter your telephone number as six digits.',
-			grammar: new vxml.BuiltinGrammar({ type: 'digits', length: config.loginLength })
-		}), 'confirmLogin')
-			.addTransition('nomatch', 'getLogin')
-			.addTransition('noinput', 'getLogin')
-			.addOnExitAction(function* (cf, state, event) {
-				// remember entered login
-				cf.enteredLogin = event.data;
-			})
-	);
+	var getLoginState = new GetLoginState('getLogin'),
+		confirmLoginState = new ConfirmLoginState('confirmLogin'),
+		getPasswordState = new GetPasswordState('getPassword');
 
-	var loginConfirm = new vxml.Prompt();
-	loginConfirm.audios = [
-		new vxml.TtsMessage('You has entered following number '),
-		new vxml.SayAs(
-			new vxml.Var(this, 'enteredLogin', '. ')
-		, 'digits'),
-		new vxml.Silence('weak'),
-		new vxml.TtsMessage('Press one if this number is correct. Otherwise, press two.')
-	];
+	getLoginState
+		.addTransition('continue', confirmLoginState)
+		.addTransition('nomatch', getLoginState)
+		.addTransition('noinput', getLoginState);
 
-	// 2. confirm entered login
-	this.addState(
-		vxml.State.create('confirmLogin', new vxml.Ask({
-			prompt: loginConfirm,
-			grammar: new vxml.BuiltinGrammar({ type: 'digits', length: 1 })
-		}))
-			// if user confirm his login, than continue to get password
-			.addTransition('continue', 'getPassword', function (result) {
+	confirmLoginState
+		.addTransition('continue', getPasswordState, function (result) {
 				return result == 1;
 			})
-			// if user doesn't confirm login, try to get it again
-			.addTransition('continue', 'getLogin', function (result) {
-				return result == 2;
-			})
-	);
+		// if user doesn't confirm login, try to get it again
+		.addTransition('continue', getLoginState, function (result) {
+			return result == 2;
+		});
 
-	// 2. get user password
-	this.addState(
-		vxml.State.create('getPassword', new AskWithNoInputPrompt({
-			prompt: 'Please enter your password as five digits.',
-			grammar: new vxml.BuiltinGrammar({ type: 'digits', length: config.passwordLength })
-		}))
-			.addOnExitAction(function* (cf, state, event) {
-				// remember entered password
-				cf.enteredPassword = event.data;
-			})
-	);
+	this
+		.addState(getLoginState)
+		.addState(confirmLoginState)
+		.addState(getPasswordState);
 };
 
 GetLoginDataFlow.prototype.getUserLoginData = function () {

@@ -10,7 +10,6 @@ var WelcomeState = function (id) {
 util.inherits(WelcomeState, vxml.State);
 
 WelcomeState.prototype.createModel = function () {
-	console.log('creating');
 	return new vxml.Say('Welcome to the Airlines voice information system.');
 }
 

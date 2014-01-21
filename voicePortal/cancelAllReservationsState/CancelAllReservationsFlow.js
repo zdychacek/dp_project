@@ -2,7 +2,9 @@
 
 var util = require('util'),
 	User = require('../../models/User'),
-	vxml = require('../../lib/vxml');
+	vxml = require('../../lib/vxml'),
+	AskState = require('./AskState'),
+	CancelAllState = require('./CancelAllState');
 
 var CancelAllResarvationsFlow = function (userVar) {
 	vxml.CallFlow.call(this);
@@ -17,52 +19,34 @@ CancelAllResarvationsFlow.prototype.create = function* () {
 		reservations = yield user.listReservations();
 
 	if (!reservations.length) {
-		this.addState(
-			vxml.State.create('noReservations', new vxml.Say('There are no active reservations.'))
-		);
+		var noReservationsState = vxml.State.create('noReservations', new vxml.Say('There are no active reservations.'));
+
+		this.addState(noReservationsState);
 	}
 	else {
-		this.addState(
-			vxml.State.create('ask',
-				new vxml.Ask({
-					prompt: 'You have ' + reservations.length + ' active reservations. Do you want to cancel them all? Press one for cancel otherwise press two.',
-					grammar: new vxml.BuiltinGrammar({ type: 'digits', length: 1 })
-				})
-			)
-				.addTransition('continue', 'cancelAll', function (result) {
-					return result == 1;
-				})
-				.addTransition('continue', 'finalState', function (result) {
-					return result == 2;
-				})
-		);
+		var askState = new AskState('ask', reservations),
+			cancelAllState = new CancelAllState('cancelAll', user),
+			cancelOkState = vxml.State.create('cancelOk', new vxml.Say('Your reservations were canceled.')),
+			cancelErrorState = vxml.State.create('cancelError', new vxml.Say('There was an error while cancelling reservations Please try it again.')),
+			finalState = vxml.State.create('finalState', new vxml.Say('No reservations were deleted. Going back to the main menu.'));
 
-		this.addState(
-			new vxml.State('cancelAll')
-				.addTransition('fail', 'cancelOk')
-				.addTransition('ok', 'cancelOk')
-				.addOnEntryAction(function* (cf, state, event) {
-					try {
-						yield user.cancelAllReservations();
-						yield cf.fireEvent('ok');
-					}
-					catch (ex) {
-						yield cf.fireEvent('fail');
-					}
-				})
-		)
+		askState
+			.addTransition('continue', cancelAllState, function (result) {
+				return result == 1;
+			})
+			.addTransition('continue', finalState, function (result) {
+				return result == 2;
+			});
+		cancelAllState
+			.addTransition('fail', cancelErrorState)
+			.addTransition('ok', cancelOkState);
 
-		this.addState(
-			vxml.State.create('cancelOk', new vxml.Say('Your reservations were canceled.'))
-		);
-
-		this.addState(
-			vxml.State.create('cancelError', new vxml.Say('Your reservations were canceled.'))
-		);
-
-		this.addState(
-			vxml.State.create('finalState', new vxml.Say('Going back to the menu.'))
-		);
+		// add states
+		this.addState(askState)
+			.addState(cancelAllState)
+			.addState(cancelOkState)
+			.addState(cancelErrorState)
+			.addState(finalState);
 	}
 };
 
