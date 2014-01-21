@@ -2,10 +2,9 @@
 
 var util = require('util'),
 	config = require('./config'),
-	User = require('../models/User'),
 	vxml = require('../lib/vxml'),
-	helpers = require('../lib/helpers'),
 
+	// flow states
 	WelcomeState = require('./WelcomeState'),
 	GetLoginDataState = require('./getLoginDataState'),
 	TryToLoginState = require('./TryToLoginState'),
@@ -19,17 +18,20 @@ var util = require('util'),
 	MakeNewReservationState = require('./MakeNewReservationState'),
 	GoodbyeState = require('./GoodbyeState');
 
-var VoicePortalApp = function () {
+var VoicePortalFlow = function (app) {
 	vxml.CallFlow.call(this);
+
+	this._app = app;
+	this._io = app.getConfigValue('io');
 
 	this.user = null;
 	this.callHistoryItem = null;
 }
 
-util.inherits(VoicePortalApp, vxml.CallFlow);
+util.inherits(VoicePortalFlow, vxml.CallFlow);
 
 // create app main callflow
-VoicePortalApp.prototype.create = function* () {
+VoicePortalFlow.prototype.create = function* () {
 	// say welcome message
 	var welcomeState = new WelcomeState('welcome'),
 		// get user login data and try to log in
@@ -47,7 +49,7 @@ VoicePortalApp.prototype.create = function* () {
 		// list users active reservations
 		reservationsListState = new ReservationsListState('reservationsList', new vxml.Var(this, 'user')),
 		// cancel users all active reservations
-		cancelAllReservationsState = new CancelAllReservationsState('cancelAllReservations', new vxml.Var(this, 'user')),
+		cancelAllReservationsState = new CancelAllReservationsState('cancelAllReservations', new vxml.Var(this, 'user'), this._io),
 		// create new reservation
 		makeNewReservationState = new MakeNewReservationState('makeNewReservation'),
 		// application exit point
@@ -56,12 +58,12 @@ VoicePortalApp.prototype.create = function* () {
 	// application main menu
 	var mainMenuState = new MainMenuState('mainMenu', [
 		{
-			prompt: 'To list your reservations',
-			targetState: reservationsListState
-		},
-		{
 			prompt: 'To cancel your all reservations',
 			targetState: cancelAllReservationsState
+		},
+		{
+			prompt: 'To list your reservations',
+			targetState: reservationsListState
 		},
 		{
 			prompt: 'To make new reservation',
@@ -109,4 +111,4 @@ VoicePortalApp.prototype.create = function* () {
 		.addState(goodbyeState);
 };
 
-module.exports = VoicePortalApp;
+module.exports = VoicePortalFlow;

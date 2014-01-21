@@ -89,7 +89,11 @@ require('./controllers/test').addRoutes(app, config, security);
 vxml.Application.create({
 	server: app,
 	route: '/vxml',
-	controller: require('./voicePortal')
+	controller: require('./voicePortal'),
+	config: {
+		// reference to socket.io for notyfing web application
+		io: io
+	}
 });
 
 // For HTML5 history api support

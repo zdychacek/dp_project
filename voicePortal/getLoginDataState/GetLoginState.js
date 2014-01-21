@@ -18,7 +18,7 @@ GetLoginState.prototype.createModel = function () {
 	})
 };
 
-GetLoginState.prototype.onEntryAction = function* (cf, state, event) {
+GetLoginState.prototype.onExitAction = function* (cf, state, event) {
 	// remember entered login
 	cf.enteredLogin = event.data;
 };

@@ -6,8 +6,10 @@ var util = require('util'),
 	AskState = require('./AskState'),
 	CancelAllState = require('./CancelAllState');
 
-var CancelAllResarvationsFlow = function (userVar) {
+var CancelAllResarvationsFlow = function (userVar, io) {
 	vxml.CallFlow.call(this);
+
+	this._io = io;
 
 	this.userVar = userVar;
 }
@@ -25,7 +27,7 @@ CancelAllResarvationsFlow.prototype.create = function* () {
 	}
 	else {
 		var askState = new AskState('ask', reservations),
-			cancelAllState = new CancelAllState('cancelAll', user),
+			cancelAllState = new CancelAllState('cancelAll', user, this._io),
 			cancelOkState = vxml.State.create('cancelOk', new vxml.Say('Your reservations were canceled.')),
 			cancelErrorState = vxml.State.create('cancelError', new vxml.Say('There was an error while cancelling reservations Please try it again.')),
 			finalState = vxml.State.create('finalState', new vxml.Say('No reservations were deleted. Going back to the main menu.'));

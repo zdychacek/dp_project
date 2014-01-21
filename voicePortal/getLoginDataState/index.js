@@ -2,7 +2,7 @@
 
 var util = require('util'),
 	vxml = require('../../lib/vxml'),
-	GetLoginDataFlow = require('./GetLoginDataFlow.js');
+	GetLoginDataFlow = require('./flow');
 
 var GetLoginDataState = function (id) {
 	vxml.State.call(this, id);

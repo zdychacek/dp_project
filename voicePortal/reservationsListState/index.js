@@ -2,7 +2,7 @@
 
 var util = require('util'),
 	vxml = require('../../lib/vxml'),
-	ReservationsListFlow = require('./ReservationsListFlow');
+	ReservationsListFlow = require('./flow');
 
 var ReservationsListState = function (id, userVar) {
 	vxml.State.call(this, id);
