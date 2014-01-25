@@ -14,7 +14,7 @@ util.inherits(GetLoginState, vxml.State);
 GetLoginState.prototype.createModel = function () {
 	return new AskWithNoInputPrompt({
 		prompt: 'Enter your telephone number as six digits.',
-		grammar: new vxml.BuiltinGrammar({ type: 'digits', length: config.loginLength })
+		grammar: new vxml.BuiltinGrammar({ type: 'digits', /*length: config.loginLength*/ minLength: 1, maxLength: config.loginLength })
 	})
 };
 

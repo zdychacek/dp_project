@@ -11,11 +11,11 @@ util.inherits(ConfirmLoginState, vxml.State);
 
 ConfirmLoginState.prototype.createModel = function (cf) {
 	var loginConfirm = new vxml.Prompt();
-	
+
 	loginConfirm.audios = [
 		new vxml.TtsMessage('You has entered following number '),
 		new vxml.SayAs(
-			new vxml.Var(cf, 'enteredLogin', '. ')
+			new vxml.Var(cf, 'enteredLogin')
 		, 'digits'),
 		new vxml.Silence('weak'),
 		new vxml.TtsMessage('Press one if this number is correct. Otherwise, press two.')

@@ -14,7 +14,7 @@ util.inherits(GetPasswordState, vxml.State);
 GetPasswordState.prototype.createModel = function () {
 	return new AskWithNoInputPrompt({
 		prompt: 'Please enter your password as five digits.',
-		grammar: new vxml.BuiltinGrammar({ type: 'digits', length: config.passwordLength })
+		grammar: new vxml.BuiltinGrammar({ type: 'digits', minLength: 1, maxLength: config.passwordLength })
 	});
 };
 
