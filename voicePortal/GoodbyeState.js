@@ -1,24 +1,24 @@
 'use strict';
 
-var util = require('util'),
-	vxml = require('vxml'),
+var vxml = require('vxml'),
 	config = require('./config');
 
-var GoodbyeState = function (id) {
-	vxml.State.call(this, id);
-}
+var GoodbyeState = vxml.State.extend({
 
-util.inherits(GoodbyeState, vxml.State);
+	constructor: function (id) {
+		GoodbyeState.super.call(this, id);
+	},
 
-GoodbyeState.prototype.createModel = function () {
-	return new vxml.Exit('Thank you for calling! Goodbye.');
-};
+	createModel: function () {
+		return new vxml.Exit('Thank you for calling! Goodbye.');
+	},
 
-GoodbyeState.prototype.onEntryAction = function* (cf, state, event) {
-	// if set, save information about call
-	if (config.saveCallHistory && cf.user) {
-		yield cf.user.commitCallHistoryItem(cf.callHistoryItem);
+	onEntryAction: function* (cf, state, event) {
+		// if set, save information about call
+		if (config.saveCallHistory && cf.user) {
+			yield cf.user.commitCallHistoryItem(cf.callHistoryItem);
+		}
 	}
-};
+});
 
 module.exports = GoodbyeState;

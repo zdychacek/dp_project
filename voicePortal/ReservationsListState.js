@@ -1,19 +1,19 @@
 'use strict';
 
-var util = require('util'),
-	vxml = require('vxml');
+var	vxml = require('vxml');
 
-var ReservationsListState = function (id) {
-	vxml.State.call(this, id);
-}
+var ReservationsListState = vxml.State.extend({
 
-util.inherits(ReservationsListState, vxml.State);
+	constructor: function (id) {
+		ReservationsListState.super.call(this, id);
+	},
 
-ReservationsListState.prototype.createModel = function () {
-  /* To repeat information, say repeat.
-  To go back to main menu, say main menu.
-  To exit call, say exit. */
-	return new vxml.Say('ReservationsListState menu');
-};
+	createModel: function () {
+	  /* To repeat information, say repeat.
+	  To go back to main menu, say main menu.
+	  To exit call, say exit. */
+		return new vxml.Say('ReservationsListState menu');
+	}
+});
 
 module.exports = ReservationsListState;

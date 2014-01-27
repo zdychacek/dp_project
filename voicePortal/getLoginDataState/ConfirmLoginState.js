@@ -17,6 +17,7 @@ ConfirmLoginState.prototype.createModel = function (cf) {
 		new vxml.SayAs(
 			new vxml.Var(cf, 'enteredLogin')
 		, 'digits'),
+		new vxml.TtsMessage('.'),
 		new vxml.Silence('weak'),
 		new vxml.TtsMessage('Press one if this number is correct. Otherwise, press two.')
 	];

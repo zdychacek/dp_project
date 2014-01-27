@@ -8,7 +8,7 @@ const express = require('express'),
 	config = require('./config'),
 	Json2Xml = require('./lib/Json2Xml'),
 	server = require('http').createServer(app),
-	vxml = require('./lib/vxml'),
+	vxml = require('vxml'),
 	io = require('socket.io').listen(server, { log: false });
 
 if (process.env.NODE_ENV === 'production' || process.argv[2] === 'production') {
