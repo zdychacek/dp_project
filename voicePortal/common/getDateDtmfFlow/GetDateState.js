@@ -1,7 +1,7 @@
 'use strict';
 
 var util = require('util'),
-	vxml = require('../../../lib/vxml');
+	vxml = require('vxml');
 
 var GetDateState = function (id, askDatePrompt) {
 	vxml.State.call(this, id);

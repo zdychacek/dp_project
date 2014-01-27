@@ -2,7 +2,7 @@
 
 var util = require('util'),
 	User = require('../../models/User'),
-	vxml = require('../../lib/vxml'),
+	vxml = require('vxml'),
 	AskState = require('./AskState'),
 	CancelAllState = require('./CancelAllState');
 

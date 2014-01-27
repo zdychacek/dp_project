@@ -9,7 +9,9 @@
     "async": "~0.2.9",
     "moment": "~2.4.0",
     "socket.io": "~0.9.16",
-    "q": "~1.0.0"
+    "q": "~1.0.0",
+    "vxml": "git+ssh://git@github.com:zdychacek/vxml.git#master",
+    "class": "git+ssh://git@github.com:zdychacek/class.git#master"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

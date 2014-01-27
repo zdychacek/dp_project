@@ -1,7 +1,7 @@
 'use strict';
 
 var util = require('util'),
-	vxml = require('../../lib/vxml'),
+	vxml = require('vxml'),
 	CancelAllReservationsFlow = require('./flow');
 
 var CancelAllReservationsState = function (id, userVar, io) {

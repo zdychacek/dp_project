@@ -2,7 +2,7 @@
 
 var util = require('util'),
 	config = require('./config'),
-	vxml = require('../lib/vxml'),
+	vxml = require('vxml'),
 
 	// flow states
 	WelcomeState = require('./WelcomeState'),

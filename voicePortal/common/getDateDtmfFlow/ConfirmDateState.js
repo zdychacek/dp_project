@@ -1,7 +1,7 @@
 'use strict';
 
 var util = require('util'),
-	vxml = require('../../../lib/vxml');
+	vxml = require('vxml');
 
 var ConfirmDateState = function (id) {
 	vxml.State.call(this, id);

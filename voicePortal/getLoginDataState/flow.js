@@ -1,7 +1,7 @@
 'use strict';
 
 var util = require('util'),
-	vxml = require('../../lib/vxml'),
+	vxml = require('vxml'),
 
 	GetLoginState = require('./GetLoginState'),
 	ConfirmLoginState = require('./ConfirmLoginState'),

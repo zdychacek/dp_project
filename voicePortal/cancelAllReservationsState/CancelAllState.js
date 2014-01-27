@@ -1,7 +1,7 @@
 'use strict';
 
 var util = require('util'),
-	vxml = require('../../lib/vxml');
+	vxml = require('vxml');
 
 var CancelAllState = function (id, user, io) {
 	vxml.State.call(this, id);

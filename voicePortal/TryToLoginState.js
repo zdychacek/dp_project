@@ -1,7 +1,7 @@
 'use strict';
 
 var util = require('util'),
-	vxml = require('../lib/vxml'),
+	vxml = require('vxml'),
 	User = require('../models/User');
 
 var TryToLoginState = function (id) {

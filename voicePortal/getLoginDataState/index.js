@@ -1,7 +1,7 @@
 'use strict';
 
 var util = require('util'),
-	vxml = require('../../lib/vxml'),
+	vxml = require('vxml'),
 	GetLoginDataFlow = require('./flow');
 
 var GetLoginDataState = function (id) {
