@@ -1,27 +1,27 @@
 'use strict';
 
-var util = require('util'),
-	vxml = require('vxml');
+var vxml = require('vxml');
 
-var ConfirmDateState = function (id) {
-	vxml.State.call(this, id);
-}
+var ConfirmDateState = vxml.State.extend({
 
-util.inherits(ConfirmDateState, vxml.State);
+	constructor: function (id) {
+		ConfirmDateState.super.call(this, id);
+	},
 
-ConfirmDateState.prototype.createModel = function (cf) {
-	var confirmPrompt = new vxml.Prompt();
+	createModel: function (cf) {
+		var confirmPrompt = new vxml.Prompt();
 
-	confirmPrompt.audios = [
-		new vxml.TtsMessage('You Entered '),
-		new vxml.Var(cf, 'voiceDate.day', ' '),
-		new vxml.Var(cf, 'voiceDate.month', ' '),
-		new vxml.Var(cf, 'voiceDate.year'),
-		new vxml.Silence(1000)
-	];
-	confirmPrompt.bargein = false;
+		confirmPrompt.audios = [
+			new vxml.TtsMessage('You Entered '),
+			new vxml.Var(cf, 'voiceDate.day', ' '),
+			new vxml.Var(cf, 'voiceDate.month', ' '),
+			new vxml.Var(cf, 'voiceDate.year'),
+			new vxml.Silence(1000)
+		];
+		confirmPrompt.bargein = false;
 
-	return new vxml.Say(confirmPrompt);
-};
+		return new vxml.Say(confirmPrompt);
+	}
+});
 
 module.exports = ConfirmDateState;

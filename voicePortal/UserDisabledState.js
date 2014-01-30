@@ -1,16 +1,16 @@
 'use strict';
 
-var util = require('util'),
-	vxml = require('vxml');
+var vxml = require('vxml');
 
-var UserDisabledState = function (id) {
-	vxml.State.call(this, id);
-}
+var UserDisabledState = vxml.State.extend({
 
-util.inherits(UserDisabledState, vxml.State);
+	constructor: function (id) {
+		UserDisabledState.super.call(this, id);
+	},
 
-UserDisabledState.prototype.createModel = function (cf) {
-	return new vxml.Exit('Your acount is disabled. Please contact an administrator.');
-};
+	createModel: function (cf) {
+		return new vxml.Exit('Your acount is disabled. Please contact an administrator.');
+	}
+});
 
 module.exports = UserDisabledState;

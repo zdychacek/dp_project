@@ -1,28 +1,28 @@
 'use strict';
 
-var util = require('util'),
-	vxml = require('vxml');
+var vxml = require('vxml');
 
-var CancelAllState = function (id, user, io) {
-	vxml.State.call(this, id);
+var CancelAllState = vxml.State.extend({
 
-	this._io = io;
+	constructor: function (id, user, io) {
+		CancelAllState.super.call(this, id);
 
-	this.user = user;
-}
+		this._io = io;
 
-util.inherits(CancelAllState, vxml.State);
+		this.user = user;
+	},
 
-CancelAllState.prototype.onEntryAction = function* (cf, state, event) {
-	try {
-		yield this.user.cancelAllReservations();
-		this._io.sockets.emit('flight:changed');
-		yield cf.fireEvent('ok');
+	onEntryAction: function* (cf, state, event) {
+		try {
+			yield this.user.cancelAllReservations();
+			this._io.sockets.emit('flight:changed');
+			yield cf.fireEvent('ok');
+		}
+		catch (ex) {
+			console.log(ex);
+			yield cf.fireEvent('fail');
+		}
 	}
-	catch (ex) {
-		console.log(ex);
-		yield cf.fireEvent('fail');
-	}
-};
+});
 
 module.exports = CancelAllState;

@@ -1,16 +1,16 @@
 'use strict';
 
-var util = require('util'),
-	vxml = require('vxml');
+var vxml = require('vxml');
 
-var WelcomeState = function (id) {
-	vxml.State.call(this, id);
-}
+var WelcomeState = vxml.State.extend({
 
-util.inherits(WelcomeState, vxml.State);
+	constructor: function (id) {
+		WelcomeState.super.call(this, id);
+	},
 
-WelcomeState.prototype.createModel = function () {
-	return new vxml.Say('Welcome to the Airlines voice information system.');
-}
+	createModel: function () {
+		return new vxml.Say('Welcome to the Airlines voice information system.');
+	}
+});
 
 module.exports = WelcomeState;

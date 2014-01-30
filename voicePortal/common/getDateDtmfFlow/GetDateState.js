@@ -1,24 +1,24 @@
 'use strict';
 
-var util = require('util'),
-	vxml = require('vxml');
+var vxml = require('vxml');
 
-var GetDateState = function (id, askDatePrompt) {
-	vxml.State.call(this, id);
+var GetDateState = vxml.State.extend({
+	
+	constructor: function (id, askDatePrompt) {
+		GetDateState.super.call(this, id);
 
-	this.askDatePrompt = askDatePrompt;
-}
+		this.askDatePrompt = askDatePrompt;
+	},
 
-util.inherits(GetDateState, vxml.State);
-
-GetDateState.prototype.createModel = function () {
-	return new vxml.Ask({
-		prompt: this.askDatePrompt,
-		grammar: new vxml.BuiltinGrammar({
-			type: 'digits',
-			length: 8
-		})
-	});
-};
+	createModel: function () {
+		return new vxml.Ask({
+			prompt: this.askDatePrompt,
+			grammar: new vxml.BuiltinGrammar({
+				type: 'digits',
+				length: 8
+			})
+		});
+	}
+});
 
 module.exports = GetDateState;

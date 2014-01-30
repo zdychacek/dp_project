@@ -1,26 +1,26 @@
 'use strict';
 
-var util = require('util'),
-	vxml = require('vxml'),
+var vxml = require('vxml'),
 	AskWithNoInputPrompt = require('../common/AskWithNoInputPrompt'),
 	config = require('./../config');
 
-var GetLoginState = function (id) {
-	vxml.State.call(this, id);
-}
+var GetLoginState = vxml.State.extend({
 
-util.inherits(GetLoginState, vxml.State);
+	constructor: function (id) {
+		GetLoginState.super.call(this, id);
+	},
 
-GetLoginState.prototype.createModel = function () {
-	return new AskWithNoInputPrompt({
-		prompt: 'Enter your telephone number as six digits.',
-		grammar: new vxml.BuiltinGrammar({ type: 'digits', /*length: config.loginLength*/ minLength: 1, maxLength: config.loginLength })
-	})
-};
+	createModel: function () {
+		return new AskWithNoInputPrompt({
+			prompt: 'Enter your telephone number as six digits.',
+			grammar: new vxml.BuiltinGrammar({ type: 'digits', /*length: config.loginLength*/ minLength: 1, maxLength: config.loginLength })
+		})
+	},
 
-GetLoginState.prototype.onExitAction = function* (cf, state, event) {
-	// remember entered login
-	cf.enteredLogin = event.data;
-};
+	onExitAction: function* (cf, state, event) {
+		// remember entered login
+		cf.enteredLogin = event.data;
+	}
+});
 
 module.exports = GetLoginState;
