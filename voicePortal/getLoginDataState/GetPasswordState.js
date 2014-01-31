@@ -17,7 +17,7 @@ var GetPasswordState = vxml.State.extend({
 		});
 	},
 
-	onExitAction: function* (cf, state, event) {
+	onExit: function* (cf, state, event) {
 		// remember entered password
 		cf.enteredPassword = event.data;
 	}

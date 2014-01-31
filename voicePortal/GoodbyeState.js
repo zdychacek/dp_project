@@ -13,7 +13,7 @@ var GoodbyeState = vxml.State.extend({
 		return new vxml.Exit('Thank you for calling! Goodbye.');
 	},
 
-	onEntryAction: function* (cf, state, event) {
+	onEntry: function* (cf, state, event) {
 		// if set, save information about call
 		if (config.saveCallHistory && cf.user) {
 			yield cf.user.commitCallHistoryItem(cf.callHistoryItem);

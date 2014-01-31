@@ -21,7 +21,7 @@ var UserBannedState = vxml.State.extend({
 		return new vxml.Exit(bannedPrompt);
 	},
 
-	onEntryAction: function* (cf, state, event) {
+	onEntry: function* (cf, state, event) {
 		this.bannedUntil = event.data;
 	}
 });

@@ -12,7 +12,7 @@ var CancelAllState = vxml.State.extend({
 		this.user = user;
 	},
 
-	onEntryAction: function* (cf, state, event) {
+	onEntry: function* (cf, state, event) {
 		try {
 			yield this.user.cancelAllReservations();
 			this._io.sockets.emit('flight:changed');

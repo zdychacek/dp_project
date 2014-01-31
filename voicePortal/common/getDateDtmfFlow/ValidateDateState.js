@@ -8,7 +8,7 @@ var ValidateDateState = vxml.State.extend({
 		ValidateDateState.super.call(this, id);
 	},
 
-	onEntryAction: function* (cf, state, event) {
+	onEntry: function* (cf, state, event) {
 		var result = this._validateDate(event.data);
 
 		if (result.isValid) {

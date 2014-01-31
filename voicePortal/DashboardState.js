@@ -22,7 +22,7 @@ var DashboardState = vxml.State.extend({
 		return new vxml.Say(loggedInPrompt)
 	},
 
-	onEntryAction: function* (cf, state, event) {
+	onEntry: function* (cf, state, event) {
 		// if set, save information about call
 		if (config.saveCallHistory) {
 			cf.callHistoryItem = yield cf.user.insertCallHistoryItem(cf.$sessionId, new Date());

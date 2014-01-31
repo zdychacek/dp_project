@@ -9,7 +9,7 @@ var TryToLoginState = vxml.State.extend({
 		TryToLoginState.super.call(this, id);
 	},
 
-	onEntryAction: function* (cf, state, event) {
+	onEntry: function* (cf, state, event) {
 		var loginResult = yield User.tryLogin(cf.loginData.login, cf.loginData.password);
 
 		if (loginResult.user) {

@@ -17,7 +17,7 @@ var GetLoginState = vxml.State.extend({
 		})
 	},
 
-	onExitAction: function* (cf, state, event) {
+	onExit: function* (cf, state, event) {
 		// remember entered login
 		cf.enteredLogin = event.data;
 	}

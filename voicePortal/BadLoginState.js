@@ -24,7 +24,7 @@ var BadLoginState = vxml.State.extend({
 		});
 	},
 
-	onEntryAction: function* (cf, state, event) {
+	onEntry: function* (cf, state, event) {
 		console.log('errors:', event.data);
 	}
 });
