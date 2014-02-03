@@ -1,19 +1,19 @@
 'use strict';
 
-var util = require('util'),
-	vxml = require('vxml'),
+var vxml = require('vxml'),
 	GetLoginDataFlow = require('./flow');
 
-var GetLoginDataState = function (id) {
-	vxml.State.call(this, id);
+var GetLoginDataState = vxml.State.extend({
 
-	this.addNestedCallFlow(new GetLoginDataFlow());
-}
+	constructor: function (id) {
+		GetLoginDataState.super.call(this, id);
 
-util.inherits(GetLoginDataState, vxml.State);
+		this.addNestedCallFlow(new GetLoginDataFlow());
+	},
 
-GetLoginDataState.prototype.onExitAction = function* (cf, state, event) {
-	cf.loginData = state.nestedCF.getUserLoginData();
-}
+	onExit: function* (cf, state, event) {
+		cf.loginData = state.nestedCF.getUserLoginData();
+	}
+});
 
 module.exports = GetLoginDataState;

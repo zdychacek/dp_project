@@ -1,15 +1,15 @@
 'use strict';
 
-var util = require('util'),
-	vxml = require('vxml'),
+var vxml = require('vxml'),
 	CancelAllReservationsFlow = require('./flow');
 
-var CancelAllReservationsState = function (id, userVar, io) {
-	vxml.State.call(this, id);
+var CancelAllReservationsState = vxml.State.extend({
 
-	this.addNestedCallFlow(new CancelAllReservationsFlow(userVar, io));
-}
+	constructor: function (id, userVar, io) {
+		CancelAllReservationsState.super.call(this, id);
 
-util.inherits(CancelAllReservationsState, vxml.State);
+		this.addNestedCallFlow(new CancelAllReservationsFlow(userVar, io));
+	}
+});
 
 module.exports = CancelAllReservationsState;

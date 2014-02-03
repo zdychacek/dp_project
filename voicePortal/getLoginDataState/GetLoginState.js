@@ -14,7 +14,7 @@ var GetLoginState = vxml.State.extend({
 		return new AskWithNoInputPrompt({
 			prompt: 'Enter your telephone number as six digits.',
 			grammar: new vxml.BuiltinGrammar({ type: 'digits', /*length: config.loginLength*/ minLength: 1, maxLength: config.loginLength })
-		})
+		});
 	},
 
 	onExit: function* (cf, state, event) {

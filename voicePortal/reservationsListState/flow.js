@@ -1,27 +1,27 @@
 'use strict';
 
-var util = require('util'),
+var vxml = require('vxml'),
 	User = require('../../models/User'),
-	vxml = require('vxml'),
 	GetDateDtmfFlow = require('../common/getDateDtmfFlow');
 
-var ReservationsListFlow = function (userVar) {
-	vxml.CallFlow.call(this);
+var ReservationsListFlow = vxml.CallFlow.extend({
 
-	this.userVar = userVar;
-}
+	constructor: function (userVar) {
+		ReservationsListFlow.super.call(this);
 
-util.inherits(ReservationsListFlow, vxml.CallFlow);
+		this.userVar = userVar;
+	},
 
-ReservationsListFlow.prototype.create = function* () {
-	this.addState(
-		new vxml.State('test1', 'test2')
-			.addNestedCallFlow(new GetDateDtmfFlow('Enter date.'))
-	);
+	create: function* () {
+		this.addState(
+			new vxml.State('test1', 'test2')
+				.addNestedCallFlow(new GetDateDtmfFlow('Enter date.'))
+		);
 
-	this.addState(
-		vxml.State.create('test2', new vxml.Say('test 2'))
-	);
-};
+		this.addState(
+			vxml.State.create('test2', new vxml.Say('test 2'))
+		);
+	}
+});
 
 module.exports = ReservationsListFlow;
