@@ -56,12 +56,12 @@ var VoicePortalFlow = vxml.CallFlow.extend({
 		// application main menu
 		var mainMenuState = new MainMenuState('mainMenu', [
 			{
-				prompt: 'To cancel your all reservations',
-				targetState: cancelAllReservationsState
-			},
-			{
 				prompt: 'To list your reservations',
 				targetState: reservationsListState
+			},
+			{
+				prompt: 'To cancel your all reservations',
+				targetState: cancelAllReservationsState
 			},
 			{
 				prompt: 'To make new reservation',
