@@ -28,7 +28,7 @@ var ReservationsListFlow = vxml.CallFlow.extend({
 			// prepare reservationsStates
 			var reservationsStates = reservations.map(function (reservation, i) {
 				return new ReservationInfoState(reservation, (i == 0), (i == reservations.length - 1));
-			}, this);
+			});
 
 			// add reservationsStates transitions
 			reservationsStates.forEach(function (state, i) {
@@ -55,7 +55,7 @@ var ReservationsListFlow = vxml.CallFlow.extend({
 				new vxml.Say('You have ' + reservations.length + ' active reservations. List follows.')
 			);
 			reservationCountState.addTransition('continue', reservationsStates[0]);
-			
+
 			// add reservations count info state
 			this.addState(reservationCountState);
 			// add reservations states
