@@ -2,7 +2,7 @@
 
 var vxml = require('vxml'),
 	FilterByIdState = require('./filterByIdState'),
-	MenuState = require('../common/MenuState'),
+	MenuState = require('../../common/MenuState'),
 	GetAnotherFilterInputState = require('./GetAnotherFilterInputState');
 
 var MakeNewReservationFlow = vxml.CallFlow.extend({

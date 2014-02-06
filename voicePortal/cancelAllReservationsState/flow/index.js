@@ -1,7 +1,7 @@
 'use strict';
 
 var vxml = require('vxml'),
-	User = require('../../models/User'),
+	User = require('../../../models/User'),
 	AskState = require('./AskState'),
 	CancelAllState = require('./CancelAllState');
 

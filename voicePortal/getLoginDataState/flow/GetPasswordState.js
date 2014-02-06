@@ -1,8 +1,8 @@
 'use strict';
 
 var vxml = require('vxml'),
-	AskWithNoInputPrompt = require('../common/AskWithNoInputPrompt'),
-	config = require('./../config');
+	AskWithNoInputPrompt = require('../../common/AskWithNoInputPrompt'),
+	config = require('../../config');
 
 var GetPasswordState = vxml.State.extend({
 
