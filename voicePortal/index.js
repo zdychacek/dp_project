@@ -11,10 +11,10 @@ var vxml = require('vxml'),
 	UserDisabledState = require('./UserDisabledState'),
 	UserBannedState = require('./UserBannedState'),
 	DashboardState = require('./DashboardState'),
-	MainMenuState = require('./MainMenuState'),
+	MenuState = require('./common/MenuState'),
 	ReservationsListState = require('./reservationsListState'),
 	CancelAllReservationsState = require('./cancelAllReservationsState'),
-	MakeNewReservationState = require('./MakeNewReservationState'),
+	MakeNewReservationState = require('./makeNewReservationState'),
 	GoodbyeState = require('./GoodbyeState');
 
 var VoicePortalFlow = vxml.CallFlow.extend({
@@ -54,7 +54,11 @@ var VoicePortalFlow = vxml.CallFlow.extend({
 			goodbyeState = new GoodbyeState('goodbye');
 
 		// application main menu
-		var mainMenuState = new MainMenuState('mainMenu', [
+		var mainMenuState = new MenuState('mainMenu', [
+			{
+				prompt: 'To make new reservation',
+				targetState: makeNewReservationState
+			},
 			{
 				prompt: 'To list your reservations',
 				targetState: reservationsListState
@@ -62,10 +66,6 @@ var VoicePortalFlow = vxml.CallFlow.extend({
 			{
 				prompt: 'To cancel your all reservations',
 				targetState: cancelAllReservationsState
-			},
-			{
-				prompt: 'To make new reservation',
-				targetState: makeNewReservationState
 			},
 			{
 				prompt: 'To exit call',

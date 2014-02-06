@@ -1,12 +1,12 @@
 'use strict';
 
 var vxml = require('vxml'),
-	config = require('./config');
+	config = require('./../config');
 
-var MainMenuState = vxml.State.extend({
+var MenuState = vxml.State.extend({
 
 	constructor: function (id, menuDef) {
-		MainMenuState.super.call(this, id);
+		MenuState.super.call(this, id);
 
 		this._menuDef = menuDef;
 	},
@@ -41,4 +41,4 @@ var MainMenuState = vxml.State.extend({
 	}
 });
 
-module.exports = MainMenuState;
+module.exports = MenuState;
