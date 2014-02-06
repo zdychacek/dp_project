@@ -5,10 +5,10 @@ var vxml = require('vxml'),
 	AskState = require('./AskState'),
 	CancelAllState = require('./CancelAllState');
 
-var CancelAllResarvationsFlow = vxml.CallFlow.extend({
+var CancelActiveFlow = vxml.CallFlow.extend({
 
 	constructor: function (userVar, io) {
-		CancelAllResarvationsFlow.super.call(this);
+		CancelActiveFlow.super.call(this);
 
 		this._io = io;
 
@@ -52,4 +52,4 @@ var CancelAllResarvationsFlow = vxml.CallFlow.extend({
 	}
 });
 
-module.exports = CancelAllResarvationsFlow;
+module.exports = CancelActiveFlow;

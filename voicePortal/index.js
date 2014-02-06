@@ -12,9 +12,9 @@ var vxml = require('vxml'),
 	UserBannedState = require('./UserBannedState'),
 	DashboardState = require('./DashboardState'),
 	MenuState = require('./common/MenuState'),
-	ReservationsListState = require('./reservationsListState'),
-	CancelAllReservationsState = require('./cancelAllReservationsState'),
-	MakeNewReservationState = require('./makeNewReservationState'),
+	ListActiveState = require('./listActiveState'),
+	CancelActiveState = require('./cancelActiveState'),
+	CreateNewState = require('./createNewState'),
 	GoodbyeState = require('./GoodbyeState');
 
 var VoicePortalFlow = vxml.CallFlow.extend({
@@ -45,11 +45,11 @@ var VoicePortalFlow = vxml.CallFlow.extend({
 			// user was successfully logged in
 			dashboardState = new DashboardState('dashboard'),
 			// list users active reservations
-			reservationsListState = new ReservationsListState('reservationsList', new vxml.Var(this, 'user')),
+			listActiveState = new ListActiveState('listActiveState', new vxml.Var(this, 'user')),
 			// cancel users all active reservations
-			cancelAllReservationsState = new CancelAllReservationsState('cancelAllReservations', new vxml.Var(this, 'user'), this._io),
+			cancelActiveState = new CancelActiveState('cancelActive', new vxml.Var(this, 'user'), this._io),
 			// create new reservation
-			makeNewReservationState = new MakeNewReservationState('makeNewReservation'),
+			createNewState = new CreateNewState('createNew'),
 			// application exit point
 			goodbyeState = new GoodbyeState('goodbye');
 
@@ -57,15 +57,15 @@ var VoicePortalFlow = vxml.CallFlow.extend({
 		var mainMenuState = new MenuState('mainMenu', [
 			{
 				prompt: 'To make new reservation',
-				targetState: makeNewReservationState
+				targetState: createNewState
 			},
 			{
 				prompt: 'To list your reservations',
-				targetState: reservationsListState
+				targetState: listActiveState
 			},
 			{
 				prompt: 'To cancel your all reservations',
-				targetState: cancelAllReservationsState
+				targetState: cancelActiveState
 			},
 			{
 				prompt: 'To exit call',
@@ -89,9 +89,9 @@ var VoicePortalFlow = vxml.CallFlow.extend({
 				return result == 2;
 			});
 		dashboardState.addTransition('continue', mainMenuState);
-		reservationsListState.addTransition('continue', mainMenuState);
-		cancelAllReservationsState.addTransition('continue', mainMenuState);
-		makeNewReservationState.addTransition('continue', mainMenuState);
+		listActiveState.addTransition('continue', mainMenuState);
+		cancelActiveState.addTransition('continue', mainMenuState);
+		createNewState.addTransition('continue', mainMenuState);
 
 		// add states
 		this
@@ -103,9 +103,9 @@ var VoicePortalFlow = vxml.CallFlow.extend({
 			.addState(userBannedState)
 			.addState(dashboardState)
 			.addState(mainMenuState)
-			.addState(reservationsListState)
-			.addState(cancelAllReservationsState)
-			.addState(makeNewReservationState)
+			.addState(listActiveState)
+			.addState(cancelActiveState)
+			.addState(createNewState)
 			.addState(goodbyeState);
 	}
 });

@@ -4,10 +4,10 @@ var vxml = require('vxml'),
 	ReservationInfoState = require('../common/ReservationInfoState'),
 	User = require('../../models/User');
 
-var ReservationsListFlow = vxml.CallFlow.extend({
+var ListActiveFlow = vxml.CallFlow.extend({
 
 	constructor: function (userVar) {
-		ReservationsListFlow.super.call(this);
+		ListActiveFlow.super.call(this);
 
 		this.userVar = userVar;
 	},
@@ -66,4 +66,4 @@ var ReservationsListFlow = vxml.CallFlow.extend({
 	}
 });
 
-module.exports = ReservationsListFlow;
+module.exports = ListActiveFlow;

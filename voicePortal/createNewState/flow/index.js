@@ -5,10 +5,10 @@ var vxml = require('vxml'),
 	MenuState = require('../../common/MenuState'),
 	GetAnotherFilterInputState = require('./GetAnotherFilterInputState');
 
-var MakeNewReservationFlow = vxml.CallFlow.extend({
+var CreateNewFlow = vxml.CallFlow.extend({
 
 	constructor: function (userVar) {
-		MakeNewReservationFlow.super.call(this);
+		CreateNewFlow.super.call(this);
 
 		this.userVar = userVar;
 		this.filters = {};
@@ -46,4 +46,4 @@ var MakeNewReservationFlow = vxml.CallFlow.extend({
 	}
 });
 
-module.exports = MakeNewReservationFlow;
+module.exports = CreateNewFlow;
