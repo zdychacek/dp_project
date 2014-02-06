@@ -3,7 +3,9 @@
 var vxml = require('vxml'),
 	FilterByIdState = require('./filterByIdState'),
 	MenuState = require('../../common/MenuState'),
-	GetAnotherFilterInputState = require('./GetAnotherFilterInputState');
+	GetAnotherFilterInputState = require('./GetAnotherFilterInputState'),
+	FilterState = require('./FilterState'),
+	ResultsState = require('./ResultsState');
 
 var CreateNewFlow = vxml.CallFlow.extend({
 
@@ -12,13 +14,15 @@ var CreateNewFlow = vxml.CallFlow.extend({
 
 		this.userVar = userVar;
 		this.filters = {};
+		this.results = [];
 	},
 
 	create: function* () {
 		var welcomeMessageState = vxml.State.create('msg', new vxml.Say('Please enter some searching criteria.')),
 			filterByIdState = new FilterByIdState('filterById'),
 			getAnotherFilterInputState = new GetAnotherFilterInputState('getAnotherFilterInput'),
-			filterState = vxml.State.create('filter', new vxml.Say('TODO: filter'));
+			filterState = new FilterState('filterState', new vxml.Var(this, 'filters')),
+			resultsState = new ResultsState('resultsState', new vxml.Var(this, 'results'));
 
 		var filterSelectionMenuState = new MenuState('mainMenu', [
 			{
@@ -36,13 +40,16 @@ var CreateNewFlow = vxml.CallFlow.extend({
 			// if two is pressed, thna we don't want to set another filter
 			.addTransition('continue', filterState, function (result) { return result == 2; })
 
+		filterState.addTransition('continue', resultsState);
+
 		// register states
 		this
 			.addState(welcomeMessageState)
 			.addState(filterSelectionMenuState)
 			.addState(filterByIdState)
 			.addState(getAnotherFilterInputState)
-			.addState(filterState);
+			.addState(filterState)
+			.addState(resultsState);
 	}
 });
 

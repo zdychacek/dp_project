@@ -155,7 +155,7 @@ exports.addRoutes = function (app, config, security, io) {
 						filter.userId = user._id;
 					}
 
-					var result = yield Flight.filter(filter, req.query, resume);
+					var result = yield Flight.filter(filter, req.query);
 
 					result.items = (result.items || []).map(function (flight) {
 						return flight.serializeWithContext(user);

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose'),
+	Q = require('q'),
 	moment = require('moment'),
 	lastModified = require('./plugins/lastModified'),
 	PathPart = require('./PathPart'),
@@ -129,12 +130,18 @@ Flight.methods.cancelReservationForUser = function (user, callback) {
 	}
 };
 
-Flight.statics.filter = function (filter, pagerSorter, callback) {
-	var query = this.count({});
+Flight.statics.filter = function (filter, pagerSorter) {
+	var deferred = Q.defer(),
+		query = this.count({});
+
 	pagerSorter || (pagerSorter = {});
 
 	// filtering
 	if (filter) {
+		if (filter._id) {
+			query.where('_id').equals(filter._id);
+		}
+
 		if (filter.fromDestination) {
 			query.where('fromDestination').equals(filter.fromDestination);
 		}
@@ -181,34 +188,40 @@ Flight.statics.filter = function (filter, pagerSorter, callback) {
 		}
 	}
 
-	query.exec(function (err, totalCount) {
-		query.find();
+	Q.when(query.exec())
+		.then(function (totalCount) {
+			query.find();
 
-		// paging and sorting
-		if (pagerSorter.limit) {
-			query.limit(pagerSorter.limit);
-		}
+			// paging and sorting
+			if (pagerSorter.limit) {
+				query.limit(pagerSorter.limit);
+			}
 
-		if (pagerSorter.offset) {
-			query.skip(pagerSorter.offset);
-		}
+			if (pagerSorter.offset) {
+				query.skip(pagerSorter.offset);
+			}
 
-		if (pagerSorter.sort && pagerSorter.dir) {
-			var sortObj = {};
-			sortObj[pagerSorter.sort] = pagerSorter.dir;
+			if (pagerSorter.sort && pagerSorter.dir) {
+				var sortObj = {};
+				sortObj[pagerSorter.sort] = pagerSorter.dir;
 
-			query = query.sort(sortObj);
-		}
+				query = query.sort(sortObj);
+			}
 
-		query.exec(function (err, flights) {
-			callback(err, {
-				items: flights,
-				metadata: {
-					totalCount: totalCount
-				}
-			});
-		});
-	});
+			Q.when(query.exec())
+				.then(function (flights) {
+					deferred.resolve({
+						items: flights,
+						metadata: {
+							totalCount: totalCount
+						}
+					});
+				})
+				.fail();
+		})
+		.fail(deferred.reject);
+
+	return deferred.promise;
 };
 
 var destinations = require('./Destination').getAll();

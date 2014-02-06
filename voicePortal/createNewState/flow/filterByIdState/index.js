@@ -15,8 +15,6 @@ var FilterByIdState = vxml.State.extend({
 		var filterDef = state.nestedCF.filter;
 
 		cf.filters[filterDef.property] = filterDef.value;
-
-		console.log(cf.filters);
 	}
 });
 
