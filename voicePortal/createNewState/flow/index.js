@@ -42,6 +42,8 @@ var CreateNewFlow = vxml.CallFlow.extend({
 
 		filterState.addTransition('continue', resultsState);
 
+		//resultsState.addTransition('continue', 'huhu');
+
 		// register states
 		this
 			.addState(welcomeMessageState)
@@ -49,7 +51,10 @@ var CreateNewFlow = vxml.CallFlow.extend({
 			.addState(filterByIdState)
 			.addState(getAnotherFilterInputState)
 			.addState(filterState)
-			.addState(resultsState);
+			.addState(resultsState)
+			/*.addState(
+				vxml.State.create('huhu', new vxml.Say('huhu'))
+			);*/
 	}
 });
 
