@@ -5,15 +5,24 @@ var vxml = require('vxml'),
 
 var ReservationsContainerFlow = vxml.CallFlow.extend({
 
-	constructor: function (reservationsVar) {
+	constructor: function (reservations) {
 		ReservationsContainerFlow.super.call(this);
 
-		this.reservationsVar = reservationsVar;
+		this._reservations = reservations;
+	},
+
+	getReservations: function () {
+		if (this._reservations instanceof vxml.Var) {
+			return this._reservations.getValue();
+		}
+		else {
+			return this._reservations;
+		}
 	},
 
 	create: function* () {
 		var exitState = vxml.State.create('exit', new vxml.Say('Going back to main menu.')),
-			reservations = this.reservationsVar.getValue();
+			reservations = this.getReservations();
 
 		// prepare reservationsStates
 		var reservationsStates = reservations.map(function (reservation, i) {
