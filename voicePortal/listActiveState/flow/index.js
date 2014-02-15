@@ -1,7 +1,7 @@
 'use strict';
 
 var vxml = require('vxml'),
-	ReservationsListState = require('./ReservationsListState');
+	ReservationsContainerFlow = require('../../common/ReservationsContainerFlow');
 
 var ListActiveFlow = vxml.CallFlow.extend({
 
@@ -25,7 +25,8 @@ var ListActiveFlow = vxml.CallFlow.extend({
 			var reservationCountState = vxml.State.create('reservationsCount',
 				new vxml.Say('You have ' + reservations.length + ' active reservations. List follows.')
 			);
-			var reservationsState = new ReservationsListState('reservations', reservations);
+			var reservationsState = new vxml.State('reservations');
+			reservationsState.addNestedCallFlow(new ReservationsContainerFlow(reservations));
 
 			reservationCountState.addTransition('continue', reservationsState);
 

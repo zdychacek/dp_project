@@ -139,7 +139,12 @@ Flight.statics.filter = function (filter, pagerSorter) {
 	// filtering
 	if (filter) {
 		if (filter._id) {
-			query.where('_id').equals(filter._id);
+			try {
+				var id = mongoose.Types.ObjectId.fromString(filter._id);
+
+				query.where('_id').equals(id);
+			}
+			catch (ex) { }
 		}
 
 		if (filter.fromDestination) {

@@ -12,7 +12,6 @@ module.exports = function (grunt) {
 		'Gruntfile.js',
 		'node-inspector.js',
 		'/.git/',
-		'/node_modules/',
 		'/public/',
 		'/dist/'
 	];

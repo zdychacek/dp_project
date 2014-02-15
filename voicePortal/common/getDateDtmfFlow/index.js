@@ -28,7 +28,7 @@ var GetDateDtmfFlow = vxml.CallFlow.extend({
 			.addTransition('continue', confirmDateState)
 			.addTransition('error', invalidDateState);
 		invalidDateState.addTransition('continue', getDateState);
-		
+
 		// add states
 		this
 			// 1. get an input

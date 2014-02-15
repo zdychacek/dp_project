@@ -14,9 +14,9 @@ var FilterState = vxml.State.extend({
 	onEntry: function* (cf, state, event) {
 		var filters = this.filtersVar.getValue();
 
-		cf.results = (yield Flight.filter(filters)).items || [];
+		console.log('filters', filters);
 
-		//console.log(cf.results);
+		cf.results = (yield Flight.filter(filters)).items || [];
 
 		yield cf.fireEvent('continue');
 	}
