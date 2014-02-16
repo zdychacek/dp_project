@@ -16,7 +16,7 @@ exports.addRoutes = function (app, config, security, io) {
 					var user = yield security.isAuthorized(req, res, resume),
 						flight = yield Flight.findById(req.params.id, resume);
 
-					flight = yield flight.addReservationForUser(user, resume);
+					flight = yield flight.addReservationForUser(user);
 					flight = flight.serializeWithContext(user);
 
 					io.sockets.emit('flight:changed', flight);
@@ -39,7 +39,7 @@ exports.addRoutes = function (app, config, security, io) {
 					var user = yield security.isAuthorized(req, res, resume),
 						flight = yield Flight.findById(req.params.id, resume);
 
-					flight = yield flight.cancelReservationForUser(user, resume);
+					flight = yield flight.cancelReservationForUser(user);
 					flight = flight.serializeWithContext(user);
 
 					io.sockets.emit('flight:changed', flight);

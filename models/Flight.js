@@ -67,8 +67,9 @@ Flight.methods.serializeWithContext = function (user) {
 	return data;
 };
 
-Flight.methods.addReservationForUser = function (user, callback) {
-	var passengers = this.passengers,
+Flight.methods.addReservationForUser = function (user) {
+	var deferred = Q.defer(),
+		passengers = this.passengers,
 		self = this,
 		reservationAlreadyExists = passengers.some(function (passenger) {
 			return passenger.equals(user._id);
@@ -77,7 +78,7 @@ Flight.methods.addReservationForUser = function (user, callback) {
 	if (reservationAlreadyExists) {
 		errors.push('Nelze vytvořit rezervaci, která už byla vytvořena.');
 
-		callback(errors, this);
+		deferred.reject(errors);
 	}
 	else {
 		if (this.freeCapacity > 0) {
@@ -85,25 +86,28 @@ Flight.methods.addReservationForUser = function (user, callback) {
 
 			this.save(function (err, data) {
 				if (!err) {
-					callback(null, self);
+					deferred.resolve(self);
 				}
 				else {
-					callback([{
+					deferred.reject([{
 						type: 'error',
 						message: err.toString()
-					}], null);
+					}]);
 				}
 			});
 		}
 		else {
 			errors.push('Let je již plně obsazen. Nelze vytvořit rezervaci.');
-			callback(errors, this);
+			deferred.reject(errors);
 		}
 	}
+
+	return deferred.promise;
 };
 
-Flight.methods.cancelReservationForUser = function (user, callback) {
-	var passengers = this.passengers,
+Flight.methods.cancelReservationForUser = function (user) {
+	var deferred = Q.defer(),
+		passengers = this.passengers,
 		self = this,
 		reservationAlreadyExists = passengers.some(function (passenger) {
 			return passenger.equals(user._id);
@@ -114,20 +118,22 @@ Flight.methods.cancelReservationForUser = function (user, callback) {
 
 		this.save(function (err, data) {
 			if (!err) {
-				callback(null, self);
+				deferred.resolve(self);
 			}
 			else {
-				callback([{
+				deferred.reject([{
 					type: 'error',
 					message: err.toString()
-				}], null);
+				}]);
 			}
 		});
 	}
 	else {
 		errors.push('Nelze zrušit rezervaci, která neexistuje.');
-		callback(errors, this);
+		deferred.reject(errors);
 	}
+
+	return deferred.promise;
 };
 
 Flight.statics.filter = function (filter, pagerSorter) {

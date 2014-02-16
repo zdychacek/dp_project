@@ -5,10 +5,10 @@ var	vxml = require('vxml'),
 
 var ReservationsListState = vxml.State.extend({
 
-	constructor: function (id, reservationsVar) {
+	constructor: function (id, reservationsVar, userVar, io) {
 		ReservationsListState.super.call(this, id);
 
-		this.addNestedCallFlow(new ListResultsFlow(reservationsVar));
+		this.addNestedCallFlow(new ListResultsFlow(reservationsVar, userVar, io));
 	}
 });
 

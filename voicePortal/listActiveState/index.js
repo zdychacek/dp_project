@@ -5,10 +5,10 @@ var vxml = require('vxml'),
 
 var ListActiveState = vxml.State.extend({
 
-	constructor: function (id, userVar) {
+	constructor: function (id, userVar, io) {
 		ListActiveState.super.call(this, id);
 
-		this.addNestedCallFlow(new ListActiveFlow(userVar));
+		this.addNestedCallFlow(new ListActiveFlow(userVar, io));
 	}
 });
 

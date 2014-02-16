@@ -6,12 +6,14 @@ var vxml = require('vxml'),
 
 var ReservationsContainerFlow = vxml.CallFlow.extend({
 
-	constructor: function (reservations, options /* returnMessage, canCancelReservation, canMakeReservation */) {
+	constructor: function (reservations, user, io, options /* returnMessage, canCancelReservation, canMakeReservation */) {
 		options || (options = {});
 
 		ReservationsContainerFlow.super.call(this);
 
 		this._reservations = reservations;
+		this._user = user;
+		this._io = io;
 		this._returnMessage = options.returnMessage || 'Going back to main menu.';
 		this._canCancelReservation = options.canCancelReservation || false;
 		this._canMakeReservation = options.canMakeReservation || false;
@@ -38,7 +40,7 @@ var ReservationsContainerFlow = vxml.CallFlow.extend({
 			reservationsStates.push(new ReservationInfoState(reservation, (i == 0), (i == reservations.length - 1)));
 
 			if (this._canMakeReservation || this._canCancelReservation) {
-				var menuState = new ReservationMenuState(reservation, {
+				var menuState = new ReservationMenuState(reservation, this._user, this._io, {
 					canMake: this._canMakeReservation,
 					canCancel: this._canCancelReservation
 				});

@@ -4,10 +4,11 @@ var vxml = require('vxml'),
 	ReservationMenuFlow = require('./flow');
 
 var ReservationMenuState = vxml.State.extend({
-	constructor: function (reservation, options) {
+
+	constructor: function (reservation, user, io, options) {
 		ReservationMenuState.super.call(this, 'reservationMenu_' + reservation._id);
 
-		this.addNestedCallFlow(new ReservationMenuFlow(reservation, options));
+		this.addNestedCallFlow(new ReservationMenuFlow(reservation, user, io, options));
 	}
 });
 

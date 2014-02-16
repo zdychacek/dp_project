@@ -5,14 +5,17 @@ var vxml = require('vxml'),
 
 var ListResultsFlow = vxml.CallFlow.extend({
 
-	constructor: function (reservationsVar) {
+	constructor: function (reservationsVar, userVar, io) {
 		ListResultsFlow.super.call(this);
 
 		this.reservationsVar = reservationsVar;
+		this.userVar = userVar;
+		this._io = io;
 	},
 
 	create: function* () {
-		var reservations = this.reservationsVar.getValue();
+		var reservations = this.reservationsVar.getValue(),
+			user = this.userVar.getValue();
 
 		// there's no existing reservations
 		if (!reservations.length) {
@@ -25,7 +28,7 @@ var ListResultsFlow = vxml.CallFlow.extend({
 				new vxml.Say('We found ' + reservations.length + ' reservations. List follows.')
 			);
 			var reservationsState = new vxml.State('reservations');
-			reservationsState.addNestedCallFlow(new ReservationsContainerFlow(reservations, {
+			reservationsState.addNestedCallFlow(new ReservationsContainerFlow(reservations, user, this._io, {
 				canCancelReservation: true,
 				canMakeReservation: true
 			}));

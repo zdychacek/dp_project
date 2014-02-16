@@ -11,12 +11,13 @@ var vxml = require('vxml'),
 
 var CreateNewFlow = vxml.CallFlow.extend({
 
-	constructor: function (userVar) {
+	constructor: function (userVar, io) {
 		CreateNewFlow.super.call(this);
 
 		this.userVar = userVar;
 		this.filters = {};
 		this.results = [];
+		this._io = io;
 	},
 
 	create: function* () {
@@ -26,7 +27,7 @@ var CreateNewFlow = vxml.CallFlow.extend({
 			filterByArrivalDateState = new FilterByArrivalDateState('filterByArrivalDate'),
 			getAnotherFilterInputState = new GetAnotherFilterInputState('getAnotherFilterInput'),
 			filterState = new FilterState('filterState', new vxml.Var(this, 'filters')),
-			reservationsListState = new ReservationsListState('reservationsListState', new vxml.Var(this, 'results')),
+			reservationsListState = new ReservationsListState('reservationsListState', new vxml.Var(this, 'results'), this.userVar, this._io),
 
 			filterStates = [ filterByIdState, filterByDepartureDateState, filterByArrivalDateState ];
 

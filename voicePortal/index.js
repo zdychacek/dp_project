@@ -45,11 +45,11 @@ var VoicePortalFlow = vxml.CallFlow.extend({
 			// user was successfully logged in
 			dashboardState = new DashboardState('dashboard'),
 			// list users active reservations
-			listActiveState = new ListActiveState('listActiveState', new vxml.Var(this, 'user')),
+			listActiveState = new ListActiveState('listActiveState', new vxml.Var(this, 'user'), this._io),
 			// cancel users all active reservations
 			cancelActiveState = new CancelActiveState('cancelActive', new vxml.Var(this, 'user'), this._io),
 			// create new reservation
-			createNewState = new CreateNewState('createNew'),
+			createNewState = new CreateNewState('createNew', new vxml.Var(this, 'user'), this._io),
 			// application exit point
 			goodbyeState = new GoodbyeState('goodbye');
 

@@ -5,10 +5,11 @@ var vxml = require('vxml'),
 
 var ListActiveFlow = vxml.CallFlow.extend({
 
-	constructor: function (userVar) {
+	constructor: function (userVar, io) {
 		ListActiveFlow.super.call(this);
 
 		this.userVar = userVar;
+		this._io = io;
 	},
 
 	create: function* () {
@@ -26,7 +27,7 @@ var ListActiveFlow = vxml.CallFlow.extend({
 				new vxml.Say('You have ' + reservations.length + ' active reservations. List follows.')
 			);
 			var reservationsState = new vxml.State('reservations');
-			reservationsState.addNestedCallFlow(new ReservationsContainerFlow(reservations, {
+			reservationsState.addNestedCallFlow(new ReservationsContainerFlow(reservations, user, this._io, {
 				canCancelReservation: true
 			}));
 
