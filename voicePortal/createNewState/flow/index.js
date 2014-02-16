@@ -4,6 +4,7 @@ var vxml = require('vxml'),
 	FilterByIdState = require('./filterByIdState'),
 	FilterByDepartureDateState = require('./filterByDepartureDateState'),
 	FilterByArrivalDateState = require('./filterByArrivalDateState'),
+	FilterByArrivalDestinationState = require('./filterByArrivalDestinationState'),
 	MenuState = require('../../common/MenuState'),
 	GetAnotherFilterInputState = require('./GetAnotherFilterInputState'),
 	FilterState = require('./FilterState'),
@@ -17,6 +18,7 @@ var CreateNewFlow = vxml.CallFlow.extend({
 		this.userVar = userVar;
 		this.filters = {};
 		this.results = [];
+		// sockets support
 		this._io = io;
 	},
 
@@ -25,18 +27,23 @@ var CreateNewFlow = vxml.CallFlow.extend({
 			filterByIdState = new FilterByIdState('filterById'),
 			filterByDepartureDateState = new FilterByDepartureDateState('filterByDepartureDate'),
 			filterByArrivalDateState = new FilterByArrivalDateState('filterByArrivalDate'),
+			filterByArrivalDestinationState = new FilterByArrivalDestinationState('filterByArrivalDestination'),
 			getAnotherFilterInputState = new GetAnotherFilterInputState('getAnotherFilterInput'),
 			filterState = new FilterState('filterState', new vxml.Var(this, 'filters')),
 			reservationsListState = new ReservationsListState('reservationsListState', new vxml.Var(this, 'results'), this.userVar, this._io),
 
-			filterStates = [ filterByIdState, filterByDepartureDateState, filterByArrivalDateState ];
+			filterStates = [ filterByIdState, filterByDepartureDateState, filterByArrivalDateState, filterByArrivalDestinationState ];
 
 		welcomeMessageState.addOnEntryAction(function* (cf, state, event) {
-			// empty filters
+			// empty filters setting each time we enter this state to start new searching
 			cf.filters = {};
 		});
 
 		var filterSelectionMenuState = new MenuState('mainMenu', [
+			{
+				prompt: 'To specify arrival destination',
+				targetState: filterByArrivalDestinationState
+			},
 			{
 				prompt: 'To find reservation by specifing departure date',
 				targetState: filterByDepartureDateState
@@ -48,7 +55,7 @@ var CreateNewFlow = vxml.CallFlow.extend({
 			{
 				prompt: 'To find reservation by ID',
 				targetState: filterByIdState
-			},
+			}
 		]);
 
 		welcomeMessageState.addTransition('continue', filterSelectionMenuState);
@@ -70,9 +77,11 @@ var CreateNewFlow = vxml.CallFlow.extend({
 		this
 			.addState(welcomeMessageState)
 			.addState(filterSelectionMenuState)
+			// add filter states
 			.addStates(filterStates)
 			.addState(getAnotherFilterInputState)
 			.addState(filterState)
+			// add filtered results list
 			.addState(reservationsListState);
 	}
 });
