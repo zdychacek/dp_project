@@ -1,14 +1,20 @@
 'use strict';
 
 var vxml = require('vxml'),
-	ReservationInfoState = require('./ReservationInfoState');
+	ReservationInfoState = require('./ReservationInfoState'),
+	ReservationMenuState = require('./reservationMenuState');
 
 var ReservationsContainerFlow = vxml.CallFlow.extend({
 
-	constructor: function (reservations) {
+	constructor: function (reservations, options /* returnMessage, canCancelReservation, canMakeReservation */) {
+		options || (options = {});
+
 		ReservationsContainerFlow.super.call(this);
 
 		this._reservations = reservations;
+		this._returnMessage = options.returnMessage || 'Going back to main menu.';
+		this._canCancelReservation = options.canCancelReservation || false;
+		this._canMakeReservation = options.canMakeReservation || false;
 	},
 
 	getReservations: function () {
@@ -22,12 +28,25 @@ var ReservationsContainerFlow = vxml.CallFlow.extend({
 
 	create: function* () {
 		var reservations = this.getReservations(),
-			exitState = vxml.State.create('exit', new vxml.Say('Going back to main menu.'));
+			exitState = vxml.State.create('exit', new vxml.Say(this._returnMessage));
 
 		// prepare reservationsStates
-		var reservationsStates = reservations.map(function (reservation, i) {
-			return new ReservationInfoState(reservation, (i == 0), (i == reservations.length - 1));
-		});
+		var reservationsStates = [],
+			reservationsMenuStates = [];
+
+		reservations.forEach(function (reservation, i) {
+			reservationsStates.push(new ReservationInfoState(reservation, (i == 0), (i == reservations.length - 1)));
+
+			if (this._canMakeReservation || this._canCancelReservation) {
+				var menuState = new ReservationMenuState(reservation, {
+					canMake: this._canMakeReservation,
+					canCancel: this._canCancelReservation
+				});
+				menuState.addTransition('continue', reservationsStates[i]);
+
+				reservationsMenuStates.push(menuState);
+			}
+		}, this);
 
 		// add reservationsStates transitions
 		reservationsStates.forEach(function (state, i) {
@@ -48,10 +67,16 @@ var ReservationsContainerFlow = vxml.CallFlow.extend({
 			}
 			// Exit to main menu
 			state.addTransition('continue', exitState, function (result) { return result == 4; });
+
+			if (reservationsMenuStates[i]) {
+				state.addTransition('continue', reservationsMenuStates[i], function (result) { return result == 5; });
+			}
 		}, this);
 
 		// add reservations states
 		this.addStates(reservationsStates);
+		// add reservations edit menu
+		this.addStates(reservationsMenuStates);
 		// add final state
 		this.addState(exitState);
 	}
