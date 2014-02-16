@@ -34,12 +34,13 @@ var ReservationsContainerFlow = vxml.CallFlow.extend({
 
 		// prepare reservationsStates
 		var reservationsStates = [],
-			reservationsMenuStates = [];
+			reservationsMenuStates = [],
+			hasMenu = this._canMakeReservation || this._canCancelReservation;
 
 		reservations.forEach(function (reservation, i) {
-			reservationsStates.push(new ReservationInfoState(reservation, (i == 0), (i == reservations.length - 1)));
+			reservationsStates.push(new ReservationInfoState(reservation, (i == 0), (i == reservations.length - 1), hasMenu));
 
-			if (this._canMakeReservation || this._canCancelReservation) {
+			if (hasMenu) {
 				var menuState = new ReservationMenuState(reservation, this._user, this._io, {
 					canMake: this._canMakeReservation,
 					canCancel: this._canCancelReservation

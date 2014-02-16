@@ -14,11 +14,11 @@ var CancelReservationState = vxml.State.extend({
 
 	onEntry: function* (cf, state, event) {
 		try {
-			console.log('Cancelling reservation - user:', this._user._id, ', reservation:', this._reservation._id, 'io: ', !!this._io);
+			console.log('Cancelling reservation - user:', this._user._id, ', reservation:', this._reservation._id);
 
 			yield this._reservation.cancelReservationForUser(this._user);
 			// write that info to socket
-			this._io.sockets.emit('flight:changed');
+			this._io && this._io.sockets.emit('flight:changed');
 
 			yield cf.fireEvent('success');
 		}
