@@ -14,7 +14,6 @@ var ListResultsFlow = vxml.CallFlow.extend({
 	create: function* () {
 		var reservations = this.reservationsVar.getValue();
 
-		console.log('length', reservations.length);
 		// there's no existing reservations
 		if (!reservations.length) {
 			var noReservationsState = vxml.State.create('noReservations', new vxml.Say('No reservations matching specified criterias were found.'));
@@ -31,12 +30,10 @@ var ListResultsFlow = vxml.CallFlow.extend({
 			reservationCountState.addTransition('continue', reservationsState);
 
 			// add reservations count info state
-			//this.addState(reservationCountState);
+			this.addState(reservationCountState);
 			// add reservations list state
 			this.addState(reservationsState);
 		}
-
-		debugger;
 	}
 });
 

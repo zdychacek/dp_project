@@ -30,6 +30,11 @@ var CreateNewFlow = vxml.CallFlow.extend({
 
 			filterStates = [ filterByIdState, filterByDepartureDateState, filterByArrivalDateState ];
 
+		welcomeMessageState.addOnEntryAction(function* (cf, state, event) {
+			// empty filters
+			cf.filters = {};
+		});
+
 		var filterSelectionMenuState = new MenuState('mainMenu', [
 			{
 				prompt: 'To find reservation by specifing departure date',

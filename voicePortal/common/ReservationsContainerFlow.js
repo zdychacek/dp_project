@@ -21,8 +21,8 @@ var ReservationsContainerFlow = vxml.CallFlow.extend({
 	},
 
 	create: function* () {
-		var exitState = vxml.State.create('exit', new vxml.Say('Going back to main menu.')),
-			reservations = this.getReservations();
+		var reservations = this.getReservations(),
+			exitState = vxml.State.create('exit', new vxml.Say('Going back to main menu.'));
 
 		// prepare reservationsStates
 		var reservationsStates = reservations.map(function (reservation, i) {
