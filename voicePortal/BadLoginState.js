@@ -10,13 +10,11 @@ var BadLoginState = vxml.State.extend({
 	},
 
 	createModel: function () {
-		var badLoginPrompt = new vxml.Prompt();
-
-		badLoginPrompt.audios = [
+		var badLoginPrompt = new vxml.Prompt([
 			new vxml.TtsMessage('You\'ve entered bad login information.'),
 			new vxml.Silence('weak'),
 			new vxml.TtsMessage('Press one if you would like to try it again, otherwise press two.')
-		];
+		]);
 
 		return new AskWithNoInputPrompt({
 			prompt: badLoginPrompt,

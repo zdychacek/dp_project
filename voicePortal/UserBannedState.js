@@ -11,12 +11,10 @@ var UserBannedState = vxml.State.extend({
 	},
 
 	createModel: function (cf) {
-		var bannedPrompt = new vxml.Prompt();
-
-		bannedPrompt.audios = [
+		var bannedPrompt = new vxml.Prompt([
 			new vxml.TtsMessage('Your account is temporarily banned. Try it again on '),
 			new vxml.Var(this, 'bannedUntil', '.')
-		];
+		]);
 
 		return new vxml.Exit(bannedPrompt);
 	},

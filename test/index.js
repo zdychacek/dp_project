@@ -2,7 +2,8 @@
 
 var vxml = require('vxml'),
 	Destination = require('../models/Destination'),
-	GetTextInputDtmfFlow = require('../voicePortal/common/getTextInputDtmfFlow');
+	GetTextInputDtmfFlow = require('../voicePortal/common/getTextInputDtmfFlow'),
+	DestinationSelectionFlow = require('../voicePortal/common/DestinationSelectionFlow');
 
 var TestFlow = vxml.CallFlow.extend({
 
@@ -29,9 +30,7 @@ var TestFlow = vxml.CallFlow.extend({
 			.addNestedCallFlow(new GetTextInputDtmfFlow('Please typed in arrival destination like you\'re writing SMS.'))
 			.addOnExitAction(function* (cf, state, event) {
 				cf.input = state.nestedCF.getInput();
-				cf.filtered = yield Destination.filter(cf.input);
-
-				console.log('filtered:', cf.filtered);
+				cf.filteredItems = yield Destination.filter(cf.input, true);
 			})
 			.addTransition('continue', showInput);
 
@@ -39,15 +38,15 @@ var TestFlow = vxml.CallFlow.extend({
 			.addTransition('continue', resultsState, function (result) { return result == 1; })
 			.addTransition('continue', getInputState, function (result) { return result == 2; });
 
-		resultsState.addTransition('continue', getInputState);
+		resultsState
+			.addNestedCallFlow(new DestinationSelectionFlow(new vxml.Var(this, 'filteredItems')))
+			.addTransition('continue', getInputState);
 
 		// register states
 		this
 			.addState(getInputState)
 			.addState(showInput)
 			.addState(resultsState);
-
-		// cf.arrivalDestination
 	}
 });
 

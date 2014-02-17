@@ -10,13 +10,11 @@ var DashboardState = vxml.State.extend({
 	},
 
 	createModel: function (cf) {
-		var loggedInPrompt = new vxml.Prompt();
-
-		loggedInPrompt.audios = [
+		var loggedInPrompt = new vxml.Prompt([
 			new vxml.TtsMessage('Hello, "'),
 			new vxml.Var(cf, 'user.firstName', ' '),
 			new vxml.Var(cf, 'user.lastName', '".'),
-		];
+		]);
 
 		// TODO: add information about reservations total count
 		return new vxml.Say(loggedInPrompt)
