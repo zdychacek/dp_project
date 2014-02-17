@@ -96,6 +96,17 @@ vxml.Application.create({
 	}
 });
 
+// Test VXML application creation
+vxml.Application.create({
+	server: app,
+	route: '/test',
+	controller: require('./test'),
+	config: {
+		// reference to socket.io for notyfing web application
+		io: io
+	}
+});
+
 // For HTML5 history api support
 app.all('/*', function (req, res) {
 	res.sendfile('index.html', { root: config.server.appFolder });

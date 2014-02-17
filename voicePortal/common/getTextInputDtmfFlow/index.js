@@ -12,16 +12,19 @@ var GetTextInputDtmfFlow = vxml.CallFlow.extend({
 	},
 
 	keywordMap: {
-		1: [ ' ' ],
-		2: [ 'a', 'b', 'c' ],
-		3: [ 'd', 'e', 'f' ],
-		4: [ 'g', 'h', 'i' ],
-		5: [ 'j', 'k', 'l' ],
-		6: [ 'm', 'n', 'o' ],
-		7: [ 'p', 'q', 'r', 's' ],
-		8: [ 't', 'u', 'v' ],
-		9: [ 'w', 'x', 'y', 'z']
+		0: [ '0' ],
+		1: [ ' ', '1' ],
+		2: [ 'a', 'b', 'c', '2' ],
+		3: [ 'd', 'e', 'f', '3' ],
+		4: [ 'g', 'h', 'i', '4' ],
+		5: [ 'j', 'k', 'l', '5' ],
+		6: [ 'm', 'n', 'o', '6' ],
+		7: [ 'p', 'q', 'r', 's', '7' ],
+		8: [ 't', 'u', 'v', '8' ],
+		9: [ 'w', 'x', 'y', 'z', '9']
 	},
+
+	skipChar: '*',
 
 	create: function* () {
 		var askForInputState = vxml.State.create('askForInput', new vxml.Ask({
@@ -37,31 +40,30 @@ var GetTextInputDtmfFlow = vxml.CallFlow.extend({
 	},
 
 	_decodeDtmfInput: function (dtmfInput) {
-		var decoded = '';
-
-		console.log('dtmf input:', dtmfInput);
-
-		var prevChar = dtmfInput.charAt(0),
+		var decoded = '',
+			prevChar = dtmfInput.charAt(0),
 			counter = 0;
 
-		for (var i = 1, l = dtmfInput.length; i < l; i++) {
+		for (var i = 1, l = dtmfInput.length; i <= l; i++) {
 			var char = dtmfInput.charAt(i);
-
+	
 			if (char === prevChar) {
 				counter++;
+				prevChar = char;
 			}
-			else {
-				// TODO: modulo
+			else if (prevChar in this.keywordMap) {
 				var charLength = this.keywordMap[prevChar].length;
 
 				decoded += this.keywordMap[prevChar][counter % charLength];
 				counter = 0;
+				prevChar = char;
 			}
-
-			prevChar = char;
+			else if (prevChar == this.skipChar) {
+				 counter = 0;
+				 prevChar = char;
+			}
 		}
-
-		console.log('decoded:', decoded);
+		
 		return decoded;
 	},
 
