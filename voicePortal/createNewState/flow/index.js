@@ -3,6 +3,7 @@
 var vxml = require('vxml'),
 	FilterByIdState = require('./filterByIdState'),
 	FilterByDepartureDateState = require('./filterByDepartureDateState'),
+	FilterByDepartureDestinationState = require('./filterByDepartureDestinationState'),
 	FilterByArrivalDateState = require('./filterByArrivalDateState'),
 	FilterByArrivalDestinationState = require('./filterByArrivalDestinationState'),
 	MenuState = require('../../common/MenuState'),
@@ -26,13 +27,14 @@ var CreateNewFlow = vxml.CallFlow.extend({
 		var welcomeMessageState = vxml.State.create('msg', new vxml.Say('Please enter some filtering criteria.')),
 			filterByIdState = new FilterByIdState('filterById'),
 			filterByDepartureDateState = new FilterByDepartureDateState('filterByDepartureDate'),
+			filterByDepartureDestinationState = new FilterByDepartureDestinationState('filterByDepartureDestination'),
 			filterByArrivalDateState = new FilterByArrivalDateState('filterByArrivalDate'),
 			filterByArrivalDestinationState = new FilterByArrivalDestinationState('filterByArrivalDestination'),
 			getAnotherFilterInputState = new GetAnotherFilterInputState('getAnotherFilterInput'),
 			filterState = new FilterState('filterState', new vxml.Var(this, 'filters')),
 			reservationsListState = new ReservationsListState('reservationsListState', new vxml.Var(this, 'results'), this.userVar, this._io),
 
-			filterStates = [ filterByIdState, filterByDepartureDateState, filterByArrivalDateState, filterByArrivalDestinationState ];
+			filterStates = [ filterByIdState, filterByDepartureDateState, filterByArrivalDateState, filterByArrivalDestinationState, filterByDepartureDestinationState ];
 
 		welcomeMessageState.addOnEntryAction(function* (cf, state, event) {
 			// empty filters setting each time we enter this state to start new searching
@@ -43,6 +45,10 @@ var CreateNewFlow = vxml.CallFlow.extend({
 			{
 				prompt: 'To specify arrival destination',
 				targetState: filterByArrivalDestinationState
+			},
+			{
+				prompt: 'To specify departure destination',
+				targetState: filterByDepartureDestinationState
 			},
 			{
 				prompt: 'To find reservation by specifing departure date',

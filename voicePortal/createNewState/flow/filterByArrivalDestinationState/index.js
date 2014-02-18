@@ -1,18 +1,18 @@
 'use strict';
 
 var vxml = require('vxml'),
-	FilterByArrivalDestinationFlow = require('./flow');
+	GetDestinationFlow = require('../../../common/getDestinationFlow');
 
 var FilterByArrivalDestinationState = vxml.State.extend({
 
 	constructor: function (id) {
 		FilterByArrivalDestinationState.super.call(this, id);
 
-		this.addNestedCallFlow(new FilterByArrivalDestinationFlow());
+		this.addNestedCallFlow(new GetDestinationFlow('Please typed in arrival destination like you\'re writing SMS.'));
 	},
 
 	onExit: function* (cf, state, event) {
-		cf.filters['toDestination'] = state.nestedCF.arrivalDestination;
+		cf.filters['toDestination'] = state.nestedCF.getSelectedDestination();
 	}
 });
 
