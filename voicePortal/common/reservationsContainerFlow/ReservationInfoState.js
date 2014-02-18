@@ -70,6 +70,10 @@ var ReservationInfoState = vxml.State.extend({
 			prompt: prompt,
 			grammar: new vxml.BuiltinGrammar({ type: 'digits', length: 1 })
 		});
+	},
+
+	getReservation: function () {
+		return this._reservation;
 	}
 });
 

@@ -67,7 +67,7 @@ var ReservationsContainerFlow = vxml.CallFlow.extend({
 
 			if (hasMenu) {
 				state.addOnEntryAction(function* (cf, state, event) {
-					cf._currReservation = state;
+					cf._currReservation = state.getReservation();
 
 					reservationMenuState.setExitTransition(state);
 				});
