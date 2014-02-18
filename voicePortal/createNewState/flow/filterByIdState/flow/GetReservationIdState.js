@@ -16,10 +16,7 @@ var GetReservationIdState = vxml.State.extend({
 	},
 
 	onExit: function* (cf, state, event) {
-		cf.filter = {
-			property: '_id',
-			value: event.data
-		};
+		cf._id = event.data;
 	}
 });
 

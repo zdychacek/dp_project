@@ -24,9 +24,8 @@ var VoicePortalFlow = vxml.CallFlow.extend({
 
 		this._app = app;
 		this._io = app.getConfigValue('io');
-
-		this.user = null;
-		this.callHistoryItem = null;
+		this._user = null;
+		this._callHistoryItem = null;
 	},
 
 	create: function* () {
@@ -45,11 +44,11 @@ var VoicePortalFlow = vxml.CallFlow.extend({
 			// user was successfully logged in
 			dashboardState = new DashboardState('dashboard'),
 			// list users active reservations
-			listActiveState = new ListActiveState('listActiveState', new vxml.Var(this, 'user'), this._io),
+			listActiveState = new ListActiveState('listActiveState', new vxml.Var(this, '_user'), this._io),
 			// cancel users all active reservations
-			cancelActiveState = new CancelActiveState('cancelActive', new vxml.Var(this, 'user'), this._io),
+			cancelActiveState = new CancelActiveState('cancelActive', new vxml.Var(this, '_user'), this._io),
 			// create new reservation
-			createNewState = new CreateNewState('createNew', new vxml.Var(this, 'user'), this._io),
+			createNewState = new CreateNewState('createNew', new vxml.Var(this, '_user'), this._io),
 			// application exit point
 			goodbyeState = new GoodbyeState('goodbye');
 

@@ -8,14 +8,14 @@ var ListResultsFlow = vxml.CallFlow.extend({
 	constructor: function (reservationsVar, userVar, io) {
 		ListResultsFlow.super.call(this);
 
-		this.reservationsVar = reservationsVar;
-		this.userVar = userVar;
+		this._reservationsVar = reservationsVar;
+		this._userVar = userVar;
 		this._io = io;
 	},
 
 	create: function* () {
-		var reservations = this.reservationsVar.getValue(),
-			user = this.userVar.getValue();
+		var reservations = this._reservationsVar.getValue(),
+			user = this._userVar.getValue();
 
 		// there's no existing reservations
 		if (!reservations.length) {

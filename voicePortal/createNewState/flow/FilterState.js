@@ -8,16 +8,16 @@ var FilterState = vxml.State.extend({
 	constructor: function (id, filtersVar) {
 		FilterState.super.call(this, id);
 
-		this.filtersVar = filtersVar;
+		this._filtersVar = filtersVar;
 	},
 
 	onEntry: function* (cf, state, event) {
-		var filters = this.filtersVar.getValue(),
+		var filters = this._filtersVar.getValue(),
 			results = yield Flight.filter(filters);
 
 		console.log('filters', filters);
 
-		cf.results = results.items || [];
+		cf._results = results.items || [];
 
 		// event propagation must be stopped !!!
 		event.stopped = true;

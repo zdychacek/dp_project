@@ -12,7 +12,7 @@ var FilterByArrivalDestinationState = vxml.State.extend({
 	},
 
 	onExit: function* (cf, state, event) {
-		cf.filters['toDestination'] = state.nestedCF.getSelectedDestination();
+		cf.addFilter('toDestination', state.nestedCF.getSelectedDestination());
 	}
 });
 

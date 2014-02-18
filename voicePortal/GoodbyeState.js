@@ -15,8 +15,8 @@ var GoodbyeState = vxml.State.extend({
 
 	onEntry: function* (cf, state, event) {
 		// if set, save information about call
-		if (config.saveCallHistory && cf.user) {
-			yield cf.user.commitCallHistoryItem(cf.callHistoryItem);
+		if (config.saveCallHistory && cf._user) {
+			yield cf._user.commitCallHistoryItem(cf._callHistoryItem);
 		}
 	}
 });

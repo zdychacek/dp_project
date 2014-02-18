@@ -8,12 +8,12 @@ var ListActiveFlow = vxml.CallFlow.extend({
 	constructor: function (userVar, io) {
 		ListActiveFlow.super.call(this);
 
-		this.userVar = userVar;
+		this._userVar = userVar;
 		this._io = io;
 	},
 
 	create: function* () {
-		var user = this.userVar.getValue(),
+		var user = this._userVar.getValue(),
 			reservations = yield user.listReservations();
 
 		// there's no existing reservations

@@ -12,8 +12,8 @@ var FilterByDepartureDateState = vxml.State.extend({
 	},
 
 	onExit: function* (cf, state, event) {
-		cf.filters['departureTimeFrom'] = state.nestedCF.departureTimeFromFilter;
-		cf.filters['departureTimeTo'] = state.nestedCF.departureTimeToFilter;
+		cf.addFilter('departureTimeFrom', state.nestedCF.departureTimeFromFilter);
+		cf.addFilter('departureTimeTo', state.nestedCF.departureTimeToFilter);
 	}
 });
 

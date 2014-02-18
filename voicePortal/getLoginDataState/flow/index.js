@@ -10,8 +10,8 @@ var GetLoginDataFlow = vxml.CallFlow.extend({
 	constructor: function () {
 		GetLoginDataFlow.super.call(this);
 
-		this.enteredLogin = null;
-		this.enteredPassword = null;
+		this._enteredLogin = null;
+		this._enteredPassword = null;
 	},
 
 	create: function* () {
@@ -41,8 +41,8 @@ var GetLoginDataFlow = vxml.CallFlow.extend({
 
 	getUserLoginData: function () {
 		return {
-			login: this.enteredLogin,
-			password: this.enteredPassword
+			login: this._enteredLogin,
+			password: this._enteredPassword
 		}
 	}
 });

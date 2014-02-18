@@ -12,9 +12,7 @@ var FilterByIdState = vxml.State.extend({
 	},
 
 	onExit: function* (cf, state, event) {
-		var filterDef = state.nestedCF.filter;
-
-		cf.filters[filterDef.property] = filterDef.value;
+		cf.addFilter('_id', state.nestedCF.getId());
 	}
 });
 

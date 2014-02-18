@@ -11,12 +11,11 @@ var CancelActiveFlow = vxml.CallFlow.extend({
 		CancelActiveFlow.super.call(this);
 
 		this._io = io;
-
-		this.userVar = userVar;
+		this._userVar = userVar;
 	},
 
 	create: function* () {
-		var user = this.userVar.getValue(),
+		var user = this._userVar.getValue(),
 			reservations = yield user.listReservations();
 
 		if (!reservations.length) {

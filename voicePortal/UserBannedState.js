@@ -7,20 +7,21 @@ var UserBannedState = vxml.State.extend({
 	constructor: function (id) {
 		UserBannedState.super.call(this, id);
 
-		this.bannedUntil = null;
+		this._bannedUntil = null;
 	},
 
 	createModel: function (cf) {
 		var bannedPrompt = new vxml.Prompt([
 			new vxml.TtsMessage('Your account is temporarily banned. Try it again on '),
-			new vxml.Var(this, 'bannedUntil', '.')
+			// TODO: say-as
+			new vxml.Var(this, '_bannedUntil', '.')
 		]);
 
 		return new vxml.Exit(bannedPrompt);
 	},
 
 	onEntry: function* (cf, state, event) {
-		this.bannedUntil = event.data;
+		this._bannedUntil = event.data;
 	}
 });
 

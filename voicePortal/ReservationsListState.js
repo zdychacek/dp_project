@@ -9,9 +9,6 @@ var ReservationsListState = vxml.State.extend({
 	},
 
 	createModel: function () {
-	  /* To repeat information, say repeat.
-	  To go back to main menu, say main menu.
-	  To exit call, say exit. */
 		return new vxml.Say('ReservationsListState menu');
 	}
 });

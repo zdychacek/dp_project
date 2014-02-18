@@ -12,11 +12,11 @@ var ConfirmLoginState = vxml.State.extend({
 		var loginConfirm = new vxml.Prompt([
 			new vxml.TtsMessage('You has entered following number '),
 			new vxml.SayAs(
-				new vxml.Var(cf, 'enteredLogin')
+				new vxml.Var(cf, '_enteredLogin')
 			, 'digits'),
 			new vxml.TtsMessage('.'),
 			new vxml.Silence('weak'),
-			new vxml.TtsMessage('Press one if this number is correct. Otherwise, press two.')
+			new vxml.TtsMessage(' Press one if this number is correct. Otherwise, press two.')
 		]);
 
 		return new vxml.Ask({

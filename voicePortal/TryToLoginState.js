@@ -13,7 +13,7 @@ var TryToLoginState = vxml.State.extend({
 		var loginResult = yield User.tryLogin(cf.loginData.login, cf.loginData.password);
 
 		if (loginResult.user) {
-			cf.user = loginResult.user;
+			cf._user = loginResult.user;
 
 			yield cf.fireEvent('loginOK');
 		}

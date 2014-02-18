@@ -16,10 +16,10 @@ var CreateNewFlow = vxml.CallFlow.extend({
 	constructor: function (userVar, io) {
 		CreateNewFlow.super.call(this);
 
-		this.userVar = userVar;
-		this.filters = {};
-		this.results = [];
+		this._userVar = userVar;
+		this._results = [];
 		// sockets support
+		this._filters = {};
 		this._io = io;
 	},
 
@@ -31,14 +31,14 @@ var CreateNewFlow = vxml.CallFlow.extend({
 			filterByArrivalDateState = new FilterByArrivalDateState('filterByArrivalDate'),
 			filterByArrivalDestinationState = new FilterByArrivalDestinationState('filterByArrivalDestination'),
 			getAnotherFilterInputState = new GetAnotherFilterInputState('getAnotherFilterInput'),
-			filterState = new FilterState('filterState', new vxml.Var(this, 'filters')),
-			reservationsListState = new ReservationsListState('reservationsListState', new vxml.Var(this, 'results'), this.userVar, this._io),
+			filterState = new FilterState('filterState', new vxml.Var(this, '_filters')),
+			reservationsListState = new ReservationsListState('reservationsListState', new vxml.Var(this, '_results'), this._userVar, this._io),
 
 			filterStates = [ filterByIdState, filterByDepartureDateState, filterByArrivalDateState, filterByArrivalDestinationState, filterByDepartureDestinationState ];
 
 		welcomeMessageState.addOnEntryAction(function* (cf, state, event) {
 			// empty filters setting each time we enter this state to start new searching
-			cf.filters = {};
+			cf._filters = {};
 		});
 
 		var filterSelectionMenuState = new MenuState('mainMenu', [
@@ -89,6 +89,10 @@ var CreateNewFlow = vxml.CallFlow.extend({
 			.addState(filterState)
 			// add filtered results list
 			.addState(reservationsListState);
+	},
+
+	addFilter: function (key, value) {
+		this._filters[key] = value;
 	}
 });
 

@@ -12,8 +12,8 @@ var FilterByArrivalDateState = vxml.State.extend({
 	},
 
 	onExit: function* (cf, state, event) {
-		cf.filters['arrivalTimeFrom'] = state.nestedCF.arrivalTimeFromFilter;
-		cf.filters['arrivalTimeTo'] = state.nestedCF.arrivalTimeToFilter;
+		cf.addFilter('arrivalTimeFrom', state.nestedCF.arrivalTimeFromFilter);
+		cf.addFilter('arrivalTimeTo', state.nestedCF.arrivalTimeToFilter);
 	}
 });
 
