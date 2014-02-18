@@ -17,6 +17,7 @@ var ReservationsContainerFlow = vxml.CallFlow.extend({
 		this._returnMessage = options.returnMessage || 'Going back to main menu.';
 		this._canCancelReservation = options.canCancelReservation || false;
 		this._canMakeReservation = options.canMakeReservation || false;
+		this._currReservation = null;
 	},
 
 	getReservations: function () {
@@ -30,25 +31,18 @@ var ReservationsContainerFlow = vxml.CallFlow.extend({
 
 	create: function* () {
 		var reservations = this.getReservations(),
-			exitState = vxml.State.create('exit', new vxml.Say(this._returnMessage));
+			exitState = vxml.State.create('exit', new vxml.Say(this._returnMessage)),
+			reservationMenuState = new ReservationMenuState(new vxml.Var(this, '_currReservation'), this._user, this._io, {
+				canMake: this._canMakeReservation,
+				canCancel: this._canCancelReservation
+			});
 
 		// prepare reservationsStates
 		var reservationsStates = [],
-			reservationsMenuStates = [],
 			hasMenu = this._canMakeReservation || this._canCancelReservation;
 
 		reservations.forEach(function (reservation, i) {
 			reservationsStates.push(new ReservationInfoState(reservation, (i == 0), (i == reservations.length - 1), hasMenu));
-
-			if (hasMenu) {
-				var menuState = new ReservationMenuState(reservation, this._user, this._io, {
-					canMake: this._canMakeReservation,
-					canCancel: this._canCancelReservation
-				});
-				menuState.addTransition('continue', reservationsStates[i]);
-
-				reservationsMenuStates.push(menuState);
-			}
 		}, this);
 
 		// add reservationsStates transitions
@@ -71,15 +65,21 @@ var ReservationsContainerFlow = vxml.CallFlow.extend({
 			// Exit to main menu
 			state.addTransition('continue', exitState, function (result) { return result == 4; });
 
-			if (reservationsMenuStates[i]) {
-				state.addTransition('continue', reservationsMenuStates[i], function (result) { return result == 5; });
+			if (hasMenu) {
+				state.addOnEntryAction(function* (cf, state, event) {
+					cf._currReservation = state;
+
+					reservationMenuState.setExitTransition(state);
+				});
+
+				state.addTransition('continue', reservationMenuState, function (result) { return result == 5; });
 			}
 		}, this);
 
 		// add reservations states
 		this.addStates(reservationsStates);
 		// add reservations edit menu
-		this.addStates(reservationsMenuStates);
+		this.addState(reservationMenuState);
 		// add final state
 		this.addState(exitState);
 	}

@@ -6,12 +6,13 @@ var vxml = require('vxml'),
 	CancelReservationState = require('./CancelReservationState');
 
 var ReservationMenuFlow = vxml.CallFlow.extend({
-	constructor: function (reservation, user, io, options) {
+	
+	constructor: function (reservationVar, user, io, options) {
 		options || (options = {});
 
 		ReservationMenuFlow.super.call(this);
 
-		this._reservation = reservation;
+		this._reservationVar = reservationVar;
 		this._user = user;
 		this._io = io;
 		this._canCancel = options.canCancel || false;
@@ -19,8 +20,9 @@ var ReservationMenuFlow = vxml.CallFlow.extend({
 	},
 
 	create: function* () {
-		var makeReservationState = new MakeReservationState('makeReservation', this._reservation, this._user, this._io),
-			cancelReservationState = new CancelReservationState('cancelReservation', this._reservation, this._user, this._io),
+		var reservation = this._reservationVar.getValue(),
+			makeReservationState = new MakeReservationState('makeReservation', this._reservationVar, this._user, this._io),
+			cancelReservationState = new CancelReservationState('cancelReservation', this._reservationVar, this._user, this._io),
 			menuItems = [];
 
 		if (this._canMake) {

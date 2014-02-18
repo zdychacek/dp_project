@@ -4,19 +4,21 @@ var vxml = require('vxml');
 
 var CancelReservationState = vxml.State.extend({
 
-	constructor: function (id, reservation, user, io) {
+	constructor: function (id, reservationVar, user, io) {
 		CancelReservationState.super.call(this, id);
 
-		this._reservation = reservation;
+		this._reservationVar = reservationVar;
 		this._user = user;
 		this._io = io;
 	},
 
 	onEntry: function* (cf, state, event) {
-		try {
-			console.log('Cancelling reservation - user:', this._user._id, ', reservation:', this._reservation._id);
+		var reservation = this._reservationVar.getValue();
 
-			yield this._reservation.cancelReservationForUser(this._user);
+		try {
+			console.log('Cancelling reservation - user:', this._user._id, ', reservation:', reservation._id);
+
+			yield reservation.cancelReservationForUser(this._user);
 			// write that info to socket
 			this._io && this._io.sockets.emit('flight:changed');
 
