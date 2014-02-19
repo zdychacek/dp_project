@@ -44,7 +44,7 @@ var VoicePortalFlow = vxml.CallFlow.extend({
 			// user was successfully logged in
 			dashboardState = new DashboardState('dashboard'),
 			// list users active reservations
-			listActiveState = new ListActiveState('listActiveState', new vxml.Var(this, '_user'), this._io),
+			listActiveState = new ListActiveState('listActive', new vxml.Var(this, '_user'), this._io),
 			// cancel users all active reservations
 			cancelActiveState = new CancelActiveState('cancelActive', new vxml.Var(this, '_user'), this._io),
 			// create new reservation
@@ -87,6 +87,8 @@ var VoicePortalFlow = vxml.CallFlow.extend({
 			.addTransition('continue', goodbyeState, function (result) {
 				return result == 2;
 			});
+		userBannedState.addTransition('continue', goodbyeState);
+		userDisabledState.addTransition('continue', goodbyeState);
 		dashboardState.addTransition('continue', mainMenuState);
 		listActiveState.addTransition('continue', mainMenuState);
 		cancelActiveState.addTransition('continue', mainMenuState);
@@ -106,6 +108,8 @@ var VoicePortalFlow = vxml.CallFlow.extend({
 			.addState(cancelActiveState)
 			.addState(createNewState)
 			.addState(goodbyeState);
+
+		debugger;
 	}
 });
 
