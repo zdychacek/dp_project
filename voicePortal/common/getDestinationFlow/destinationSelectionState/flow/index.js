@@ -17,7 +17,7 @@ var DestinationSelectionFlow = vxml.CallFlow.extend({
 
 		if (destinations.length) {
 			var totalItemsState = vxml.State.create('totalItems',
-				new vxml.Say('We found ' + destinations.length + ' items. To select item press five, one to go to previous, two to go next, press two.')
+				new vxml.Say('We found ' + destinations.length + ' destinations matching the input. To select destination press one. To go to previous, press two. To go to next, press three.')
 			);
 
 			var selectionState = vxml.State.create('selection',
@@ -50,16 +50,16 @@ var DestinationSelectionFlow = vxml.CallFlow.extend({
 				var prevState = destStates[i - 1] || null,
 					nextState = destStates[i + 1] || null;
 
+				// go to selection state
+				destState.addTransition('continue', selectionState, function (choice) { return choice == 1; });
+
 				if (prevState) {
-					destState.addTransition('continue', prevState, function (choice) { return choice == 1; });
+					destState.addTransition('continue', prevState, function (choice) { return choice == 2; });
 				}
 
 				if (nextState) {
-					destState.addTransition('continue', nextState, function (choice) { return choice == 2; });
+					destState.addTransition('continue', nextState, function (choice) { return choice == 3; });
 				}
-
-				// go to selection state
-				destState.addTransition('continue', selectionState, function (choice) { return choice == 5; });
 			}, this);
 
 			this

@@ -1,7 +1,7 @@
 'use strict';
 
 var vxml = require('vxml'),
-	ReservationInfoState = require('./ReservationInfoState'),
+	ReservationBasicInfoState = require('./ReservationBasicInfoState'),
 	ReservationMenuState = require('./reservationMenuState');
 
 var ReservationsContainerFlow = vxml.CallFlow.extend({
@@ -17,7 +17,6 @@ var ReservationsContainerFlow = vxml.CallFlow.extend({
 		this._returnMessage = options.returnMessage || 'Going back to main menu.';
 		this._canCancelReservation = options.canCancelReservation || false;
 		this._canMakeReservation = options.canMakeReservation || false;
-		this._currReservation = null;
 	},
 
 	getReservations: function () {
@@ -32,7 +31,7 @@ var ReservationsContainerFlow = vxml.CallFlow.extend({
 	create: function* () {
 		var reservations = this.getReservations(),
 			exitState = vxml.State.create('exit', new vxml.Say(this._returnMessage)),
-			reservationMenuState = new ReservationMenuState(new vxml.Var(this, '_currReservation'), this._user, this._io, {
+			reservationMenuState = new ReservationMenuState(this._user, this._io, {
 				canMake: this._canMakeReservation,
 				canCancel: this._canCancelReservation
 			});
@@ -42,7 +41,7 @@ var ReservationsContainerFlow = vxml.CallFlow.extend({
 			hasMenu = this._canMakeReservation || this._canCancelReservation;
 
 		reservations.forEach(function (reservation, i) {
-			reservationsStates.push(new ReservationInfoState(reservation, (i == 0), (i == reservations.length - 1), hasMenu));
+			reservationsStates.push(new ReservationBasicInfoState(reservation, (i == 0), (i == reservations.length - 1), hasMenu));
 		}, this);
 
 		// add reservationsStates transitions
@@ -50,30 +49,28 @@ var ReservationsContainerFlow = vxml.CallFlow.extend({
 			var prevState = reservationsStates[i - 1] || null,
 				nextState = reservationsStates[i + 1] || null;
 
-			// Repeat info
-			state.addTransition('continue', state, function (result) { return result == 1; });
+			state.addOnEntryAction(function* (cf, state, event) {
+				reservationMenuState.setReservationState(state);
+			});
 
-			// Go to next reservation
-			if (nextState) {
-				state.addTransition('continue', nextState, function (result) { return result == 2; });
-			}
+			// Reservation menu
+			state.addTransition('continue', reservationMenuState, function (result) { return result == 1; });
 
 			// Go to previous reservation
 			if (prevState) {
-				state.addTransition('continue', prevState, function (result) { return result == 3; });
+				state.addTransition('continue', prevState, function (result) { return result == 2; });
 			}
+
+			// Go to next reservation
+			if (nextState) {
+				state.addTransition('continue', nextState, function (result) { return result == 3; });
+			}
+
+			// Repeat info
+			state.addTransition('continue', state, function (result) { return result == 4; });
+
 			// Exit to main menu
-			state.addTransition('continue', exitState, function (result) { return result == 4; });
-
-			if (hasMenu) {
-				state.addOnEntryAction(function* (cf, state, event) {
-					cf._currReservation = state.getReservation();
-
-					reservationMenuState.setExitTransition(state);
-				});
-
-				state.addTransition('continue', reservationMenuState, function (result) { return result == 5; });
-			}
+			state.addTransition('continue', exitState, function (result) { return result == 5; });
 		}, this);
 
 		// add reservations states

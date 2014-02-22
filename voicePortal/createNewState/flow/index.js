@@ -43,12 +43,12 @@ var CreateNewFlow = vxml.CallFlow.extend({
 
 		var filterSelectionMenuState = new MenuState('mainMenu', [
 			{
-				prompt: 'To specify arrival destination',
-				targetState: filterByArrivalDestinationState
-			},
-			{
 				prompt: 'To specify departure destination',
 				targetState: filterByDepartureDestinationState
+			},
+			{
+				prompt: 'To specify arrival destination',
+				targetState: filterByArrivalDestinationState
 			},
 			{
 				prompt: 'To find reservation by specifing departure date',

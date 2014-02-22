@@ -5,13 +5,18 @@ var vxml = require('vxml'),
 
 var ReservationMenuState = vxml.State.extend({
 
-	constructor: function (reservationVar, user, io, options) {
+	constructor: function (user, io, options) {
 		ReservationMenuState.super.call(this, 'reservationMenu');
 
-		this.addNestedCallFlow(new ReservationMenuFlow(reservationVar, user, io, options));
+		this._reservation = null;
+
+		this.addNestedCallFlow(new ReservationMenuFlow(new vxml.Var(this, '_reservation'), user, io, options));
 	},
 
-	setExitTransition: function (state) {
+	setReservationState: function (state) {
+		this._reservation = state.getReservation();
+
+		// set transition to back
 		this.removeTransitions();
 		this.addTransition('continue', state);
 	}

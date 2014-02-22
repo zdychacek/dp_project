@@ -10,7 +10,12 @@ var GoodbyeState = vxml.State.extend({
 	},
 
 	createModel: function () {
-		return new vxml.Exit('Thank you for calling! Goodbye.');
+		var prompt = new vxml.Prompt([
+			new vxml.TtsMessage('Thank you for calling! Goodbye.'),
+			new vxml.Silence('weak')
+		]);
+
+		return new vxml.Exit(prompt);
 	},
 
 	onEntry: function* (cf, state, event) {
