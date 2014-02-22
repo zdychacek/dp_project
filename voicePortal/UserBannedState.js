@@ -1,6 +1,7 @@
 'use strict';
 
-var	vxml = require('vxml');
+var	vxml = require('vxml'),
+	utils = require('./common/utils');
 
 var UserBannedState = vxml.State.extend({
 
@@ -13,15 +14,22 @@ var UserBannedState = vxml.State.extend({
 	createModel: function (cf) {
 		var bannedPrompt = new vxml.Prompt([
 			new vxml.TtsMessage('Your account is temporarily banned. Try it again on '),
-			// TODO: say-as
-			new vxml.Var(this, '_bannedUntil', '.')
+			new vxml.Var(this, '_bannedUntil.day'),
+			new vxml.Var(this, '_bannedUntil.month'),
+			new vxml.Var(this, '_bannedUntil.year'),
+			new vxml.TtsMessage(' at '),
+			new vxml.Var(this, '_bannedUntil.hours'),
+			new vxml.TtsMessage(' and '),
+			new vxml.Var(this, '_bannedUntil.minutes'),
+			new vxml.TtsMessage(' minutes.'),
+			new vxml.Silence('weak')
 		]);
 
 		return new vxml.Exit(bannedPrompt);
 	},
 
 	onEntry: function* (cf, state, event) {
-		this._bannedUntil = event.data;
+		this._bannedUntil = utils.convertDate(event.data || new Date);
 	}
 });
 

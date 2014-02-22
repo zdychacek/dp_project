@@ -1,6 +1,7 @@
 'use strict';
 
-var vxml = require('vxml');
+var vxml = require('vxml'),
+	utils = require('../utils');
 
 var ValidateDateState = vxml.State.extend({
 
@@ -13,7 +14,7 @@ var ValidateDateState = vxml.State.extend({
 
 		if (result.isValid) {
 			cf.selectedDate = result.date;
-			cf.voiceDate = this._convert(result.date);
+			cf.voiceDate = utils.convertDate(result.date);
 
 			yield cf.fireEvent('continue');
 		}
@@ -38,16 +39,6 @@ var ValidateDateState = vxml.State.extend({
 		return {
 			date: new Date(year, month - 1, day),
 			isValid: (day <= daysInMonth[--month])
-		};
-	},
-
-	_convert: function (date) {
-		var months = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
-
-		return {
-			day: date.getDate(),
-			month: months[date.getMonth()],
-			year: date.getFullYear()
 		};
 	}
 });

@@ -12,7 +12,6 @@ var GetTextInputDtmfFlow = vxml.CallFlow.extend({
 	},
 
 	keywordMap: {
-		0: [ '0' ],
 		1: [ ' ', '1' ],
 		2: [ 'a', 'b', 'c', '2' ],
 		3: [ 'd', 'e', 'f', '3' ],
@@ -24,7 +23,8 @@ var GetTextInputDtmfFlow = vxml.CallFlow.extend({
 		9: [ 'w', 'x', 'y', 'z', '9']
 	},
 
-	skipChar: '*',
+	// char to use as delimiter
+	skipChar: '0',
 
 	create: function* () {
 		var askForInputState = vxml.State.create('askForInput', new vxml.Ask({
@@ -33,7 +33,7 @@ var GetTextInputDtmfFlow = vxml.CallFlow.extend({
 		}));
 
 		askForInputState.addOnExitAction(function* (cf, state, event) {
-			cf._input = cf._decodeDtmfInput(event.data);
+			cf._input = cf._decodeDtmfInput(event.data || '');
 		});
 
 		this.addState(askForInputState);
@@ -46,7 +46,7 @@ var GetTextInputDtmfFlow = vxml.CallFlow.extend({
 
 		for (var i = 1, l = dtmfInput.length; i <= l; i++) {
 			var char = dtmfInput.charAt(i);
-	
+
 			if (char === prevChar) {
 				counter++;
 				prevChar = char;
@@ -63,7 +63,7 @@ var GetTextInputDtmfFlow = vxml.CallFlow.extend({
 				 prevChar = char;
 			}
 		}
-		
+
 		return decoded;
 	},
 

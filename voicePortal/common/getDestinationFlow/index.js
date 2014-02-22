@@ -32,7 +32,10 @@ var GetDestinationFlow = vxml.CallFlow.extend({
 			})),
 			destinationSelectionState = new DestinationSelectionState('destinationSelection', new vxml.Var(this, '_filteredItems'));
 
-		getInputState.addTransition('continue', showInput);
+		getInputState
+			.addTransition('continue', showInput)
+			.addTransition('nomatch', getInputState)
+			.addTransition('noinput', getInputState);
 
 		showInput
 			.addTransition('continue', destinationSelectionState, function (result) { return result == 1; })

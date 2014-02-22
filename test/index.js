@@ -12,6 +12,11 @@ var TestFlow = vxml.CallFlow.extend({
 	create: function* () {
 		var getDestinationState = new vxml.State('getDestination');
 
+		var prompt = new vxml.Prompt([
+			new vxml.SayAs('20011215', 'date')
+		]);
+		var testState = vxml.State.create('test', new vxml.Say(prompt), getDestinationState);
+
 		getDestinationState
 			.addNestedCallFlow(new GetDestinationFlow('Please typed in destination like you\'re writing SMS.'))
 			.addOnExitAction(function* (cf, state, event) {
@@ -21,6 +26,7 @@ var TestFlow = vxml.CallFlow.extend({
 			})
 			.addTransition('continue', getDestinationState);
 
+		this.addState(testState);
 		this.addState(getDestinationState);
 	}
 });

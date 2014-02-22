@@ -32,7 +32,10 @@ var DestinationSelectionFlow = vxml.CallFlow.extend({
 			});
 
 			var destStates = destinations.map(function (dest, i) {
-				var destState = vxml.State.create('destination_' + i, new vxml.Say(dest));
+				var destState = vxml.State.create('destination_' + i, new vxml.Ask({
+					prompt: dest,
+					grammar: new vxml.BuiltinGrammar({ type: 'digits', length: 1 })
+				}));
 
 				destState.addOnEntryAction(function* (cf, state, event) {
 					cf._currentItem = dest;
