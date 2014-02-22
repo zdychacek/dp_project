@@ -20,13 +20,18 @@ var GetDateDtmfFlow = vxml.CallFlow.extend({
 		var getDateState = new GetDateState('getDate', this.askDatePrompt),
 			validateDateState = new ValidateDateState('validateDate'),
 			confirmDateState = new ConfirmDateState('confirmDate'),
-			invalidDateState = vxml.State.create('invalidDate', new vxml.Say('You entered and invalid date.'));
+			invalidDateState = vxml.State.create('invalidDate', new vxml.Say('You entered an invalid date.'));
 
 		// add transitions
-		getDateState.addTransition('continue', validateDateState);
+		getDateState
+			.addTransition('continue', validateDateState)
+			.addTransition('noinput', getDateState)
+			.addTransition('nomatch', getDateState);
+
 		validateDateState
 			.addTransition('continue', confirmDateState)
 			.addTransition('error', invalidDateState);
+
 		invalidDateState.addTransition('continue', getDateState);
 
 		// add states

@@ -24,15 +24,15 @@ var CreateNewFlow = vxml.CallFlow.extend({
 	},
 
 	create: function* () {
-		var welcomeMessageState = vxml.State.create('msg', new vxml.Say('Please enter some filtering criteria.')),
+		var welcomeMessageState = vxml.State.create('welcomeMessage', new vxml.Say('Please enter some filtering criteria.')),
 			filterByIdState = new FilterByIdState('filterById'),
 			filterByDepartureDateState = new FilterByDepartureDateState('filterByDepartureDate'),
 			filterByDepartureDestinationState = new FilterByDepartureDestinationState('filterByDepartureDestination'),
 			filterByArrivalDateState = new FilterByArrivalDateState('filterByArrivalDate'),
 			filterByArrivalDestinationState = new FilterByArrivalDestinationState('filterByArrivalDestination'),
 			getAnotherFilterInputState = new GetAnotherFilterInputState('getAnotherFilterInput'),
-			filterState = new FilterState('filterState', new vxml.Var(this, '_filters')),
-			reservationsListState = new ReservationsListState('reservationsListState', new vxml.Var(this, '_results'), this._userVar, this._io),
+			filterState = new FilterState('filter', new vxml.Var(this, '_filters')),
+			reservationsListState = new ReservationsListState('reservationsList', new vxml.Var(this, '_results'), this._userVar, this._io),
 
 			filterStates = [ filterByIdState, filterByDepartureDateState, filterByArrivalDateState, filterByArrivalDestinationState, filterByDepartureDestinationState ];
 
@@ -41,25 +41,25 @@ var CreateNewFlow = vxml.CallFlow.extend({
 			cf._filters = {};
 		});
 
-		var filterSelectionMenuState = new MenuState('mainMenu', [
+		var filterSelectionMenuState = new MenuState('filterSelectionMenu', [
 			{
 				prompt: 'To specify departure destination',
 				targetState: filterByDepartureDestinationState
+			},
+			{
+				prompt: 'To specify departure date',
+				targetState: filterByDepartureDateState
 			},
 			{
 				prompt: 'To specify arrival destination',
 				targetState: filterByArrivalDestinationState
 			},
 			{
-				prompt: 'To find reservation by specifing departure date',
-				targetState: filterByDepartureDateState
-			},
-			{
-				prompt: 'To find reservation by specifing arrival date',
+				prompt: 'To specify arrival date',
 				targetState: filterByArrivalDateState
 			},
 			{
-				prompt: 'To find reservation by ID',
+				prompt: 'To specify reservation ID',
 				targetState: filterByIdState
 			}
 		]);

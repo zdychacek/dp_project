@@ -28,13 +28,13 @@ var CancelActiveFlow = vxml.CallFlow.extend({
 				cancelAllState = new CancelAllState('cancelAll', user, this._io),
 				cancelOkState = vxml.State.create('cancelOk', new vxml.Say('Your reservations were canceled.')),
 				cancelErrorState = vxml.State.create('cancelError', new vxml.Say('There was an error while cancelling reservations Please try it again.')),
-				finalState = vxml.State.create('finalState', new vxml.Say('No reservations were deleted. Going back to the main menu.'));
+				nothingDeletedState = vxml.State.create('nothingDeleted', new vxml.Say('No reservations were deleted. Going back to the main menu.'));
 
 			askState
 				.addTransition('continue', cancelAllState, function (result) {
 					return result == 1;
 				})
-				.addTransition('continue', finalState, function (result) {
+				.addTransition('continue', nothingDeletedState, function (result) {
 					return result == 2;
 				});
 			cancelAllState
@@ -46,7 +46,7 @@ var CancelActiveFlow = vxml.CallFlow.extend({
 				.addState(cancelAllState)
 				.addState(cancelOkState)
 				.addState(cancelErrorState)
-				.addState(finalState);
+				.addState(nothingDeletedState);
 		}
 	}
 });
