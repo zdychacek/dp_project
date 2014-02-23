@@ -1,4 +1,6 @@
-const mongoose = require('mongoose'),
+'use strict';
+
+var mongoose = require('mongoose'),
 	Carrier = require('./Carrier');
 
 var PathPart = new mongoose.Schema({

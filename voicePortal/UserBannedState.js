@@ -29,7 +29,7 @@ var UserBannedState = vxml.State.extend({
 	},
 
 	onEntry: function* (cf, state, event) {
-		this._bannedUntil = utils.convertDate(event.data || new Date);
+		this._bannedUntil = utils.convertDate(event.data);
 	}
 });
 

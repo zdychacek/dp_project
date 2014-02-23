@@ -1,4 +1,6 @@
-const destinations = require('./destinations');
+'use strict';
+
+var destinations = require('./destinations');
 const MIN_QUERY_LEN = 2;
 
 var Q = require('q');

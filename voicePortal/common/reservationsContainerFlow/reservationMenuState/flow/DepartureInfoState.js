@@ -15,10 +15,10 @@ var DepartureInfoState = vxml.State.extend({
 		var msg = [];
 
 		msg.push(' on ' + date.day + ' ' + date.month + ' ' + date.year);
-		msg.push(new vxml.Silence('weak')),
+		msg.push(new vxml.Silence('weak'));
 		msg.push(' at ' + date.hours + ' and ' + date.minutes);
 
-		return msg
+		return msg;
 	},
 
 	createModel: function (cf) {

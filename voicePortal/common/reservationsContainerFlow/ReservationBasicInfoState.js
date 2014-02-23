@@ -33,15 +33,15 @@ var ReservationBasicInfoState = vxml.State.extend({
 		menuText.push('To get more information or to change reservation status, press one.');
 
 		if (!this._isFirst) {
-			menuText.push('To go to previous reservation, press two.')
+			menuText.push('To go to previous reservation, press two.');
 		}
 
 		if (!this._isLast) {
-			menuText.push('To go to next reservation, press three.')
+			menuText.push('To go to next reservation, press three.');
 		}
 
 		menuText.push('To repeat the information, press four.');
-		menuText.push('To return to main menu, press five.')
+		menuText.push('To return to main menu, press five.');
 		menuText = menuText.join(' ');
 
 		var prompt = new vxml.Prompt();

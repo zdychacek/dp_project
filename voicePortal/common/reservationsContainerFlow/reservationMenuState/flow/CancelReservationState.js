@@ -13,7 +13,8 @@ var CancelReservationState = vxml.State.extend({
 	},
 
 	onEntry: function* (cf, state, event) {
-		var reservation = this._reservation;
+		var reservation = this._reservation,
+			err = null;
 
 		try {
 			console.log('Cancelling reservation - user:', this._user._id, ', reservation:', reservation._id);
@@ -25,8 +26,13 @@ var CancelReservationState = vxml.State.extend({
 			yield cf.fireEvent('success');
 		}
 		catch (ex) {
-			console.log(ex);
-			yield cf.fireEvent('failed', ex);
+			// NOTE: jshint problem
+			err = ex;
+		}
+
+		if (err) {
+			console.log(err);
+			yield cf.fireEvent('failed', err);
 		}
 	}
 });

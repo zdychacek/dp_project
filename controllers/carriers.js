@@ -1,4 +1,6 @@
-const Carrier = require('../models/Carrier'),
+'use strict';
+
+var Carrier = require('../models/Carrier'),
 	async = require('async'),
 	fs = require('fs'),
 	suspend = require('suspend');
@@ -7,7 +9,7 @@ exports.addRoutes = function (app, config, security) {
 	// k nazvu souboru prida cas
 	function makeFileName (fileName) {
 		return (+new Date()) + '_' + fileName;
-	};
+	}
 
 	app.namespace('/api/v1/carriers', function () {
 

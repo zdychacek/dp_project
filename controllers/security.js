@@ -1,3 +1,5 @@
+'use strict';
+
 exports.addRoutes = function (app, security) {
 	app.namespace('/api/v1/security', function () {
 

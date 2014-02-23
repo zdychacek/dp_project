@@ -1,4 +1,6 @@
-const mongoose = require('mongoose'),
+'use strict';
+
+var mongoose = require('mongoose'),
 	Q = require('q'),
 	async = require('async'),
 	Flight = require('./Flight'),

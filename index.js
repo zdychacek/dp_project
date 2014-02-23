@@ -1,6 +1,8 @@
+'use strict';
+
 require('express-namespace');
 
-const express = require('express'),
+var express = require('express'),
 	app = express(),
 	mongoose = require('mongoose'),
 	fs = require('fs'),

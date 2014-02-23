@@ -51,6 +51,6 @@ var GetDestinationFlow = vxml.CallFlow.extend({
 	getSelectedDestination: function () {
 		return this._selectedItem;
 	}
-})
+});
 
 module.exports = GetDestinationFlow;

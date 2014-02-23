@@ -24,9 +24,11 @@ module.exports = function (grunt) {
 			},
 			scripts: {
 				files: [
-					'<%= appConfig.app %>/app/**/*.js'
+					'**/*.js',
+					'!node_modules/**/*.js',
+					'!public/components/**/*.js'
 				],
-				tasks: ['jshint']
+				tasks: [/*'jshint'*/]
 			},
 			css: {
 				files: [
@@ -79,13 +81,11 @@ module.exports = function (grunt) {
 			options: {
 				'node': true,
 				'browser': true,
-				'es5': true,
 				'esnext': true,
 				'bitwise': true,
 				//'camelcase': true,
 				'curly': true,
 				'eqeqeq': true,
-				'immed': true,
 				'latedef': true,
 				'newcap': true,
 				'noarg': true,
@@ -94,6 +94,7 @@ module.exports = function (grunt) {
 				'undef': true,
 				'strict': true,
 				'smarttabs': true,
+				'laxcomma': true,
 				'globals': {
 					'jQuery': true,
 					'angular': true,
@@ -106,10 +107,14 @@ module.exports = function (grunt) {
 				'-W116': true,
 				'-W030': true,
 				// W093: Did you mean to return a conditional instead of an assignment?
-				'-W093': true
+				'-W093': true,
+				// W124: A generator function shall contain a yield statement.
+				'-W124': true
 			},
 			all: [
-				'<%= appConfig.app %>/app/**/*.js'
+				'**/*.js',
+				'!node_modules/**/*.js',
+				'!public/components/**/*.js'
 			]
 		},
 		rev: {

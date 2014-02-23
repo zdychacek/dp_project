@@ -1,5 +1,8 @@
-const User = require('../models/User'),
+'use strict';
+
+var User = require('../models/User'),
 	Flight = require('../models/Flight'),
+	Q = require('q'),
 	async = require('async'),
 	suspend = require('suspend');
 

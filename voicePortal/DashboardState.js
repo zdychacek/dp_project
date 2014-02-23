@@ -16,7 +16,7 @@ var DashboardState = vxml.State.extend({
 			new vxml.Var(cf, '_user.lastName', '".'),
 		]);
 
-		return new vxml.Say(loggedInPrompt)
+		return new vxml.Say(loggedInPrompt);
 	},
 
 	onEntry: function* (cf, state, event) {

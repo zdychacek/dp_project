@@ -75,7 +75,7 @@ var CreateNewFlow = vxml.CallFlow.extend({
 			// if one is pressed, than we want to set another filter
 			.addTransition('continue', filterSelectionMenuState, function (result) { return result == 1; })
 			// if two is pressed, than we don't want to set another filter
-			.addTransition('continue', filterState, function (result) { return result == 2; })
+			.addTransition('continue', filterState, function (result) { return result == 2; });
 
 		filterState.addTransition('continue', reservationsListState);
 

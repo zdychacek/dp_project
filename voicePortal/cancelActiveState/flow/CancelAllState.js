@@ -13,13 +13,20 @@ var CancelAllState = vxml.State.extend({
 	},
 
 	onEntry: function* (cf, state, event) {
+		var err = null;
+
 		try {
 			yield this._user.cancelAllReservations();
 			this._io.sockets.emit('flight:changed');
 			yield cf.fireEvent('ok');
 		}
 		catch (ex) {
-			console.log(ex);
+			// NOTE: jshint problem
+			err = ex;
+		}
+
+		if (err) {
+			console.log(err);
 			yield cf.fireEvent('fail');
 		}
 	}

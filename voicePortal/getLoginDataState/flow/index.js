@@ -26,8 +26,8 @@ var GetLoginDataFlow = vxml.CallFlow.extend({
 
 		confirmLoginState
 			.addTransition('continue', getPasswordState, function (result) {
-					return result == 1;
-				})
+				return result == 1;
+			})
 			// if user doesn't confirm login, try to get it again
 			.addTransition('continue', getLoginState, function (result) {
 				return result == 2;
@@ -43,7 +43,7 @@ var GetLoginDataFlow = vxml.CallFlow.extend({
 		return {
 			login: this._enteredLogin,
 			password: this._enteredPassword
-		}
+		};
 	}
 });
 

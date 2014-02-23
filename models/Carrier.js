@@ -1,4 +1,6 @@
-const mongoose = require('mongoose'),
+'use strict';
+
+var mongoose = require('mongoose'),
 	lastModified = require('./plugins/lastModified');
 
 var Carrier = new mongoose.Schema({

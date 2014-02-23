@@ -1,10 +1,25 @@
-const mongoose = require('mongoose'),
+'use strict';
+
+var mongoose = require('mongoose'),
 	Q = require('q'),
 	moment = require('moment'),
 	lastModified = require('./plugins/lastModified'),
 	PathPart = require('./PathPart'),
 	Carrier = require('./Carrier'),
 	User = require('./User');
+
+function getRnd (from, to, decimal) {
+	if (decimal) {
+		return Math.random() * to + from;
+	}
+	else {
+		return Math.floor(Math.random() * to) + from;
+	}
+}
+
+function getRandomItemFromArray (array) {
+	return array[getRnd(0, array.length)];
+}
 
 var Flight = new mongoose.Schema({
 	path: [ PathPart.schema ],
@@ -59,7 +74,7 @@ Flight.methods.serializeWithContext = function (user) {
 	var data = this.toObject();
 
 	if (user) {
-		data['hasReservation'] = this.passengers.some(function (passenger) {
+		data.hasReservation = this.passengers.some(function (passenger) {
 			return passenger.equals(user._id);
 		});
 	}
@@ -114,7 +129,7 @@ Flight.methods.cancelReservationForUser = function (user) {
 		}), errors = [];
 
 	if (reservationAlreadyExists) {
-		passengers.remove(user._id)
+		passengers.remove(user._id);
 
 		this.save(function (err, data) {
 			if (!err) {
@@ -248,11 +263,7 @@ function getNotUsedItemFromArray (array, excluded) {
 			return city;
 		}
 	}
-};
-
-function getRandomItemFromArray (array) {
-	return array[getRnd(0, array.length)];
-};
+}
 
 function generateRandomPath (carriers, pathLen) {
 	var pathParts = [],
@@ -280,16 +291,7 @@ function generateRandomPath (carriers, pathLen) {
 	}
 
 	return pathParts;
-};
-
-function getRnd (from, to, decimal) {
-	if (decimal) {
-		return Math.random() * to + from;
-	}
-	else {
-		return Math.floor(Math.random() * to) + from;
-	}
-};
+}
 
 Flight.statics.generate = function (count) {
 	var self = this;
@@ -300,6 +302,7 @@ Flight.statics.generate = function (count) {
 			for (var i = 0; i < count; i++) {
 				var pathLen = getRnd(1, 5);
 
+				/* jshint -W055: true */
 				var flight = new self({
 					price: getRnd(10, 999),
 					capacity: getRnd(10, 200),

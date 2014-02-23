@@ -1,4 +1,6 @@
-const Destination = require('../models/Destination');
+'use strict';
+
+var Destination = require('../models/Destination');
 
 exports.addRoutes = function (app, config) {
 	app.namespace('/api/v1/destinations', function () {

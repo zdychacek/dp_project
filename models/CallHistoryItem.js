@@ -1,4 +1,6 @@
-const mongoose = require('mongoose');
+'use strict';
+
+var mongoose = require('mongoose');
 
 var CallHistoryItem = new mongoose.Schema({
 	sessionId: String,

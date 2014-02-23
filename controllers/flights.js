@@ -1,4 +1,6 @@
-const Flight = require('../models/Flight'),
+'use strict';
+
+var Flight = require('../models/Flight'),
 	PathPart = require('../models/PathPart'),
 	suspend = require('suspend');
 
@@ -6,15 +8,17 @@ exports.addRoutes = function (app, config, security, io) {
 	app.namespace('/api/v1/flights', function () {
 
 		app.get('/generate/:count', function (req, res) {
-			Flight.generate(count);
+			Flight.generate(req.params.count);
 			res.sendData(null);
 		});
 
 		app.get('/:id/make-reservation', function (req, res) {
 			suspend(function* (resume) {
+				var flight = null;
+
 				try {
-					var user = yield security.isAuthorized(req, res, resume),
-						flight = yield Flight.findById(req.params.id, resume);
+					var user = yield security.isAuthorized(req, res, resume);
+					flight = yield Flight.findById(req.params.id, resume);
 
 					flight = yield flight.addReservationForUser(user);
 					flight = flight.serializeWithContext(user);
@@ -35,9 +39,11 @@ exports.addRoutes = function (app, config, security, io) {
 
 		app.get('/:id/cancel-reservation', function (req, res) {
 			suspend(function* (resume) {
+				var flight = null;
+
 				try {
-					var user = yield security.isAuthorized(req, res, resume),
-						flight = yield Flight.findById(req.params.id, resume);
+					var user = yield security.isAuthorized(req, res, resume);
+					flight = yield Flight.findById(req.params.id, resume);
 
 					flight = yield flight.cancelReservationForUser(user);
 					flight = flight.serializeWithContext(user);
@@ -60,7 +66,7 @@ exports.addRoutes = function (app, config, security, io) {
 			suspend(function* (resume) {
 				try {
 					var user = yield security.isAdmin(req, res, resume);
-					yield Flight.remove({}, remove);
+					yield Flight.remove({}, resume);
 
 					res.sendData(null);
 				}
@@ -159,7 +165,7 @@ exports.addRoutes = function (app, config, security, io) {
 
 					result.items = (result.items || []).map(function (flight) {
 						return flight.serializeWithContext(user);
-					})
+					});
 					res.sendData(result);
 				}
 				catch (ex) {
