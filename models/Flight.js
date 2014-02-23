@@ -183,6 +183,10 @@ Flight.statics.filter = function (filter, pagerSorter) {
 		if (filter.departureTimeFrom) {
 			query.where('departureTime').gte(new Date(filter.departureTimeFrom));
 		}
+		else {
+			// if departureTimeFrom is not specified, then find flights from now
+			query.where('departureTime').gte(new Date());
+		}
 
 		if (filter.departureTimeTo) {
 			query.where('departureTime').lte(new Date(filter.departureTimeTo));
@@ -293,29 +297,31 @@ function generateRandomPath (carriers, pathLen) {
 	return pathParts;
 }
 
-Flight.statics.generate = function (count) {
+Flight.statics.generate = function (count, cb) {
 	var self = this;
 
 	Carrier.find({}, function (err, carriers) {
 		if (!err) {
+			var flights = [];
 
 			for (var i = 0; i < count; i++) {
 				var pathLen = getRnd(1, 5);
 
 				/* jshint -W055: true */
-				var flight = new self({
+				flights.push(new self({
 					price: getRnd(10, 999),
 					capacity: getRnd(10, 200),
 					note: 'Poznamka ze dne ' + moment().format('MMM Do YYYY, hh:mm'),
 					passengers: [],
 					path: generateRandomPath(carriers, pathLen)
-				});
-
-				flight.save();
+				}));
 			}
+
+			self.create(flights, cb);
 		}
 		else {
 			console.log(err);
+			cb(err);
 		}
 	});
 };

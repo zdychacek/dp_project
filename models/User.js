@@ -27,7 +27,10 @@ User.plugin(lastModified);
 User.methods.listReservations = function () {
 	return Flight.find({
 		passengers: {
-			$in: [this._id]
+			$in: [this._id],
+		},
+		departureTime: {
+			$gt: new Date()
 		}
 	}).exec();
 };

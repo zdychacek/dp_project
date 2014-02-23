@@ -1,7 +1,7 @@
 'use strict';
 
-var destinations = require('./destinations');
-const MIN_QUERY_LEN = 2;
+var destinations = require('./destinations'),
+	MIN_QUERY_LEN = 2;
 
 var Q = require('q');
 

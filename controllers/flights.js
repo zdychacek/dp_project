@@ -7,11 +7,6 @@ var Flight = require('../models/Flight'),
 exports.addRoutes = function (app, config, security, io) {
 	app.namespace('/api/v1/flights', function () {
 
-		app.get('/generate/:count', function (req, res) {
-			Flight.generate(req.params.count);
-			res.sendData(null);
-		});
-
 		app.get('/:id/make-reservation', function (req, res) {
 			suspend(function* (resume) {
 				var flight = null;

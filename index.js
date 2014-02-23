@@ -24,11 +24,7 @@ if (app.get('env') === 'development') {
 }
 
 // DB connection
-mongoose.connect(app.get('db uri'), function (err) {
-	if (err) {
-		console.log(err);
-	}
-});
+mongoose.connect(app.get('db uri'));
 
 // Data serialization in XML or JSON format
 app.use(function (req, res, next) {

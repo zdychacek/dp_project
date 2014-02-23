@@ -1,9 +1,8 @@
-const path = require('path');
+var path = require('path');
 
 module.exports = {
 	mongo: {
-		//devUrl: 'mongodb://localhost/dp',
-		devUrl: 'mongodb://test:12345@paulo.mongohq.com:10029/DP',
+		devUrl: 'mongodb://localhost/dp',
 		distUrl: 'mongodb://test:12345@paulo.mongohq.com:10029/DP'
 	},
 	server: {

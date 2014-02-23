@@ -1,5 +1,7 @@
 'use strict';
 
+var InitDB = require('./initDB');
+
 module.exports = function (grunt) {
 	require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
@@ -273,7 +275,7 @@ module.exports = function (grunt) {
 					paths: ['<%= appConfig.app %>/less']
 				},
 				files: {
-				  '<%= appConfig.app %>/css/app.css': '<%= appConfig.app %>/less/app.less',
+					'<%= appConfig.app %>/css/app.css': '<%= appConfig.app %>/less/app.less',
 				}
 			},
 			dist: {
@@ -282,17 +284,62 @@ module.exports = function (grunt) {
 					yuicompress: true
 				},
 				files: {
-				  '<%= appConfig.app %>/css/app.css': '<%= appConfig.app %>/less/app.less',
-				  '<%= appConfig.app %>/css/bootstrap.css': '<%= appConfig.app %>/less/bootstrap/bootstrap.less'
+					'<%= appConfig.app %>/css/app.css': '<%= appConfig.app %>/less/app.less',
+					'<%= appConfig.app %>/css/bootstrap.css': '<%= appConfig.app %>/less/bootstrap/bootstrap.less'
 				}
 			}
 		}
 	});
 
+	grunt.registerTask('insertUsers', 'Insert test users in DB.', function (env) {
+		var done = this.async();
+
+		InitDB.insertUsers(env, function () {
+			var users = Array.prototype.slice.call(arguments),
+				err = users.shift();
+
+			if (err) {
+				grunt.log.error(err);
+			}
+
+			done();
+		});
+	});
+
+	grunt.registerTask('removeUsers', 'Remove all users from DB.', function (env) {
+		var done = this.async();
+
+		InitDB.removeUsers(env, function (err) {
+			err && grunt.log.error(err);
+			done();
+		});
+	});
+
+	grunt.registerTask('insertFlights', 'Insert test flights.', function (count, env) {
+		var done = this.async();
+		count = count || 10;
+
+		grunt.log.writeln('Inserting ' + count + ' flights...');
+
+		InitDB.generateFlights(count, env, function (err, flights) {
+			err && grunt.log.error(err);
+			done();
+		});
+	});
+
+	grunt.registerTask('removeFlights', 'Remove all flight from DB.', function (env) {
+		var done = this.async();
+
+		InitDB.removeFlights(env, function (err) {
+			err && grunt.log.error(err);
+			done();
+		});
+	});
+
 	grunt.registerTask('default', [
 		'jade:development',
 		'less:development',
-		'jshint',
+		//'jshint',
 		'concurrent:nodemon'
 	]);
 
