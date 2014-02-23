@@ -31,7 +31,7 @@ var ReservationMenuFlow = vxml.CallFlow.extend({
 			departureInfoState = new DepartureInfoState('departureInfo', reservation),
 			arrivalInfoState = new ArrivalInfoState('arrivalInfo', reservation),
 			priceInfoState = new PriceInfoState('priceInfo', reservation),
-			flightCapacityInfoState = new FlightCapacityInfoState('flightCapacity', reservation),
+			flightCapacityInfoState = new FlightCapacityInfoState('flightCapacityInfo', reservation),
 			otherInfoState = new OtherInfoState('otherInfo', reservation),
 			goBackState = vxml.State.create('goBack', new vxml.Say('Returning to list.'));
 
@@ -77,7 +77,7 @@ var ReservationMenuFlow = vxml.CallFlow.extend({
 			targetState: goBackState
 		});
 
-		var menuState = new MenuState('editMenu', menuItems),
+		var menuState = new MenuState('menu', menuItems),
 			okState = vxml.State.create('ok', new vxml.Say('Succesfully saved.')),
 			makeReservationErrorState = vxml.State.create('makeReservationError', new vxml.Say('Error while saving. Maybe your reservation already exists.')),
 			cancelReservationErrorState = vxml.State.create('cancelReservationError', new vxml.Say('Error while saving. Maybe your reservation was already cancelled.'));

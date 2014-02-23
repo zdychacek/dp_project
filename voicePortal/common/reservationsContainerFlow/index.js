@@ -31,7 +31,7 @@ var ReservationsContainerFlow = vxml.CallFlow.extend({
 	create: function* () {
 		var reservations = this.getReservations(),
 			exitState = vxml.State.create('exit', new vxml.Say(this._returnMessage)),
-			reservationMenuState = new ReservationMenuState(this._user, this._io, {
+			reservationMenuState = new ReservationMenuState('reservationMenu', this._user, this._io, {
 				canMake: this._canMakeReservation,
 				canCancel: this._canCancelReservation
 			});

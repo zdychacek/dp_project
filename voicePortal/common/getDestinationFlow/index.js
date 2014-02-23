@@ -26,25 +26,25 @@ var GetDestinationFlow = vxml.CallFlow.extend({
 		]);
 
 		var getInputState = new GetInputState('getInput', this._prompt),
-			showInput = vxml.State.create('showInput', new vxml.Ask({
+			showInputState = vxml.State.create('showInput', new vxml.Ask({
 				prompt: inputPrompt,
 				grammar: new vxml.BuiltinGrammar({ type: 'digits', length: 1 })
 			})),
 			destinationSelectionState = new DestinationSelectionState('destinationSelection', new vxml.Var(this, '_filteredItems'));
 
 		getInputState
-			.addTransition('continue', showInput)
+			.addTransition('continue', showInputState)
 			.addTransition('nomatch', getInputState)
 			.addTransition('noinput', getInputState);
 
-		showInput
+		showInputState
 			.addTransition('continue', destinationSelectionState, function (result) { return result == 1; })
 			.addTransition('continue', getInputState, function (result) { return result == 2; });
 
 		// register states
 		this
 			.addState(getInputState)
-			.addState(showInput)
+			.addState(showInputState)
 			.addState(destinationSelectionState);
 	},
 

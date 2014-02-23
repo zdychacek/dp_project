@@ -5,8 +5,8 @@ var vxml = require('vxml'),
 
 var ReservationMenuState = vxml.State.extend({
 
-	constructor: function (user, io, options) {
-		ReservationMenuState.super.call(this, 'reservationMenu');
+	constructor: function (id, user, io, options) {
+		ReservationMenuState.super.call(this, id);
 
 		this._reservation = null;
 
