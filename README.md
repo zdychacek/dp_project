@@ -1,9 +1,7 @@
-AngularTestApp
+Letadla
 ==============
-- Nainstalovat grunt a zavislosti pomoci: npm install -g grunt-cli && npm install
-- Nainstalovat klientske komponenty: bower install
-- Pro podporu livereload je dobre mit v prohlizeci nainstalovan extension a mit ho enablovan
-- Spustit grunt server
+- Install grunt and dependencies: npm install -g grunt-cli && npm install
+- Install client components: bower install
 - Sublime plugins:
 	- EditorConfig
 	- Jade syntax highlighter
