@@ -9,8 +9,10 @@
       <!-- admin only-->
       <li ng-class="{active:isNavbarActive('users')}" ng-if="isAdmin()"><a href="/users">Uživatelé</a></li>
       <li ng-class="{active:isNavbarActive('carriers')}" ng-if="isAdmin()"><a href="/carriers">Přepravci</a></li>
-      <li ng-class="{active:isNavbarActive('destinations')}" ng-if="isAdmin()"><a href="/destinations">Správa destinací</a></li>
-      <li ng-class="{active:isNavbarActive('voice-portal-settings')}" ng-if="isAdmin()"><a href="/voice-portal-settings">Nastavení hlasového portálu</a></li>
+      <!--li(ng-class="{active:isNavbarActive('destinations')}", ng-if="isAdmin()")<a href="/destinations">Správa destinací</a>
+      -->
+      <!--li(ng-class="{active:isNavbarActive('voice-portal-settings')}", ng-if="isAdmin()")<a href="/voice-portal-settings">Nastavení hlasového portálu</a>
+      -->
     </ul>
     <login-toolbar></login-toolbar>
     <ul class="nav pull-right">
