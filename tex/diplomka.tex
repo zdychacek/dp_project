@@ -30,6 +30,13 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 
 % Pridame pouzivane zkratky (pokud nejake pouzivame).
 \AddAcronym{HTTP}{Hypertext Transfer Protocol}
+\AddAcronym{SAP}{Single Page Application}
+\AddAcronym{HTML}{Hypertext Markup Language}
+\AddAcronym{AJAX}{Asynchronous JavaScript and XML}
+\AddAcronym{JSON}{JavaScript Object Notation}
+\AddAcronym{XML}{Extensible Markup Language}
+\AddAcronym{REST}{Representational State Transfer}
+\AddAcronym{API}{Application Programming Interface}
 
 
 % Zadame cestu a jmeno souboru ci nekolika souboru s digitalizovanou podobou zadani prace
@@ -157,12 +164,60 @@ Druhým typem uživatele je uživatel v roli administrátora. Pro uživatele s p
 \item správa přepravních společností (editace/vytvoření)
 \end{itemize}
 
-Webové rozhraní rezervačního systému je v reálném čase synchronizováno s hlasovým rozhraním pomocí technologie WebSockets\footnote{Webová technologie umožňující vytvoření obousměrného komunikačního kanálu mezi klientem a serverem nad HTTP protokolem. Více v kapitole TODO: přidat referenci}. Toto v praxi znamená následující. Pokud je uživatel přihlášen do webového rozhraní a zároveň se nachází v interakci s hlasovou samoobsluhou, kde např. zruší svoji rezervaci, okamžitě dojde k reflektování provedené akce do webového rozhraní aniž by uživatel musel znovu provést načtení zobrazené stránky.
+Webové rozhraní rezervačního systému je v reálném čase synchronizováno s hlasovým rozhraním pomocí technologie WebSockets\footnote{Webová technologie umožňující vytvoření obousměrného komunikačního kanálu mezi klientem a serverem nad HTTP protokolem.}. Toto v praxi znamená následující. Pokud je uživatel přihlášen do webového rozhraní a zároveň se nachází v interakci s hlasovou samoobsluhou, kde např. zruší svoji rezervaci, okamžitě dojde k reflektování provedené akce do webového rozhraní aniž by uživatel musel znovu provést načtení zobrazené stránky.
 
 V následujících dvou podkapitolách se budu podrobněji zabývat popisem webového a hlasového rozhraní rezervačního systému.
 
 \subsection{Návrh webové portálu}
-Popis použitých technologií (Angular.js, Node.js, Mongoose/MongoDB, Grunt, Jade, Javascript, WebSockety). Ukázka vybraných obrazovek aplikace.
+Webové rozhraní rezervačního systému nabízí uživateli pohodlné grafické rozhraní pro správu rezervací. Webová aplikace je navržena jako jednostránková aplikace\footnote{Moderní způsob návrhu webové aplikace, kdy je aplikace reprezentována jednou základní HTML stránkou (statickou) a veškeré další interakce na stránce jsou řešeny pomocí JavaScriptu.}. Tento způsob návrhu aplikace uživateli přináší rychlejší odezvu uživatelského rozhraní a zároveň minimalizuje množství přenesených dat po síti mezi klientem a serverem. Úspory přenesených dat se dosahuje využitím AJAXového načítání dat, kdy dochází k načtení pouze těch dat, která jsou aktuálně potřebná.
+
+V aplikaci je implementované REST API\footnote{Architektura rozhraní navržená pro distribuované prostředí. REST je, na rozdíl od známějších XML-RPC či SOAP, orientován datově, nikoli procedurálně.}, které slouží jako datový zdroj pro klienty. REST API implementuje přístup k datům, která jsou uložena v databázi. Většina metod REST API generuje notifikace pro ostatní připojené klienty. Notifikace slouží k synchronizaci uživatelských rozhraní všech připojených klientů. Data se mezi klientskou a serverovou částí aplikace (RESP API) přenáší ve formátu JSON. Formát JSON preferuji hlavně z toho důvodu, že pro zakódování informace je potřeba menšího objemu dat než např. ve srovnání s formátem XML. Implementace REST API však volitelně dovoluje použít pro komunikaci např. i formát XML. Stačí jen o tom do požadavku přidat informaci. V tabulce č. \ref{tab:RestAPI} se nachází popis vybraných metod REST API.
+
+\begin{table}
+	\centering
+	\begin{tabular}{|c|c|c|}
+		\hline
+		q & $\delta(q, 0)$ & $\delta(q, 1)$ \\
+		\hline
+		$q_0$ & $q_1$ & $q_0$ \\
+		\hline
+		$q_1$ & $q_1$ & $q_2$ \\
+		\hline
+		$q_2$ & $q_1$ & $q_0$ \\
+		\hline
+	\end{tabular}
+	\caption{Přehled vybraných metod REST API}
+	\label{tab:RestAPI}
+\end{table}
+
+\subsubsection{Uživatelské rozhraní}
+Rozhraní aplikace je rozděleno do několika stránek. Po přihlášení do aplikace je zobrazena hlavní stránka se seznamem všech letů \ref{fig:FlightList}. Jednotlivé lety jsou zde zobrazeny v seznamu, který je strankovatelný a je zde možnost nastavení počtu zobrazených položek na stránce. Každý řádek v seznamu reprezentuje jeden let. U každého letu jsou uvedeny základní informace. Na konci každého řádku se nachází tlačítka sloužící pro vytvoření nebo zrušení rezervace letu. Dále je zde k dispozici tlačítko pro zobrazení detailních informací o letu. Pokud je přihlášen uživatel s právy administrátora, tak má možnost informace o letu i upravovat. Posledním tlačítko slouží ke smazání letu s databáze. Toto tlačítko se opět zobrazuje jen v případě, že je přihlášen uživatel s právy administrátora.
+
+Nad seznamem letů se nachází formulář pro nastavení vyhledávacích kritérií, dle kterých lze poté seznam letů vyfiltrovat.
+
+V horní části stránky se nachází menu, které je viditelné ze všech stránek webového rozhraní. Menu obsahuje odkazy na další stránky aplikace jako je stránka se seznamem uživatelů a stránka se seznamem přepravců. V pravé části horního menu se nachází informace se jménem aktuálně přihlášeného uživatele s tlačítkem, které slouží k odhlášení uživatele.
+
+Ostatní stránky aplikace mají uživatelské rozhraní uspořádáné obdobně. Odkazy z horního menu vždy vedou na stránky se seznamovým zobrazením dané entity (lety, uživatelé, přepravci). Z toho seznamu existuje možnost přechodu na detail konkrétní entity. V závislosti na právech přihlášeného uživatele je zde možné entitu případně editovat.
+
+\InsertFigure{Figures/web_flight_list}{1\textwidth}{Stránka se seznamem letů a zobrazeným filtrem}{fig:FlightList}
+
+\subsubsection{Požité technologie}
+V následujících odstavcích stručně popíši použité technologie a důvod jejich použití.
+
+\paragraph{AngularJS}
+AngularJS je framework, který svými vlastnostmi ulehčuje návrh jednostránkových aplikací v JavaScriptu. Mezi klíčové vlastnosti frameworku patří obousměrný databinding, neboli automatické provázání dat (modelu) s vizuální reprezentací (pohledem). Další užitečnou vlastností Angularu je šablonovací systém, který pomocí direktiv umožňuje rozšířit standardní sadu HTML tagů o nové specifické HTML tagy. Více informací o této technologii najdete v dokumentaci frameworku\cite{angulardocs}.
+
+Tento framework jsem použil k návrhu klientské části aplikace a to z výše uvedených důvodů.
+
+\paragraph{Node.js}
+Node.js\cite{nodejs} je technologie přinášející možnost psát serverové části webových aplikací v JavaScriptu. Platforma Node.js se skládá z běhového prostředí, které je postaveno nad JavaScript enginem V8\footnote{Stejný engine je i součástí webového prohlížeče Chromium.} a knihovnou funkcí. Mezi důležité vlastnosti Node.js patří jeho asynchronní, událostmi řízená povaha, tedy veškeré vstupně/výstupní operace jsou zpracovávány asynchronně. Díky tomuto chování v praxi dochází k tomu, že webový server postavený nad Node.js dokáže zpracovat více souběžných požadavků\footnote{Za předpokladu, že je aplikace orientovaná na vstupně/výstupní operace jako je např. čtení z databáze nebo ze souborového systému.}.
+
+Technologii jsem zvolil hlavně proto, že mi umožňuje psát serverovou a klientskou část aplikace ve stejném programovacím jazyce, tedy v JavaScriptu.
+
+\paragraph{MongoDB}
+Pro ukládání dat jsem zvolil databázi MongoDB. MongoDB je NoSQL databáze, což znamená, že principy přístupu k datům nejsou implementovány na bázi relací jako jsme zvyklí u klasických relačních databází. MongoDB se řadí mezi dokumentové databáze, které nemají pevně definované schéma. Více informací o MongoDB databázi lze nalézt na webu projektu\cite{mongodb}.
+
+V kombinaci s touto databází jsem použil nadstavbu Mongoose\cite{mongoose}, což je vrstva přidávající možnost nadefinovat si pevné schéma dokumentů a pracovat s těmito dokumenty jako s datovými modely. Tato vrstva dále umožňuje např. přidávání validačních metod na jednotlivé modely.
 
 \subsection{Návrh hlasového portálu}
 Popis použitých technologií. Nodejs.
@@ -222,6 +277,19 @@ Ondřej Ždych
 \bibitem{vxmldevguide} Shukla, Charul; Dass, Avnish; Gupta, Vikas,
 \textit{VoiceXML 2.0 Developer's Guide : Building Professional Voice-enabled Applications with JSP, ASP & Coldfusion}, Dream Tech Software India Inc., 2002.
 
+\bibitem{angulardocs} Google,
+\textit{Dokumentace k frameworku AngularJS}, http://docs.angularjs.org/.
+
+\bibitem{mongodb}
+\textit{Web projektu MongoDB}, http://www.mongodb.org/.
+
+\bibitem{mongoose}
+\textit{Web projektu Mongoose}, http://mongoosejs.com/.
+
+\bibitem{nodejs}
+\textit{Oficiální web o Node.js}, http://nodejs.org/.
+
+
 \end{thebibliography}
 
 
@@ -230,7 +298,5 @@ Ondřej Ždych
 Tohle je příloha k práci. Většinou se sem dávají grafy, tabulky, které by vzhledem
 ke svému počtu překážely v textu diplomky.
 \clearpage
-
-\InsertFigure{Figures/Graf}{0.7\textwidth}{Nějaký graf}{fig:SampleGraph}
 
 \end{document}
