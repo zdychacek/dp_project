@@ -29,10 +29,7 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 \EnglishKeywords{typography, \LaTeX, master thesis}
 
 % Pridame pouzivane zkratky (pokud nejake pouzivame).
-\AddAcronym{DVD}{Digital Versatile Disc}
-\AddAcronym{TNT}{Trinitrotoluen}
-\AddAcronym{OASIS}{Organization For The Advancement Of Structured Information Systems}
-\AddAcronym{HTML}{Hyper Text Markup Language}
+\AddAcronym{HTTP}{Hypertext Transfer Protocol}
 
 
 % Zadame cestu a jmeno souboru ci nekolika souboru s digitalizovanou podobou zadani prace
@@ -136,12 +133,36 @@ Popis procesu převodu řeči na text.
 \subsubsection{Loquendo}
 Něco o ASR od Loquenda.
 
-\section{Návrh webového (hlasového)? portálu s možnostmi převedení textu do hlasu a automatického rozpoznání hlasu}
+\section{Návrh webového portálu s možnostmi převedení textu do hlasu a automatického rozpoznání hlasu}
 \label{sec:Navrh}
-Popis referenční aplikace. Seznam entit. Funkce aplikace: prihlaseni (admin, uzivatel), vyhledani letu, vytvoreni/zruseni rezervace, editace letu/dopravcu/uzivatelu. Propojeni web. a hlasoveho portalu pomoci WebSocket.
+Na začátku této kapitoly nejprve popíši aplikaci, která bude ve zbytku textu sloužit jako referenční aplikace. Ve zbytku kapitoly se budu zabývat procesem návrhu této aplikace.
+
+Jako referenční aplikaci jsem zvolil rezervační systém smyšlené letecké společnosti. Rezervační systém vystavuje webové a hlasové rozhraní pro správu rezervací. Rezervace lze tedy spravovat z prostředí webového prohlížeče nebo z prostředí samoobslužné hlasové linky.
+
+Pro práci s rezervačním systémem je nutné se nejdříve přihlásit. Každý přihlašovaný uživatel se prokazuje přihlašovacím jménem (telefonní číslo) a heslem. Do systému se můžou přihlásit dva typy uživatelů. V závislosti na roli přihlášeného uživatele jsou uživateli dovoleny akce, které může vykonávat. Prvním typem uživatele je uživatel v roli zákazníka. Zákazníkovi je dovoleno vytvoření nové rezervace nebo zrušení již aktivní rezervace, dále je zákazníkovi umožněno vyhledávání letů dle následujících kritérií:
+
+\begin{itemize}
+\item místa a data odletu
+\item místa a data příletu
+\item ceny letu
+\item maximálního počtu přestupů
+\item maximální délky letu
+\end{itemize}
+
+Druhým typem uživatele je uživatel v roli administrátora. Pro uživatele s právy administrátora jsou dostupné stejné akci jako uživateli v roli zákazníka, navíc však administrátor může vykonávat následující akce:
+
+\begin{itemize}
+\item správa databáze letů (editace/vytvoření)
+\item správa uživatelů (editace/vytvoření)
+\item správa přepravních společností (editace/vytvoření)
+\end{itemize}
+
+Webové rozhraní rezervačního systému je v reálném čase synchronizováno s hlasovým rozhraním pomocí technologie WebSockets\footnote{Webová technologie umožňující vytvoření obousměrného komunikačního kanálu mezi klientem a serverem nad HTTP protokolem. Více v kapitole TODO: přidat referenci}. Toto v praxi znamená následující. Pokud je uživatel přihlášen do webového rozhraní a zároveň se nachází v interakci s hlasovou samoobsluhou, kde např. zruší svoji rezervaci, okamžitě dojde k reflektování provedené akce do webového rozhraní aniž by uživatel musel znovu provést načtení zobrazené stránky.
+
+V následujících dvou podkapitolách se budu podrobněji zabývat popisem webového a hlasového rozhraní rezervačního systému.
 
 \subsection{Návrh webové portálu}
-Popis použitých technologií (Angular.js, Node.js, Mongoose/MongoDB, Grunt, Jade, Javascript, WebSockety). Ukázka vybraných obrazovek aplikacce.
+Popis použitých technologií (Angular.js, Node.js, Mongoose/MongoDB, Grunt, Jade, Javascript, WebSockety). Ukázka vybraných obrazovek aplikace.
 
 \subsection{Návrh hlasového portálu}
 Popis použitých technologií. Nodejs.
@@ -151,7 +172,7 @@ Popis navrhu knihovny/architektury. Popis trid. Principy jak funguje (stavový a
 
 \paragraph{Srovnání návrhu aplikace pomocí knihovny a klasického přístupu}
 Příklad zpracování vstupu a výstupu. Knihovna vx. VXML markup.
-s
+
 \subsubsection{Návrh VXML aplikace}
 Popis funcionality hlasové aplikace (podmnožina funkcí webové aplikace). Popis jednotlivých částí aplikace. Komponenty. Ukázka diagramů částí aplikací.
 
@@ -174,13 +195,13 @@ Popis best practices. Jak spravne navrhnout dialog. Navrh struktury aplikace. Za
 \label{sec:Benchmark}
 Popis, jak probíhal test. Použité nástroje.
 
-\subsection{Benchmark aplikačního serveru}
+\subsection{Zátěžový test aplikačního serveru}
 ab test aplikačního serveru.
 
-\subsection{Benchmark na platformě Voxeo Prophecy}
+\subsection{Zátěžový test IVR Voxeo Prophecy}
 Omezení dva paralelní hovory. Test 1 a 2 připojených klientů.
 
-\subsection{Benchmark na platformě VoiceGlue}
+\subsection{Zátěžový test IVR VoiceGlue}
 Test 1, 2, 5, 10 pčipojených klientů.
 
 \subsection{Výsledky měření}
@@ -198,12 +219,8 @@ Ondřej Ždych
 
 \begin{thebibliography}{99}
 
-\bibitem{goossens94} Goossens, Michel,
-\textit{The \LaTeX\ companion,} New York: Addison, 1994.
-
-\bibitem{lamport94} Lamport, Leslie,
-\textit{\LaTeX: a document preparation system: user's guide and reference manual},
-New York: Addison-Wesley Pub. Co., 1994.
+\bibitem{vxmldevguide} Shukla, Charul; Dass, Avnish; Gupta, Vikas,
+\textit{VoiceXML 2.0 Developer's Guide : Building Professional Voice-enabled Applications with JSP, ASP & Coldfusion}, Dream Tech Software India Inc., 2002.
 
 \end{thebibliography}
 
