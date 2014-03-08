@@ -60,6 +60,13 @@ module.exports = function (grunt) {
 					'<%= appConfig.app %>/app/**/*.jade'
 				],
 				tasks: ['jade']
+			},
+			latex: {
+				files: [
+					'tex/diplomka.tex',
+					'tex/Figures/**/*',
+				],
+				tasks: ['latex']
 			}
 		},
 		clean: {
@@ -288,7 +295,14 @@ module.exports = function (grunt) {
 					'<%= appConfig.app %>/css/bootstrap.css': '<%= appConfig.app %>/less/bootstrap/bootstrap.less'
 				}
 			}
-		}
+		},
+
+		latex: {
+			options: {
+				haltOnError: 'true'
+			},
+			src: [ 'tex/diplomka.tex' ]
+		},
 	});
 
 	grunt.registerTask('insertUsers', 'Insert test users in DB.', function (env) {
@@ -351,5 +365,10 @@ module.exports = function (grunt) {
 		'cssmin',
 		'uglify',
 		'copy'
+	]);
+
+	grunt.registerTask('tex', [
+		'latex',
+		'watch:latex'
 	]);
 };
