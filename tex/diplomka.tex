@@ -1,0 +1,219 @@
+% Nejprve uvedeme tridu dokumentu s volbami
+\documentclass[ing,male,java,dept460]{diploma}						% jednostranny dokument
+%\documentclass[ing,male,java,dept460,twoside]{diploma}		% oboustranny dokument
+\usepackage[czech]{babel}
+
+
+% Zadame pozadovane vstupy pro generovani titulnich stran.
+\ThesisAuthor{Ondřej Ždych}
+% U bakalarske praxe neni nutne nazev zadavat
+\ThesisTitle{Hlasový portál na platformě VoiceXML}
+
+% U bakalarske praxe neni nutne anglicky nazev zadavat
+\EnglishThesisTitle{Voice Portal with VoiceXML Platform}
+
+\SubmissionDate{7. května 2014}
+
+\PrintPublicationAgreement{false}
+
+\Thanks{Touto cestou bych rád poděkoval vedoucímu diplomové práce, panu Ing. Pavlovi Nevludovi, především za konzultace a odborné rady, které jsem zúročil při psaní tohoto textu.}
+
+\CzechAbstract{Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstrakt.
+Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstrakt.
+Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstrakt.}
+
+\CzechKeywords{typografie, \LaTeX, diplomová práce}
+
+\EnglishAbstract{This is English abstract. This is English abstract. This is English abstract. This is English abstract. This is English abstract. This is English abstract.}
+
+\EnglishKeywords{typography, \LaTeX, master thesis}
+
+% Pridame pouzivane zkratky (pokud nejake pouzivame).
+\AddAcronym{DVD}{Digital Versatile Disc}
+\AddAcronym{TNT}{Trinitrotoluen}
+\AddAcronym{OASIS}{Organization For The Advancement Of Structured Information Systems}
+\AddAcronym{HTML}{Hyper Text Markup Language}
+
+
+% Zadame cestu a jmeno souboru ci nekolika souboru s digitalizovanou podobou zadani prace
+% Pri sazbe se pak hledaji soubory Figures/Zadani1.jpg, Figures/Zadani2.jpg atd.
+% Do diplomove prace se postupne vlozi vsechny existujici soubory Figures/ZadaniXXX.jpg
+% Pokud toto makro zapoznamkujeme sazi se stranka s upozornenim
+\ThesisAssignmentImagePath{Figures/Zadani}
+
+% Zadame soubor s digitalizovanou podobou prohlaseni
+% Pokud toto makro zapoznamkujeme sazi se cisty text prohlaseni
+%\DeclarationImageFile{Figures/Prohlaseni.jpg}
+
+
+% Zacatek dokumentu
+\begin{document}
+
+% Nechame vysazet titulni strany.
+\MakeTitlePages
+
+% Asi urcite budeme potrebovat obsah prace.
+\tableofcontents
+\cleardoublepage	% odstrankujeme, u jednostranneho dokumentu o jednu stranku, u oboustrenneho o dve
+
+% Jsou v praci tabulky? Pokud ano vysazime jejich seznam.
+% Pokud ne smazeme nasledujici makro.
+\listoftables
+\cleardoublepage	% odstrankujeme, u jednostranneho dokumentu o jednu stranku, u oboustrenneho o dve
+
+% Jsou v praci obrazky? Pokud ano vysazime jejich seznam.
+\listoffigures
+\cleardoublepage	% odstrankujeme, u jednostranneho dokumentu o jednu stranku, u oboustrenneho o dve
+
+
+% Jsou v praci vypisy programu? Pokud ano vysazime jejich seznam.
+\lstlistoflistings
+\cleardoublepage	% odstrankujeme, u jednostranneho dokumentu o jednu stranku, u oboustrenneho o dve
+
+
+
+% Zacneme uvodem
+\section{Úvod}
+\label{sec:Uvod}
+Tady bude super úvod.
+
+\section{Seznámení s problematikou VoiceXML}
+\label{sec:Seznameni_s_vxml}
+Něco o standardu VXML.
+
+\subsection{Vývoj standardu}
+Něco z historie.
+
+\subsubsection{Verze 1.0}
+Popis verze 1.
+
+\subsubsection{Verze 2.0 a 2.1}
+Popis verze 2.0 a 2.1.
+
+\subsubsection{Budoucnost VXML}
+Popis draftu 3.0.
+
+\subsection{Základy VXML}
+Základní info.
+
+\subsubsection{Struktura VXML dokumentu}
+Popis typické struktury VXML dokumentu. Členění aplikace do formu. Komunikace se serverem. (form, field)
+
+\subsubsection{Uživatelský vstup}
+Jak funguje zpracování vstupu od uřivatele. Popis gramatik a tagu, ktere se vztahuji ke sberu vstupu.
+
+\subsubsection{Uživatelský výstup}
+Popis možností generování výstupů pro uživatele. Tagy.
+
+\subsection{Interpretry VXML}
+Přehled vybraných interpretrů.
+
+\subsubsection{Voxeo Prophecy}
+Něco o Voxeu - licence, omezení, výhody (kvalitní TTS, podpora ASR), nevýhody (komerční).
+
+\subsubsection{Asterisk + VoiceGlue}
+Popis kombinace Asterisku a VoiceGlue - licence, omezení, výhody (opensource), nevýhody (nekvalitní TTS, nepodporuje ASR).
+
+\section{Specifikace požadavků pro podporu automatického převodu textu do hlasu a obráceně (TTS a ASR)}
+\label{sec:Podpora_TTS_a_ASR}
+Obecný úvod o technologiích TTS a ASR.
+
+\subsection{Technologie Text to Speech}
+Popis procesu syntézy řeči.
+
+\subsubsection{Flite}
+Něco o Flite.
+
+\subsubsection{Cepstral}
+Něco o Cepstralu?
+
+\subsubsection{Loquendo}
+Něco o Loquendu.
+
+\subsection{Technologie Automatic Speech Recognition}
+Popis procesu převodu řeči na text.
+
+\subsubsection{Loquendo}
+Něco o ASR od Loquenda.
+
+\section{Návrh webového (hlasového)? portálu s možnostmi převedení textu do hlasu a automatického rozpoznání hlasu}
+\label{sec:Navrh}
+Popis referenční aplikace. Seznam entit. Funkce aplikace: prihlaseni (admin, uzivatel), vyhledani letu, vytvoreni/zruseni rezervace, editace letu/dopravcu/uzivatelu. Propojeni web. a hlasoveho portalu pomoci WebSocket.
+
+\subsection{Návrh webové portálu}
+Popis použitých technologií (Angular.js, Node.js, Mongoose/MongoDB, Grunt, Jade, Javascript, WebSockety). Ukázka vybraných obrazovek aplikacce.
+
+\subsection{Návrh hlasového portálu}
+Popis použitých technologií. Nodejs.
+
+\subsubsection{Návrh VXML knihovny}
+Popis navrhu knihovny/architektury. Popis trid. Principy jak funguje (stavový automat, stavy, udalosti, přechody mezi stavy).
+
+\paragraph{Srovnání návrhu aplikace pomocí knihovny a klasického přístupu}
+Příklad zpracování vstupu a výstupu. Knihovna vx. VXML markup.
+
+\subsubsection{Návrh VXML aplikace}
+Popis funcionality hlasové aplikace (podmnožina funkcí webové aplikace). Popis jednotlivých částí aplikace. Komponenty. Ukázka diagramů částí aplikací.
+
+\paragraph{Znovupoužitelné komponenty}
+Zadání data (+diagram). Zadání textového vstupu (+diagram). Seznam rezervací/letů (+diagram).
+
+\subsection{Konfigurace a zprovoznění hlasového portálu}
+Popis, jak zprovoznit aplikaci na platformách. Voxeo Prophecy, Asterisk + VoiceGlue.
+
+\subsubsection{Voxeo Prophecy}
+...
+
+\subsubsection{Asterisk + VoiceGlue}
+...
+
+\subsection{Doporučené postupy při návrhu}
+Popis best practices. Jak spravne navrhnout dialog. Navrh struktury aplikace. Zamereni cilove skupiny uzivatelu.
+
+\section{Zátěžové testy portálu}
+\label{sec:Benchmark}
+Popis, jak probíhal test. Použité nástroje.
+
+\subsection{Benchmark aplikačního serveru}
+ab test aplikačního serveru.
+
+\subsection{Benchmark na platformě Voxeo Prophecy}
+Omezení dva paralelní hovory. Test 1 a 2 připojených klientů.
+
+\subsection{Benchmark na platformě VoiceGlue}
+Test 1, 2, 5, 10 pčipojených klientů.
+
+\subsection{Výsledky měření}
+Co jsme zjistili v testech?
+
+\section{Závěr}
+\label{sec:Conclusion}
+Tak tady je konečně konec.
+\cite{goossens94,lamport94}.
+
+\bigskip
+\begin{flushright}
+Ondřej Ždych
+\end{flushright}
+
+\begin{thebibliography}{99}
+
+\bibitem{goossens94} Goossens, Michel,
+\textit{The \LaTeX\ companion,} New York: Addison, 1994.
+
+\bibitem{lamport94} Lamport, Leslie,
+\textit{\LaTeX: a document preparation system: user's guide and reference manual},
+New York: Addison-Wesley Pub. Co., 1994.
+
+\end{thebibliography}
+
+
+\appendix
+\section{Grafy a měření}
+Tohle je příloha k práci. Většinou se sem dávají grafy, tabulky, které by vzhledem
+ke svému počtu překážely v textu diplomky.
+\clearpage
+
+\InsertFigure{Figures/Graf}{0.7\textwidth}{Nějaký graf}{fig:SampleGraph}
+
+\end{document}
