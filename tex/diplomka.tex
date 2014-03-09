@@ -294,8 +294,6 @@ Tuto technologii v aplikaci používám k synchronizaci všech aktuálně otevř
 \paragraph{Grunt}
 Jedná se o automatizační nástroj, který usnadňuje workflow vývoje (nejen) webových aplikací. Tento nástroj nabízí aplikační rozhraní pro definici úkolů, které se mají automaticky provést v definovaný moment. Definice úkolů se popisuje v jazyce JavaScript. Já jsem tento nástroj použil např. k validaci zdrojového kódu napsaného v JavaScriptu nebo ke spouštění webového serveru. Tento nástroj jsem dokonce využil k automatizaci sazby této práce - po každém uložení zdrojového \LaTeX\ souboru dojde k automatickému vytvoření výstupního PDF souboru. Více informaci o tomto nástroji je možné nalézt na oficiálních webových stránkách\cite{grunt}.
 
-
-
 \subsection{Návrh hlasového portálu}
 Hlasový portál umožňuje uživateli ovládat rezervační systém prostřednictvím hlasové samoobsluhy. Rezervační systém byl představen za začátku kapitoly \ref{sec:Navrh}. Hlasový portál umožňuje uživateli spravovat své rezervace prostřednictvím hlasové samoobsluhy, se kterou se spojí vytočením telefonního čísla např. na svém mobilním telefonu.
 
@@ -310,29 +308,29 @@ V následujícím seznamu uvádím souhrn akcí, které může uživatel prostř
 \item zrušení všech aktivních rezervací
 \end{itemize}
 
-V následujícím textu nejdříve popíši odlišnosti v návrhu uživatelského rozhraní hlasového portálu ve srovnání s návrhem uživatelského rozhraní webového portálu. Poté blíže představím strukturu navrhovaného hlasového rozhraní rezervačního systému a následně se zaměřím na samotnou implementaci.
+Pro navigaci napříč hlasovým portálem jsem dal přednost ovládání pomocí DTMF volby.
+TODO: Popsat způsob navigace, přihlášení do aplikace, členění aplikace.
 
-\subsubsection{Uživatelské rozhraní}
+V následujícím textu nejdříve popíši odlišnosti v návrhu uživatelského rozhraní hlasového portálu ve srovnání s návrhem uživatelského rozhraní webového portálu a poté se zaměřím na samotnou implementaci hlasového rozhraní rezervačního systému.
+
+\subsubsection{Návrh uživatelského rozhraní}
 Rozhraní sloužící ke komunikaci mezi uživatelem systému a systémem samotným je diametrálně odlišné od rozhraní, které nabízí webové portály. Proto je nutné při návrhu uživatelského rozhraní k těmto odlišnostem přihlédnout. Hlavní rozdíl mezi uživatelským rozhraním webových a hlasových portálu je ve způsobu interakce. Webové portály nabízí uživatelská rozhraní založená převážně na interakci pomocí vizuálních vjemů uživatele. Interakci založenou na vizuálních vjemech ale není možné zapojit do návrhu uživatelského rozhraní pro hlasový portál. Uživatelské rozhraní hlasového portálu nabízí pouze na interakce založené na zvukových vjemech a hlasových odezvách.
 
 Z pohledu návrhu, z výše uvedeného, plyne například nevhodnost navrhovat příliš komplexní uživatelská rozhraní. Musíme se snažit interakci se systémem uživateli co nejvíce zjednodušit, aby se uživatel v prostředí systému neztrácel.
 
 Komunikace s uživatelem většinou probíhá pomocí automatické syntézy řeči. Zatím bohužel neexistuje hlasový syntetizátor, který by se svou kvalitou zcela vyrovnal lidské řeči. Někdy proto může při syntéze řeči docházet ke komolení některých slov a pro uživatele nemusí být sdělení zcela srozumitelné. V tomto případě většinou stačí nahradit zkomolenou část věty jiným slovem či slovním spojením. V případě použití nekvalitního syntetizéru řeči se, před nasazením hlasového portálu do produkčního prostředí, doporučuje veškerá hlasová sdělení namluvit a zdigitalizovat a tyto používat místo automatické syntézy.
 
-Před začátkem návrhu uživatelského rozhraní hlasového systému je vhodné si nejdříve zjistit cílovou skupinu uživatelů, která bude daný systém používat. Uživatelé z různých cílových skupin mají ve většině případů odlišné požadavky na podobu uživatelského rozhraní. V případě, že se např. zaměřujeme na skupinu uživatelů staršího věku, můžeme předpokládat, že uživatelé nemají žádné zkušenosti s ovládáním hlasového portálu. Proto bychom se měli snažit ovládání systému ještě více zjednodušit. Takového zjednodušení lze dosáhnout například nabídnutím možnosti vyvolání okamžité nápovědy pro právě probíhající interakci. Pro takového uživatele bude zároveň jistě pohodlnější komunikovat se systémem za pomoci automatického rozpoznávání řeči než pomocí DTMF volby.
+Před začátkem návrhu uživatelského rozhraní hlasového systému je vhodné nejdříve provést analýzu cílové skupiny uživatelů, která bude daný systém používat. Uživatelé z různých cílových skupin mají ve většině případů odlišné požadavky na podobu uživatelského rozhraní. V případě, že se např. zaměřujeme na skupinu uživatelů staršího věku, můžeme předpokládat, že uživatelé nemají žádné zkušenosti s ovládáním hlasového portálu. Proto bychom se měli snažit ovládání systému ještě více zjednodušit. Takového zjednodušení lze dosáhnout například nabídnutím možnosti vyvolání okamžité nápovědy pro právě probíhající interakci. Pro takového uživatele bude zároveň jistě pohodlnější komunikovat se systémem za pomoci automatického rozpoznávání řeči než pomocí DTMF volby.
 
 Naopak pokud víme, že naši aplikaci budou využívat převážně uživatelé, kteří jsou znalí moderních technologií, můžeme si dovolit navrhnout složitější uživatelské rozhraní založené na ovládání pomocí DTMF volby.
 
 Jedno je ale společné pro všechny typy uživatelů - umožnit jim rychlou a pohodlnou navigaci napříč celou aplikací tak, aby byli schopni se v co nejkratším čase dostat k informaci, kterou hledají.
 
-\subsubsection{Návrh VXML knihovny}
+\subsubsection{Implementace}
 Popis navrhu knihovny/architektury. Popis trid. Principy jak funguje (stavový automat, stavy, udalosti, přechody mezi stavy).
 
 \paragraph{Srovnání návrhu aplikace pomocí knihovny a klasického přístupu}
 Příklad zpracování vstupu a výstupu. Knihovna vx. VXML markup.
-
-\subsubsection{Návrh VXML aplikace}
-Popis funcionality hlasové aplikace (podmnožina funkcí webové aplikace). Popis jednotlivých částí aplikace. Komponenty. Ukázka diagramů částí aplikací.
 
 \paragraph{Znovupoužitelné komponenty}
 Zadání data (+diagram). Zadání textového vstupu (+diagram). Seznam rezervací/letů (+diagram).
@@ -345,9 +343,6 @@ Popis, jak zprovoznit aplikaci na platformách. Voxeo Prophecy, Asterisk + Voice
 
 \subsubsection{Asterisk + VoiceGlue}
 ...
-
-\subsection{Doporučené postupy při návrhu}
-Popis best practices. Jak spravne navrhnout dialog. Navrh struktury aplikace. Zamereni cilove skupiny uzivatelu.
 
 \section{Zátěžové testy portálu}
 \label{sec:Benchmark}
