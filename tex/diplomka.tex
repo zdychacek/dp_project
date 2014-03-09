@@ -22,11 +22,11 @@
 Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstrakt.
 Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstrakt.}
 
-\CzechKeywords{typografie, \LaTeX, diplomová práce}
+\CzechKeywords{VoiceXML, VXML, hlasový portál, XML, JSON, ASR, TTS, JavaScript, Node.js, AngularJS}
 
 \EnglishAbstract{This is English abstract. This is English abstract. This is English abstract. This is English abstract. This is English abstract. This is English abstract.}
 
-\EnglishKeywords{typography, \LaTeX, master thesis}
+\EnglishKeywords{VoiceXML, VXML, voice portal, XML, JSON, ASR, TTS, JavaScript, Node.js, AngularJS}
 
 % Pridame pouzivane zkratky (pokud nejake pouzivame).
 \AddAcronym{HTTP}{Hypertext Transfer Protocol}
@@ -40,6 +40,9 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 \AddAcronym{URL}{Uniform Resource Locator}
 \AddAcronym{TCP}{Transmission Control Protocol}
 \AddAcronym{PDF}{Portable Document Format}
+\AddAcronym{ASR}{Automatic Speech Recognition}
+\AddAcronym{TTS}{Text To Speech}
+\AddAcronym{DTMF}{Dual-tone multi-frequency signaling}
 
 
 % Zadame cestu a jmeno souboru ci nekolika souboru s digitalizovanou podobou zadani prace
@@ -162,6 +165,7 @@ Pro práci s rezervačním systémem je nutné se nejdříve přihlásit. Každ�
 Druhým typem uživatele je uživatel v roli administrátora. Pro uživatele s právy administrátora jsou dostupné stejné akce jako uživateli v roli zákazníka, navíc však administrátor může vykonávat následující akce:
 
 \begin{itemize}
+\item přihlášení/odhlášení ze systému
 \item správa databáze letů (editace/vytvoření)
 \item správa uživatelů (editace/vytvoření)
 \item správa přepravních společností (editace/vytvoření)
@@ -290,8 +294,36 @@ Tuto technologii v aplikaci používám k synchronizaci všech aktuálně otevř
 \paragraph{Grunt}
 Jedná se o automatizační nástroj, který usnadňuje workflow vývoje (nejen) webových aplikací. Tento nástroj nabízí aplikační rozhraní pro definici úkolů, které se mají automaticky provést v definovaný moment. Definice úkolů se popisuje v jazyce JavaScript. Já jsem tento nástroj použil např. k validaci zdrojového kódu napsaného v JavaScriptu nebo ke spouštění webového serveru. Tento nástroj jsem dokonce využil k automatizaci sazby této práce - po každém uložení zdrojového \LaTeX\ souboru dojde k automatickému vytvoření výstupního PDF souboru. Více informaci o tomto nástroji je možné nalézt na oficiálních webových stránkách\cite{grunt}.
 
+
+
 \subsection{Návrh hlasového portálu}
-Popis použitých technologií. Nodejs.
+Hlasový portál umožňuje uživateli ovládat rezervační systém prostřednictvím hlasové samoobsluhy. Rezervační systém byl představen za začátku kapitoly \ref{sec:Navrh}. Hlasový portál umožňuje uživateli spravovat své rezervace prostřednictvím hlasové samoobsluhy, se kterou se spojí vytočením telefonního čísla např. na svém mobilním telefonu.
+
+Hlasový portál se od portálu webového liší hlavně ve způsobu interakce uživatele se systémem a množinou dostupných akcí, které jsou uživateli umožněny. Stručně řečeno je uživateli nabídnuta podmnožina akcí, které jsou dostupné ve webovém portálu. Hlasový portál nabízí užší množinu funkcí hlavně z toho důvodu, že ne všechny funkce systému lze z pohledu uživatelského rozhraní komfortně implementovat i v prostředí hlasového systému. Hlasový portál je tedy cílen pouze na uživatele v roli zákazníka letecké společnosti a nenabízí funkce uživatelům v roli administrátora systému, které jim jsou dostupné prostřednictvím webového portálu (např. přidání nového letu do databáze).
+
+V následujícím seznamu uvádím souhrn akcí, které může uživatel prostřednictvím hlasového portálu vykonávat:
+
+\begin{itemize}
+\item přihlášení/odhlášení ze systému
+\item založení nové rezervace
+\item vylistování seznamu aktivních rezervací
+\item zrušení všech aktivních rezervací
+\end{itemize}
+
+V následujícím textu nejdříve popíši odlišnosti v návrhu uživatelského rozhraní hlasového portálu ve srovnání s návrhem uživatelského rozhraní webového portálu. Poté blíže představím strukturu navrhovaného hlasového rozhraní rezervačního systému a následně se zaměřím na samotnou implementaci.
+
+\subsubsection{Uživatelské rozhraní}
+Rozhraní sloužící ke komunikaci mezi uživatelem systému a systémem samotným je diametrálně odlišné od rozhraní, které nabízí webové portály. Proto je nutné při návrhu uživatelského rozhraní k těmto odlišnostem přihlédnout. Hlavní rozdíl mezi uživatelským rozhraním webových a hlasových portálu je ve způsobu interakce. Webové portály nabízí uživatelská rozhraní založená převážně na interakci pomocí vizuálních vjemů uživatele. Interakci založenou na vizuálních vjemech ale není možné zapojit do návrhu uživatelského rozhraní pro hlasový portál. Uživatelské rozhraní hlasového portálu nabízí pouze na interakce založené na zvukových vjemech a hlasových odezvách.
+
+Z pohledu návrhu, z výše uvedeného, plyne například nevhodnost navrhovat příliš komplexní uživatelská rozhraní. Musíme se snažit interakci se systémem uživateli co nejvíce zjednodušit, aby se uživatel v prostředí systému neztrácel.
+
+Komunikace s uživatelem většinou probíhá pomocí automatické syntézy řeči. Zatím bohužel neexistuje hlasový syntetizátor, který by se svou kvalitou zcela vyrovnal lidské řeči. Někdy proto může při syntéze řeči docházet ke komolení některých slov a pro uživatele nemusí být sdělení zcela srozumitelné. V tomto případě většinou stačí nahradit zkomolenou část věty jiným slovem či slovním spojením. V případě použití nekvalitního syntetizéru řeči se, před nasazením hlasového portálu do produkčního prostředí, doporučuje veškerá hlasová sdělení namluvit a zdigitalizovat a tyto používat místo automatické syntézy.
+
+Před začátkem návrhu uživatelského rozhraní hlasového systému je vhodné si nejdříve zjistit cílovou skupinu uživatelů, která bude daný systém používat. Uživatelé z různých cílových skupin mají ve většině případů odlišné požadavky na podobu uživatelského rozhraní. V případě, že se např. zaměřujeme na skupinu uživatelů staršího věku, můžeme předpokládat, že uživatelé nemají žádné zkušenosti s ovládáním hlasového portálu. Proto bychom se měli snažit ovládání systému ještě více zjednodušit. Takového zjednodušení lze dosáhnout například nabídnutím možnosti vyvolání okamžité nápovědy pro právě probíhající interakci. Pro takového uživatele bude zároveň jistě pohodlnější komunikovat se systémem za pomoci automatického rozpoznávání řeči než pomocí DTMF volby.
+
+Naopak pokud víme, že naši aplikaci budou využívat převážně uživatelé, kteří jsou znalí moderních technologií, můžeme si dovolit navrhnout složitější uživatelské rozhraní založené na ovládání pomocí DTMF volby.
+
+Jedno je ale společné pro všechny typy uživatelů - umožnit jim rychlou a pohodlnou navigaci napříč celou aplikací tak, aby byli schopni se v co nejkratším čase dostat k informaci, kterou hledají.
 
 \subsubsection{Návrh VXML knihovny}
 Popis navrhu knihovny/architektury. Popis trid. Principy jak funguje (stavový automat, stavy, udalosti, přechody mezi stavy).
