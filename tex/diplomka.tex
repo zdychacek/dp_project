@@ -37,6 +37,9 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 \AddAcronym{XML}{Extensible Markup Language}
 \AddAcronym{REST}{Representational State Transfer}
 \AddAcronym{API}{Application Programming Interface}
+\AddAcronym{URL}{Uniform Resource Locator}
+\AddAcronym{TCP}{Transmission Control Protocol}
+\AddAcronym{PDF}{Portable Document Format}
 
 
 % Zadame cestu a jmeno souboru ci nekolika souboru s digitalizovanou podobou zadani prace
@@ -142,9 +145,9 @@ Něco o ASR od Loquenda.
 
 \section{Návrh webového portálu s možnostmi převedení textu do hlasu a automatického rozpoznání hlasu}
 \label{sec:Navrh}
-Na začátku této kapitoly nejprve popíši aplikaci, která bude ve zbytku textu sloužit jako referenční aplikace. Ve zbytku kapitoly se budu zabývat procesem návrhu této aplikace.
+Na začátku této kapitoly nejprve představím aplikaci, která bude ve zbytku textu sloužit jako referenční aplikace. Na této aplikaci budu poté ve zbývajícím textu kapitoly demonstrovat proces návrhu a následnou implementaci.
 
-Jako referenční aplikaci jsem zvolil rezervační systém smyšlené letecké společnosti. Rezervační systém vystavuje webové a hlasové rozhraní pro správu rezervací. Rezervace lze tedy spravovat z prostředí webového prohlížeče nebo z prostředí samoobslužné hlasové linky.
+Jako referenční aplikaci jsem zvolil rezervační systém smyšlené letecké společnosti. Rezervační systém obsahuje webové a hlasové rozhraní pro správu rezervací letů. Rezervace lze tedy spravovat z prostředí webového prohlížeče nebo z prostředí samoobslužné hlasové linky.
 
 Pro práci s rezervačním systémem je nutné se nejdříve přihlásit. Každý přihlašovaný uživatel se prokazuje přihlašovacím jménem (telefonní číslo) a heslem. Do systému se můžou přihlásit dva typy uživatelů. V závislosti na roli přihlášeného uživatele jsou uživateli dovoleny akce, které může vykonávat. Prvním typem uživatele je uživatel v roli zákazníka. Zákazníkovi je dovoleno vytvoření nové rezervace nebo zrušení již aktivní rezervace, dále je zákazníkovi umožněno vyhledávání letů dle následujících kritérií:
 
@@ -156,7 +159,7 @@ Pro práci s rezervačním systémem je nutné se nejdříve přihlásit. Každ�
 \item maximální délky letu
 \end{itemize}
 
-Druhým typem uživatele je uživatel v roli administrátora. Pro uživatele s právy administrátora jsou dostupné stejné akci jako uživateli v roli zákazníka, navíc však administrátor může vykonávat následující akce:
+Druhým typem uživatele je uživatel v roli administrátora. Pro uživatele s právy administrátora jsou dostupné stejné akce jako uživateli v roli zákazníka, navíc však administrátor může vykonávat následující akce:
 
 \begin{itemize}
 \item správa databáze letů (editace/vytvoření)
@@ -164,60 +167,128 @@ Druhým typem uživatele je uživatel v roli administrátora. Pro uživatele s p
 \item správa přepravních společností (editace/vytvoření)
 \end{itemize}
 
-Webové rozhraní rezervačního systému je v reálném čase synchronizováno s hlasovým rozhraním pomocí technologie WebSockets\footnote{Webová technologie umožňující vytvoření obousměrného komunikačního kanálu mezi klientem a serverem nad HTTP protokolem.}. Toto v praxi znamená následující. Pokud je uživatel přihlášen do webového rozhraní a zároveň se nachází v interakci s hlasovou samoobsluhou, kde např. zruší svoji rezervaci, okamžitě dojde k reflektování provedené akce do webového rozhraní aniž by uživatel musel znovu provést načtení zobrazené stránky.
+Webové rozhraní rezervačního systému je v reálném čase synchronizováno s hlasovým rozhraním pomocí technologie WebSockets\footnote{Webová technologie umožňující vytvoření obousměrného komunikačního kanálu mezi klientem a serverem nad HTTP protokolem. Více informací o této technologii najdete v kapitole \ref{sec:Pouzite_technologie}.} Toto v praxi znamená následující. Pokud je uživatel přihlášen do webového rozhraní a zároveň se nachází v interakci s hlasovou samoobsluhou, kde např. zruší svoji rezervaci, okamžitě dojde k reflektování provedené akce do webového rozhraní aniž by uživatel musel znovu provést načtení zobrazené stránky.
 
 V následujících dvou podkapitolách se budu podrobněji zabývat popisem webového a hlasového rozhraní rezervačního systému.
 
 \subsection{Návrh webové portálu}
 Webové rozhraní rezervačního systému nabízí uživateli pohodlné grafické rozhraní pro správu rezervací. Webová aplikace je navržena jako jednostránková aplikace\footnote{Moderní způsob návrhu webové aplikace, kdy je aplikace reprezentována jednou základní HTML stránkou (statickou) a veškeré další interakce na stránce jsou řešeny pomocí JavaScriptu.}. Tento způsob návrhu aplikace uživateli přináší rychlejší odezvu uživatelského rozhraní a zároveň minimalizuje množství přenesených dat po síti mezi klientem a serverem. Úspory přenesených dat se dosahuje využitím AJAXového načítání dat, kdy dochází k načtení pouze těch dat, která jsou aktuálně potřebná.
 
-V aplikaci je implementované REST API\footnote{Architektura rozhraní navržená pro distribuované prostředí. REST je, na rozdíl od známějších XML-RPC či SOAP, orientován datově, nikoli procedurálně.}, které slouží jako datový zdroj pro klienty. REST API implementuje přístup k datům, která jsou uložena v databázi. Většina metod REST API generuje notifikace pro ostatní připojené klienty. Notifikace slouží k synchronizaci uživatelských rozhraní všech připojených klientů. Data se mezi klientskou a serverovou částí aplikace (RESP API) přenáší ve formátu JSON. Formát JSON preferuji hlavně z toho důvodu, že pro zakódování informace je potřeba menšího objemu dat než např. ve srovnání s formátem XML. Implementace REST API však volitelně dovoluje použít pro komunikaci např. i formát XML. Stačí jen o tom do požadavku přidat informaci. V tabulce č. \ref{tab:RestAPI} se nachází popis vybraných metod REST API.
+V aplikaci je implementované REST API\footnote{Architektura rozhraní navržená pro distribuované prostředí. REST je, na rozdíl od známějších XML-RPC či SOAP, orientován datově, nikoli procedurálně.}, které slouží jako datový zdroj pro klienty. REST API implementuje přístup k datům, která jsou uložena v databázi. Většina metod REST API generuje notifikace pro ostatní připojené klienty. Notifikace slouží k synchronizaci uživatelských rozhraní všech připojených klientů.
+
+Data se mezi klientem a serverovou částí aplikace (RESP API) přenáší ve formátu JSON. Formát JSON preferuji hlavně z toho důvodu, že pro zakódování informace je potřeba menšího objemu dat než např. ve srovnání s formátem XML. Implementace REST API však volitelně dovoluje použít pro komunikaci např. i formát XML. Stačí jen o tom do požadavku přidat informaci. Možnost zvolit si formát přenášených dat je umožněna díky malé knihovně, která vznikla zároveň s touto prací. Tato knihovna řeší univerzálním způsobem převod jakéhokoliv JSON objektu do XML formátu. V tabulce č. \ref{tab:RestAPI} se nachází popis implementovaných metod REST API. API běží na základní URL adrese $/api/v1/$\footnote{URL zdroje pro získání informací o jednom letu tedy vypadá následovně http://muj.server.cz/api/v1/fligths/1.} a to z toho důvodu, aby bylo možné jednotlivé verze API v budoucnosti případně verzovat.
 
 \begin{table}
 	\centering
-	\begin{tabular}{|c|c|c|}
+	\begin{tabular}{|c|l|p{6cm}|}
 		\hline
-		q & $\delta(q, 0)$ & $\delta(q, 1)$ \\
+		HTTP metoda & URL adresa & Popis metody \\
 		\hline
-		$q_0$ & $q_1$ & $q_0$ \\
+		GET & /flights & Vrací stránkovaný seznam (vyfiltrovaných) letů. \\
 		\hline
-		$q_1$ & $q_1$ & $q_2$ \\
+		GET & /flights/\{id\} & Vrací informace o letu. \\
 		\hline
-		$q_2$ & $q_1$ & $q_0$ \\
+		GET & /flights/\{id\}/make-reservation & Provádí rezervaci letu pro právě přihlášeného uživatele. \\
+		\hline
+		GET & /flights/\{id\}/cancel-reservation & Ruší rezervaci letu pro právě přihlášeného uživatele. \\
+		\hline
+		POST & /flights & Zakládá nový let. \\
+		\hline
+		DELETE & /flights/\{id\} & Odstraňuje let. \\
+		\hline
+		PUT & /flights/\{id\} & Aktualizuje informace o letu. \\
+
+
+		\hline
+		GET & /users & Vrací stránkovaný seznam uživatelů. \\
+		\hline
+		GET & /users/\{id\} & Vrací informace o uživateli. \\
+		\hline
+		GET & /users/\{id\}/list-reservations & Vrací seznam rezervací pro daného uživatele. \\
+		\hline
+		GET & /users/check-login?login=\{login\} & Zjišťuje, zda dané uživatelské jméno již existuje. \\
+		\hline
+		POST & /users & Zakládá nového uživatele. \\
+		\hline
+		DELETE & /users/\{id\} & Odstraňuje uživatele. \\
+		\hline
+		PUT & /users/\{id\} & Aktualizuje informace o uživateli. \\
+
+		\hline
+		GET & /carriers & Vrací stránkovaný seznam přepravců. \\
+		\hline
+		GET & /carriers/\{id\} & Vrací informaci o přepravci. \\
+		\hline
+		POST & /carriers & Zakládá nového přepravce. \\
+		\hline
+		DELETE & /carriers/\{id\} & Odstraňuje přepravce. \\
+		\hline
+		PUT & /carriers/\{id\} & Aktualizuje informace o přepravci. \\
+
+		\hline
+		GET & /destinations?q=\{destination\} & Vrací seznam vyfiltrovaných destinací. Metoda slouží pro našeptávač. \\
+
+		\hline
+		POST & /security/login & Přihlašuje uživatele. \\
+		\hline
+		POST & /security/logout & Odhlašuje uživatele. \\
+		\hline
+		GET & /security/current-user & Vrací data o aktuálně přihlášeném uživateli. \\
 		\hline
 	\end{tabular}
-	\caption{Přehled vybraných metod REST API}
+	\caption{Přehled implementovaných metod REST API}
 	\label{tab:RestAPI}
 \end{table}
 
 \subsubsection{Uživatelské rozhraní}
-Rozhraní aplikace je rozděleno do několika stránek. Po přihlášení do aplikace je zobrazena hlavní stránka se seznamem všech letů \ref{fig:FlightList}. Jednotlivé lety jsou zde zobrazeny v seznamu, který je strankovatelný a je zde možnost nastavení počtu zobrazených položek na stránce. Každý řádek v seznamu reprezentuje jeden let. U každého letu jsou uvedeny základní informace. Na konci každého řádku se nachází tlačítka sloužící pro vytvoření nebo zrušení rezervace letu. Dále je zde k dispozici tlačítko pro zobrazení detailních informací o letu. Pokud je přihlášen uživatel s právy administrátora, tak má možnost informace o letu i upravovat. Posledním tlačítko slouží ke smazání letu s databáze. Toto tlačítko se opět zobrazuje jen v případě, že je přihlášen uživatel s právy administrátora.
+Rozhraní aplikace je rozděleno do několika stránek. Po přihlášení do aplikace je zobrazena hlavní stránka se seznamem všech letů \ref{fig:FlightList}. Jednotlivé lety jsou zde zobrazeny v seznamu, který je stránkovatelný a je zde možnost nastavení počtu zobrazených položek na stránce. Každý řádek v seznamu reprezentuje jeden let. U každého letu jsou uvedeny základní informace. Na konci každého řádku se nachází tlačítka sloužící pro vytvoření nebo zrušení rezervace letu. Řádek, který představuje rezervovaný let je graficky odlišen jinou barvou pozadí. Dále je zde k dispozici tlačítko pro zobrazení detailních informací o letu. Pokud je přihlášen uživatel s právy administrátora, tak má možnost informace o letu i upravovat. Posledním tlačítko slouží ke smazání letu s databáze. Toto tlačítko se opět zobrazuje jen v případě, že je přihlášen uživatel s právy administrátora.
+
+\InsertFigure{Figures/web_flight_list}{1\textwidth}{Stránka zobrazující seznamem letů a filtr}{fig:FlightList}
 
 Nad seznamem letů se nachází formulář pro nastavení vyhledávacích kritérií, dle kterých lze poté seznam letů vyfiltrovat.
 
 V horní části stránky se nachází menu, které je viditelné ze všech stránek webového rozhraní. Menu obsahuje odkazy na další stránky aplikace jako je stránka se seznamem uživatelů a stránka se seznamem přepravců. V pravé části horního menu se nachází informace se jménem aktuálně přihlášeného uživatele s tlačítkem, které slouží k odhlášení uživatele.
 
-Ostatní stránky aplikace mají uživatelské rozhraní uspořádáné obdobně. Odkazy z horního menu vždy vedou na stránky se seznamovým zobrazením dané entity (lety, uživatelé, přepravci). Z toho seznamu existuje možnost přechodu na detail konkrétní entity. V závislosti na právech přihlášeného uživatele je zde možné entitu případně editovat.
+Ostatní stránky aplikace mají uživatelské rozhraní uspořádané obdobně. Odkazy z horního menu vždy vedou na stránky se seznamovým zobrazením dané entity (lety, uživatelé, přepravci). Z toho seznamu existuje možnost přechodu na detail konkrétní entity. V závislosti na právech přihlášeného uživatele je zde možné entitu případně editovat. Pro ukázku uvádím ještě obrázek zobrazující formulář pro editaci letu\ref{fig:FlightDetail}.
 
-\InsertFigure{Figures/web_flight_list}{1\textwidth}{Stránka se seznamem letů a zobrazeným filtrem}{fig:FlightList}
+\InsertFigure{Figures/web_flight_detail}{1\textwidth}{Stránka zobrazující formulář pro editaci letu}{fig:FlightDetail}
 
-\subsubsection{Požité technologie}
-V následujících odstavcích stručně popíši použité technologie a důvod jejich použití.
+\subsubsection{Použité technologie}
+\label{sec:Pouzite_technologie}
+Celá webová aplikace je napsána kompletně v JavaScriptu a to včetně serverové části. V následujících odstavcích stručně popíši použité technologie a důvod jejich použití.
+
+\paragraph{JavaScript}
+Je multiparadigmatický skriptovací jazyk ovlivněný hlavně jazyky Java, Perl a Smalltalk. Jedná se o událostmi řízený programovací jazyk. Od klasických programovacích jazyků se liší hlavně podporou prototypové dědičnosti a skutečností, že vše je objekt (dokonce i funkce). Tento jazyk byl vytvořen Brendanem Eichem v roce 1997. Primárním důvodem vzniku tohoto jazyka byla potřeba možnosti obohacení statických webových stránek. Jazyk prošel několika verzemi, kdy do něj byly postupně přidávány nové vlastnosti. V době psaní této práce (2014), je nejvíce rozšířená verze EcmaScript 5 a postupně se začínají do jazyka implementovat vlastnosti z nadcházející specifikace EcmaScript 6.
+
+Díky platformě Node.js již není JavaScript omezen jen na oblast klientského skriptování, ale pronikl i na stranu serverového programování a umožňuje návrh vysoce škálovatelných síťových aplikací.
 
 \paragraph{AngularJS}
-AngularJS je framework, který svými vlastnostmi ulehčuje návrh jednostránkových aplikací v JavaScriptu. Mezi klíčové vlastnosti frameworku patří obousměrný databinding, neboli automatické provázání dat (modelu) s vizuální reprezentací (pohledem). Další užitečnou vlastností Angularu je šablonovací systém, který pomocí direktiv umožňuje rozšířit standardní sadu HTML tagů o nové specifické HTML tagy. Více informací o této technologii najdete v dokumentaci frameworku\cite{angulardocs}.
+AngularJS je framework, který svými unikátními vlastnostmi ulehčuje návrh jednostránkových aplikací v JavaScriptu. Mezi klíčové vlastnosti frameworku patří obousměrný databinding, neboli automatické provázání dat (modelu) s vizuální reprezentací (pohledem). Další užitečnou vlastností Angularu je šablonovací systém, který pomocí direktiv umožňuje rozšířit standardní sadu HTML tagů o nové specifické HTML tagy. Více informací o této technologii najdete v dokumentaci frameworku\cite{angulardocs}.
 
-Tento framework jsem použil k návrhu klientské části aplikace a to z výše uvedených důvodů.
+Tento framework jsem použil k návrhu klientské části aplikace a to právě z výše uvedených důvodů.
 
 \paragraph{Node.js}
 Node.js\cite{nodejs} je technologie přinášející možnost psát serverové části webových aplikací v JavaScriptu. Platforma Node.js se skládá z běhového prostředí, které je postaveno nad JavaScript enginem V8\footnote{Stejný engine je i součástí webového prohlížeče Chromium.} a knihovnou funkcí. Mezi důležité vlastnosti Node.js patří jeho asynchronní, událostmi řízená povaha, tedy veškeré vstupně/výstupní operace jsou zpracovávány asynchronně. Díky tomuto chování v praxi dochází k tomu, že webový server postavený nad Node.js dokáže zpracovat více souběžných požadavků\footnote{Za předpokladu, že je aplikace orientovaná na vstupně/výstupní operace jako je např. čtení z databáze nebo ze souborového systému.}.
 
 Technologii jsem zvolil hlavně proto, že mi umožňuje psát serverovou a klientskou část aplikace ve stejném programovacím jazyce, tedy v JavaScriptu.
 
+\paragraph{Express.js}
+Jedná se o minimalistický framework pro Node.js, který umožňuje snadné vytváření webových aplikací. Nabízí např. funkce pro práci s cookies, práci s objektem příchozího požadavku a zápis do objektu odpovědi. Framework je jednoduše rozšiřitelný o další funkce.
+
+Více informací o tomto frameworku je možné nalézt na oficiálním webu\cite{expressjs}.
+
 \paragraph{MongoDB}
 Pro ukládání dat jsem zvolil databázi MongoDB. MongoDB je NoSQL databáze, což znamená, že principy přístupu k datům nejsou implementovány na bázi relací jako jsme zvyklí u klasických relačních databází. MongoDB se řadí mezi dokumentové databáze, které nemají pevně definované schéma. Více informací o MongoDB databázi lze nalézt na webu projektu\cite{mongodb}.
 
 V kombinaci s touto databází jsem použil nadstavbu Mongoose\cite{mongoose}, což je vrstva přidávající možnost nadefinovat si pevné schéma dokumentů a pracovat s těmito dokumenty jako s datovými modely. Tato vrstva dále umožňuje např. přidávání validačních metod na jednotlivé modely.
+
+\paragraph{WebSockets}
+Je technologie pro tvorbu webových aplikací, které mezi sebou potřebují komunikovat v reálném čase. Technologie je součástí standardu HTML5 a je již v moderních prohlížečích plně implementována. Technologie umožňuje vybudovat plně duplexní komunikační kanál mezi klientem serverem a tímto kanálem si vzájemně vyměňovat data. Jedná se v podstatě o obdobu klasického TCP spojení přeneseného do oblasti webových aplikací. WebSockety komunikují nad standardním HTTP protokolem, nemají proto problém s jakýmikoliv proxy servery a firewally na trase mezi klientem a serverem.
+
+Tuto technologii v aplikaci používám k synchronizaci všech aktuálně otevřených webových rozhraní, aby přihlášený uživatel nemusel otevřenou stránku ve webovém prohlížeči manuálně znovu načítat.
+
+\paragraph{Grunt}
+Jedná se o automatizační nástroj, který usnadňuje workflow vývoje (nejen) webových aplikací. Tento nástroj nabízí aplikační rozhraní pro definici úkolů, které se mají automaticky provést v definovaný moment. Definice úkolů se popisuje v jazyce JavaScript. Já jsem tento nástroj použil např. k validaci zdrojového kódu napsaného v JavaScriptu nebo ke spouštění webového serveru. Tento nástroj jsem dokonce využil k automatizaci sazby této práce - po každém uložení zdrojového \LaTeX\ souboru dojde k automatickému vytvoření výstupního PDF souboru. Více informaci o tomto nástroji je možné nalézt na oficiálních webových stránkách\cite{grunt}.
 
 \subsection{Návrh hlasového portálu}
 Popis použitých technologií. Nodejs.
@@ -284,14 +355,18 @@ Ondřej Ždych
 \textit{Web projektu MongoDB}, http://www.mongodb.org/.
 
 \bibitem{mongoose}
-\textit{Web projektu Mongoose}, http://mongoosejs.com/.
+\textit{Web projektu Mongoose}, http://www.mongoosejs.com/.
 
 \bibitem{nodejs}
-\textit{Oficiální web o Node.js}, http://nodejs.org/.
+\textit{Oficiální web o Node.js}, http://www.nodejs.org/.
 
+\bibitem{expressjs}
+\textit{Oficiální web o frameworku Express.js}, http://www.expressjs.com/.
+
+\bibitem{grunt}
+\textit{Oficiální web věnovaný nástroji Grunt}, http://gruntjs.com/.
 
 \end{thebibliography}
-
 
 \appendix
 \section{Grafy a měření}
