@@ -105,6 +105,7 @@ Popis verze 2.0 a 2.1.
 Popis draftu 3.0.
 
 \subsection{Základy VXML}
+\label{sec:Zaklady_vxml}
 Základní info.
 
 \subsubsection{Struktura VXML dokumentu}
@@ -263,6 +264,7 @@ Ostatní stránky aplikace mají uživatelské rozhraní uspořádané obdobně.
 Celá webová aplikace je napsána kompletně v JavaScriptu a to včetně serverové části. V následujících odstavcích stručně popíši použité technologie a důvod jejich použití.
 
 \paragraph{JavaScript}
+\label{sec:JavaScript}
 Je multiparadigmatický skriptovací jazyk ovlivněný hlavně jazyky Java, Perl a Smalltalk. Jedná se o událostmi řízený programovací jazyk. Od klasických programovacích jazyků se liší hlavně podporou prototypové dědičnosti a skutečností, že vše je objekt (dokonce i funkce). Tento jazyk byl vytvořen Brendanem Eichem v roce 1997. Primárním důvodem vzniku tohoto jazyka byla potřeba možnosti obohacení statických webových stránek. Jazyk prošel několika verzemi, kdy do něj byly postupně přidávány nové vlastnosti. V době psaní této práce (2014), je nejvíce rozšířená verze EcmaScript 5 a postupně se začínají do jazyka implementovat vlastnosti z nadcházející specifikace EcmaScript 6.
 
 Díky platformě Node.js již není JavaScript omezen jen na oblast klientského skriptování, ale pronikl i na stranu serverového programování a umožňuje návrh vysoce škálovatelných síťových aplikací.
@@ -330,10 +332,28 @@ Aby bylo možné s hlasovým rozhraním rezervačního systému začít pracovat
 
 \InsertFigure{Figures/diagrams/mainflow}{1\textwidth}{Stránka zobrazující seznamem letů a filtr}{fig:MainFlow}
 
-V případě úspěšného přihlášení do systému, je uživateli přehrána uvítací zpráva a následně je uživatel přesměrován do hlavního menu aplikace, kde má k dispozici akce pro správu a vytváření rezervací (seznam akcí je uveden v textu kapitoly \ref{sec:Navrh_hlasoveho_portalu}). Jednotlivá menu aplikace jsou navržena tak, aby měl uživatel kdykoliv možnost vrátit se o úroveň zpět. Na obrázku \ref{fig:MainFlow} je zobrazena hlavní struktura hlasového portálu. Struktura aplikace je na obrázku popsána formou stavového diagramu. Obdélníky reprezentují jednotlivé stavy aplikace. Některé stavy jsou pro svoji komplexnost zobrazeny pouze abstraktně. U abstraktních stavů je vždy uvedena informace, která slouží jako jakýsi odkaz na další diagram, který daný stav popisuje detailněji. Z důvodu zpřehlednění textu zde neuvádím diagramy všech částí aplikace. Nejzajímavějším částem aplikace se budu detailněji věnovat dále v textu.
+V případě úspěšného přihlášení do systému, je uživateli přehrána uvítací zpráva a následně je uživatel přesměrován do hlavního menu aplikace, kde má k dispozici akce pro správu a vytváření rezervací (seznam akcí je uveden v textu kapitoly \ref{sec:Navrh_hlasoveho_portalu}). Jednotlivá menu aplikace jsou navržena tak, aby měl uživatel kdykoliv možnost vrátit se o úroveň zpět. Na obrázku \ref{fig:MainFlow} je zobrazena hlavní struktura hlasového portálu. Struktura aplikace je na obrázku popsána formou stavového diagramu. Obdélníky reprezentují jednotlivé stavy aplikace. Některé stavy jsou pro svoji komplexnost zobrazeny pouze abstraktně. U abstraktních stavů je vždy uvedena informace, která slouží jako jakýsi odkaz na další diagram, který daný stav popisuje detailněji. Pomocí šipek jsou v diagramu popsány přechody mezi jednotlivými stavy. U každého přechodu se dále nachází informace identifikující daný přechod. Součástí této informace může být i doplňující informace o DTMF volbě, která slouží jako parametr tohoto přechodu a bývá uvedena v hranatých závorkách.
+
+Z důvodu zpřehlednění textu zde neuvádím diagramy všech částí aplikace. Nejvíce zajímavým částem aplikace se budu detailněji věnovat později.
 
 \subsubsection{Implementace}
-Popis navrhu knihovny/architektury. Popis trid. Principy jak funguje (stavový automat, stavy, udalosti, přechody mezi stavy).
+V této kapitole se budu věnovat implementaci hlasového portálu. Nejdříve se zaměřím na popis knihovny, která vznikla v rámci této práce za účelem usnadnění vývoje hlasových portálů. Poté se vrátím k detailnějšímu popisu implementace vybraných částí hlasového portálu. Proces implementace hlasového portálu můžu tedy rozdělit na dvě části. První částí je návrh VXML knihovny a druhou částí je návrh hlasového portálu rezervačního systému s využitím vytvořené knihovny.
+
+V kapitole \ref{sec:Zaklady_vxml} jsme se seznámili se základy návrhu VoiceXML dokumentů, konkrétně jsme se zde zaměřili na strukturu VXML dokumentu a popis vybraných elementů, které slouží k definici struktury aplikace. Již tedy máme dispozici znalosti, díky kterým jsme schopni napsat VXML kód, který popisuje jednoduchý hlasový portál.
+
+Při návrhu složitějšího hlasového portálu by nám mohla ušetřit hodně práce vyšší úroveň abstrakce. Tato abstrakce by nás mohla odstínit od přímého psaní VMXL kódu. A právě tuto abstrakci zajišťuje knihovna, kterou jsem vyvinul v rámci této diplomové práce. Při použití této knihovny se nemusíme soustředit na psaní validního VXML kódu, ale veškeré naše soustředění můžeme zaměřit na aplikační logiku. Tato knihovna dále umožňuje dosáhnout efektivní znovu použitelnosti kódu formou komponentního modelu. V neposlední řadě knihovna zjednodušuje vývoj tím způsobem, že v podstatě ruší rozdělení aplikace na klientskou a serverovou část. Při vývoji aplikace tedy nemáme aplikaci striktně rozdělenou na statické VXML dokumenty, které definují strukturu aplikace a zajišťují vstup a výstup, a serverovou část, která řeší přístup k datům a implementuje aplikační logiku.
+
+Knihovna je implementována v JavaScriptu\footnote{Více informací o této technologii můžete najít v odstavci \ref{sec:JavaScript}} a aplikace, která je vyvíjena s využitím této knihovny je spouštěna v serverovém prostředí na platformě Node.js.
+
+Samotná aplikace se dá jednoduše popsat jako kolekce stavů mezi kterými jsou definovány přechody do stavů dalších. Každý stav může být určitého typu. Jedním typem je stav, sloužící k získání vstupu od uživatele. Dalším typem je stav, který zajišťuje výstup, tedy sděluje uživateli nějakou informaci. Posledním typem je stav, který nezajišťuje vstup ani výstup, ale implementuje pouze logiku, na základě které dochází mj. k rozhodnutí do jakého dalšího stavu se bude přecházet.
+
+Každý stav může vyvolávat události. Pro každou vyvolanou událost je definován přechod do dalšího stavu. Způsob definice přechodů pomocí událostí zabraňuje vzniku pevných vazeb mezi objekty, které spolu potřebují nějakým způsobem komunikovat. V rámci interní implementace stavu tedy může docházet k vyvolání události, na které mohou závislé objekty nějakým způsobem reagovat.
+
+Každý stav může mít definovat akci, která se vyvolá v momentě, kdy dojde ke vstupu do tohoto stavu. Stav zároveň může definovat akci, která se provede těsně před přechodem do nového stavu, tedy při opouštění stavu, který tuto akci definoval. U stavů, které slouží k získání vstupu uživatele se obsluha akce při opouštění stavu typicky využívá ke zpracování vstupních dat (např. zápis dat do databáze).
+
+Každý stav se může skládat z dalších (vnořených) stavů. V případě, že stav vnořené stavy obsahuje, tak se mezi stavy přechází následujícím způsobem. Nejdříve se postupně navštíví vnořené stavy rodičovské stavu. Jakmile dojde k navštívení vnořeného stavu, který je finální, tak se zpracování vrací k přechodům, které má definován rodičovský stav.
+
+Knihovna nám tedy poskytuje rozhraní API umožňující definovat jednotlivé stavy aplikace, přechody mezi těmito stavy a akce, které se mají vyvolávat při přechodech do dalších stavů. Nemusíme se tedy starat o ruční psaní VXML kódu, který je nutný pro zpracování VXML interpretrem. Tento kód generuje knihovna automaticky. V následující části se budu podrobně věnovat jednotlivým částem rozhraní API, které nám knihovna nabízí.
 
 \paragraph{Srovnání návrhu aplikace pomocí knihovny a klasického přístupu}
 Příklad zpracování vstupu a výstupu. Knihovna vx. VXML markup.
