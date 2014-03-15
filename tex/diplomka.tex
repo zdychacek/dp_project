@@ -43,6 +43,7 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 \AddAcronym{ASR}{Automatic Speech Recognition}
 \AddAcronym{TTS}{Text To Speech}
 \AddAcronym{DTMF}{Dual-tone multi-frequency signaling}
+\AddAcronym{IVR}{Interactive Voice Response}
 
 
 % Zadame cestu a jmeno souboru ci nekolika souboru s digitalizovanou podobou zadani prace
@@ -295,6 +296,7 @@ Tuto technologii v aplikaci používám k synchronizaci všech aktuálně otevř
 Jedná se o automatizační nástroj, který usnadňuje workflow vývoje (nejen) webových aplikací. Tento nástroj nabízí aplikační rozhraní pro definici úkolů, které se mají automaticky provést v definovaný moment. Definice úkolů se popisuje v jazyce JavaScript. Já jsem tento nástroj použil např. k validaci zdrojového kódu napsaného v JavaScriptu nebo ke spouštění webového serveru. Tento nástroj jsem dokonce využil k automatizaci sazby této práce - po každém uložení zdrojového \LaTeX\ souboru dojde k automatickému vytvoření výstupního PDF souboru. Více informaci o tomto nástroji je možné nalézt na oficiálních webových stránkách\cite{grunt}.
 
 \subsection{Návrh hlasového portálu}
+\label{sec:Navrh_hlasoveho_portalu}
 Hlasový portál umožňuje uživateli ovládat rezervační systém prostřednictvím hlasové samoobsluhy. Rezervační systém byl představen za začátku kapitoly \ref{sec:Navrh}. Hlasový portál umožňuje uživateli spravovat své rezervace prostřednictvím hlasové samoobsluhy, se kterou se spojí vytočením telefonního čísla např. na svém mobilním telefonu.
 
 Hlasový portál se od portálu webového liší hlavně ve způsobu interakce uživatele se systémem a množinou dostupných akcí, které jsou uživateli umožněny. Stručně řečeno je uživateli nabídnuta podmnožina akcí, které jsou dostupné ve webovém portálu. Hlasový portál nabízí užší množinu funkcí hlavně z toho důvodu, že ne všechny funkce systému lze z pohledu uživatelského rozhraní komfortně implementovat i v prostředí hlasového systému. Hlasový portál je tedy cílen pouze na uživatele v roli zákazníka letecké společnosti a nenabízí funkce uživatelům v roli administrátora systému, které jim jsou dostupné prostřednictvím webového portálu (např. přidání nového letu do databáze).
@@ -302,29 +304,33 @@ Hlasový portál se od portálu webového liší hlavně ve způsobu interakce u
 V následujícím seznamu uvádím souhrn akcí, které může uživatel prostřednictvím hlasového portálu vykonávat:
 
 \begin{itemize}
-\item přihlášení/odhlášení ze systému
+\item přihlášení do systému
 \item založení nové rezervace
 \item vylistování seznamu aktivních rezervací
 \item zrušení všech aktivních rezervací
+\item odhlášení ze systému
 \end{itemize}
-
-Pro navigaci napříč hlasovým portálem jsem dal přednost ovládání pomocí DTMF volby.
-TODO: Popsat způsob navigace, přihlášení do aplikace, členění aplikace.
 
 V následujícím textu nejdříve popíši odlišnosti v návrhu uživatelského rozhraní hlasového portálu ve srovnání s návrhem uživatelského rozhraní webového portálu a poté se zaměřím na samotnou implementaci hlasového rozhraní rezervačního systému.
 
-\subsubsection{Návrh uživatelského rozhraní}
-Rozhraní sloužící ke komunikaci mezi uživatelem systému a systémem samotným je diametrálně odlišné od rozhraní, které nabízí webové portály. Proto je nutné při návrhu uživatelského rozhraní k těmto odlišnostem přihlédnout. Hlavní rozdíl mezi uživatelským rozhraním webových a hlasových portálu je ve způsobu interakce. Webové portály nabízí uživatelská rozhraní založená převážně na interakci pomocí vizuálních vjemů uživatele. Interakci založenou na vizuálních vjemech ale není možné zapojit do návrhu uživatelského rozhraní pro hlasový portál. Uživatelské rozhraní hlasového portálu nabízí pouze na interakce založené na zvukových vjemech a hlasových odezvách.
+\subsubsection{Uživatelské rozhraní}
+Rozhraní sloužící ke komunikaci mezi uživatelem a hlasovým portálem je diametrálně odlišné od rozhraní, které nabízí webové portály. Proto je nutné při návrhu uživatelského rozhraní hlasového portálu k těmto odlišnostem přihlédnout. Hlavní rozdíl mezi uživatelským rozhraním webových a hlasových portálů je ve způsobu interakce. Zatímco webové portály nabízí uživatelská rozhraní založená převážně na interakci pomocí vizuálních vjemů uživatele, při návrhu uživatelského rozhraní hlasového portálu není možné interakci založenou na vizuálních vjemech aplikovat. Uživatelské rozhraní hlasových portálů je totiž založeno pouze na zvukových vjemech a hlasových odezvách. Proto není vhodné navrhovat příliš komplexní uživatelské rozhraní. Naopak, musíme se snažit uživatelské rozhraní členit co nejjednodušeji a přehledně tak, abychom uživateli interakci se systémem co nejvíce zjednodušili a nedocházelo tak k dezorientaci v prostředí systému.
 
-Z pohledu návrhu, z výše uvedeného, plyne například nevhodnost navrhovat příliš komplexní uživatelská rozhraní. Musíme se snažit interakci se systémem uživateli co nejvíce zjednodušit, aby se uživatel v prostředí systému neztrácel.
+Komunikace s uživatelem většinou probíhá pomocí automatické syntézy řeči. Zatím však neexistuje hlasový syntetizátor, který by se svou kvalitou zcela vyrovnal lidské řeči. V závislosti na kvalitě použitého syntetizéru může někdy při syntéze řeči docházet ke komolení slov a pro uživatele nemusí být sdělení zcela srozumitelné. V tomto případě většinou stačí nahradit zkomolenou část věty jiným slovem či slovním spojením. V případě použití nekvalitního syntetizéru řeči se, před nasazením hlasového portálu do produkčního prostředí, doporučuje veškerá hlasová sdělení namluvit a zdigitalizovat a tyto nahrávky používat místo automatické syntézy.
 
-Komunikace s uživatelem většinou probíhá pomocí automatické syntézy řeči. Zatím bohužel neexistuje hlasový syntetizátor, který by se svou kvalitou zcela vyrovnal lidské řeči. Někdy proto může při syntéze řeči docházet ke komolení některých slov a pro uživatele nemusí být sdělení zcela srozumitelné. V tomto případě většinou stačí nahradit zkomolenou část věty jiným slovem či slovním spojením. V případě použití nekvalitního syntetizéru řeči se, před nasazením hlasového portálu do produkčního prostředí, doporučuje veškerá hlasová sdělení namluvit a zdigitalizovat a tyto používat místo automatické syntézy.
-
-Před začátkem návrhu uživatelského rozhraní hlasového systému je vhodné nejdříve provést analýzu cílové skupiny uživatelů, která bude daný systém používat. Uživatelé z různých cílových skupin mají ve většině případů odlišné požadavky na podobu uživatelského rozhraní. V případě, že se např. zaměřujeme na skupinu uživatelů staršího věku, můžeme předpokládat, že uživatelé nemají žádné zkušenosti s ovládáním hlasového portálu. Proto bychom se měli snažit ovládání systému ještě více zjednodušit. Takového zjednodušení lze dosáhnout například nabídnutím možnosti vyvolání okamžité nápovědy pro právě probíhající interakci. Pro takového uživatele bude zároveň jistě pohodlnější komunikovat se systémem za pomoci automatického rozpoznávání řeči než pomocí DTMF volby.
+Před začátkem návrhu uživatelského rozhraní hlasového systému je vhodné nejdříve provést analýzu cílové skupiny uživatelů, která bude daný systém používat. Uživatelé z různých cílových skupin mají ve většině případů odlišné požadavky na podobu uživatelského rozhraní. Pokud se například zaměřujeme na skupinu uživatelů staršího věku, můžeme předpokládat, že tito uživatelé nemají žádné nebo velmi omezené zkušenosti s ovládáním hlasového portálu. Proto bychom se měli snažit ovládání systému ještě více zjednodušit. Takového zjednodušení lze dosáhnout například nabídnutím možnosti vyvolání okamžité nápovědy během právě probíhající hlasového interakce. Pro takového uživatele bude zároveň jistě pohodlnější komunikovat se systémem za pomoci automatického rozpoznávání řeči než pomocí DTMF volby.
 
 Naopak pokud víme, že naši aplikaci budou využívat převážně uživatelé, kteří jsou znalí moderních technologií, můžeme si dovolit navrhnout složitější uživatelské rozhraní založené na ovládání pomocí DTMF volby.
 
-Jedno je ale společné pro všechny typy uživatelů - umožnit jim rychlou a pohodlnou navigaci napříč celou aplikací tak, aby byli schopni se v co nejkratším čase dostat k informaci, kterou hledají.
+Jedno je ale společné pro všechny typy uživatelů. Za každých okolností jim musíme umožnit rychlou a pohodlnou navigaci napříč celou aplikací tak, aby byli schopni se v co nejkratším čase dostat k informaci, kterou hledají.
+
+Já jsem se při návrhu hlasového portálu zaměřil na cílovou skupinu uživatelů, u kterých již předpokládám určitou znalost komunikace s hlasovým portálem\footnote{Předpokládám tedy, že uživatelé mají zkušenost alespoň s hlasovou samoobsluhou svého mobilního operátora}. Pro navigaci napříč hlasovým portálem se využívá ovládání pomocí DTMF volby. Ovládání pomocí DTMF volby jsem zvolil hlavně ze dvou důvodů. Prvním důvodem je potřeba získávat od uživatele přesné vstupy jako je např. zadání data nebo identifikátoru rezervace letu. Tyto vstupy se dají jednoduše zadávat pomocí DTMF volby. Dalším důvodem zvolení DTMF je široká podpora tohoto typu vstupu ze strany IVR platforem. Mým cílem bylo zprovoznit aplikaci na dvou různých IVR platformách, přičemž jedna z nich nenabízí podporu vstupu pomocí automatického rozpoznávání řeči. V rámci zachování jednotné metody vstupu napříč všemi testovanými IVR platformami jsem tedy zvolil DTMF volbu.
+
+Aby bylo možné s hlasovým rozhraním rezervačního systému začít pracovat, je nutné se do něj nejdříve přihlásit. Každý uživatel se prokazuje svým telefonním číslem a číselným heslem. Pokud uživatel zadá špatné telefonní číslo a heslo, tak je mu nabídnuto opakované zadání. V případě, že se uživatel prokáže správným telefonním číslem, ale špatným heslem a toto zadání provede třikrát za sebou špatně, tak dojde k dočasnému zablokování toho účtu. V tomto případě je uživateli sdělena informace o tom, kdy se může zkusit znovu přihlásit.
+
+\InsertFigure{Figures/diagrams/mainflow}{1\textwidth}{Stránka zobrazující seznamem letů a filtr}{fig:MainFlow}
+
+V případě úspěšného přihlášení do systému, je uživateli přehrána uvítací zpráva a následně je uživatel přesměrován do hlavního menu aplikace, kde má k dispozici akce pro správu a vytváření rezervací (seznam akcí je uveden v textu kapitoly \ref{sec:Navrh_hlasoveho_portalu}). Jednotlivá menu aplikace jsou navržena tak, aby měl uživatel kdykoliv možnost vrátit se o úroveň zpět. Na obrázku \ref{fig:MainFlow} je zobrazena hlavní struktura hlasového portálu. Struktura aplikace je na obrázku popsána formou stavového diagramu. Obdélníky reprezentují jednotlivé stavy aplikace. Některé stavy jsou pro svoji komplexnost zobrazeny pouze abstraktně. U abstraktních stavů je vždy uvedena informace, která slouží jako jakýsi odkaz na další diagram, který daný stav popisuje detailněji. Z důvodu zpřehlednění textu zde neuvádím diagramy všech částí aplikace. Nejzajímavějším částem aplikace se budu detailněji věnovat dále v textu.
 
 \subsubsection{Implementace}
 Popis navrhu knihovny/architektury. Popis trid. Principy jak funguje (stavový automat, stavy, udalosti, přechody mezi stavy).
