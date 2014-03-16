@@ -5,4 +5,5 @@ public/img/carriersLogos
 public/img/logos
 tex/*
 !tex/Figures
+!tex/Src
 !*.tex

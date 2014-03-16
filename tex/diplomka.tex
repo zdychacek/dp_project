@@ -3,6 +3,42 @@
 %\documentclass[ing,male,java,dept460,twoside]{diploma}		% oboustranny dokument
 \usepackage[czech]{babel}
 
+% JavaScript highlighting
+\usepackage{listings}
+\usepackage{color}
+\definecolor{lightgray}{rgb}{.9,.9,.9}
+\definecolor{darkgray}{rgb}{.4,.4,.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+
+\lstdefinelanguage{JavaScript}{
+	keywords=keywords={break, case, catch, continue, debugger, default, delete, do, else, finally, for, function, if, in, instanceof, new, return, switch, this, throw, try, typeof, var, void, while, with},
+	keywordstyle=\color{blue}\bfseries,
+	ndkeywords={class, export, boolean, throw, implements, import, this},
+	ndkeywordstyle=\color{darkgray}\bfseries,
+	identifierstyle=\color{black},
+	sensitive=false,
+	comment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	commentstyle=\color{purple}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+	morestring=[b]',
+	morestring=[b]"
+}
+
+\lstset{
+	 language=JavaScript,
+	 extendedchars=true,
+	 basicstyle=\footnotesize\ttfamily,
+	 showstringspaces=false,
+	 showspaces=false,
+	 numbers=left,
+	 numberstyle=\footnotesize,
+	 numbersep=9pt,
+	 tabsize=2,
+	 breaklines=true,
+	 showtabs=false,
+	 captionpos=b
+}
 
 % Zadame pozadovane vstupy pro generovani titulnich stran.
 \ThesisAuthor{Ondřej Ždych}
@@ -275,6 +311,7 @@ Node.js\cite{nodejs} je technologie přinášející možnost psát serverové �
 Technologii jsem zvolil hlavně proto, že mi umožňuje psát serverovou a klientskou část aplikace ve stejném programovacím jazyce, tedy v JavaScriptu.
 
 \subsubsection{Express.js}
+\label{sec:ExpressJs}
 Jedná se o minimalistický framework pro Node.js, který umožňuje snadné vytváření webových aplikací. Nabízí např. funkce pro práci s cookies, práci s objektem příchozího požadavku a zápis do objektu odpovědi. Framework je jednoduše rozšiřitelný o další funkce.
 
 Více informací o tomto frameworku je možné nalézt na oficiálním webu\cite{expressjs}.
@@ -285,6 +322,7 @@ Pro ukládání dat jsem zvolil databázi MongoDB. MongoDB je NoSQL databáze, c
 V kombinaci s touto databází jsem použil nadstavbu Mongoose\cite{mongoose}, což je vrstva přidávající možnost nadefinovat si pevné schéma dokumentů a pracovat s těmito dokumenty jako s datovými modely. Tato vrstva dále umožňuje např. přidávání validačních metod na jednotlivé modely.
 
 \subsubsection{WebSockets}
+\label{sec:WebSockets}
 Je technologie pro tvorbu webových aplikací, které mezi sebou potřebují komunikovat v reálném čase. Technologie je součástí standardu HTML5 a je již v moderních prohlížečích plně implementována. Technologie umožňuje vybudovat plně duplexní komunikační kanál mezi klientem serverem a tímto kanálem si vzájemně vyměňovat data. Jedná se v podstatě o obdobu klasického TCP spojení přeneseného do oblasti webových aplikací. WebSockety komunikují nad standardním HTTP protokolem, nemají proto problém s jakýmikoliv proxy servery a firewally na trase mezi klientem a serverem.
 
 Tuto technologii v aplikaci používám k synchronizaci všech aktuálně otevřených webových rozhraní, aby přihlášený uživatel nemusel otevřenou stránku ve webovém prohlížeči manuálně znovu načítat.
@@ -336,7 +374,9 @@ Pomocí šipek jsou v diagramu popsány přechody mezi jednotlivými stavy. U ka
 Z důvodu zpřehlednění textu zde neuvádím diagramy všech částí aplikace. Nejvíce zajímavým částem aplikace se budu detailněji věnovat později.
 
 \subsection{Implementace hlasového portálu}
-V této kapitole se budu věnovat implementaci hlasového portálu. Nejdříve se zaměřím na popis knihovny, která vznikla v rámci této práce za účelem usnadnění vývoje hlasových portálů. Poté se vrátím k detailnějšímu popisu implementace vybraných částí hlasového portálu. Proces implementace hlasového portálu můžu tedy rozdělit na dvě části. První částí je návrh VXML knihovny a druhou částí je návrh hlasového portálu rezervačního systému s využitím vytvořené knihovny.
+V této kapitole se budu věnovat implementaci hlasového portálu. Nejdříve se zaměřím na popis knihovny, která vznikla v rámci této práce za účelem usnadnění vývoje hlasových portálů postavených na platformě VoiceXML. Poté se vrátím k detailnějšímu popisu implementace vybraných částí hlasového portálu.
+
+Proces implementace hlasového portálu můžu tedy rozdělit na dvě části. První částí je návrh VXML knihovny a druhou částí je návrh hlasového portálu rezervačního systému s využitím vytvořené knihovny.
 
 \subsubsection{Implementace pomocné knihovny}
 
@@ -346,7 +386,7 @@ Při návrhu složitějšího hlasového portálu by nám mohla ušetřit hodně
 
 Knihovna je implementována v JavaScriptu\footnote{Více informací o této technologii můžete najít v kapitole \ref{sec:JavaScript}.} a aplikace, která je vyvíjena s využitím této knihovny je spouštěna v serverovém prostředí na platformě Node.js.
 
-Samotná aplikace se dá jednoduše popsat jako kolekce stavů mezi kterými jsou definovány přechody do stavů dalších. Každý stav může být určitého typu. Jedním typem je stav, sloužící k získání vstupu od uživatele. Dalším typem je stav, který zajišťuje výstup, tedy sděluje uživateli nějakou informaci. Posledním typem je stav, který nezajišťuje vstup ani výstup, ale implementuje pouze logiku, na základě které dochází mj. k rozhodnutí do jakého dalšího stavu se bude přecházet.
+Samotná aplikace se dá jednoduše popsat jako kolekce stavů mezi kterými jsou definovány přechody do stavů dalších (v podstatě se tedy jedná o stavový automat). Každý stav může být určitého typu. Jedním typem je stav, sloužící k získání vstupu od uživatele. Dalším typem je stav, který zajišťuje výstup, tedy sděluje uživateli nějakou informaci. Posledním typem je stav, který nezajišťuje vstup ani výstup, ale implementuje pouze logiku, na základě které dochází mj. k rozhodnutí do jakého dalšího stavu se bude přecházet.
 
 Každý stav může vyvolávat události. Pro každou vyvolanou událost je definován přechod do dalšího stavu. Způsob definice přechodů pomocí událostí zabraňuje vzniku pevných vazeb mezi objekty, které spolu potřebují nějakým způsobem komunikovat. V rámci interní implementace stavu tedy může docházet k vyvolání události, na které mohou závislé objekty nějakým způsobem reagovat.
 
@@ -356,10 +396,56 @@ Každý stav se může skládat z dalších (vnořených) stavů. V případě, 
 
 Knihovna nám tedy poskytuje rozhraní API umožňující definovat jednotlivé stavy aplikace, přechody mezi těmito stavy a akce, které se mají vyvolávat při přechodech do dalších stavů. Nemusíme se tedy starat o ruční psaní VXML kódu, který je nutný pro zpracování VXML interpretrem. Tento kód generuje knihovna automaticky.
 
-V následující části se budu podrobně věnovat jednotlivým částem rozhraní API, které nám knihovna nabízí.
+\subsubsection{Aplikační rozhraní knihovny}
+V předchozí kapitole jsem představil pomocnou knihovnu a popsal jsem důvody, které mě vedly k její implementaci.
 
-\subsubsection{Aplikační rozhraní vyvíjené knihovny}
-Popis struktury knihovny. Srovnání návrhu aplikace pomocí knihovny a klasického přístupu. Příklad zpracování vstupu a výstupu. Knihovna vs. VXML markup.
+V této části se budu podrobně věnovat jednotlivým částem rozhraní API, které nám tato knihovna nabízí. Popíši zde jednotlivé třídy, které knihovna obsahuje. Aby bylo možné srovnat vývoj VXML hlasového portálu za pomoci této knihovny s tradičním způsobem vývoje (kdy ručně vytváříme VXML kód), nesmí chybět i ukázky použití jednotlivých částí knihovny.
+
+Ve výpise \ref{src:MenuExample} uvádím zdrojový kód jednoduché aplikace, jejíž zdrojový kód nám v dalším textu poslouží pro detailnější rozbor. Jen pro představu zde ještě uvedu, co daná aplikace dělá. Aplikace představuje jednoduché menu. Nejdříve nás aplikace přivítá uvítací hláškou. Poté dojde k přechodu do menu, kde se dozvídáme, že můžeme pomocí volby DTMF zvolit hodnotu 1, 2 nebo 3. V závislosti na výběru poté přecházíme do stavu, ve kterém jsme informováni o tom, jakou volbu jsme provedli. Pokud zvolíme jinou hodnotu, než je povoleno (např. 4) dojde k přechodu do stavu, kde je nám řečeno, že jsme zvolili nepovolenou volbu.
+
+\lstinputlisting[label=src:MenuExample,caption={Zdrojový kód ukázkové aplikace}]{Src/MenuExample.js}
+
+\paragraph{Třída Application}
+\label{sec:Application}
+Každá aplikace je reprezentována hlavním objektem aplikace, který celou aplikaci zapouzdřuje. Instance této třídy představuje hlavní objekt aplikace. Hlavním úkolem aplikačního objektu je automatické generování VXML dokumentu, který je vždy vygenerován pro aktuální stav aplikace a slouží jako vstup pro VXML interpretr. Interpretr tento dokument zpracuje a výsledkem je dialog mezi uživatelem a hlasovým systémem.
+
+Tato třída implementuje statickou metodu \InlCode{create}, která přijímá potřebné parametry k vytvoření aplikace. Ve výpise \ref{src:Application_create} je uvedena ukázka kódu, kterým se vytvoří instance aplikace.
+
+\lstinputlisting[label=src:Application_create,caption={Vytvoření hlavního objektu aplikace}]{Src/Application_create.js}
+
+Metoda \InlCode{create} přijímá jako parametr jeden objekt, který obsahuje jednotlivé parametry aplikace. Následuje popis jednotlivých parametrů.
+
+Hodnota parametru \InlCode{server} reprezentuje instanci Express.js serveru (viz \ref{sec:ExpressJs}), nad kterým VXML aplikace poběží. Tato instance je interně využita k navěšení metod, které obsluhují jednotlivé požadavky na přechod mezi stavy aplikace (HTTP požadavky).
+
+Parametr \InlCode{route} udává, na jaké URL bude aplikace dostupná.
+
+Parametr \InlCode{controller} je reference na konstruktor, který se použije k vytvoření hlavního flow\footnote{V textu používám termín $flow$ pro označení instancí třídy \InlCode{CallFlow}\ref{sec:CallFlow}, které definují kolekci stavů aplikace.} aplikace.
+
+Posledním parametrem, který není povinný, je parametr \InlCode{config}. Jedná se o objekt, pomocí kterého můžeme do aplikace protlačit jakékoliv další parametry. Tyto parametry jsou poté dostupné celé aplikaci. V příkladu je uvedeno nastavení \InlCode{io}, kterým aplikaci předávám referenci na objekt, který se stará o generování push notifikací pomocí technologie WebSockets\footnote{Technologie WebSockets byla představena v kapitole \ref{sec:WebSockets}.}.
+
+\paragraph{Třída CallFlow}
+\label{sec:CallFlow}
+Tato třída slouží jako bázová třída pro implementaci objektu, který představuje kontejner pro jednotlivé stavy. Primárním úkolem této třídy je vytvořit a zaregistrovat jednotlivé stavy (viz \ref{sec:State}) pomocí metody \InlCode{addState} resp. pomocí metody \InlCode{addStates}, která registruje více stavů v jednom volání.
+
+Flow zároveň slouží jako jakási sdílená sběrnice, která je přístupná všem stavům, které jsou ve flow obsaženy. Může tedy např. sloužit k uchování dat, která jsou společná pro více stavů.
+
+Důležitou metodou této třídy je metoda \InlCode{fireEvent(event, data)}. Tato metoda se volá v momentě, kdy je potřeba přejít do dalšího stavu. Volání přebírá dva parametry. Parametr \InlCode{event} identifikuje typ události. Na základě typu události metoda rozhodne, do jakého dalšího stavu se má přejít. Každou vyvolanou událost můžou volitelně doprovázet \InlCode{data} specifická pro danou událost.
+
+Kód ve výpise \ref{src:MenuExample} mj. demonstruje vytvoření instance třídy \InlCode{CallFlow} a registraci stavů. Takovou instanci je možné předat hlavnímu objektu aplikace prostřednictvím hodnoty parametru \InlCode{controller} (viz \ref{sec:Application}).
+
+\paragraph{Třída State}
+\label{sec:State}
+Tato třída reprezentuje jeden stav aplikace. Jedná se o bázovou třídu, ze které se dají odvodit specifičtější třídy nebo lze přímo vytvořit instanci této třídy. Jednotlivé stavy se registrují do instance třídy \InlCode{CallFlow} např pomocí metody \InlCode{addState} (viz \ref{sec:CallFlow}).
+
+Konstruktor může přijímat tři parametry. Prvním a jediným povinným parametrem je parametr \InlCode{id}. Jedná se o identifikátor stavu, který musí být jedinečný v rámci jednoho flow.
+
+Zbývající parametry \InlCode{target} a \InlCode{event} jsou nepovinné. V případě, že jsou tyto parametry uvedeny, tak konstruktor interně zavolá metodu \InlCode{addTransition} s hodnotami těchto parametrů. Metoda má následující předpis \InlCode{addTransition(event, target, condition)}. Tato metoda slouží k definici přechodů do dalších stavů. Každý stav může mít definováno více přechodů. Přechod je definován kombinací typu události a cílového stavu. Tato kombinace může být volitelně rozšířena ještě parametrem \InlCode{condition}. Metodě \InlCode{addTransition} může být cílový stav \InlCode{target} předán formou reference na instanci třídy \InlCode{State} nebo můžeme metodě předat pouze identifikátor stavu.
+
+V některých případech se nám může hodit nadefinovat více přechodů se stejným typem události. Více přechodů se stejným typem události bývá typicky definováno u stavů, které nějakou formou implementují menu. V momentě, kdy je proveden výběr v menu, může být vyvolána obecná událost, např. $continue$. Tato obecná událost je parametrizována hodnotou, která byla v menu zvolena. Zde se dostáváme k volitelnému parametru \InlCode{condition}, který slouží k rozhodnutí, do jakého stavu se přejde. Hodnotou tohoto parametru je funkce, která přebírá jeden parametr a to je právě hodnota, která byla v menu zvolena. Tato funkce obsahuje rozhodovací logiku, která má tedy k dispozici informaci o vybrané hodnotě a vrací hodnotu $true$ v případě, že se má tento přechod použít pro přechod do dalšího stavu. Demonstrace toho postupu je vidět ve výpise \ref{src:MenuExample}.
+
+Třída dále obsahuje metody \InlCode{addOnEntryAction} a \InlCode{addOnExitAction}, které slouží k registraci akcí, které se vyvolají při vstupu resp. při výstupu z tohoto stavu.
+
+Jak již bylo předesláno dříve, každý stav může obsahovat vnořené stavy. K registraci vnořených stavů slouží metoda \InlCode{addNestedCallFlow(callFlow)}, která přijímá jeden parametr. Hodnota parametru \InlCode{callFlow} je instance, pro nás již známé, třídy \InlCode{CallFlow}, která byla popsána v kapitole \ref{sec:CallFlow}. Díky této možnosti můžeme jednoduše docílit znovupoužitelnosti kódu, kdy opakovaně využívanou komponentu implementujeme jako samostatnou třídu, která je odvozena ze třídy \InlCode{CallFlow}. Instance této třídy je poté registrována zavoláním metody \InlCode{addNestedCallFlow} na daném stavu. V případě potřeby může být tato instance parametrizována, např. předáním různých parametrů do konstruktoru.
 
 \subsubsection{Znovupoužitelné komponenty}
 Zadání data (+diagram). Zadání textového vstupu (+diagram). Seznam rezervací/letů (+diagram).
