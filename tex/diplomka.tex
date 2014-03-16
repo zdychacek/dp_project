@@ -330,6 +330,9 @@ Tuto technologii v aplikaci používám k synchronizaci všech aktuálně otevř
 \subsubsection{Grunt}
 Jedná se o automatizační nástroj, který usnadňuje workflow vývoje (nejen) webových aplikací. Tento nástroj nabízí aplikační rozhraní pro definici úkolů, které se mají automaticky provést v definovaný moment. Definice úkolů se popisuje v jazyce JavaScript. Já jsem tento nástroj použil např. k validaci zdrojového kódu napsaného v JavaScriptu nebo ke spouštění webového serveru. Tento nástroj jsem dokonce využil k automatizaci sazby této práce - po každém uložení zdrojového \LaTeX\ souboru dojde k automatickému vytvoření výstupního PDF souboru. Více informaci o tomto nástroji je možné nalézt na oficiálních webových stránkách\cite{grunt}.
 
+\subsubsection{Jade}
+Jedná se o nejrozšířenější šablonovací jazyk používaný na platformě Node.js. Jade svými vlastnostmi urychluje zápis HTML kódu. Např. není potřeba psát ukončovací značky HTML elementů a není potřeba značky zapisovat v úhlových závorkách. Zanoření jednotlivých elementů je vyjádřeno postupným odsazováním elementů. Šablonovací systém je rozšiřitelný pomocí mixinů.
+
 \section{Návrh hlasového portálu}
 \label{sec:Navrh_hlasoveho_portalu}
 V této části práce se zaměřím na popis procesu návrhu a následné implementace hlasového portálu rezervačního systému. Rezervační systém byl podrobněji představen za začátku kapitoly \ref{sec:Navrh}. Hlasový portál umožňuje uživateli spravovat své rezervace prostřednictvím hlasové samoobsluhy, se kterou se spojí vytočením telefonního čísla např. na svém mobilním telefonu.
@@ -419,9 +422,11 @@ Hodnota parametru \InlCode{server} reprezentuje instanci Express.js serveru (viz
 
 Parametr \InlCode{route} udává, na jaké URL bude aplikace dostupná.
 
-Parametr \InlCode{controller} je reference na konstruktor, který se použije k vytvoření hlavního flow\footnote{V textu používám termín $flow$ pro označení instancí třídy \InlCode{CallFlow}\ref{sec:CallFlow}, které definují kolekci stavů aplikace.} aplikace.
+Parametr \InlCode{controller} je reference na konstruktor, který se použije k vytvoření hlavního flow\footnote{V textu používám termín $flow$ pro označení instancí třídy \InlCode{CallFlow} (viz \ref{sec:CallFlow}), které definují kolekci stavů aplikace.} aplikace.
 
 Posledním parametrem, který není povinný, je parametr \InlCode{config}. Jedná se o objekt, pomocí kterého můžeme do aplikace protlačit jakékoliv další parametry. Tyto parametry jsou poté dostupné celé aplikaci. V příkladu je uvedeno nastavení \InlCode{io}, kterým aplikaci předávám referenci na objekt, který se stará o generování push notifikací pomocí technologie WebSockets\footnote{Technologie WebSockets byla představena v kapitole \ref{sec:WebSockets}.}.
+
+TODO: popsat, jak vypadá HTTP požadavek na přechod do dalšího stavu.
 
 \paragraph{Třída CallFlow}
 \label{sec:CallFlow}
@@ -431,7 +436,7 @@ Flow zároveň slouží jako jakási sdílená sběrnice, která je přístupná
 
 Důležitou metodou této třídy je metoda \InlCode{fireEvent(event, data)}. Tato metoda se volá v momentě, kdy je potřeba přejít do dalšího stavu. Volání přebírá dva parametry. Parametr \InlCode{event} identifikuje typ události. Na základě typu události metoda rozhodne, do jakého dalšího stavu se má přejít. Každou vyvolanou událost můžou volitelně doprovázet \InlCode{data} specifická pro danou událost.
 
-Kód ve výpise \ref{src:MenuExample} mj. demonstruje vytvoření instance třídy \InlCode{CallFlow} a registraci stavů. Takovou instanci je možné předat hlavnímu objektu aplikace prostřednictvím hodnoty parametru \InlCode{controller} (viz \ref{sec:Application}).
+Kód ve výpise \ref{src:MenuExample} demonstruje vytvoření instance třídy \InlCode{CallFlow} a registraci stavů. Takovou instanci je možné předat hlavnímu objektu aplikace prostřednictvím hodnoty parametru \InlCode{controller} (viz \ref{sec:Application}).
 
 \paragraph{Třída State}
 \label{sec:State}
@@ -447,16 +452,70 @@ Třída dále obsahuje metody \InlCode{addOnEntryAction} a \InlCode{addOnExitAct
 
 Jak již bylo předesláno dříve, každý stav může obsahovat vnořené stavy. K registraci vnořených stavů slouží metoda \InlCode{addNestedCallFlow(callFlow)}, která přijímá jeden parametr. Hodnota parametru \InlCode{callFlow} je instance, pro nás již známé, třídy \InlCode{CallFlow}, která byla popsána v kapitole \ref{sec:CallFlow}. Díky této možnosti můžeme jednoduše docílit znovupoužitelnosti kódu, kdy opakovaně využívanou komponentu implementujeme jako samostatnou třídu, která je odvozena ze třídy \InlCode{CallFlow}. Instance této třídy je poté registrována zavoláním metody \InlCode{addNestedCallFlow} na daném stavu. V případě potřeby může být tato instance parametrizována, např. předáním různých parametrů do konstruktoru.
 
-\subsubsection{Znovupoužitelné komponenty}
+Třída \InlCode{State} obsahuje tovární statickou metodu \InlCode{create}, která je další možností, jak vytvořit instanci stavu. Oproti vytvoření stavu pomocí konstruktoru nabízí pohodlnější cestu k vytvoření stavu, který obsahuje hlasový model (viz \ref{sec:VoiceModel}). Hlasový model popisuje např., zda stav slouží k přečtení vstupu od uživatele nebo k "zobrazení" nějakého výstupu. Vytváření stavů pomocí teto metody je použito ve výpise \ref{src:MenuExample}.
+
+Ve stejném výpise si můžeme všimnout, že volání většiny metod třídy \InlCode{State} se dá řetězit. V jednom řetězu volání můžeme vytvořit instanci stavu, navěsit akce, které se volají při přechodu do dalších stavů a nadefinovat přechody do dalších stavů.
+
+\paragraph{Třída VoiceModel}
+\label{sec:VoiceModel}
+V podstatě se jedná o abstraktní třídu, ze které se instance nevytvářejí přímo. Slouží jako bázová třída, ze které jsou odvozeny třídy reprezentující konkrétní hlasový model.
+
+Hlasový model představuje způsob, jakým definujeme typ stavu. Z tohoto pohledu knihovna rozlišuje v podstatě dva typy stavů resp. hlasových modelů.
+
+Prvním typem je hlasový model, který slouží k získání vstupu od uživatele. Takový hlasový model v praxi vypadá tak, že obsahuje text zprávy, pomocí které se uživateli sdělí, jaké jsou přípustné hodnoty pro vstup. Dále hlasový model v tomto případě obsahuje popis gramatiky, která definuje validní hodnoty pro vstup. Tento typ hlasového modelu je implementován třídou \InlCode{Ask} (viz \ref{sec:Ask}).
+
+Dalším typem hlasového modelu, který také zajišťuje získání vstupu, je hlasový model představovaný třídou \InlCode{Record} (viz \ref{sec:Record}). Tento hlasový model zaznamenává vstup formou nahrávky zprávy.
+
+Druhým typem hlasového modelu je model, který slouží k prezentaci nějakého výstupu. V praxi takový hlasový model obsahuje pouze definici zprávy, která se má uživateli předložit. Tento typ hlasového modelu je implementován třídou \InlCode{Say} (viz \ref{sec:Say}) nebo třídou \InlCode{Exit} (viz \ref{sec:Exit}).
+
+Instance této třídy obsahují všechny informace, které jsou nutné pro automatické vygenerování výsledného VXML souboru.
+
+\paragraph{Třída Prompt}
+\label{sec:Prompt}
+
+\paragraph{Třída Say}
+\label{sec:Say}
+
+\paragraph{Třída Exit}
+\label{sec:Exit}
+
+\paragraph{Třída Ask}
+\label{sec:Ask}
+
+\paragraph{Třída Record}
+\label{sec:Record}
+
+\paragraph{Třída Grammar, Rule a Item}
+\label{sec:Grammar}
+
+\paragraph{Třída BuiltinGrammar}
+\label{sec:BuiltinGrammar}
+
+\paragraph{Třída Choices}
+\label{sec:Choices}
+
+\paragraph{Třída SayAs}
+\label{sec:SayAs}
+
+\paragraph{Třída Audio}
+\label{sec:Audio}
+
+\paragraph{Třída Silence}
+\label{sec:Silence}
+
+\paragraph{Třída TtsMessage}
+\label{sec:TtsMessage}
+
+\subsubsection{Popis implementace vybraných částí hlasového portálu}
 Zadání data (+diagram). Zadání textového vstupu (+diagram). Seznam rezervací/letů (+diagram).
 
 \section{Konfigurace a zprovoznění hlasového portálu}
-Popis, jak zprovoznit aplikaci na platformách. Voxeo Prophecy, Asterisk + VoiceGlue.
+Popis, jak zprovoznit aplikaci na jednotlivých platformách. Voxeo Prophecy, Asterisk + VoiceGlue.
 
 \subsection{Voxeo Prophecy}
 ...
 
-\subsection{Asterisk + VoiceGlue}
+\subsection{VoiceGlue}
 ...
 
 \section{Zátěžové testy portálu}
@@ -466,11 +525,11 @@ Popis, jak probíhal test. Použité nástroje.
 \subsection{Zátěžový test aplikačního serveru}
 ab test aplikačního serveru.
 
-\subsection{Zátěžový test IVR Voxeo Prophecy}
-Omezení dva paralelní hovory. Test 1 a 2 připojených klientů.
+\subsection{Zátěžový test Voxeo Prophecy}
+Omezení dva paralelní hovory. Test 1 a 2 připojených klientů + extrapolace pro 5 a 10 klientů.
 
-\subsection{Zátěžový test IVR VoiceGlue}
-Test 1, 2, 5, 10 pčipojených klientů.
+\subsection{Zátěžový test VoiceGlue}
+Test 1, 2, 5, 10 připojených klientů.
 
 \subsection{Výsledky měření}
 Co jsme zjistili v testech?
@@ -478,7 +537,6 @@ Co jsme zjistili v testech?
 \section{Závěr}
 \label{sec:Conclusion}
 Tak tady je konečně konec.
-\cite{goossens94,lamport94}.
 
 \bigskip
 \begin{flushright}

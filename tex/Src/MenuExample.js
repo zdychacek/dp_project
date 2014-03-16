@@ -1,6 +1,7 @@
 var MenuExampleCtrl = CallFlow.extend({
 
 	constructor: function () {
+		// zavolani konstruktoru bazove tridy
 		MenuExampleCtrl.super.call(this);
 	},
 
@@ -8,15 +9,6 @@ var MenuExampleCtrl = CallFlow.extend({
 		// vytvoreni jednotlivych stavu
 		var gretingState =
 			State.create('greeting', new Say('Welcome to menu example.'));
-
-		var menuState =
-			State.create('menu', new Ask({
-				prompt: 'Press one, two or three.',
-				grammar: new BuiltinGrammar({
-					type: 'digits',
-					length: 1
-				})
-			}));
 
 		var optionOneState =
 			State.create('optionOne', new Exit('You selected option one.'));
@@ -30,10 +22,20 @@ var MenuExampleCtrl = CallFlow.extend({
 		var invalidSelectionState =
 			State.create('invalidSelection', new Exit('You selected an invalid option.'));
 
-		// registrace prechodu jednotlivych stavu
-		gretingState.addTransition('continue', menuState);
-
-		menuState
+		var menuState =
+			State.create('menu', new Ask({
+				prompt: 'Press one, two or three.',
+				grammar: new BuiltinGrammar({
+					type: 'digits',
+					length: 1
+				})
+			}))
+			.addOnEntryAction(function* () {
+				console.log('You\'ve entered menu state.');
+			})
+			.addOnExitAction(function* () {
+				console.log('You\'ve leaved menu state.');
+			})
 			.addTransition('continue', optionOneState, function (result) {
 				return result == 1;
 			})
@@ -46,6 +48,8 @@ var MenuExampleCtrl = CallFlow.extend({
 			.addTransition('continue', invalidSelectionState, function (result) {
 				return [1, 2, 3].indexOf(result) == -1;
 			});
+
+		gretingState.addTransition('continue', menuState);
 
 		// registrace stavu do kontejneru
 		this
