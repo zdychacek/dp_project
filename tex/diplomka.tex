@@ -126,29 +126,27 @@ Něco o Voxeu - licence, omezení, výhody (kvalitní TTS, podpora ASR), nevýho
 \subsubsection{Asterisk + VoiceGlue}
 Popis kombinace Asterisku a VoiceGlue - licence, omezení, výhody (opensource), nevýhody (nekvalitní TTS, nepodporuje ASR).
 
-\section{Specifikace požadavků pro podporu automatického převodu textu do hlasu a obráceně (TTS a ASR)}
-\label{sec:Podpora_TTS_a_ASR}
-Obecný úvod o technologiích TTS a ASR.
+\section{Technologie Text to Speech}
+\label{sec:TTS}
+Obecný úvod o technologiích TTS. Popis procesu syntézy řeči.
 
-\subsection{Technologie Text to Speech}
-Popis procesu syntézy řeči.
-
-\subsubsection{Flite}
+\subsection{Flite}
 Něco o Flite.
 
-\subsubsection{Cepstral}
+\subsection{Cepstral}
 Něco o Cepstralu?
 
-\subsubsection{Loquendo}
+\subsection{Loquendo}
 Něco o Loquendu.
 
-\subsection{Technologie Automatic Speech Recognition}
+\section{Technologie Automatic Speech Recognition}
+\label{sec:ASR}
 Popis procesu převodu řeči na text.
 
-\subsubsection{Loquendo}
+\subsection{Loquendo}
 Něco o ASR od Loquenda.
 
-\section{Návrh webového portálu s možnostmi převedení textu do hlasu a automatického rozpoznání hlasu}
+\section{Návrh webového portálu}
 \label{sec:Navrh}
 Na začátku této kapitoly nejprve představím aplikaci, která bude ve zbytku textu sloužit jako referenční aplikace. Na této aplikaci budu poté ve zbývajícím textu kapitoly demonstrovat proces návrhu a následnou implementaci.
 
@@ -175,9 +173,6 @@ Druhým typem uživatele je uživatel v roli administrátora. Pro uživatele s p
 
 Webové rozhraní rezervačního systému je v reálném čase synchronizováno s hlasovým rozhraním pomocí technologie WebSockets\footnote{Webová technologie umožňující vytvoření obousměrného komunikačního kanálu mezi klientem a serverem nad HTTP protokolem. Více informací o této technologii najdete v kapitole \ref{sec:Pouzite_technologie}.} Toto v praxi znamená následující. Pokud je uživatel přihlášen do webového rozhraní a zároveň se nachází v interakci s hlasovou samoobsluhou, kde např. zruší svoji rezervaci, okamžitě dojde k reflektování provedené akce do webového rozhraní aniž by uživatel musel znovu provést načtení zobrazené stránky.
 
-V následujících dvou podkapitolách se budu podrobněji zabývat popisem webového a hlasového rozhraní rezervačního systému.
-
-\subsection{Návrh webové portálu}
 Webové rozhraní rezervačního systému nabízí uživateli pohodlné grafické rozhraní pro správu rezervací. Webová aplikace je navržena jako jednostránková aplikace\footnote{Moderní způsob návrhu webové aplikace, kdy je aplikace reprezentována jednou základní HTML stránkou (statickou) a veškeré další interakce na stránce jsou řešeny pomocí JavaScriptu.}. Tento způsob návrhu aplikace uživateli přináší rychlejší odezvu uživatelského rozhraní a zároveň minimalizuje množství přenesených dat po síti mezi klientem a serverem. Úspory přenesených dat se dosahuje využitím AJAXového načítání dat, kdy dochází k načtení pouze těch dat, která jsou aktuálně potřebná.
 
 V aplikaci je implementované REST API\footnote{Architektura rozhraní navržená pro distribuované prostředí. REST je, na rozdíl od známějších XML-RPC či SOAP, orientován datově, nikoli procedurálně.}, které slouží jako datový zdroj pro klienty. REST API implementuje přístup k datům, která jsou uložena v databázi. Většina metod REST API generuje notifikace pro ostatní připojené klienty. Notifikace slouží k synchronizaci uživatelských rozhraní všech připojených klientů.
@@ -246,7 +241,7 @@ Data se mezi klientem a serverovou částí aplikace (RESP API) přenáší ve f
 	\label{tab:RestAPI}
 \end{table}
 
-\subsubsection{Uživatelské rozhraní}
+\subsection{Uživatelské rozhraní}
 Rozhraní aplikace je rozděleno do několika stránek. Po přihlášení do aplikace je zobrazena hlavní stránka se seznamem všech letů \ref{fig:FlightList}. Jednotlivé lety jsou zde zobrazeny v seznamu, který je stránkovatelný a je zde možnost nastavení počtu zobrazených položek na stránce. Každý řádek v seznamu reprezentuje jeden let. U každého letu jsou uvedeny základní informace. Na konci každého řádku se nachází tlačítka sloužící pro vytvoření nebo zrušení rezervace letu. Řádek, který představuje rezervovaný let je graficky odlišen jinou barvou pozadí. Dále je zde k dispozici tlačítko pro zobrazení detailních informací o letu. Pokud je přihlášen uživatel s právy administrátora, tak má možnost informace o letu i upravovat. Posledním tlačítko slouží ke smazání letu s databáze. Toto tlačítko se opět zobrazuje jen v případě, že je přihlášen uživatel s právy administrátora.
 
 \InsertFigure{Figures/web_flight_list}{1\textwidth}{Stránka zobrazující seznamem letů a filtr}{fig:FlightList}
@@ -259,47 +254,47 @@ Ostatní stránky aplikace mají uživatelské rozhraní uspořádané obdobně.
 
 \InsertFigure{Figures/web_flight_detail}{1\textwidth}{Stránka zobrazující formulář pro editaci letu}{fig:FlightDetail}
 
-\subsubsection{Použité technologie}
+\subsection{Použité technologie}
 \label{sec:Pouzite_technologie}
 Celá webová aplikace je napsána kompletně v JavaScriptu a to včetně serverové části. V následujících odstavcích stručně popíši použité technologie a důvod jejich použití.
 
-\paragraph{JavaScript}
+\subsubsection{JavaScript}
 \label{sec:JavaScript}
 Je multiparadigmatický skriptovací jazyk ovlivněný hlavně jazyky Java, Perl a Smalltalk. Jedná se o událostmi řízený programovací jazyk. Od klasických programovacích jazyků se liší hlavně podporou prototypové dědičnosti a skutečností, že vše je objekt (dokonce i funkce). Tento jazyk byl vytvořen Brendanem Eichem v roce 1997. Primárním důvodem vzniku tohoto jazyka byla potřeba možnosti obohacení statických webových stránek. Jazyk prošel několika verzemi, kdy do něj byly postupně přidávány nové vlastnosti. V době psaní této práce (2014), je nejvíce rozšířená verze EcmaScript 5 a postupně se začínají do jazyka implementovat vlastnosti z nadcházející specifikace EcmaScript 6.
 
 Díky platformě Node.js již není JavaScript omezen jen na oblast klientského skriptování, ale pronikl i na stranu serverového programování a umožňuje návrh vysoce škálovatelných síťových aplikací.
 
-\paragraph{AngularJS}
+\subsubsection{AngularJS}
 AngularJS je framework, který svými unikátními vlastnostmi ulehčuje návrh jednostránkových aplikací v JavaScriptu. Mezi klíčové vlastnosti frameworku patří obousměrný databinding, neboli automatické provázání dat (modelu) s vizuální reprezentací (pohledem). Další užitečnou vlastností Angularu je šablonovací systém, který pomocí direktiv umožňuje rozšířit standardní sadu HTML tagů o nové specifické HTML tagy. Více informací o této technologii najdete v dokumentaci frameworku\cite{angulardocs}.
 
 Tento framework jsem použil k návrhu klientské části aplikace a to právě z výše uvedených důvodů.
 
-\paragraph{Node.js}
+\subsubsection{Node.js}
 Node.js\cite{nodejs} je technologie přinášející možnost psát serverové části webových aplikací v JavaScriptu. Platforma Node.js se skládá z běhového prostředí, které je postaveno nad JavaScript enginem V8\footnote{Stejný engine je i součástí webového prohlížeče Chromium.} a knihovnou funkcí. Mezi důležité vlastnosti Node.js patří jeho asynchronní, událostmi řízená povaha, tedy veškeré vstupně/výstupní operace jsou zpracovávány asynchronně. Díky tomuto chování v praxi dochází k tomu, že webový server postavený nad Node.js dokáže zpracovat více souběžných požadavků\footnote{Za předpokladu, že je aplikace orientovaná na vstupně/výstupní operace jako je např. čtení z databáze nebo ze souborového systému.}.
 
 Technologii jsem zvolil hlavně proto, že mi umožňuje psát serverovou a klientskou část aplikace ve stejném programovacím jazyce, tedy v JavaScriptu.
 
-\paragraph{Express.js}
+\subsubsection{Express.js}
 Jedná se o minimalistický framework pro Node.js, který umožňuje snadné vytváření webových aplikací. Nabízí např. funkce pro práci s cookies, práci s objektem příchozího požadavku a zápis do objektu odpovědi. Framework je jednoduše rozšiřitelný o další funkce.
 
 Více informací o tomto frameworku je možné nalézt na oficiálním webu\cite{expressjs}.
 
-\paragraph{MongoDB}
+\subsubsection{MongoDB}
 Pro ukládání dat jsem zvolil databázi MongoDB. MongoDB je NoSQL databáze, což znamená, že principy přístupu k datům nejsou implementovány na bázi relací jako jsme zvyklí u klasických relačních databází. MongoDB se řadí mezi dokumentové databáze, které nemají pevně definované schéma. Více informací o MongoDB databázi lze nalézt na webu projektu\cite{mongodb}.
 
 V kombinaci s touto databází jsem použil nadstavbu Mongoose\cite{mongoose}, což je vrstva přidávající možnost nadefinovat si pevné schéma dokumentů a pracovat s těmito dokumenty jako s datovými modely. Tato vrstva dále umožňuje např. přidávání validačních metod na jednotlivé modely.
 
-\paragraph{WebSockets}
+\subsubsection{WebSockets}
 Je technologie pro tvorbu webových aplikací, které mezi sebou potřebují komunikovat v reálném čase. Technologie je součástí standardu HTML5 a je již v moderních prohlížečích plně implementována. Technologie umožňuje vybudovat plně duplexní komunikační kanál mezi klientem serverem a tímto kanálem si vzájemně vyměňovat data. Jedná se v podstatě o obdobu klasického TCP spojení přeneseného do oblasti webových aplikací. WebSockety komunikují nad standardním HTTP protokolem, nemají proto problém s jakýmikoliv proxy servery a firewally na trase mezi klientem a serverem.
 
 Tuto technologii v aplikaci používám k synchronizaci všech aktuálně otevřených webových rozhraní, aby přihlášený uživatel nemusel otevřenou stránku ve webovém prohlížeči manuálně znovu načítat.
 
-\paragraph{Grunt}
+\subsubsection{Grunt}
 Jedná se o automatizační nástroj, který usnadňuje workflow vývoje (nejen) webových aplikací. Tento nástroj nabízí aplikační rozhraní pro definici úkolů, které se mají automaticky provést v definovaný moment. Definice úkolů se popisuje v jazyce JavaScript. Já jsem tento nástroj použil např. k validaci zdrojového kódu napsaného v JavaScriptu nebo ke spouštění webového serveru. Tento nástroj jsem dokonce využil k automatizaci sazby této práce - po každém uložení zdrojového \LaTeX\ souboru dojde k automatickému vytvoření výstupního PDF souboru. Více informaci o tomto nástroji je možné nalézt na oficiálních webových stránkách\cite{grunt}.
 
-\subsection{Návrh hlasového portálu}
+\section{Návrh hlasového portálu}
 \label{sec:Navrh_hlasoveho_portalu}
-Hlasový portál umožňuje uživateli ovládat rezervační systém prostřednictvím hlasové samoobsluhy. Rezervační systém byl představen za začátku kapitoly \ref{sec:Navrh}. Hlasový portál umožňuje uživateli spravovat své rezervace prostřednictvím hlasové samoobsluhy, se kterou se spojí vytočením telefonního čísla např. na svém mobilním telefonu.
+V této části práce se zaměřím na popis procesu návrhu a následné implementace hlasového portálu rezervačního systému. Rezervační systém byl podrobněji představen za začátku kapitoly \ref{sec:Navrh}. Hlasový portál umožňuje uživateli spravovat své rezervace prostřednictvím hlasové samoobsluhy, se kterou se spojí vytočením telefonního čísla např. na svém mobilním telefonu.
 
 Hlasový portál se od portálu webového liší hlavně ve způsobu interakce uživatele se systémem a množinou dostupných akcí, které jsou uživateli umožněny. Stručně řečeno je uživateli nabídnuta podmnožina akcí, které jsou dostupné ve webovém portálu. Hlasový portál nabízí užší množinu funkcí hlavně z toho důvodu, že ne všechny funkce systému lze z pohledu uživatelského rozhraní komfortně implementovat i v prostředí hlasového systému. Hlasový portál je tedy cílen pouze na uživatele v roli zákazníka letecké společnosti a nenabízí funkce uživatelům v roli administrátora systému, které jim jsou dostupné prostřednictvím webového portálu (např. přidání nového letu do databáze).
 
@@ -315,7 +310,7 @@ V následujícím seznamu uvádím souhrn akcí, které může uživatel prostř
 
 V následujícím textu nejdříve popíši odlišnosti v návrhu uživatelského rozhraní hlasového portálu ve srovnání s návrhem uživatelského rozhraní webového portálu a poté se zaměřím na samotnou implementaci hlasového rozhraní rezervačního systému.
 
-\subsubsection{Uživatelské rozhraní}
+\subsection{Uživatelské rozhraní}
 Rozhraní sloužící ke komunikaci mezi uživatelem a hlasovým portálem je diametrálně odlišné od rozhraní, které nabízí webové portály. Proto je nutné při návrhu uživatelského rozhraní hlasového portálu k těmto odlišnostem přihlédnout. Hlavní rozdíl mezi uživatelským rozhraním webových a hlasových portálů je ve způsobu interakce. Zatímco webové portály nabízí uživatelská rozhraní založená převážně na interakci pomocí vizuálních vjemů uživatele, při návrhu uživatelského rozhraní hlasového portálu není možné interakci založenou na vizuálních vjemech aplikovat. Uživatelské rozhraní hlasových portálů je totiž založeno pouze na zvukových vjemech a hlasových odezvách. Proto není vhodné navrhovat příliš komplexní uživatelské rozhraní. Naopak, musíme se snažit uživatelské rozhraní členit co nejjednodušeji a přehledně tak, abychom uživateli interakci se systémem co nejvíce zjednodušili a nedocházelo tak k dezorientaci v prostředí systému.
 
 Komunikace s uživatelem většinou probíhá pomocí automatické syntézy řeči. Zatím však neexistuje hlasový syntetizátor, který by se svou kvalitou zcela vyrovnal lidské řeči. V závislosti na kvalitě použitého syntetizéru může někdy při syntéze řeči docházet ke komolení slov a pro uživatele nemusí být sdělení zcela srozumitelné. V tomto případě většinou stačí nahradit zkomolenou část věty jiným slovem či slovním spojením. V případě použití nekvalitního syntetizéru řeči se, před nasazením hlasového portálu do produkčního prostředí, doporučuje veškerá hlasová sdělení namluvit a zdigitalizovat a tyto nahrávky používat místo automatické syntézy.
@@ -330,44 +325,52 @@ Já jsem se při návrhu hlasového portálu zaměřil na cílovou skupinu uživ
 
 Aby bylo možné s hlasovým rozhraním rezervačního systému začít pracovat, je nutné se do něj nejdříve přihlásit. Každý uživatel se prokazuje svým telefonním číslem a číselným heslem. Pokud uživatel zadá špatné telefonní číslo a heslo, tak je mu nabídnuto opakované zadání. V případě, že se uživatel prokáže správným telefonním číslem, ale špatným heslem a toto zadání provede třikrát za sebou špatně, tak dojde k dočasnému zablokování toho účtu. V tomto případě je uživateli sdělena informace o tom, kdy se může zkusit znovu přihlásit.
 
-\InsertFigure{Figures/diagrams/mainflow}{1\textwidth}{Stránka zobrazující seznamem letů a filtr}{fig:MainFlow}
+\InsertFigure{Figures/diagrams/mainflow}{1\textwidth}{Diagram popisující hlavní strukturu hlasového portálu}{fig:MainFlow}
 
-V případě úspěšného přihlášení do systému, je uživateli přehrána uvítací zpráva a následně je uživatel přesměrován do hlavního menu aplikace, kde má k dispozici akce pro správu a vytváření rezervací (seznam akcí je uveden v textu kapitoly \ref{sec:Navrh_hlasoveho_portalu}). Jednotlivá menu aplikace jsou navržena tak, aby měl uživatel kdykoliv možnost vrátit se o úroveň zpět. Na obrázku \ref{fig:MainFlow} je zobrazena hlavní struktura hlasového portálu. Struktura aplikace je na obrázku popsána formou stavového diagramu. Obdélníky reprezentují jednotlivé stavy aplikace. Některé stavy jsou pro svoji komplexnost zobrazeny pouze abstraktně. U abstraktních stavů je vždy uvedena informace, která slouží jako jakýsi odkaz na další diagram, který daný stav popisuje detailněji. Pomocí šipek jsou v diagramu popsány přechody mezi jednotlivými stavy. U každého přechodu se dále nachází informace identifikující daný přechod. Součástí této informace může být i doplňující informace o DTMF volbě, která slouží jako parametr tohoto přechodu a bývá uvedena v hranatých závorkách.
+V případě úspěšného přihlášení do systému, je uživateli přehrána uvítací zpráva a následně je uživatel přesměrován do hlavního menu aplikace, kde má k dispozici akce pro správu a vytváření rezervací (seznam akcí je uveden v textu kapitoly \ref{sec:Navrh_hlasoveho_portalu}). Jednotlivá menu aplikace jsou navržena tak, aby měl uživatel kdykoliv možnost vrátit se o úroveň zpět. Na obrázku \ref{fig:MainFlow} je zobrazena hlavní struktura hlasového portálu. Struktura aplikace je na obrázku popsána formou stavového diagramu. Obdélníky reprezentují jednotlivé stavy aplikace. Některé stavy jsou pro svoji komplexnost zobrazeny pouze abstraktně. U abstraktních stavů je vždy uvedena informace, která slouží jako jakýsi odkaz na další diagram, který daný stav popisuje detailněji. Jako příklad můžu uvést stav pojmenovaný $getLoginData$. U tohoto stavu je ve dvojitých úhlových závorkách uvedena informace $<<GetLoginDataFlow>>$. Tato informace nám říká, že stav $getLoginData$ obsahuje další vnořené stavy. Tyto stavy jsou v aplikaci implementovány třídou $GetLoginDataFlow$. K této třídě existuje diagram, který popisuje vnitřní uspořádání těchto stavů a přechody mezi nimi. Pro ukázku uvádím ještě diagram této třídy na obrázku \ref{fig:GetLoginDataFlow}.
+
+\InsertFigure{Figures/diagrams/getlogindataflow}{0.8\textwidth}{Diagram popisující vnitřní stavy stavu $getLoginData$ (GetLoginDataFlow)}{fig:GetLoginDataFlow}
+
+Pomocí šipek jsou v diagramu popsány přechody mezi jednotlivými stavy. U každého přechodu se dále nachází informace identifikující daný přechod. Součástí této informace může být i doplňující informace o DTMF volbě, která slouží jako parametr tohoto přechodu a bývá uvedena v hranatých závorkách.
 
 Z důvodu zpřehlednění textu zde neuvádím diagramy všech částí aplikace. Nejvíce zajímavým částem aplikace se budu detailněji věnovat později.
 
-\subsubsection{Implementace}
+\subsection{Implementace hlasového portálu}
 V této kapitole se budu věnovat implementaci hlasového portálu. Nejdříve se zaměřím na popis knihovny, která vznikla v rámci této práce za účelem usnadnění vývoje hlasových portálů. Poté se vrátím k detailnějšímu popisu implementace vybraných částí hlasového portálu. Proces implementace hlasového portálu můžu tedy rozdělit na dvě části. První částí je návrh VXML knihovny a druhou částí je návrh hlasového portálu rezervačního systému s využitím vytvořené knihovny.
+
+\subsubsection{Implementace pomocné knihovny}
 
 V kapitole \ref{sec:Zaklady_vxml} jsme se seznámili se základy návrhu VoiceXML dokumentů, konkrétně jsme se zde zaměřili na strukturu VXML dokumentu a popis vybraných elementů, které slouží k definici struktury aplikace. Již tedy máme dispozici znalosti, díky kterým jsme schopni napsat VXML kód, který popisuje jednoduchý hlasový portál.
 
 Při návrhu složitějšího hlasového portálu by nám mohla ušetřit hodně práce vyšší úroveň abstrakce. Tato abstrakce by nás mohla odstínit od přímého psaní VMXL kódu. A právě tuto abstrakci zajišťuje knihovna, kterou jsem vyvinul v rámci této diplomové práce. Při použití této knihovny se nemusíme soustředit na psaní validního VXML kódu, ale veškeré naše soustředění můžeme zaměřit na aplikační logiku. Tato knihovna dále umožňuje dosáhnout efektivní znovu použitelnosti kódu formou komponentního modelu. V neposlední řadě knihovna zjednodušuje vývoj tím způsobem, že v podstatě ruší rozdělení aplikace na klientskou a serverovou část. Při vývoji aplikace tedy nemáme aplikaci striktně rozdělenou na statické VXML dokumenty, které definují strukturu aplikace a zajišťují vstup a výstup, a serverovou část, která řeší přístup k datům a implementuje aplikační logiku.
 
-Knihovna je implementována v JavaScriptu\footnote{Více informací o této technologii můžete najít v odstavci \ref{sec:JavaScript}} a aplikace, která je vyvíjena s využitím této knihovny je spouštěna v serverovém prostředí na platformě Node.js.
+Knihovna je implementována v JavaScriptu\footnote{Více informací o této technologii můžete najít v kapitole \ref{sec:JavaScript}.} a aplikace, která je vyvíjena s využitím této knihovny je spouštěna v serverovém prostředí na platformě Node.js.
 
 Samotná aplikace se dá jednoduše popsat jako kolekce stavů mezi kterými jsou definovány přechody do stavů dalších. Každý stav může být určitého typu. Jedním typem je stav, sloužící k získání vstupu od uživatele. Dalším typem je stav, který zajišťuje výstup, tedy sděluje uživateli nějakou informaci. Posledním typem je stav, který nezajišťuje vstup ani výstup, ale implementuje pouze logiku, na základě které dochází mj. k rozhodnutí do jakého dalšího stavu se bude přecházet.
 
 Každý stav může vyvolávat události. Pro každou vyvolanou událost je definován přechod do dalšího stavu. Způsob definice přechodů pomocí událostí zabraňuje vzniku pevných vazeb mezi objekty, které spolu potřebují nějakým způsobem komunikovat. V rámci interní implementace stavu tedy může docházet k vyvolání události, na které mohou závislé objekty nějakým způsobem reagovat.
 
-Každý stav může mít definovat akci, která se vyvolá v momentě, kdy dojde ke vstupu do tohoto stavu. Stav zároveň může definovat akci, která se provede těsně před přechodem do nového stavu, tedy při opouštění stavu, který tuto akci definoval. U stavů, které slouží k získání vstupu uživatele se obsluha akce při opouštění stavu typicky využívá ke zpracování vstupních dat (např. zápis dat do databáze).
+Každý stav může definovat akci, která se vyvolá v momentě, kdy dojde ke vstupu do tohoto stavu. Stav zároveň může definovat akci, která se provede těsně před přechodem do nového stavu, tedy při opouštění stavu, který tuto akci definoval. U stavů, které slouží k získání vstupu uživatele se obsluha akce při opouštění stavu typicky využívá ke zpracování vstupních dat (např. zápis dat do databáze).
 
 Každý stav se může skládat z dalších (vnořených) stavů. V případě, že stav vnořené stavy obsahuje, tak se mezi stavy přechází následujícím způsobem. Nejdříve se postupně navštíví vnořené stavy rodičovské stavu. Jakmile dojde k navštívení vnořeného stavu, který je finální, tak se zpracování vrací k přechodům, které má definován rodičovský stav.
 
-Knihovna nám tedy poskytuje rozhraní API umožňující definovat jednotlivé stavy aplikace, přechody mezi těmito stavy a akce, které se mají vyvolávat při přechodech do dalších stavů. Nemusíme se tedy starat o ruční psaní VXML kódu, který je nutný pro zpracování VXML interpretrem. Tento kód generuje knihovna automaticky. V následující části se budu podrobně věnovat jednotlivým částem rozhraní API, které nám knihovna nabízí.
+Knihovna nám tedy poskytuje rozhraní API umožňující definovat jednotlivé stavy aplikace, přechody mezi těmito stavy a akce, které se mají vyvolávat při přechodech do dalších stavů. Nemusíme se tedy starat o ruční psaní VXML kódu, který je nutný pro zpracování VXML interpretrem. Tento kód generuje knihovna automaticky.
 
-\paragraph{Srovnání návrhu aplikace pomocí knihovny a klasického přístupu}
-Příklad zpracování vstupu a výstupu. Knihovna vx. VXML markup.
+V následující části se budu podrobně věnovat jednotlivým částem rozhraní API, které nám knihovna nabízí.
 
-\paragraph{Znovupoužitelné komponenty}
+\subsubsection{Aplikační rozhraní vyvíjené knihovny}
+Popis struktury knihovny. Srovnání návrhu aplikace pomocí knihovny a klasického přístupu. Příklad zpracování vstupu a výstupu. Knihovna vs. VXML markup.
+
+\subsubsection{Znovupoužitelné komponenty}
 Zadání data (+diagram). Zadání textového vstupu (+diagram). Seznam rezervací/letů (+diagram).
 
-\subsection{Konfigurace a zprovoznění hlasového portálu}
+\section{Konfigurace a zprovoznění hlasového portálu}
 Popis, jak zprovoznit aplikaci na platformách. Voxeo Prophecy, Asterisk + VoiceGlue.
 
-\subsubsection{Voxeo Prophecy}
+\subsection{Voxeo Prophecy}
 ...
 
-\subsubsection{Asterisk + VoiceGlue}
+\subsection{Asterisk + VoiceGlue}
 ...
 
 \section{Zátěžové testy portálu}
