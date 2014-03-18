@@ -418,21 +418,35 @@ Tato třída implementuje statickou metodu \InlCode{create}, která přijímá p
 
 Metoda \InlCode{create} přijímá jako parametr jeden objekt, který obsahuje jednotlivé parametry aplikace. Následuje popis jednotlivých parametrů.
 
-Hodnota parametru \InlCode{server} reprezentuje instanci Express.js serveru (viz \ref{sec:ExpressJs}), nad kterým VXML aplikace poběží. Tato instance je interně využita k navěšení metod, které obsluhují jednotlivé požadavky na přechod mezi stavy aplikace (HTTP požadavky).
-
 Parametr \InlCode{route} udává, na jaké URL bude aplikace dostupná.
 
 Parametr \InlCode{controller} je reference na konstruktor, který se použije k vytvoření hlavního flow\footnote{V textu používám termín $flow$ pro označení instancí třídy \InlCode{CallFlow} (viz \ref{sec:CallFlow}), které definují kolekci stavů aplikace.} aplikace.
 
-Posledním parametrem, který není povinný, je parametr \InlCode{config}. Jedná se o objekt, pomocí kterého můžeme do aplikace protlačit jakékoliv další parametry. Tyto parametry jsou poté dostupné celé aplikaci. V příkladu je uvedeno nastavení \InlCode{io}, kterým aplikaci předávám referenci na objekt, který se stará o generování push notifikací pomocí technologie WebSockets\footnote{Technologie WebSockets byla představena v kapitole \ref{sec:WebSockets}.}.
+Dalším parametrem, který není povinný, je parametr \InlCode{config}. Jedná se o objekt, pomocí kterého můžeme do aplikace protlačit jakékoliv další parametry. Tyto parametry jsou poté dostupné celé aplikaci. V příkladu je uvedeno nastavení \InlCode{io}, kterým aplikaci předávám referenci na objekt, který se stará o generování push notifikací pomocí technologie WebSockets\footnote{Technologie WebSockets byla představena v kapitole \ref{sec:WebSockets}.}.
 
-TODO: popsat, jak vypadá HTTP požadavek na přechod do dalšího stavu.
+Hodnotou posledního parametru \InlCode{server} je instance Express.js serveru (viz \ref{sec:ExpressJs}), nad kterým je VXML aplikace spuštěna. Tato instance je interně využita k navěšení metod, které obsluhují jednotlivé požadavky na přechod mezi stavy aplikace.
+
+Aplikace běží nad HTTP protokolem. Požadavky na přechod mezi stavy jsou tedy klasické HTTP požadavky. První požadavek na VXML aplikaci má následující tvar:
+
+\InlCode{http://www.myserver.com/menu-example?session.sessionid=123}
+
+Následující požadavky jsou ve tvaru následujícím:
+
+\InlCode{http://www.myserver.com/menu-example?sessionid=123\&event=continue\&result=1}
+
+V URL adrese požadavku jsou zakódovány všechny potřebné informace pro provedení přechodu do dalšího stavu.
+
+První výše uvedený požadavek obsahuje pouze jeden parametr, a tím je parametr \InlCode{session.sessionid}. Tento parametr slouží jako jednoznačný identifikátor instance hovoru. Hodnotu tohoto parametru generuje IVR platforma a tuto hodnotu dále předává aplikačnímu serveru. Aplikační server tento údaj využívá jako klíč, pod kterým ukládá stav hovoru mezi jednotlivými požadavky. Informace o stavu, která je na serveru uchovávána, obsahuje například informaci o právě navštíveném stavu. Identifikátor instance hovoru je poté obsažen ve všech dalších požadavcích prostřednictvím parametru \InlCode{sessionid}. Mezi dalšími požadavky je hodnota předávána prostřednictvím automaticky vygenerovaného VXML dokumentu. Pokud by hodnota nebyla přítomna, aplikace by nevěděla s jakou instancí hovoru má pracovat.
+
+Dalším parametrem, který musí být v URL obsažen, je název události \InlCode{event}, která byla vyvolána v interakci s uživatelem. Na základě této informace server zpracuje přechod do dalšího stavu.
+
+V URL adrese požadavku může být obsažen ještě jeden parametr. Jedná se o parametr \InlCode{result}. Pokud právě dochází ke zpracování stavu, který zajišťoval vstup od uživatele, pak je hodnotou tohoto parametru právě získaný vstup.
 
 \paragraph{Třída CallFlow}
 \label{sec:CallFlow}
-Tato třída slouží jako bázová třída pro implementaci objektu, který představuje kontejner pro jednotlivé stavy. Primárním úkolem této třídy je vytvořit a zaregistrovat jednotlivé stavy (viz \ref{sec:State}) pomocí metody \InlCode{addState} resp. pomocí metody \InlCode{addStates}, která registruje více stavů v jednom volání.
+Tato třída slouží jako bázová třída pro implementaci objektu, který představuje kontejner pro jednotlivé stavy. Primárním úkolem této třídy je vytvořit a zaregistrovat jednotlivé stavy (viz \ref{sec:State}) pomocí metody \InlCode{addState}, resp. pomocí metody \InlCode{addStates}, která registruje více stavů v jednom volání.
 
-Flow zároveň slouží jako jakási sdílená sběrnice, která je přístupná všem stavům, které jsou ve flow obsaženy. Může tedy např. sloužit k uchování dat, která jsou společná pro více stavů.
+Tento kontejner zároveň slouží jako jakási sdílená sběrnice, která je přístupná všem stavům, které jsou v kontejneru obsaženy. Může tedy např. sloužit k uchování dat, která jsou společná pro více stavů.
 
 Důležitou metodou této třídy je metoda \InlCode{fireEvent(event, data)}. Tato metoda se volá v momentě, kdy je potřeba přejít do dalšího stavu. Volání přebírá dva parametry. Parametr \InlCode{event} identifikuje typ události. Na základě typu události metoda rozhodne, do jakého dalšího stavu se má přejít. Každou vyvolanou událost můžou volitelně doprovázet \InlCode{data} specifická pro danou událost.
 
@@ -458,7 +472,7 @@ Ve stejném výpise si můžeme všimnout, že volání většiny metod třídy 
 
 \paragraph{Třída VoiceModel}
 \label{sec:VoiceModel}
-V podstatě se jedná o abstraktní třídu, ze které se instance nevytvářejí přímo. Slouží jako bázová třída, ze které jsou odvozeny třídy reprezentující konkrétní hlasový model.
+Jedná o abstraktní třídu, ze které se instance nevytvářejí přímo. Slouží jako bázová třída, ze které jsou odvozeny třídy reprezentující konkrétní hlasový model.
 
 Hlasový model představuje způsob, jakým definujeme typ stavu. Z tohoto pohledu knihovna rozlišuje v podstatě dva typy stavů resp. hlasových modelů.
 
@@ -466,9 +480,9 @@ Prvním typem je hlasový model, který slouží k získání vstupu od uživate
 
 Dalším typem hlasového modelu, který také zajišťuje získání vstupu, je hlasový model představovaný třídou \InlCode{Record} (viz \ref{sec:Record}). Tento hlasový model zaznamenává vstup formou nahrávky zprávy.
 
-Druhým typem hlasového modelu je model, který slouží k prezentaci nějakého výstupu. V praxi takový hlasový model obsahuje pouze definici zprávy, která se má uživateli předložit. Tento typ hlasového modelu je implementován třídou \InlCode{Say} (viz \ref{sec:Say}) nebo třídou \InlCode{Exit} (viz \ref{sec:Exit}).
+Druhým typem hlasového modelu je model, který slouží k prezentaci nějakého výstupu. V praxi takový hlasový model obsahuje pouze definici zprávy, která se má uživateli sdělit. Tento typ hlasového modelu je implementován třídou \InlCode{Say} (viz \ref{sec:Say}) nebo třídou \InlCode{Exit} (viz \ref{sec:Exit}).
 
-Instance této třídy obsahují všechny informace, které jsou nutné pro automatické vygenerování výsledného VXML souboru.
+Instance tříd, které jsou z této třídy odvozeny obsahují všechny informace, které jsou nutné pro automatické vygenerování výsledného VXML souboru.
 
 \paragraph{Třída Prompt}
 \label{sec:Prompt}
@@ -505,6 +519,9 @@ Instance této třídy obsahují všechny informace, které jsou nutné pro auto
 
 \paragraph{Třída TtsMessage}
 \label{sec:TtsMessage}
+
+\paragraph{Třída Var}
+\label{sec:Var}
 
 \subsubsection{Popis implementace vybraných částí hlasového portálu}
 Zadání data (+diagram). Zadání textového vstupu (+diagram). Seznam rezervací/letů (+diagram).
