@@ -440,7 +440,7 @@ První výše uvedený požadavek obsahuje pouze jeden parametr, a tím je param
 
 Dalším parametrem, který musí být v URL obsažen, je název události \InlCode{event}, která byla vyvolána v interakci s uživatelem. Na základě této informace server zpracuje přechod do dalšího stavu.
 
-V URL adrese požadavku může být obsažen ještě jeden parametr. Jedná se o parametr \InlCode{result}. Pokud právě dochází ke zpracování stavu, který zajišťoval vstup od uživatele, pak je hodnotou tohoto parametru právě získaný vstup.
+V URL adrese požadavku může být obsažen ještě jeden parametr. Jedná se o parametr \InlCode{result}. Pokud se právě zpracovává stav, který zajišťuje vstup od uživatele, pak je hodnotou tohoto parametru právě získaný vstup.
 
 \paragraph{Třída CallFlow}
 \label{sec:CallFlow}
@@ -472,9 +472,9 @@ Ve stejném výpise si můžeme všimnout, že volání většiny metod třídy 
 
 \paragraph{Třída VoiceModel}
 \label{sec:VoiceModel}
-Jedná o abstraktní třídu, ze které se instance nevytvářejí přímo. Slouží jako bázová třída, ze které jsou odvozeny třídy reprezentující konkrétní hlasový model.
+Jedná se o abstraktní třídu, ze které se instance nevytvářejí přímo. Slouží jako bázová třída, ze které jsou odvozeny třídy reprezentující konkrétní hlasový model.
 
-Hlasový model představuje způsob, jakým definujeme typ stavu. Z tohoto pohledu knihovna rozlišuje v podstatě dva typy stavů resp. hlasových modelů.
+Hlasový model představuje způsob, jakým definujeme typ stavu. Z tohoto pohledu knihovna rozlišuje dva typy stavů resp. hlasových modelů.
 
 Prvním typem je hlasový model, který slouží k získání vstupu od uživatele. Takový hlasový model v praxi vypadá tak, že obsahuje text zprávy, pomocí které se uživateli sdělí, jaké jsou přípustné hodnoty pro vstup. Dále hlasový model v tomto případě obsahuje popis gramatiky, která definuje validní hodnoty pro vstup. Tento typ hlasového modelu je implementován třídou \InlCode{Ask} (viz \ref{sec:Ask}).
 
@@ -486,9 +486,40 @@ Instance tříd, které jsou z této třídy odvozeny obsahují všechny informa
 
 \paragraph{Třída Prompt}
 \label{sec:Prompt}
+Tato třída slouží k definici zprávy, která se má uživateli předložit. Tuto definici zprávy používají všechny třídy, které implementují hlasový model (viz kapitola \ref{sec:VoiceModel}).
+
+Třída obsahuje kolekci \InlCode{audios}. Tato kolekce může obsahovat jednu nebo více zpráv, které se uživateli postupně přehrají. Položkami této kolekce může být text, který bude pomocí TTS enginu převeden na hlasovou zprávu nebo reference na audio nahrávku, která bude přehrána.
+
+Konstruktor třídy může být volán více způsoby. Ve výpise č. \ref{src:Prompt_Constructor} uvádím ukázky volání konstruktoru.
+
+\lstinputlisting[label=src:Prompt_Constructor,caption={Ukázka vytvoření instance třídy \InlCode{Prompt}}]{Src/Prompt_Constructor.js}
+
+Nejjednodušší možnost vytvoření instance je ukázáno na prvním řádku výpisu. Konstrukce spočítá v předání jediného argumentu, který definuje text zprávy, který bude pomocí TTS přehrán.
+
+Na řádku 3 je ukázána možnost vytvoření instance předáním kolekce zpráv. Kolekce v tomto případě obsahuje text a referenci na audio nahrávku (více informací o třídě \InlCode{Audio} najdete k kapitole \ref{sec:Audio}).
+
+Pokud potřebujeme vytvořit instanci a zároveň nastavit její další vlastnosti, tak můžeme využít volání konstruktoru, které je uvedeno na řádku 8. V tomto případě konstruktor přebírá jako jediný parametr objekt, který specifikuje veškerá nastavení instance.
+
+Obě nastavení \InlCode{text} a \InlCode{audios} nastavují zprávu, která se uživateli předloží. V praxi nenastavujeme oba parametry, ale pouze jeden z nich. Nastavení \InlCode{text} přebírá text zprávy a používá se tehdy, když definujeme pouze jednoduchou textovou zprávu. Hodnotou nastavení \InlCode{audios} je kolekce zpráv, která může obsahovat textové zprávy nebo reference na audio nahrávky.
+
+Hodnotou nastavení \InlCode{bargein} definujeme, zda je možné zprávu během přehrávání přerušit např. stiskem klávesy nebo hlasovým vstupem. Výchozí hodnotou tohoto nastavení je \InlCode{true}. Hodnota \InlCode{true} povoluje přerušení přehrávání zprávy. Pokud chceme uživatele donutit, aby si musel zprávu vyslechnout celou, tak nastavení předáme hodnotu \InlCode{false}.
+
+Nastavením \InlCode{bargeinType} blíže specifikujeme způsob, jakým je možné přehrávání zprávy přerušit. Hodnotou nastavení může být \InlCode{speech} nebo \InlCode{hotword}. Více informací o významu jednotlivých hodnot najdete v kapitole \ref{sec:Zaklady_vxml}.
+
+Nastavení \InlCode{language} zprostředkovává TTS enginu informaci o jazyku, v jakém má být zpráva interpretována. Pokud není hodnota specifikována, přebírá se hodnota, kterou má nastavena IVR platforma.
+
+Nastavením \InlCode{timeout} můžeme specifikovat časovou prodlevu, po kterou bude VXML interpretr čekat na uživatelovu odezvu. Hodnotou je číslo udávající tuto prodlevu ve vteřinách. Toto nastavení má smysl specifikovat v případě, kdy definujeme zprávu, která bude předcházet uživatelskému vstupu.
 
 \paragraph{Třída Say}
 \label{sec:Say}
+Tato třída je odvozena ze třídy \InlCode{VoiceModel} a implementuje tedy konkrétní hlasový model. Prostřednictvím tohoto hlasového modelu sdělujeme uživateli nějakou zprávu. Způsoby vytvoření instance této třídy jsou ukázány ve výpise č. \ref{src:Say_Constructor}.
+
+\lstinputlisting[label=src:Say_Constructor,caption={Ukázka vytvoření instance třídy \InlCode{Say}}]{Src/Say_Constructor.js}
+
+Třída \InlCode{Say} interně obsahuje instanci třídy \InlCode{Prompt} a nastavuje hodnoty některým zděděným vlastnostem.
+
+Ukázku vytvoření stavu, který obsahuje hlasový model tohoto typu je možné vidět ve výpise \hyperref[src:MenuExample]{zdrojového kódu} ukázkové aplikace na řádku číslo 11.
+
 
 \paragraph{Třída Exit}
 \label{sec:Exit}
