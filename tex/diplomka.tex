@@ -460,13 +460,13 @@ Konstruktor může přijímat tři parametry. Prvním a jediným povinným param
 
 Zbývající parametry \InlCode{target} a \InlCode{event} jsou nepovinné. V případě, že jsou tyto parametry uvedeny, tak konstruktor interně zavolá metodu \InlCode{addTransition} s hodnotami těchto parametrů. Metoda má následující předpis \InlCode{addTransition(event, target, condition)}. Tato metoda slouží k definici přechodů do dalších stavů. Každý stav může mít definováno více přechodů. Přechod je definován kombinací typu události a cílového stavu. Tato kombinace může být volitelně rozšířena ještě parametrem \InlCode{condition}. Metodě \InlCode{addTransition} může být cílový stav \InlCode{target} předán formou reference na instanci třídy \InlCode{State} nebo můžeme metodě předat pouze identifikátor stavu.
 
-V některých případech se nám může hodit nadefinovat více přechodů se stejným typem události. Více přechodů se stejným typem události bývá typicky definováno u stavů, které nějakou formou implementují menu. V momentě, kdy je proveden výběr v menu, může být vyvolána obecná událost, např. $continue$. Tato obecná událost je parametrizována hodnotou, která byla v menu zvolena. Zde se dostáváme k volitelnému parametru \InlCode{condition}, který slouží k rozhodnutí, do jakého stavu se přejde. Hodnotou tohoto parametru je funkce, která přebírá jeden parametr a to je právě hodnota, která byla v menu zvolena. Tato funkce obsahuje rozhodovací logiku, která má tedy k dispozici informaci o vybrané hodnotě a vrací hodnotu $true$ v případě, že se má tento přechod použít pro přechod do dalšího stavu. Demonstrace toho postupu je vidět ve výpise \ref{src:MenuExample}.
+V některých případech se nám může hodit nadefinovat více přechodů se stejným typem události. Více přechodů se stejným typem události bývá typicky definováno u stavů, které nějakou formou implementují menu. V momentě, kdy je proveden výběr v menu, může být vyvolána obecná událost, např. \InlCode{continue}. Tato obecná událost je parametrizována hodnotou, která byla v menu zvolena. Zde se dostáváme k volitelnému parametru \InlCode{condition}, který slouží k rozhodnutí, do jakého stavu se přejde. Hodnotou tohoto parametru je funkce, která přebírá jeden parametr a to je právě hodnota, která byla v menu zvolena. Tato funkce obsahuje rozhodovací logiku, která má tedy k dispozici informaci o vybrané hodnotě a vrací hodnotu \InlCode{true} v případě, že se má tento přechod použít pro přechod do dalšího stavu. Demonstrace toho postupu je vidět ve výpise č. \ref{src:MenuExample}.
 
-Třída dále obsahuje metody \InlCode{addOnEntryAction} a \InlCode{addOnExitAction}, které slouží k registraci akcí, které se vyvolají při vstupu resp. při výstupu z tohoto stavu.
+Třída dále obsahuje metody \InlCode{addOnEntryAction} a \InlCode{addOnExitAction}, které slouží k registraci funkcí\footnote{TODO: dopsat poznámku o funkčních generátorech.}, které se vyvolávají při vstupu resp. při výstupu z tohoto stavu. Těchto funkcí může být pro každý typ události zaregistrováno více. V případě, že je funkcí zaregistrováno více, jsou jednotlivé funkce volány sekvenčně za sebou. Každá funkce má v momentě zavolání k dispozici reference na následující objekty. Tyto reference jsou k dispozici prostřednictvím argumentů funkce. Prvním argumentem je instance kontejneru (flow), do kterého daný stav patří. Druhým argumentem je reference na stav samotný. Poslední argument obsahuje doplňující data, která jsou závislá na konkrétním případě použití.
 
 Jak již bylo předesláno dříve, každý stav může obsahovat vnořené stavy. K registraci vnořených stavů slouží metoda \InlCode{addNestedCallFlow(callFlow)}, která přijímá jeden parametr. Hodnota parametru \InlCode{callFlow} je instance, pro nás již známé, třídy \InlCode{CallFlow}, která byla popsána v kapitole \ref{sec:CallFlow}. Díky této možnosti můžeme jednoduše docílit znovupoužitelnosti kódu, kdy opakovaně využívanou komponentu implementujeme jako samostatnou třídu, která je odvozena ze třídy \InlCode{CallFlow}. Instance této třídy je poté registrována zavoláním metody \InlCode{addNestedCallFlow} na daném stavu. V případě potřeby může být tato instance parametrizována, např. předáním různých parametrů do konstruktoru.
 
-Třída \InlCode{State} obsahuje tovární statickou metodu \InlCode{create}, která je další možností, jak vytvořit instanci stavu. Oproti vytvoření stavu pomocí konstruktoru nabízí pohodlnější cestu k vytvoření stavu, který obsahuje hlasový model (viz \ref{sec:VoiceModel}). Hlasový model popisuje např., zda stav slouží k přečtení vstupu od uživatele nebo k "zobrazení" nějakého výstupu. Vytváření stavů pomocí teto metody je použito ve výpise \ref{src:MenuExample}.
+Třída \InlCode{State} obsahuje tovární statickou metodu \InlCode{create}, která je další možností, jak vytvořit instanci stavu. Oproti vytvoření stavu pomocí konstruktoru nabízí pohodlnější cestu k vytvoření stavu, který obsahuje hlasový model (viz \ref{sec:VoiceModel}). Pomocí hlasového modelu definujeme typ stavu. Jedním z typů je stav, který zajišťuje přečtení vstupu od uživatele, dalším typem stavu může být stav, který slouží k prezentaci výstupu. Vytváření stavů pomocí teto metody je použito ve výpise č. \ref{src:MenuExample}.
 
 Ve stejném výpise si můžeme všimnout, že volání většiny metod třídy \InlCode{State} se dá řetězit. V jednom řetězu volání můžeme vytvořit instanci stavu, navěsit akce, které se volají při přechodu do dalších stavů a nadefinovat přechody do dalších stavů.
 
@@ -536,6 +536,17 @@ Ve výpise č. \ref{src:Exit_Vxml} je uvedena ukázka VXML kódu, který je pro 
 
 \paragraph{Třída Record}
 \label{sec:Record}
+Tato třída implementuje typ hlasového modelu, který slouží k zaznamenání vstupu uživatele v podobě audio nahrávky. Uživateli je nejdříve přehrána zpráva, která ho vyzývá k zadání vstupu a poté dochází ke spuštění nahrávání. Konec nahrávání uživatel indikuje stiskem klávesy \#.
+
+Pořízení zvukové nahrávky má v kompetenci IVR platforma a musí tedy tuto funkcionalitu podporovat. Nutno podotknout, že tuto funkcionalitu nepodporuje IVR platforma VoiceGlue.
+
+Jelikož práce s tímto hlasovým modelem není demonstrována ve zdrojovým kódu ukázkové aplikace, tak ve výpise č. \ref{src:Record_example} uvádím ukázku zdrojového kódu, který vytváří stav, jehož hlasovým modelem je instance této třídy. Z ukázky je dále vidět způsob, jakým je možné nahrávku uložit na disk.
+
+\lstinputlisting[label=src:Record_example,caption={Vytvoření stavu s hlasovým modelem \InlCode{Record}}]{Src/Record_example.js}
+
+Ve výpise č. \ref{src:Record_Vxml} je pro představu uveden VXML kód, který aplikace pro takový stav automaticky vygeneruje.
+
+\lstinputlisting[label=src:Record_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \InlCode{Record}}]{Vxml/Record.vxml}
 
 \paragraph{Třída Ask}
 \label{sec:Ask}

@@ -11,8 +11,8 @@ var AskWithNoInputPrompt = vxml.Ask.extend({
 		var noInput = new vxml.Prompt('No input! I\'m sorry, I didn\'t get any input. Could you please try that again?'),
 			noMatch = new vxml.Prompt('No match! I\'m sorry, I didn\'t understand your input. Could you please try that again?');
 
-		this.nomatchPrompts = [ noMatch, noMatch ];
-		this.noinputPrompts = [ noInput, noInput ];
+		this.noMatchPrompts = [ noMatch, noMatch ];
+		this.noInputPrompts = [ noInput, noInput ];
 	}
 });
 

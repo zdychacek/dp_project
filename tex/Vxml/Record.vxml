@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vxml version="2.1" xmlns="http://www.w3.org/2001/vxml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/vxml http://www.w3.org/TR/voicexml20/vxml.xsd">
+	<var name="event" expr="'continue'"></var>
+	<var name="sessionid" expr="'4'"></var>
+
+	<form id="getRecording">
+		<record name="callersMessage" beep="true" maxtime="60s" finalsilence="2500ms" type="audio/wav">
+			<prompt>Please record your information after the beep.</prompt>
+		</record>
+
+		<filled>
+			<submit expr="'/app/saveRecording?event=' + event + '&amp;sessionid=' + sessionid" method="post" namelist="callersMessage" enctype="multipart/form-data"/>
+		</filled>
+	</form>
+</vxml>
