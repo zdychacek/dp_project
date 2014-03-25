@@ -80,7 +80,7 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 \AddAcronym{TTS}{Text To Speech}
 \AddAcronym{DTMF}{Dual-tone multi-frequency signaling}
 \AddAcronym{IVR}{Interactive Voice Response}
-
+\AddAcronym{MIME}{Multipurpose Internet Mail Extensions}
 
 % Zadame cestu a jmeno souboru ci nekolika souboru s digitalizovanou podobou zadani prace
 % Pri sazbe se pak hledaji soubory Figures/Zadani1.jpg, Figures/Zadani2.jpg atd.
@@ -526,7 +526,7 @@ Ve výpise č. \ref{src:Say_Vxml} je ukázka VXML kódu, který pro takový stav
 
 \paragraph{Třída Exit}
 \label{sec:Exit}
-Třída \InlCode{Exit} implementuje hlasový model, který uživateli předloží zprávu a poté ukončí provádění aplikace a dojde tak k zavěšení hovoru.
+Třída \InlCode{Exit} implementuje hlasový model, který uživateli přehraje zprávu a poté ukončí provádění aplikace a dojde tak k zavěšení hovoru.
 
 Nejjednodušší ukázka vytvoření instance této třídy je uvedena ve zdrojovém kódu ukázkové aplikace na řádcích 14, 17, 20 a 23. Na těchto řádcích je uveden kód, který vytváří konečné stavy aplikace. Při vstupu do takového stavu dojde k prezentaci zprávy a následnému zavěšení hovoru.
 
@@ -540,7 +540,21 @@ Tato třída implementuje typ hlasového modelu, který slouží k zaznamenání
 
 Pořízení zvukové nahrávky má v kompetenci IVR platforma a musí tedy tuto funkcionalitu podporovat. Nutno podotknout, že tuto funkcionalitu nepodporuje IVR platforma VoiceGlue.
 
-Jelikož práce s tímto hlasovým modelem není demonstrována ve zdrojovým kódu ukázkové aplikace, tak ve výpise č. \ref{src:Record_example} uvádím ukázku zdrojového kódu, který vytváří stav, jehož hlasovým modelem je instance této třídy. Z ukázky je dále vidět způsob, jakým je možné nahrávku uložit na disk.
+Jelikož práce s tímto hlasovým modelem není demonstrována ve zdrojovým kódu ukázkové aplikace, tak ve výpise č. \ref{src:Record_example} uvádím ukázku zdrojového kódu, který vytváří stav, jehož hlasovým modelem je instance této třídy. V ukázce jsou demonstrovány dva způsoby zavolání konstruktoru.
+
+První volání spočívá v předání jednoho argumentu. Tento argument může být textový řetězec zprávy nebo instance typu \InlCode{Prompt}. Z ukázky je dále vidět způsob, jakým je možné nahrávku uložit na disk.
+
+Druhé volání také přebírá jeden argument. Hodnotou je objekt, který obsahuje jednotlivá nastavení.
+
+Nastavení \InlCode{prompt} je zpráva, která bude uživateli předložena.
+
+Nastavení \InlCode{maxTime} nastavuje maximální délku nahrávky ve vteřinách. Výchozí hodnotou tohoto nastavení je 60 (s), tedy jedna minuta.
+
+Nastavení \InlCode{beep} udává, jestli se má po přehrání zprávy přehrát pípnutí indikující začátek proces nahrávání. Ve výchozím stavu je toto nastavení zapnuto.
+
+Dalším nastavením je \InlCode{finalSilence}. Tímto nastavením můžeme nadefinovat dobu v milisekundách, po kterou musí být uživatel vydržet tiše, aby tuto pauzu VXML interpretr vyhodnotil jako konec uživatelova vstupu a ukončil tak proces nahrávání. Výchozí hodnotou tohoto nastavení je 2500 (ms).
+
+Posledním možným nastavením je \InlCode{type}. Hodnotou tohoto nastavení udáváme MIME typ nahraného souboru. Pod tímto MIME typem bude audio nahrávka odeslána serveru\footnote{Konkrétně je hodnota MIME typu přítomna v hlavičce Content-Type požadavku.}. Výchozí hodnotou je \InlCode{audio/wav}.
 
 \lstinputlisting[label=src:Record_example,caption={Vytvoření stavu s hlasovým modelem \InlCode{Record}}]{Src/Record_example.js}
 
