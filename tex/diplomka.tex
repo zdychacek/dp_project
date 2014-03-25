@@ -516,19 +516,56 @@ Tato třída je odvozena ze třídy \InlCode{VoiceModel} a implementuje tedy kon
 
 \lstinputlisting[label=src:Say_Constructor,caption={Ukázka vytvoření instance třídy \InlCode{Say}}]{Src/Say_Constructor.js}
 
-Třída \InlCode{Say} interně obsahuje instanci třídy \InlCode{Prompt} a nastavuje hodnoty některým zděděným vlastnostem.
+Třída \InlCode{Say} interně obsahuje instanci třídy \InlCode{Prompt} a nastavuje hodnoty některým zděděným vlastnostem z třídy \InlCode{VoiceModel}.
 
-Ukázku vytvoření stavu, který obsahuje hlasový model tohoto typu je možné vidět ve výpise \hyperref[src:MenuExample]{zdrojového kódu} ukázkové aplikace na řádku číslo 11.
+Ukázka vytvoření stavu, který obsahuje hlasový model tohoto typu, je vidět ve výpise \hyperref[src:MenuExample]{zdrojového kódu} ukázkové aplikace na řádku číslo 11.
 
+Ve výpise č. \ref{src:Say_Vxml} je ukázka VXML kódu, který pro takový stav aplikace automaticky vygeneruje.
+
+\lstinputlisting[label=src:Say_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \InlCode{Say}}]{Vxml/Say.vxml}
 
 \paragraph{Třída Exit}
 \label{sec:Exit}
+Třída \InlCode{Exit} implementuje hlasový model, který uživateli předloží zprávu a poté ukončí provádění aplikace a dojde tak k zavěšení hovoru.
 
-\paragraph{Třída Ask}
-\label{sec:Ask}
+Nejjednodušší ukázka vytvoření instance této třídy je uvedena ve zdrojovém kódu ukázkové aplikace na řádcích 14, 17, 20 a 23. Na těchto řádcích je uveden kód, který vytváří konečné stavy aplikace. Při vstupu do takového stavu dojde k prezentaci zprávy a následnému zavěšení hovoru.
+
+Ve výpise č. \ref{src:Exit_Vxml} je uvedena ukázka VXML kódu, který je pro takový stav aplikací automaticky vygenerován.
+
+\lstinputlisting[label=src:Exit_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \InlCode{Exit}}]{Vxml/Exit.vxml}
 
 \paragraph{Třída Record}
 \label{sec:Record}
+
+\paragraph{Třída Ask}
+\label{sec:Ask}
+Třída \InlCode{Ask} prezentuje hlasový model, který slouží k zajištění vstupu od uživatele. Částečně je tato třída podobná třídě \InlCode{Say}. S touto třídou má společné to, že uživateli předkládá nějakou zprávu - interně tedy také pracuje s instancí třídy \InlCode{Prompt}.
+
+Jelikož tento hlasový model zajišťuje uživatelský vstup, je potřeba mít k dispozici mechanismus, pomocí kterého bychom byli schopni popsat, jak mají hodnoty na vstupu vypadat. Třída interně využívá pro tento účel gramatiky, které byly představeny v kapitole \ref{sec:Zaklady_vxml}.
+
+Pro účely definice těchto gramatik je využito několika tříd, kterým se budu podrobněji věnovat v dalších částech textu. Ve stručnosti zde jen uvedu, že máme k dispozici třídu \InlCode{BuiltinGrammar} pro definici vestavěných gramatik, třídu \InlCode{Grammar} pro definici DTMF a hlasových gramatik, a třídu \InlCode{Choices}, která slouží k definici smíšených hlasových a DTMF gramatik.
+
+Ve výpise se zdrojovým kódem ukázkové aplikace je na řádku 26 uveden kód, který vytváří stav, jehož hlasovým modelem je právě instance třídy \InlCode{Ask}. Z tohoto kódu je patrné, že konstruktor třídy přijímá jeden objekt. Tento objekt musí definovat minimálně dvě povinná nastavení.
+
+Jedno z těchto nastavení je \InlCode{prompt}, které slouží k definici předkládané zprávy. Tato zpráva by měla uživatele informovat o tom, jaké jsou přípustné hodnoty pro vstup. Typem tohoto nastavení je buď řetězec nebo instance třídy \InlCode{Prompt}.
+
+Dalším povinným nastavením, které musíme při konstrukci objektu uvést, je nastavení \InlCode{grammar}. Toto nastavení přebírá instanci třídy, která definuje přípustné hodnoty pro vstup.
+
+Při vytváření instance můžeme volitelně nastavit zprávy, které se uživateli předloží v situacích, kdy nedošlo k zadání očekávaného vstupu.
+
+Pomocí nastavení \InlCode{noinputPrompts} můžeme nastavit znění zprávy, která bude uživateli přehrána v situaci, kdy nedošlo k zadání žádného vstupu.
+
+Nastavením \InlCode{nomatchPrompts} definujeme zprávu, která se uživateli přehraje v momentě, kdy byl nějaký vstup zadán, ale nesplnil pravidla na validitu vstupu popsaná gramatikou.
+
+Obě tyto nastavení jsou typu pole a můžou tedy obsahovat více zpráv pro každý typ nastavení.
+
+Pokud je definována jen jedna zpráva, dojde k přehrání této zprávy a následně dojde k vyvolání události \InlCode{noinput}, resp. \InlCode{nomatch}. Na tyto události může aplikace dále reagovat např. přechodem do chybného stavu.
+
+Pokud je hodnotou nastavení pole více zpráv, tak zpracování funguje následovně. Po prvním neúspěšném zadání vstupu dojde k přehrání první zprávy. Poté po každém dalším špatném zadání dojde k přehrání další zprávy v pořadí. Tohoto se dá využít například k postupnému přehrávání podrobnějších informací.
+
+Pro stav, který má jako hlasový model uvedenu instanci třídy \InlCode{Ask}, aplikace automaticky vygeneruje VXML kód, který je předmětem výpisu č. \ref{src:Ask_Vxml}.
+
+\lstinputlisting[label=src:Ask_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \InlCode{Ask}}]{Vxml/Ask.vxml}
 
 \paragraph{Třída Grammar, Rule a Item}
 \label{sec:Grammar}
@@ -547,9 +584,6 @@ Ukázku vytvoření stavu, který obsahuje hlasový model tohoto typu je možné
 
 \paragraph{Třída Silence}
 \label{sec:Silence}
-
-\paragraph{Třída TtsMessage}
-\label{sec:TtsMessage}
 
 \paragraph{Třída Var}
 \label{sec:Var}
