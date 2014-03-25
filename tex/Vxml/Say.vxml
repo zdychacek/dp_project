@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vxml xmlns="http://www.w3.org/2001/vxml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.1" xsi:schemaLocation="http://www.w3.org/2001/vxml http://www.w3.org/TR/voicexml20/vxml.xsd">
+	<var name="event" expr="'continue'" />
+	<var name="sessionid" expr="'5'" />
+	<form id="greeting">
+		<block>
+			<prompt>Welcome to menu example.</prompt>
+			<submit next="/menu-example/stateMachine" namelist="event sessionid" />
+		</block>
+	</form>
+</vxml>

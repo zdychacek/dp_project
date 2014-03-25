@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vxml xmlns="http://www.w3.org/2001/vxml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.1" xsi:schemaLocation="http://www.w3.org/2001/vxml http://www.w3.org/TR/voicexml20/vxml.xsd">
+	<var name="event" expr="'continue'" />
+	<var name="result" expr="" />
+	<var name="sessionid" expr="'4'" />
+
+	<form id="menu">
+		<field name="F_1" type="digits?length=1">
+			<prompt>Press one, two or three.</prompt>
+		</field>
+
+		<filled>
+			<assign name="result" expr="F_1.out || F_1" />
+			<submit next="/menu-example/stateMachine" namelist="event result sessionid" />
+		</filled>
+
+		<noinput count="1">
+			<assign name="event" expr="'noinput'" />
+			<submit next="/menu-example/stateMachine" namelist="event result sessionid" />
+		</noinput>
+		
+		<nomatch count="1">
+			<assign name="event" expr="'nomatch'" />
+			<submit next="/menu-example/stateMachine" namelist="event result sessionid" />
+		</nomatch>
+	</form>
+</vxml>

@@ -6,4 +6,5 @@ public/img/logos
 tex/*
 !tex/Figures
 !tex/Src
+!tex/Vxml
 !*.tex
