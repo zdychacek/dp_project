@@ -444,7 +444,7 @@ V URL adrese požadavku může být obsažen ještě jeden parametr. Jedná se o
 
 \paragraph{Třída CallFlow}
 \label{sec:CallFlow}
-Tato třída slouží jako bázová třída pro implementaci objektu, který představuje kontejner pro jednotlivé stavy. Primárním úkolem této třídy je vytvořit a zaregistrovat jednotlivé stavy (viz \ref{sec:State}) pomocí metody \InlCode{addState}, resp. pomocí metody \InlCode{addStates}, která registruje více stavů v jednom volání.
+Tato třída slouží jako bázová třída pro implementaci objektu, který představuje kontejner pro jednotlivé stavy. Primárním úkolem této třídy je vytvořit a zaregistrovat jednotlivé stavy (viz \ref{sec:State}) pomocí metody \InlCode{addState}, resp. pomocí metody \InlCode{addStates}, která registruje více stavů v jednom volání. Registrace stavů se provádí v metodě \InlCode{create}, kterou musí každá instance implementovat.
 
 Tento kontejner zároveň slouží jako jakási sdílená sběrnice, která je přístupná všem stavům, které jsou v kontejneru obsaženy. Může tedy např. sloužit k uchování dat, která jsou společná pro více stavů.
 
@@ -691,6 +691,25 @@ Konstruktor přebírá dva parametry. Hodnotou prvního parametru je text, kter�
 
 \paragraph{Třída Var}
 \label{sec:Var}
+Instance této třídy slouží jako zástupné objekty pro hodnoty, které nejsou známy v době registrace stavů do kontejneru. Typicky se jedná o primitivní hodnoty, které se v JavaScriptu předávají hodnotou. Na primitivní hodnotu není možné získat referenci, a proto je potřeba takovou hodnotu zabalit do zástupného objektu.
+
+Ve výpise \ref{src:Var_example} je demonstrována situace, kdy je použití zástupného objektu nevyhnutelné.
+
+\lstinputlisting[label=src:Var_example,caption={Demonstrace využití zástupného objektu \InlCode{Var}}]{Src/Var_example.js}
+
+Výše uvedený kód vytváří flow aplikace, který se skládá ze dvou stavů. První stav slouží k zjištění věku uživatele. Druhý stav slouží k zobrazení sdělení o zadaném věku. A proto potřebuje hlasový model druhého stavu referencovat hodnotou vlastnosti \InlCode{this._age}. Tato hodnota ale není ve fázi vytváření flow dostupná. Hodnota bude dostupná až v momentě, kdy dojde k průchodu prvním stavem. Z tohoto důvodu chybějící hodnotu zastupuje zástupný objekt reprezentovaný instancí třídy \InlCode{Var} (viz řádek 18).
+
+Konstruktor této třídy přijímá dva parametry. Hodnotou prvního parametru je kontext. Kontext představuje objekt, ze kterého se bude číst vlastnost specifikovaná druhým parametrem konstruktoru. V tomto případě je typem druhého parametru řetězec.
+
+V některých případech může být vhodnější předat funkci jako hodnotu druhého parametru. Tato funkce může obsahovat například nějakou formátovací logiku (viz výpis \ref{src:Var_function}).
+
+\lstinputlisting[label=src:Var_function,caption={Demonstrace využití zástupného objektu \InlCode{Var}}]{Src/Var_function.js}
+
+Třída definuje metodu \InlCode{getValue}. Tato metoda je zavolána v momentě, kdy je potřeba vyhodnotit skutečnou hodnotu zástupného objektu.
+
+Pokud byla jako druhý parametr volání konstruktoru předána funkce, tak dojde k zavolání této funkce v kontextu\footnote{V JavaScriptu může být funkce zavolána v kontextu, který může být programově nastaven na specifický objekt. Reference \InlCode{this} uvnitř funkce poté ukazuje na tento nastavený objekt (kontext).}, který byl specifikován prvním argumentem. Návratová hodnota této funkce potom představuje hodnotu zástupného objektu.
+
+Pokud byl hodnotou druhého argumentu řetězec, pak dojde k nalezení pojmenované vlastnosti v rámci specifikovaného kontextu.
 
 \subsubsection{Popis implementace vybraných částí hlasového portálu}
 Zadání data (+diagram). Zadání textového vstupu (+diagram). Seznam rezervací/letů (+diagram).
