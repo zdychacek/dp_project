@@ -11,16 +11,14 @@
 \definecolor{purple}{rgb}{0.65, 0.12, 0.82}
 
 \lstdefinelanguage{JavaScript}{
-	keywords=keywords={break, case, catch, continue, debugger, default, delete, do, else, finally, for, function, if, in, instanceof, new, return, switch, this, throw, try, typeof, var, void, while, with},
-	keywordstyle=\color{blue}\bfseries,
-	ndkeywords={class, export, boolean, throw, implements, import, this},
-	ndkeywordstyle=\color{darkgray}\bfseries,
+	keywords=[1]{break, case, catch, continue, debugger, default, delete, do, else, finally, for, function, function*, if, in, instanceof, new, return, switch, this, throw, try, typeof, var, void, while, with},
+	keywordstyle=[1]\color{black}\ttfamily,
 	identifierstyle=\color{black},
 	sensitive=false,
 	comment=[l]{//},
 	morecomment=[s]{/*}{*/},
-	commentstyle=\color{purple}\ttfamily,
-	stringstyle=\color{red}\ttfamily,
+	commentstyle=\color{darkgray}\ttfamily,
+	stringstyle=\color{black}\ttfamily,
 	morestring=[b]',
 	morestring=[b]"
 }
@@ -628,14 +626,68 @@ Ve výpise \ref{src:Choices_example} se nachází zdrojový kód, který vytvá�
 
 Zápis definice je hodně podobný stylu zápisu, který se používá u definice gramatik prostřednictvím třídy \InlCode{Grammar}. Konstruktor třídy \InlCode{Choices} přebírá jeden parametr a to je pole položek, kde každá položka obsahuje dvě vlastnosti. První vlastnost je \InlCode{items} a jedná se o pole řetězců. Jednotlivé řetězce specifikují texty, které bude rozpoznávat ASR engine nebo kódy DMTF volby. Pokud chceme definovat položku jako DMTF volbu, tak ji musíme prefixovat řetězcem 'dtmf-', např. tedy 'dtmf-1'. Vlastnost \InlCode{tag} specifikuje návratovou hodnotu z gramatiky.
 
-\paragraph{Třída SayAs}
-\label{sec:SayAs}
-
 \paragraph{Třída Audio}
 \label{sec:Audio}
+Prostřednictvím této třídy lze vytvářet reference na audio soubory, které se dají použít jako součást zprávy uvnitř kontejneru \InlCode{Prompt}. Jedná se o abstrakci nad VXML elementem \InlCode{<audio/>}. Vytvoření této instance je přímočaré. Ve výpise \ref{src:Audio_example} je uveden kód, který vytváří instanci této třídy jako součást definice zprávy.
+
+\lstinputlisting[label=src:Audio_example,caption={Vytvoření instance \InlCode{Audio}}]{Src/Audio_example.js}
+
+Konstruktor této třídy přijímá dva parametry. Hodnotou prvního parametru je cesta k audio souboru, který se má přehrát. Hodnota druhého parametru specifikuje text, který bude přehrán pomocí TTS enginu v případě, že se nepodaří specifikovaný audio soubor stáhnout. Druhý parametr není povinný.
 
 \paragraph{Třída Silence}
 \label{sec:Silence}
+Tato třída se využívá k vytvoření pauzy mezi přehrávanými částmi zprávy. Jedná se o abstrakci nad VXML elementem \InlCode{<break/>}. Obsahem výpisu \ref{src:Silence_example} je ukázka zdrojového kódu, který demonstruje vytvoření krátké pauzy mezi přehrávanými částmi zprávy.
+
+Z ukázky je patrné, že je možné délku pauzy specifikovat více způsoby. Jedním způsobem je použít jednu z definovaných textových hodnot. V tabulce \ref{tab:Silence_pauses} uvádím seznam hodnot, které lze použít. Současně s těmito hodnotami je v tabulce pro každou hodnotu uvedena přidružená délka pauzy\cite{vxml_org}.
+
+\begin{table}
+	\centering
+	\begin{tabular}{|l|l|}
+		\hline
+		Textová hodnota & Délka pauzy [s] \\
+		\hline
+		none & 0 \\
+		\hline
+		x-weak & 0,35 \\
+		\hline
+		weak & 0,35 \\
+		\hline
+		medium & 0,7 \\
+		\hline
+		strong & 1 \\
+		\hline
+		x-strong & 1 \\
+		\hline
+	\end{tabular}
+	\caption{Seznam textových hodnot pro definici pauzy a přidružených délek pauzy}
+	\label{tab:Silence_pauses}
+\end{table}
+
+Pokud nám pro definici délky pauzy nepostačuji nadefinované hodnoty, tak můžeme pauzu vyjádřit ve vteřinách nebo v milisekundách.
+
+Oba způsoby definice pauzy jsou znázorněny ve výpise zdrojového kódu \ref{src:Silence_example}.
+
+\lstinputlisting[label=src:Silence_example,caption={Vytvoření instance \InlCode{Silence}}]{Src/Silence_example.js}
+
+\paragraph{Třída SayAs}
+\label{sec:SayAs}
+Tato třída je abstrakcí nad VXML elementem \InlCode{<say-as/>}. Umožňuje nadefinovat způsob, jakým bude text interpretován TTS enginem. Tímto způsobem můžeme TTS engine instruovat například o tom, aby číslo 1234 neinterpretoval jako souvislé číslo, ale aby výsledkem byla postupná interpretace jednotlivých číslic, tedy 1, 2, 3, 4.
+
+Ve výpise \ref{src:SayAs_example} je demonstrováno použití instance \InlCode{SayAs}.
+
+\lstinputlisting[label=src:SayAs_example,caption={Vytvoření instance \InlCode{SayAs}}]{Src/SayAs_example.js}
+
+Konstruktor přebírá dva parametry. Hodnotou prvního parametru je text, který se má interpretovat, druhý parametr udává typ interpretace. Důležité je upozornit na to, že je tato funkcionalita závislá na použitém TTS enginu a některé typy interpretací nemusí být dostupné. V následujícím seznamu uvádím typy interpretací, které by měly být podporovány TTS enginem, který je součástí IVR platformy Voxeo Prophecy\cite{vxml_org}:
+
+\begin{itemize}
+\item time
+\item boolean
+\item date
+\item digits
+\item currency
+\item number
+\item phone
+\end{itemize}
 
 \paragraph{Třída Var}
 \label{sec:Var}
@@ -699,6 +751,9 @@ Ondřej Ždych
 
 \bibitem{grunt}
 \textit{Oficiální web věnovaný nástroji Grunt}, http://gruntjs.com/.
+
+\bibitem{vxml_org}
+\textit{VXML dokumentace} Voxeo, http://www.vxml.org/.
 
 \end{thebibliography}
 
