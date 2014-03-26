@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<vxml xmlns="http://www.w3.org/2001/vxml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.1" xsi:schemaLocation="http://www.w3.org/2001/vxml http://www.w3.org/TR/voicexml20/vxml.xsd">
+<vxml version="2.1">
 	<var name="event" expr="'continue'" />
-	<var name="sessionid" expr="'5'" />
+	<var name="sessionid" expr="'28'" />
+
 	<form id="greeting">
 		<block>
 			<prompt>Welcome to menu example.</prompt>
