@@ -144,6 +144,8 @@ Popis draftu 3.0.
 \label{sec:Zaklady_vxml}
 Základní info.
 
+Vestavěné gramatiky
+
 \subsubsection{Struktura VXML dokumentu}
 Popis typické struktury VXML dokumentu. Členění aplikace do formu. Komunikace se serverem. (form, field)
 
@@ -213,7 +215,7 @@ Webové rozhraní rezervačního systému nabízí uživateli pohodlné grafick�
 
 V aplikaci je implementované REST API\footnote{Architektura rozhraní navržená pro distribuované prostředí. REST je, na rozdíl od známějších XML-RPC či SOAP, orientován datově, nikoli procedurálně.}, které slouží jako datový zdroj pro klienty. REST API implementuje přístup k datům, která jsou uložena v databázi. Většina metod REST API generuje notifikace pro ostatní připojené klienty. Notifikace slouží k synchronizaci uživatelských rozhraní všech připojených klientů.
 
-Data se mezi klientem a serverovou částí aplikace (RESP API) přenáší ve formátu JSON. Formát JSON preferuji hlavně z toho důvodu, že pro zakódování informace je potřeba menšího objemu dat než např. ve srovnání s formátem XML. Implementace REST API však volitelně dovoluje použít pro komunikaci např. i formát XML. Stačí jen o tom do požadavku přidat informaci. Možnost zvolit si formát přenášených dat je umožněna díky malé knihovně, která vznikla zároveň s touto prací. Tato knihovna řeší univerzálním způsobem převod jakéhokoliv JSON objektu do XML formátu. V tabulce č. \ref{tab:RestAPI} se nachází popis implementovaných metod REST API. API běží na základní URL adrese $/api/v1/$\footnote{URL zdroje pro získání informací o jednom letu tedy vypadá následovně http://muj.server.cz/api/v1/fligths/1.} a to z toho důvodu, aby bylo možné jednotlivé verze API v budoucnosti případně verzovat.
+Data se mezi klientem a serverovou částí aplikace (RESP API) přenáší ve formátu JSON. Formát JSON preferuji hlavně z toho důvodu, že pro zakódování informace je potřeba menšího objemu dat než např. ve srovnání s formátem XML. Implementace REST API však volitelně dovoluje použít pro komunikaci např. i formát XML. Stačí jen o tom do požadavku přidat informaci. Možnost zvolit si formát přenášených dat je umožněna díky malé knihovně, která vznikla zároveň s touto prací. Tato knihovna řeší univerzálním způsobem převod jakéhokoliv JSON objektu do XML formátu. V tabulce \ref{tab:RestAPI} se nachází popis implementovaných metod REST API. API běží na základní URL adrese $/api/v1/$\footnote{URL zdroje pro získání informací o jednom letu tedy vypadá následovně http://muj.server.cz/api/v1/fligths/1.} a to z toho důvodu, aby bylo možné jednotlivé verze API v budoucnosti případně verzovat.
 
 \begin{table}
 	\centering
@@ -404,7 +406,7 @@ V předchozí kapitole jsem představil pomocnou knihovnu a popsal jsem důvody,
 
 V této části se budu podrobně věnovat jednotlivým částem rozhraní API, které nám tato knihovna nabízí. Popíši zde jednotlivé třídy, které knihovna obsahuje. Aby bylo možné srovnat vývoj VXML hlasového portálu za pomoci této knihovny s tradičním způsobem vývoje (kdy ručně vytváříme VXML kód), nesmí chybět i ukázky použití jednotlivých částí knihovny.
 
-Ve výpise \ref{src:MenuExample} uvádím zdrojový kód jednoduché aplikace, jejíž zdrojový kód nám v dalším textu poslouží pro detailnější rozbor. Jen pro představu zde ještě uvedu, co daná aplikace dělá. Aplikace představuje jednoduché menu. Nejdříve nás aplikace přivítá uvítací hláškou. Poté dojde k přechodu do menu, kde se dozvídáme, že můžeme pomocí volby DTMF zvolit hodnotu 1, 2 nebo 3. V závislosti na výběru poté přecházíme do stavu, ve kterém jsme informováni o tom, jakou volbu jsme provedli. Pokud zvolíme jinou hodnotu, než je povoleno (např. 4) dojde k přechodu do stavu, kde je nám řečeno, že jsme zvolili nepovolenou volbu.
+Ve výpise \ref{src:MenuExample} je uveden zdrojový kód jednoduché aplikace, jejíž zdrojový kód nám v dalším textu poslouží pro detailnější rozbor. Jen pro představu zde ještě uvedu, co daná aplikace dělá. Aplikace představuje jednoduché menu. Nejdříve nás aplikace přivítá uvítací hláškou. Poté dojde k přechodu do menu, kde se dozvídáme, že můžeme pomocí volby DTMF zvolit hodnotu 1, 2 nebo 3. V závislosti na výběru poté přecházíme do stavu, ve kterém jsme informováni o tom, jakou volbu jsme provedli. Pokud zvolíme jinou hodnotu, než je povoleno (např. 4) dojde k přechodu do stavu, kde je nám řečeno, že jsme zvolili nepovolenou volbu.
 
 \lstinputlisting[label=src:MenuExample,caption={Zdrojový kód ukázkové aplikace}]{Src/MenuExample.js}
 
@@ -460,13 +462,13 @@ Konstruktor může přijímat tři parametry. Prvním a jediným povinným param
 
 Zbývající parametry \InlCode{target} a \InlCode{event} jsou nepovinné. V případě, že jsou tyto parametry uvedeny, tak konstruktor interně zavolá metodu \InlCode{addTransition} s hodnotami těchto parametrů. Metoda má následující předpis \InlCode{addTransition(event, target, condition)}. Tato metoda slouží k definici přechodů do dalších stavů. Každý stav může mít definováno více přechodů. Přechod je definován kombinací typu události a cílového stavu. Tato kombinace může být volitelně rozšířena ještě parametrem \InlCode{condition}. Metodě \InlCode{addTransition} může být cílový stav \InlCode{target} předán formou reference na instanci třídy \InlCode{State} nebo můžeme metodě předat pouze identifikátor stavu.
 
-V některých případech se nám může hodit nadefinovat více přechodů se stejným typem události. Více přechodů se stejným typem události bývá typicky definováno u stavů, které nějakou formou implementují menu. V momentě, kdy je proveden výběr v menu, může být vyvolána obecná událost, např. \InlCode{continue}. Tato obecná událost je parametrizována hodnotou, která byla v menu zvolena. Zde se dostáváme k volitelnému parametru \InlCode{condition}, který slouží k rozhodnutí, do jakého stavu se přejde. Hodnotou tohoto parametru je funkce, která přebírá jeden parametr a to je právě hodnota, která byla v menu zvolena. Tato funkce obsahuje rozhodovací logiku, která má tedy k dispozici informaci o vybrané hodnotě a vrací hodnotu \InlCode{true} v případě, že se má tento přechod použít pro přechod do dalšího stavu. Demonstrace toho postupu je vidět ve výpise č. \ref{src:MenuExample}.
+V některých případech se nám může hodit nadefinovat více přechodů se stejným typem události. Více přechodů se stejným typem události bývá typicky definováno u stavů, které nějakou formou implementují menu. V momentě, kdy je proveden výběr v menu, může být vyvolána obecná událost, např. \InlCode{continue}. Tato obecná událost je parametrizována hodnotou, která byla v menu zvolena. Zde se dostáváme k volitelnému parametru \InlCode{condition}, který slouží k rozhodnutí, do jakého stavu se přejde. Hodnotou tohoto parametru je funkce, která přebírá jeden parametr a to je právě hodnota, která byla v menu zvolena. Tato funkce obsahuje rozhodovací logiku, která má tedy k dispozici informaci o vybrané hodnotě a vrací hodnotu \InlCode{true} v případě, že se má tento přechod použít pro přechod do dalšího stavu. Demonstrace toho postupu je vidět ve výpise \ref{src:MenuExample}.
 
 Třída dále obsahuje metody \InlCode{addOnEntryAction} a \InlCode{addOnExitAction}, které slouží k registraci funkcí\footnote{TODO: dopsat poznámku o funkčních generátorech.}, které se vyvolávají při vstupu resp. při výstupu z tohoto stavu. Těchto funkcí může být pro každý typ události zaregistrováno více. V případě, že je funkcí zaregistrováno více, jsou jednotlivé funkce volány sekvenčně za sebou. Každá funkce má v momentě zavolání k dispozici reference na následující objekty. Tyto reference jsou k dispozici prostřednictvím argumentů funkce. Prvním argumentem je instance kontejneru (flow), do kterého daný stav patří. Druhým argumentem je reference na stav samotný. Poslední argument obsahuje doplňující data, která jsou závislá na konkrétním případě použití.
 
 Jak již bylo předesláno dříve, každý stav může obsahovat vnořené stavy. K registraci vnořených stavů slouží metoda \InlCode{addNestedCallFlow(callFlow)}, která přijímá jeden parametr. Hodnota parametru \InlCode{callFlow} je instance, pro nás již známé, třídy \InlCode{CallFlow}, která byla popsána v kapitole \ref{sec:CallFlow}. Díky této možnosti můžeme jednoduše docílit znovupoužitelnosti kódu, kdy opakovaně využívanou komponentu implementujeme jako samostatnou třídu, která je odvozena ze třídy \InlCode{CallFlow}. Instance této třídy je poté registrována zavoláním metody \InlCode{addNestedCallFlow} na daném stavu. V případě potřeby může být tato instance parametrizována, např. předáním různých parametrů do konstruktoru.
 
-Třída \InlCode{State} obsahuje tovární statickou metodu \InlCode{create}, která je další možností, jak vytvořit instanci stavu. Oproti vytvoření stavu pomocí konstruktoru nabízí pohodlnější cestu k vytvoření stavu, který obsahuje hlasový model (viz \ref{sec:VoiceModel}). Pomocí hlasového modelu definujeme typ stavu. Jedním z typů je stav, který zajišťuje přečtení vstupu od uživatele, dalším typem stavu může být stav, který slouží k prezentaci výstupu. Vytváření stavů pomocí teto metody je použito ve výpise č. \ref{src:MenuExample}.
+Třída \InlCode{State} obsahuje tovární statickou metodu \InlCode{create}, která je další možností, jak vytvořit instanci stavu. Oproti vytvoření stavu pomocí konstruktoru nabízí pohodlnější cestu k vytvoření stavu, který obsahuje hlasový model (viz \ref{sec:VoiceModel}). Pomocí hlasového modelu definujeme typ stavu. Jedním z typů je stav, který zajišťuje přečtení vstupu od uživatele, dalším typem stavu může být stav, který slouží k prezentaci výstupu. Vytváření stavů pomocí teto metody je použito ve výpise \ref{src:MenuExample}.
 
 Ve stejném výpise si můžeme všimnout, že volání většiny metod třídy \InlCode{State} se dá řetězit. V jednom řetězu volání můžeme vytvořit instanci stavu, navěsit akce, které se volají při přechodu do dalších stavů a nadefinovat přechody do dalších stavů.
 
@@ -490,7 +492,7 @@ Tato třída slouží k definici zprávy, která se má uživateli předložit. 
 
 Třída obsahuje kolekci \InlCode{audios}. Tato kolekce může obsahovat jednu nebo více zpráv, které se uživateli postupně přehrají. Položkami této kolekce může být text, který bude pomocí TTS enginu převeden na hlasovou zprávu nebo reference na audio nahrávku, která bude přehrána.
 
-Konstruktor třídy může být volán více způsoby. Ve výpise č. \ref{src:Prompt_Constructor} uvádím ukázky volání konstruktoru.
+Konstruktor třídy může být volán více způsoby. Ve výpise \ref{src:Prompt_Constructor} uvádím ukázky volání konstruktoru.
 
 \lstinputlisting[label=src:Prompt_Constructor,caption={Ukázka vytvoření instance třídy \InlCode{Prompt}}]{Src/Prompt_Constructor.js}
 
@@ -512,7 +514,7 @@ Nastavením \InlCode{timeout} můžeme specifikovat časovou prodlevu, po kterou
 
 \paragraph{Třída Say}
 \label{sec:Say}
-Tato třída je odvozena ze třídy \InlCode{VoiceModel} a implementuje tedy konkrétní hlasový model. Prostřednictvím tohoto hlasového modelu sdělujeme uživateli nějakou zprávu. Způsoby vytvoření instance této třídy jsou ukázány ve výpise č. \ref{src:Say_Constructor}.
+Tato třída je odvozena ze třídy \InlCode{VoiceModel} a implementuje tedy konkrétní hlasový model. Prostřednictvím tohoto hlasového modelu sdělujeme uživateli nějakou zprávu. Způsoby vytvoření instance této třídy jsou ukázány ve výpise \ref{src:Say_Constructor}.
 
 \lstinputlisting[label=src:Say_Constructor,caption={Ukázka vytvoření instance třídy \InlCode{Say}}]{Src/Say_Constructor.js}
 
@@ -520,7 +522,7 @@ Třída \InlCode{Say} interně obsahuje instanci třídy \InlCode{Prompt} a nast
 
 Ukázka vytvoření stavu, který obsahuje hlasový model tohoto typu, je vidět ve výpise \hyperref[src:MenuExample]{zdrojového kódu} ukázkové aplikace na řádku číslo 11.
 
-Ve výpise č. \ref{src:Say_Vxml} je ukázka VXML kódu, který pro takový stav aplikace automaticky vygeneruje.
+Ve výpise \ref{src:Say_Vxml} je ukázka VXML kódu, který pro takový stav aplikace automaticky vygeneruje.
 
 \lstinputlisting[label=src:Say_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \InlCode{Say}}]{Vxml/Say.vxml}
 
@@ -530,7 +532,7 @@ Třída \InlCode{Exit} implementuje hlasový model, který uživateli přehraje 
 
 Nejjednodušší ukázka vytvoření instance této třídy je uvedena ve zdrojovém kódu ukázkové aplikace na řádcích 14, 17, 20 a 23. Na těchto řádcích je uveden kód, který vytváří konečné stavy aplikace. Při vstupu do takového stavu dojde k prezentaci zprávy a následnému zavěšení hovoru.
 
-Ve výpise č. \ref{src:Exit_Vxml} je uvedena ukázka VXML kódu, který je pro takový stav aplikací automaticky vygenerován.
+Ve výpise \ref{src:Exit_Vxml} je uvedena ukázka VXML kódu, který je pro takový stav aplikací automaticky vygenerován.
 
 \lstinputlisting[label=src:Exit_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \InlCode{Exit}}]{Vxml/Exit.vxml}
 
@@ -540,7 +542,7 @@ Tato třída implementuje typ hlasového modelu, který slouží k zaznamenání
 
 Pořízení zvukové nahrávky má v kompetenci IVR platforma a musí tedy tuto funkcionalitu podporovat. Nutno podotknout, že tuto funkcionalitu nepodporuje IVR platforma VoiceGlue.
 
-Jelikož práce s tímto hlasovým modelem není demonstrována ve zdrojovým kódu ukázkové aplikace, tak ve výpise č. \ref{src:Record_example} uvádím ukázku zdrojového kódu, který vytváří stav, jehož hlasovým modelem je instance této třídy. V ukázce jsou demonstrovány dva způsoby zavolání konstruktoru.
+Jelikož práce s tímto hlasovým modelem není demonstrována ve zdrojovým kódu ukázkové aplikace, tak ve výpise \ref{src:Record_example} uvádím ukázku zdrojového kódu, který vytváří stav, jehož hlasovým modelem je instance této třídy. V ukázce jsou demonstrovány dva způsoby zavolání konstruktoru.
 
 První volání spočívá v předání jednoho argumentu. Tento argument může být textový řetězec zprávy nebo instance typu \InlCode{Prompt}. Z ukázky je dále vidět způsob, jakým je možné nahrávku uložit na disk.
 
@@ -558,7 +560,7 @@ Posledním možným nastavením je \InlCode{type}. Hodnotou tohoto nastavení ud
 
 \lstinputlisting[label=src:Record_example,caption={Vytvoření stavu s hlasovým modelem \InlCode{Record}}]{Src/Record_example.js}
 
-Ve výpise č. \ref{src:Record_Vxml} je pro představu uveden VXML kód, který aplikace pro takový stav automaticky vygeneruje.
+Ve výpise \ref{src:Record_Vxml} je pro představu uveden VXML kód, který aplikace pro takový stav automaticky vygeneruje.
 
 \lstinputlisting[label=src:Record_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \InlCode{Record}}]{Vxml/Record.vxml}
 
@@ -578,9 +580,9 @@ Dalším povinným nastavením, které musíme při konstrukci objektu uvést, j
 
 Při vytváření instance můžeme volitelně nastavit zprávy, které se uživateli předloží v situacích, kdy nedošlo k zadání očekávaného vstupu.
 
-Pomocí nastavení \InlCode{noinputPrompts} můžeme nastavit znění zprávy, která bude uživateli přehrána v situaci, kdy nedošlo k zadání žádného vstupu.
+Pomocí nastavení \InlCode{noInputPrompts} můžeme nastavit znění zprávy, která bude uživateli přehrána v situaci, kdy nedošlo k zadání žádného vstupu.
 
-Nastavením \InlCode{nomatchPrompts} definujeme zprávu, která se uživateli přehraje v momentě, kdy byl nějaký vstup zadán, ale nesplnil pravidla na validitu vstupu popsaná gramatikou.
+Nastavením \InlCode{noMatchPrompts} definujeme zprávu, která se uživateli přehraje v momentě, kdy byl nějaký vstup zadán, ale nesplnil pravidla na validitu vstupu popsaná gramatikou.
 
 Obě tyto nastavení jsou typu pole a můžou tedy obsahovat více zpráv pro každý typ nastavení.
 
@@ -588,18 +590,43 @@ Pokud je definována jen jedna zpráva, dojde k přehrání této zprávy a nás
 
 Pokud je hodnotou nastavení pole více zpráv, tak zpracování funguje následovně. Po prvním neúspěšném zadání vstupu dojde k přehrání první zprávy. Poté po každém dalším špatném zadání dojde k přehrání další zprávy v pořadí. Tohoto se dá využít například k postupnému přehrávání podrobnějších informací.
 
-Pro stav, který má jako hlasový model uvedenu instanci třídy \InlCode{Ask}, aplikace automaticky vygeneruje VXML kód, který je předmětem výpisu č. \ref{src:Ask_Vxml}.
+Pro stav, který má jako hlasový model uvedenu instanci třídy \InlCode{Ask}, aplikace automaticky vygeneruje VXML kód, který je předmětem výpisu \ref{src:Ask_Vxml}.
 
 \lstinputlisting[label=src:Ask_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \InlCode{Ask}}]{Vxml/Ask.vxml}
 
-\paragraph{Třída Grammar, Rule a Item}
+\paragraph{Třída Grammar}
 \label{sec:Grammar}
+Prostřednictvím instancí této třídy definujeme hlasové nebo DTMF gramatiky. V podstatě se jedná o abstrakci nad VXML elementem \InlCode{<grammar/>}, který byl podrobněji představen v kapitole \ref{sec:Zaklady_vxml}. Tato třída je úzce s spjata s třídou \InlCode{Ask}, která tuto třídu využívá k definici přípustných vstupních dat. Pomocí této třídy lze specifikovat pouze gramatiky, které definují uživatelský vstup jako výběr jedné položky z předem definované konečné množiny.
+
+Třída zároveň podporuje externí gramatiky, tedy gramatiky, jejichž popis se nachází v samostatném XML souboru.
+
+Ve výpise \ref{src:Grammar_example} je vidět zdrojový kód, vytvářející stav, jehož úkolem je načíst vstup od uživatele. Povolené hodnoty vstupu jsou definovány pomocí gramatiky. V ukázce je dále vidět způsob, jakým způsobem lze programově přistoupit k zadanému vstupu.
+
+\lstinputlisting[label=src:Grammar_example,caption={Vytvoření hlasové gramatiky}]{Src/Grammar_example.js}
+
+Na řádcích 1 až 10 dochází k vytvoření instance gramatiky. Můžeme si všimnout, že konstruktor přebírá jeden parametr. Hodnotou tohoto parametru je objekt obsahující veškerá potřebná nastavení.
+
+Prvním uvedeným nastavením je \InlCode{mode}. Možné hodnoty nastavení jsou 'voice' nebo 'dtmf'. Tento údaj specifikuje, zda vytváříme hlasovou nebo DTMF gramatiku.
+
+Další nastavení je \InlCode{items}. Jedná se o pole položek, kde každá položka obsahuje vlastnost \InlCode{text} a \InlCode{tag}. Vlastnost \InlCode{text} definuje text, který se bude ASR engine snažit rozeznat. Pokud dojde k úspěšnému rozeznání tohoto textu, je z gramatiky vrácena návratová hodnota. Návratová hodnota obsahuje hodnotu vlastnosti \InlCode{tag}. S návratovou hodnotou lze dále pracovat. Lze ji například uložit do databáze nebo na základě této hodnoty rozvětvit program. Více položkám můžeme přiřadit stejný tag.
+
+Definice DTMF gramatiky by vypadala analogicky. Při vytváření instance bychom pouze nastavili hodnotu nastavení \InlCode{mode} na 'dtmf'. Následně bychom v definici jednotlivých položek pole \InlCode{items} mohli jako hodnoty vlastnosti \InlCode{text} použít pouze následující hodnoty: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, *, \#.
 
 \paragraph{Třída BuiltinGrammar}
 \label{sec:BuiltinGrammar}
+Tato třída reprezentuje vestavěné gramatiky. Vestavěné gramatiky se od klasických gramatik liší způsobem, jakým jsou zapsány ve výsledném VXML kódu. Standard VXML definuje sadu vestavěných gramatik, které není v kódu potřeba nijak dále specifikovat. Stačí uvést typ gramatiky a případně její parametry. Vestavěné gramatiky byly podrobněji popsány v kapitole \ref{sec:Zaklady_vxml}.
+
+Ve výpise \ref{src:MenuExample} je na řádcích 28-31 ukázán způsob, jakým lze vytvořit instanci této třídy.
 
 \paragraph{Třída Choices}
 \label{sec:Choices}
+Tuto třídu je užitečné použít v případech, kdy chceme uživateli nabídnout možnost zadání vstupu libovolnou metodou. Uživatel může zadat vstup pomocí hlasové volby nebo pomocí DTMF volby. Na základě popisu třída interně vytvoří dvě instance třídy \InlCode{Grammar}. První instance představuje hlasovou gramatiku a druhá instance představuje DTMF gramatiku.
+
+Ve výpise \ref{src:Choices_example} se nachází zdrojový kód, který vytváří instanci kombinované gramatiky \InlCode{Choices}.
+
+\lstinputlisting[label=src:Choices_example,caption={Vytvoření kombinované gramatiky \InlCode{Choices}}]{Src/Choices_example.js}
+
+Zápis definice je hodně podobný stylu zápisu, který se používá u definice gramatik prostřednictvím třídy \InlCode{Grammar}. Konstruktor třídy \InlCode{Choices} přebírá jeden parametr a to je pole položek, kde každá položka obsahuje dvě vlastnosti. První vlastnost je \InlCode{items} a jedná se o pole řetězců. Jednotlivé řetězce specifikují texty, které bude rozpoznávat ASR engine nebo kódy DMTF volby. Pokud chceme definovat položku jako DMTF volbu, tak ji musíme prefixovat řetězcem 'dtmf-', např. tedy 'dtmf-1'. Vlastnost \InlCode{tag} specifikuje návratovou hodnotu z gramatiky.
 
 \paragraph{Třída SayAs}
 \label{sec:SayAs}
