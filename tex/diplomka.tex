@@ -712,7 +712,23 @@ Pokud byla jako druhý parametr volání konstruktoru předána funkce, tak dojd
 Pokud byl hodnotou druhého argumentu řetězec, pak dojde k nalezení pojmenované vlastnosti v rámci specifikovaného kontextu.
 
 \subsubsection{Popis implementace vybraných částí hlasového portálu}
-Zadání data (+diagram). Zadání textového vstupu (+diagram). Seznam rezervací/letů (+diagram).
+V předchozí kapitole jsme získali detailní informace o struktuře a fungování navržené knihovny.
+
+V této kapitole se opět vrátím k navrhovanému hlasovému portálu rezervačního systému a zaměřím se zde na popis vybraných komponent, které jsou nějakým způsobem zajímavé a stojí za to zmínit se o nich podrobněji.
+
+\paragraph{Komponenta pro zadání data}
+
+\InsertFigure{Figures/diagrams/getdatedtmfflow}{0.8\textwidth}{Diagram komponenty pro zadání data (GetDateDtmfFlow)}{fig:GetDateDtmfFlow}
+
+\paragraph{Komponenta pro zadání textového vstupu}
+
+\InsertFigure{Figures/diagrams/gettextinputdtmfflow}{0.35\textwidth}{Diagram komponenty pro zadání textového vstupu (GetTextInputDtmfFlow)}{fig:GetTextInputDtmfFlow}
+
+\paragraph{Komponenta pro zvolení destinace letu}
+
+\InsertFigure{Figures/diagrams/getdestinationflow}{1\textwidth}{Obecný diagram komponenty pro zvolení destinace (GetDestinationFlow)}{fig:GetDestinationFlow}
+
+\InsertFigure{Figures/diagrams/destinationselectionflow}{1\textwidth}{Podrobnější diagram pro zvolení destinace (DestinationSelectionFlow)}{fig:DestinationSelectionFlow}
 
 \section{Konfigurace a zprovoznění hlasového portálu}
 Popis, jak zprovoznit aplikaci na jednotlivých platformách. Voxeo Prophecy, Asterisk + VoiceGlue.
