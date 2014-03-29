@@ -716,7 +716,20 @@ V předchozí kapitole jsme získali detailní informace o struktuře a fungová
 
 V této kapitole se opět vrátím k navrhovanému hlasovému portálu rezervačního systému a zaměřím se zde na popis vybraných komponent, které jsou nějakým způsobem zajímavé a stojí za to zmínit se o nich podrobněji.
 
+Všechny tyto popisované komponenty jsou navrženy s ohledem na znovupoužitelnost kódu. Principu znovupoužitelnosti se dosahuje zaregistrováním instance komponenty jako sady vnořených stavů (viz kapitola \ref{sec:State}).
+
 \paragraph{Komponenta pro zadání data}
+Tato komponenta slouží k zadání data pomocí DTMF volby. V aplikaci hlasového portálu se tato komponenta používá v menu pro filtrování seznamu letů. Prostřednictvím této komponenty je uživatel vyzván k zadání požadovaného data odletu, resp. příletu. Diagram \ref{fig:GetDateDtmfFlow} znázorňuje strukturu této komponenty formou stavového diagramu. V aplikaci je tato komponenta reprezentována třídou \InlCode{GetDateDtmfFlow}.
+
+První stav $getDate$ uživateli předkládá zprávu o tom, že se od něj očekává zadání data formou osmi číslic ve formátu $ddmmyyyy$. Prostřednictvím hodnoty parametru předané do konstruktoru je možné pro každou instanci této komponenty nastavit různý text této zprávy. Komponenta zůstává v tomto stavu, dokud nedojde k zadání vstupu v požadovaném formátu.
+
+Pokud došlo k zadání vstupu v požadovaném formátu (8 číslic), tak zpracování přechází do druhého stavu $validateDate$. Tento stav má za úkol ověřit, zda je zadaný vstup validním datem. Ověřuje se např. zda zadaný den nepřesahuje za poslední den v daném měsíci. Toto ověření bere v úvahu přestupný rok apod.
+
+Pokud zadaný vstup neprošel všemi validačními pravidly, dochází k vyvolání události $error$ a zpracování tak přechází do stavu $invalidDate$. Hlasový model tohoto stavu uživatele informuje o tom, že zadal neplatný vstup. Po přehrání této informace uživatel automaticky přechází do prvního stavu $getDate$, kde je vyzván k opakovanému zadání.
+
+V případě, že došlo k zadání validního data, provede se přechod ze stavu $validateDate$ do stavu $confirmDate$. Tento stav uživateli zrekapituluje zadané datum a přechází do konečného stavu, kde životní cyklus komponenty končí.
+
+Komponenta implementuje veřejnou metodu \InlCode{getDate}. Tato metoda vrací prostřednictvím návratové hodnoty zadané datum. Metoda je typicky volána v rámci akce \InlCode{onExitAction} definované na stavu, který má instanci této komponenty zaregistrovánu.
 
 \InsertFigure{Figures/diagrams/getdatedtmfflow}{0.8\textwidth}{Diagram komponenty pro zadání data (GetDateDtmfFlow)}{fig:GetDateDtmfFlow}
 
