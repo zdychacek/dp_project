@@ -11,17 +11,20 @@
 
 		<filled>
 			<assign name="result" expr="F_1.out || F_1" />
-			<submit next="/menu-example/stateMachine" namelist="event result sessionid" />
+			<submit next="/menu-example/stateMachine"
+				namelist="event result sessionid" />
 		</filled>
 
 		<noinput count="1">
 			<assign name="event" expr="'noinput'" />
-			<submit next="/menu-example/stateMachine" namelist="event result sessionid" />
+			<submit next="/menu-example/stateMachine"
+				namelist="event result sessionid" />
 		</noinput>
 
 		<nomatch count="1">
 			<assign name="event" expr="'nomatch'" />
-			<submit next="/menu-example/stateMachine" namelist="event result sessionid" />
+			<submit next="/menu-example/stateMachine"
+				namelist="event result sessionid" />
 		</nomatch>
 	</form>
 </vxml>

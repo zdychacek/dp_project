@@ -4,38 +4,62 @@
 \usepackage[czech]{babel}
 
 % JavaScript highlighting
+\usepackage{graphicx}
 \usepackage{listings}
-\usepackage{color}
+\usepackage{xcolor}
 \definecolor{lightgray}{rgb}{.9,.9,.9}
 \definecolor{darkgray}{rgb}{.4,.4,.4}
 \definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+\definecolor{darkgreen}{rgb}{0, 0.5, 0}
+\definecolor{gray}{rgb}{0.4,0.4,0.4}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.6}
+\definecolor{cyan}{rgb}{0.0,0.6,0.6}
+\definecolor{maroon}{rgb}{0.5,0,0}
+\definecolor{darkgreen}{rgb}{0,0.5,0}
 
-\lstdefinelanguage{JavaScript}{
-	keywords=[1]{break, case, catch, continue, debugger, default, delete, do, else, finally, for, function, function*, if, in, instanceof, new, return, switch, this, throw, try, typeof, var, void, while, with},
-	keywordstyle=[1]\color{black}\ttfamily,
-	identifierstyle=\color{black},
-	sensitive=false,
-	comment=[l]{//},
-	morecomment=[s]{/*}{*/},
-	commentstyle=\color{darkgray}\ttfamily,
-	stringstyle=\color{black}\ttfamily,
-	morestring=[b]',
-	morestring=[b]"
+\lstdefinelanguage{JavaScript} {
+    morekeywords={
+        break,const,continue,delete,do,while,export,for,in,function,
+        if,else,import,in,instanceOf,label,let,new,return,switch,this,
+        throw,try,catch,typeof,var,void,with,yield
+    },
+    sensitive=true,
+    morecomment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    morestring=[b]",
+    morestring=[d]',
+    alsoletter={.},
+    basicstyle=\footnotesize\ttfamily,
+    keywordstyle=\ttfamily\color{blue},
+    identifierstyle=\ttfamily,
+    stringstyle=\ttfamily\color{maroon},
+    commentstyle=\color{darkgreen}\ttfamily
+}
+
+\lstdefinelanguage{XML}
+{
+  basicstyle=\ttfamily\footnotesize,
+  morestring=[b]",
+  moredelim=[s][\ttfamily\color{maroon}]{<}{\ },
+  moredelim=[s][\ttfamily\color{maroon}]{</}{>},
+  moredelim=[l][\ttfamily\color{maroon}]{/>},
+  moredelim=[l][\ttfamily\color{maroon}]{>},
+  morecomment=[s]{<?}{?>},
+  morecomment=[s]{<!--}{-->},
+  commentstyle=\color{darkgreen},
+  stringstyle=\color{blue},
+  identifierstyle=\color{red}
 }
 
 \lstset{
-	 language=JavaScript,
-	 extendedchars=true,
-	 basicstyle=\footnotesize\ttfamily,
-	 showstringspaces=false,
-	 showspaces=false,
-	 numbers=left,
-	 numberstyle=\footnotesize,
-	 numbersep=9pt,
-	 tabsize=2,
-	 breaklines=true,
-	 showtabs=false,
-	 captionpos=b
+    showstringspaces=false,
+    rulecolor=\color{black},
+    aboveskip=\bigskipamount,
+    belowskip=\bigskipamount,
+    backgroundcolor=\color{gray!.50},
+    alsoletter={.},
+    numbers=left,
+    keywordstyle=\color{black}\ttfamily
 }
 
 % Zadame pozadovane vstupy pro generovani titulnich stran.
@@ -406,7 +430,7 @@ V této části se budu podrobně věnovat jednotlivým částem rozhraní API, 
 
 Ve výpise \ref{src:MenuExample} je uveden zdrojový kód jednoduché aplikace, jejíž zdrojový kód nám v dalším textu poslouží pro detailnější rozbor. Jen pro představu zde ještě uvedu, co daná aplikace dělá. Aplikace představuje jednoduché menu. Nejdříve nás aplikace přivítá uvítací hláškou. Poté dojde k přechodu do menu, kde se dozvídáme, že můžeme pomocí volby DTMF zvolit hodnotu 1, 2 nebo 3. V závislosti na výběru poté přecházíme do stavu, ve kterém jsme informováni o tom, jakou volbu jsme provedli. Pokud zvolíme jinou hodnotu, než je povoleno (např. 4) dojde k přechodu do stavu, kde je nám řečeno, že jsme zvolili nepovolenou volbu.
 
-\lstinputlisting[label=src:MenuExample,caption={Zdrojový kód ukázkové aplikace}]{Src/MenuExample.js}
+\lstinputlisting[language=JavaScript,label=src:MenuExample,caption={Zdrojový kód ukázkové aplikace}]{Src/MenuExample.js}
 
 \paragraph{Třída Application}
 \label{sec:Application}
@@ -414,7 +438,7 @@ Každá aplikace je reprezentována hlavním objektem aplikace, který celou apl
 
 Tato třída implementuje statickou metodu \InlCode{create}, která přijímá potřebné parametry k vytvoření aplikace. Ve výpise \ref{src:Application_create} je uvedena ukázka kódu, kterým se vytvoří instance aplikace.
 
-\lstinputlisting[label=src:Application_create,caption={Vytvoření hlavního objektu aplikace}]{Src/Application_create.js}
+\lstinputlisting[language=JavaScript,label=src:Application_create,caption={Vytvoření hlavního objektu aplikace}]{Src/Application_create.js}
 
 Metoda \InlCode{create} přijímá jako parametr jeden objekt, který obsahuje jednotlivé parametry aplikace. Následuje popis jednotlivých parametrů.
 
@@ -492,7 +516,7 @@ Třída obsahuje kolekci \InlCode{audios}. Tato kolekce může obsahovat jednu n
 
 Konstruktor třídy může být volán více způsoby. Ve výpise \ref{src:Prompt_Constructor} uvádím ukázky volání konstruktoru.
 
-\lstinputlisting[label=src:Prompt_Constructor,caption={Ukázka vytvoření instance třídy \InlCode{Prompt}}]{Src/Prompt_Constructor.js}
+\lstinputlisting[language=JavaScript,label=src:Prompt_Constructor,caption={Ukázka vytvoření instance třídy \InlCode{Prompt}}]{Src/Prompt_Constructor.js}
 
 Nejjednodušší možnost vytvoření instance je ukázáno na prvním řádku výpisu. Konstrukce spočítá v předání jediného argumentu, který definuje text zprávy, který bude pomocí TTS přehrán.
 
@@ -514,7 +538,7 @@ Nastavením \InlCode{timeout} můžeme specifikovat časovou prodlevu, po kterou
 \label{sec:Say}
 Tato třída je odvozena ze třídy \InlCode{VoiceModel} a implementuje tedy konkrétní hlasový model. Prostřednictvím tohoto hlasového modelu sdělujeme uživateli nějakou zprávu. Způsoby vytvoření instance této třídy jsou ukázány ve výpise \ref{src:Say_Constructor}.
 
-\lstinputlisting[label=src:Say_Constructor,caption={Ukázka vytvoření instance třídy \InlCode{Say}}]{Src/Say_Constructor.js}
+\lstinputlisting[language=JavaScript,label=src:Say_Constructor,caption={Ukázka vytvoření instance třídy \InlCode{Say}}]{Src/Say_Constructor.js}
 
 Třída \InlCode{Say} interně obsahuje instanci třídy \InlCode{Prompt} a nastavuje hodnoty některým zděděným vlastnostem z třídy \InlCode{VoiceModel}.
 
@@ -522,7 +546,7 @@ Ukázka vytvoření stavu, který obsahuje hlasový model tohoto typu, je vidět
 
 Ve výpise \ref{src:Say_Vxml} je ukázka VXML kódu, který pro takový stav aplikace automaticky vygeneruje.
 
-\lstinputlisting[label=src:Say_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \InlCode{Say}}]{Vxml/Say.vxml}
+\lstinputlisting[language=XML,label=src:Say_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \InlCode{Say}}]{Vxml/Say.vxml}
 
 \paragraph{Třída Exit}
 \label{sec:Exit}
@@ -532,7 +556,7 @@ Nejjednodušší ukázka vytvoření instance této třídy je uvedena ve zdrojo
 
 Ve výpise \ref{src:Exit_Vxml} je uvedena ukázka VXML kódu, který je pro takový stav aplikací automaticky vygenerován.
 
-\lstinputlisting[label=src:Exit_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \InlCode{Exit}}]{Vxml/Exit.vxml}
+\lstinputlisting[language=XML,label=src:Exit_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \InlCode{Exit}}]{Vxml/Exit.vxml}
 
 \paragraph{Třída Record}
 \label{sec:Record}
@@ -556,11 +580,11 @@ Dalším nastavením je \InlCode{finalSilence}. Tímto nastavením můžeme nade
 
 Posledním možným nastavením je \InlCode{type}. Hodnotou tohoto nastavení udáváme MIME typ nahraného souboru. Pod tímto MIME typem bude audio nahrávka odeslána serveru\footnote{Konkrétně je hodnota MIME typu přítomna v hlavičce Content-Type požadavku.}. Výchozí hodnotou je \InlCode{audio/wav}.
 
-\lstinputlisting[label=src:Record_example,caption={Vytvoření stavu s hlasovým modelem \InlCode{Record}}]{Src/Record_example.js}
+\lstinputlisting[language=JavaScript,label=src:Record_example,caption={Vytvoření stavu s hlasovým modelem \InlCode{Record}}]{Src/Record_example.js}
 
 Ve výpise \ref{src:Record_Vxml} je pro představu uveden VXML kód, který aplikace pro takový stav automaticky vygeneruje.
 
-\lstinputlisting[label=src:Record_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \InlCode{Record}}]{Vxml/Record.vxml}
+\lstinputlisting[language=XML,label=src:Record_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \InlCode{Record}}]{Vxml/Record.vxml}
 
 \paragraph{Třída Ask}
 \label{sec:Ask}
@@ -590,7 +614,7 @@ Pokud je hodnotou nastavení pole více zpráv, tak zpracování funguje násled
 
 Pro stav, který má jako hlasový model uvedenu instanci třídy \InlCode{Ask}, aplikace automaticky vygeneruje VXML kód, který je předmětem výpisu \ref{src:Ask_Vxml}.
 
-\lstinputlisting[label=src:Ask_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \InlCode{Ask}}]{Vxml/Ask.vxml}
+\lstinputlisting[language=XML,label=src:Ask_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \InlCode{Ask}}]{Vxml/Ask.vxml}
 
 \paragraph{Třída Grammar}
 \label{sec:Grammar}
@@ -600,7 +624,7 @@ Třída zároveň podporuje externí gramatiky, tedy gramatiky, jejichž popis s
 
 Ve výpise \ref{src:Grammar_example} je vidět zdrojový kód, vytvářející stav, jehož úkolem je načíst vstup od uživatele. Povolené hodnoty vstupu jsou definovány pomocí gramatiky. V ukázce je dále vidět způsob, jakým způsobem lze programově přistoupit k zadanému vstupu.
 
-\lstinputlisting[label=src:Grammar_example,caption={Vytvoření hlasové gramatiky}]{Src/Grammar_example.js}
+\lstinputlisting[language=JavaScript,label=src:Grammar_example,caption={Vytvoření hlasové gramatiky}]{Src/Grammar_example.js}
 
 Na řádcích 1 až 10 dochází k vytvoření instance gramatiky. Můžeme si všimnout, že konstruktor přebírá jeden parametr. Hodnotou tohoto parametru je objekt obsahující veškerá potřebná nastavení.
 
@@ -622,7 +646,7 @@ Tuto třídu je užitečné použít v případech, kdy chceme uživateli nabíd
 
 Ve výpise \ref{src:Choices_example} se nachází zdrojový kód, který vytváří instanci kombinované gramatiky \InlCode{Choices}.
 
-\lstinputlisting[label=src:Choices_example,caption={Vytvoření kombinované gramatiky \InlCode{Choices}}]{Src/Choices_example.js}
+\lstinputlisting[language=JavaScript,label=src:Choices_example,caption={Vytvoření kombinované gramatiky \InlCode{Choices}}]{Src/Choices_example.js}
 
 Zápis definice je hodně podobný stylu zápisu, který se používá u definice gramatik prostřednictvím třídy \InlCode{Grammar}. Konstruktor třídy \InlCode{Choices} přebírá jeden parametr a to je pole položek, kde každá položka obsahuje dvě vlastnosti. První vlastnost je \InlCode{items} a jedná se o pole řetězců. Jednotlivé řetězce specifikují texty, které bude rozpoznávat ASR engine nebo kódy DMTF volby. Pokud chceme definovat položku jako DMTF volbu, tak ji musíme prefixovat řetězcem 'dtmf-', např. tedy 'dtmf-1'. Vlastnost \InlCode{tag} specifikuje návratovou hodnotu z gramatiky.
 
@@ -630,7 +654,7 @@ Zápis definice je hodně podobný stylu zápisu, který se používá u definic
 \label{sec:Audio}
 Prostřednictvím této třídy lze vytvářet reference na audio soubory, které se dají použít jako součást zprávy uvnitř kontejneru \InlCode{Prompt}. Jedná se o abstrakci nad VXML elementem \InlCode{<audio/>}. Vytvoření této instance je přímočaré. Ve výpise \ref{src:Audio_example} je uveden kód, který vytváří instanci této třídy jako součást definice zprávy.
 
-\lstinputlisting[label=src:Audio_example,caption={Vytvoření instance \InlCode{Audio}}]{Src/Audio_example.js}
+\lstinputlisting[language=JavaScript,label=src:Audio_example,caption={Vytvoření instance \InlCode{Audio}}]{Src/Audio_example.js}
 
 Konstruktor této třídy přijímá dva parametry. Hodnotou prvního parametru je cesta k audio souboru, který se má přehrát. Hodnota druhého parametru specifikuje text, který bude přehrán pomocí TTS enginu v případě, že se nepodaří specifikovaný audio soubor stáhnout. Druhý parametr není povinný.
 
@@ -667,7 +691,7 @@ Pokud nám pro definici délky pauzy nepostačuji nadefinované hodnoty, tak mů
 
 Oba způsoby definice pauzy jsou znázorněny ve výpise zdrojového kódu \ref{src:Silence_example}.
 
-\lstinputlisting[label=src:Silence_example,caption={Vytvoření instance \InlCode{Silence}}]{Src/Silence_example.js}
+\lstinputlisting[language=JavaScript,label=src:Silence_example,caption={Vytvoření instance \InlCode{Silence}}]{Src/Silence_example.js}
 
 \paragraph{Třída SayAs}
 \label{sec:SayAs}
@@ -675,7 +699,7 @@ Tato třída je abstrakcí nad VXML elementem \InlCode{<say-as/>}. Umožňuje na
 
 Ve výpise \ref{src:SayAs_example} je demonstrováno použití instance \InlCode{SayAs}.
 
-\lstinputlisting[label=src:SayAs_example,caption={Vytvoření instance \InlCode{SayAs}}]{Src/SayAs_example.js}
+\lstinputlisting[language=JavaScript,label=src:SayAs_example,caption={Vytvoření instance \InlCode{SayAs}}]{Src/SayAs_example.js}
 
 Konstruktor přebírá dva parametry. Hodnotou prvního parametru je text, který se má interpretovat, druhý parametr udává typ interpretace. Důležité je upozornit na to, že je tato funkcionalita závislá na použitém TTS enginu a některé typy interpretací nemusí být dostupné. V následujícím seznamu uvádím typy interpretací, které by měly být podporovány TTS enginem, který je součástí IVR platformy Voxeo Prophecy\cite{vxml_org}:
 
@@ -695,7 +719,7 @@ Instance této třídy slouží jako zástupné objekty pro hodnoty, které nejs
 
 Ve výpise \ref{src:Var_example} je demonstrována situace, kdy je použití zástupného objektu nevyhnutelné.
 
-\lstinputlisting[label=src:Var_example,caption={Demonstrace využití zástupného objektu \InlCode{Var}}]{Src/Var_example.js}
+\lstinputlisting[language=JavaScript,label=src:Var_example,caption={Demonstrace využití zástupného objektu \InlCode{Var}}]{Src/Var_example.js}
 
 Výše uvedený kód vytváří flow aplikace, který se skládá ze dvou stavů. První stav slouží k zjištění věku uživatele. Druhý stav slouží k zobrazení sdělení o zadaném věku. A proto potřebuje hlasový model druhého stavu referencovat hodnotou vlastnosti \InlCode{this._age}. Tato hodnota ale není ve fázi vytváření flow dostupná. Hodnota bude dostupná až v momentě, kdy dojde k průchodu prvním stavem. Z tohoto důvodu chybějící hodnotu zastupuje zástupný objekt reprezentovaný instancí třídy \InlCode{Var} (viz řádek 18).
 
@@ -703,7 +727,7 @@ Konstruktor této třídy přijímá dva parametry. Hodnotou prvního parametru 
 
 V některých případech může být vhodnější předat funkci jako hodnotu druhého parametru. Tato funkce může obsahovat například nějakou formátovací logiku (viz výpis \ref{src:Var_function}).
 
-\lstinputlisting[label=src:Var_function,caption={Demonstrace využití zástupného objektu \InlCode{Var}}]{Src/Var_function.js}
+\lstinputlisting[language=JavaScript,label=src:Var_function,caption={Demonstrace využití zástupného objektu \InlCode{Var}}]{Src/Var_function.js}
 
 Třída definuje metodu \InlCode{getValue}. Tato metoda je zavolána v momentě, kdy je potřeba vyhodnotit skutečnou hodnotu zástupného objektu.
 

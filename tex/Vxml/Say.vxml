@@ -6,7 +6,8 @@
 	<form id="greeting">
 		<block>
 			<prompt>Welcome to menu example.</prompt>
-			<submit next="/menu-example/stateMachine" namelist="event sessionid" />
+			<submit next="/menu-example/stateMachine"
+				namelist="event sessionid" />
 		</block>
 	</form>
 </vxml>

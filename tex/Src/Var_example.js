@@ -25,7 +25,7 @@ var GetAgeCallFlow = CallFlow.extend({
 		var getInputState = State.create('getInput', getInputModel)
 			.addTransition('continue', confirmInputState);
 			.addOnExitAction(function* (cf, state, event) {
-				// zjisteni veku uzivatele a ulozeni teto hodnoty do vlastnosti _age
+				// ulozeni vstupu do vlastnosti _age
 				cf._age = event.data;
 			});
 

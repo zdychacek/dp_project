@@ -11,16 +11,16 @@ var MenuExampleCtrl = CallFlow.extend({
 			State.create('greeting', new Say('Welcome to menu example.'));
 
 		var optionOneState =
-			State.create('optionOne', new Exit('You selected option one.'));
+			State.create('optionOne', new Exit('Selected option is one.'));
 
 		var optionTwoState =
-			State.create('optionTwo', new Exit('You selected option two.'));
+			State.create('optionTwo', new Exit('Selected option is two.'));
 
 		var optionThreeState =
-			State.create('optionThree', new Exit('You selected option three.'));
+			State.create('optionThree', new Exit('Selected option is three.'));
 
-		var invalidSelectionState =
-			State.create('invalidSelection', new Exit('You selected an invalid option.'));
+		var invalidSelState =
+			State.create('invalidSelection', new Exit('Invalid option.'));
 
 		var menuState =
 			State.create('menu', new Ask({
@@ -31,10 +31,10 @@ var MenuExampleCtrl = CallFlow.extend({
 				})
 			}))
 			.addOnEntryAction(function* () {
-				console.log('You\'ve entered menu state.');
+				console.log('You have entered menu state.');
 			})
 			.addOnExitAction(function* () {
-				console.log('You\'ve leaved menu state.');
+				console.log('You have leaved menu state.');
 			})
 			.addTransition('continue', optionOneState, function (result) {
 				return result == 1;
@@ -45,7 +45,7 @@ var MenuExampleCtrl = CallFlow.extend({
 			.addTransition('continue', optionThreeState, function (result) {
 				return result == 3;
 			})
-			.addTransition('continue', invalidSelectionState, function (result) {
+			.addTransition('continue', invalidSelState, function (result) {
 				return [1, 2, 3].indexOf(result) == -1;
 			});
 
@@ -58,6 +58,6 @@ var MenuExampleCtrl = CallFlow.extend({
 			.addState(optionOneState)
 			.addState(optionTwoState)
 			.addState(optionThreeState)
-			.addState(invalidSelectionState);
+			.addState(invalidSelState);
 	}
 });
