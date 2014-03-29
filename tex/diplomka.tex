@@ -95,6 +95,7 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 \AddAcronym{DTMF}{Dual-tone multi-frequency signaling}
 \AddAcronym{IVR}{Interactive Voice Response}
 \AddAcronym{MIME}{Multipurpose Internet Mail Extensions}
+\AddAcronym{SMS}{Short Message Service}
 
 % Zadame cestu a jmeno souboru ci nekolika souboru s digitalizovanou podobou zadani prace
 % Pri sazbe se pak hledaji soubory Figures/Zadani1.jpg, Figures/Zadani2.jpg atd.
@@ -735,7 +736,7 @@ V této kapitole se opět vrátím k navrhovanému hlasovému portálu rezervač
 Všechny tyto popisované komponenty jsou navrženy s ohledem na znovupoužitelnost kódu. Principu znovupoužitelnosti se dosahuje zaregistrováním instance komponenty jako sady vnořených stavů (viz kapitola \ref{sec:State}).
 
 \paragraph{Komponenta pro zadání data}
-Tato komponenta slouží k zadání data pomocí DTMF volby. V aplikaci hlasového portálu se tato komponenta používá v menu pro filtrování seznamu letů. Prostřednictvím této komponenty je uživatel vyzván k zadání požadovaného data odletu, resp. příletu. Diagram \ref{fig:GetDateDtmfFlow} znázorňuje strukturu této komponenty formou stavového diagramu. V aplikaci je tato komponenta reprezentována třídou \InlCode{GetDateDtmfFlow}.
+Tato komponenta slouží k zadání data pomocí DTMF volby. V aplikaci hlasového portálu se tato komponenta používá v menu pro filtrování seznamu letů. Prostřednictvím této komponenty je uživatel vyzván k zadání požadovaného data odletu, resp. příletu. Obrázek \ref{fig:GetDateDtmfFlow} znázorňuje strukturu této komponenty formou stavového diagramu. V aplikaci je tato komponenta reprezentována třídou \InlCode{GetDateDtmfFlow}.
 
 První stav $getDate$ uživateli předkládá zprávu o tom, že se od něj očekává zadání data formou osmi číslic ve formátu $ddmmyyyy$. Prostřednictvím hodnoty parametru předané do konstruktoru je možné pro každou instanci této komponenty nastavit různý text této zprávy. Komponenta zůstává v tomto stavu, dokud nedojde k zadání vstupu v požadovaném formátu.
 
@@ -747,17 +748,61 @@ V případě, že došlo k zadání validního data, provede se přechod ze stav
 
 Komponenta implementuje veřejnou metodu \InlCode{getDate}. Tato metoda vrací prostřednictvím návratové hodnoty zadané datum. Metoda je typicky volána v rámci akce \InlCode{onExitAction} definované na stavu, který má instanci této komponenty zaregistrovánu.
 
-\InsertFigure{Figures/diagrams/getdatedtmfflow}{0.8\textwidth}{Diagram komponenty pro zadání data (GetDateDtmfFlow)}{fig:GetDateDtmfFlow}
+\InsertFigure{Figures/diagrams/getdatedtmfflow}{0.8\textwidth}{Struktura komponenty pro zadání data (GetDateDtmfFlow)}{fig:GetDateDtmfFlow}
 
 \paragraph{Komponenta pro zadání textového vstupu}
+Na obrázku \ref{fig:GetTextInputDtmfFlow} je znázorněna struktura komponenty sloužící pro získání textového vstupu pomocí DTMF volby. Vstup se zadává stejným způsobem jako se na mobilním telefonu s klávesnicí píše SMS zpráva. Komponenta je implementována třídou \InlCode{GetTextInputDtmfFlow}.
 
-\InsertFigure{Figures/diagrams/gettextinputdtmfflow}{0.35\textwidth}{Diagram komponenty pro zadání textového vstupu (GetTextInputDtmfFlow)}{fig:GetTextInputDtmfFlow}
+Struktura komponenty je velmi jednoduchá. Skládá se pouze z jednoho stavu $askForInput$. Tento stav uživateli přehraje zprávu, prostřednictvím které uživatele vyzve k zadání textu. Text této zprávy je konfigurovatelný parametrem, který se předává konstruktoru třídy. Stav poté očekává zadání vstupu. Konec zadávání vstupu se komponentě indikuje krátkou neaktivitou nebo stisknutím klávesy #.
+
+Zpracování vstupu probíhá ve funkci, která je zaregistrovaná pro akci \InlCode{onExitAction} (viz \ref{sec:State}). Implementace této funkce spočívá v převedení vstupní číselné sekvence na textový formát. Převod se řídí mapováním, které je znázorněno v tabulce \ref{tab:GetTextInputDtmfFlow_mapping}. Např. následující sekvence 2446665 je převedena na řetězec 'ahoj'.
+
+\begin{table}
+	\centering
+	\begin{tabular}{|c|l|l|l|l|l|}
+		\hline
+		Klávesa č. & 1. stisk & 2. stisk & 3. stisk & 4. stisk & 5. stisk \\
+		\hline
+		0 & $skipchar$ & - & - & - & -  \\
+		\hline
+		1 & \textvisiblespace & 1 & - & - & - \\
+		\hline
+		2 & a & b & c & 2 & - \\
+		\hline
+		3 & d & e & f & 3 & - \\
+		\hline
+		4 & g & h & i & 4 & - \\
+		\hline
+		5 & j & k & l & 5 & - \\
+		\hline
+		6 & m & n & o & 6 & - \\
+		\hline
+		7 & p & q & r & s & 7 \\
+		\hline
+		8 & t & u & v & 8 & - \\
+		\hline
+		9 & w & x & y & z & 9 \\
+		\hline
+	\end{tabular}
+	\caption{Mapování stisků kláves na znaky}
+	\label{tab:GetTextInputDtmfFlow_mapping}
+\end{table}
+
+V tabulce si můžeme všimnout speciálního významu klávesy 0 ($skipchar$). Tato klávesa slouží k ukončení zadávání znaku a přesunu na zadání dalšího znaku.
+
+Stisk této klávesy není nutný v případech, kdy zadáváme dva za sebou jdoucí znaky, které jsou namapovány na stisky různých kláves.
+
+Stisk klávesy 0 je tedy nutný, pokud potřebujeme zadat dva po sobě jdoucí znaky, kdy každý z nich je namapován na stejnou klávesu. Pokud bychom např. potřebovali zadat textový řetězec 'abc', museli bychom zadat následující sekvenci 20220222.
+
+Tato komponenta typicky bývá součástí jiné komplexnější komponenty. Jedna taková komponenta je popsána v následujícím textu.
+
+\InsertFigure{Figures/diagrams/gettextinputdtmfflow}{0.35\textwidth}{Struktura komponenty pro zadání textového vstupu (GetTextInputDtmfFlow)}{fig:GetTextInputDtmfFlow}
 
 \paragraph{Komponenta pro zvolení destinace letu}
 
-\InsertFigure{Figures/diagrams/getdestinationflow}{1\textwidth}{Obecný diagram komponenty pro zvolení destinace (GetDestinationFlow)}{fig:GetDestinationFlow}
+\InsertFigure{Figures/diagrams/getdestinationflow}{1\textwidth}{Obecná struktura komponenty pro zvolení destinace (GetDestinationFlow)}{fig:GetDestinationFlow}
 
-\InsertFigure{Figures/diagrams/destinationselectionflow}{1\textwidth}{Podrobnější diagram pro zvolení destinace (DestinationSelectionFlow)}{fig:DestinationSelectionFlow}
+\InsertFigure{Figures/diagrams/destinationselectionflow}{1\textwidth}{Podrobnější struktura komponenty pro zvolení destinace (DestinationSelectionFlow)}{fig:DestinationSelectionFlow}
 
 \section{Konfigurace a zprovoznění hlasového portálu}
 Popis, jak zprovoznit aplikaci na jednotlivých platformách. Voxeo Prophecy, Asterisk + VoiceGlue.
