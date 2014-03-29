@@ -746,12 +746,13 @@ Pokud zadaný vstup neprošel všemi validačními pravidly, dochází k vyvolá
 
 V případě, že došlo k zadání validního data, provede se přechod ze stavu $validateDate$ do stavu $confirmDate$. Tento stav uživateli zrekapituluje zadané datum a přechází do konečného stavu, kde životní cyklus komponenty končí.
 
-Komponenta implementuje veřejnou metodu \InlCode{getDate}. Tato metoda vrací prostřednictvím návratové hodnoty zadané datum. Metoda je typicky volána v rámci akce \InlCode{onExitAction} definované na stavu, který má instanci této komponenty zaregistrovánu.
+Komponenta implementuje veřejnou metodu \InlCode{getDate}. Tato metoda vrací prostřednictvím návratové hodnoty zadané datum. Metoda je typicky volána v rámci akce \InlCode{onExitAction} definované na stavu, jehož je komponenta součástí.
 
 \InsertFigure{Figures/diagrams/getdatedtmfflow}{0.8\textwidth}{Struktura komponenty pro zadání data (GetDateDtmfFlow)}{fig:GetDateDtmfFlow}
 
 \paragraph{Komponenta pro zadání textového vstupu}
-Na obrázku \ref{fig:GetTextInputDtmfFlow} je znázorněna struktura komponenty sloužící pro získání textového vstupu pomocí DTMF volby. Vstup se zadává stejným způsobem jako se na mobilním telefonu s klávesnicí píše SMS zpráva. Komponenta je implementována třídou \InlCode{GetTextInputDtmfFlow}.
+\label{sec:GetTextInputDtmfFlow}
+Na obrázku \ref{fig:GetTextInputDtmfFlow} je znázorněna struktura komponenty sloužící pro získání textového vstupu pomocí DTMF volby. Vstup se zadává stejným způsobem jako se na mobilním telefonu s klávesnicí píše SMS zpráva.
 
 Struktura komponenty je velmi jednoduchá. Skládá se pouze z jednoho stavu $askForInput$. Tento stav uživateli přehraje zprávu, prostřednictvím které uživatele vyzve k zadání textu. Text této zprávy je konfigurovatelný parametrem, který se předává konstruktoru třídy. Stav poté očekává zadání vstupu. Konec zadávání vstupu se komponentě indikuje krátkou neaktivitou nebo stisknutím klávesy #.
 
@@ -792,17 +793,42 @@ V tabulce si můžeme všimnout speciálního významu klávesy 0 ($skipchar$). 
 
 Stisk této klávesy není nutný v případech, kdy zadáváme dva za sebou jdoucí znaky, které jsou namapovány na stisky různých kláves.
 
-Stisk klávesy 0 je tedy nutný, pokud potřebujeme zadat dva po sobě jdoucí znaky, kdy každý z nich je namapován na stejnou klávesu. Pokud bychom např. potřebovali zadat textový řetězec 'abc', museli bychom zadat následující sekvenci 20220222.
+Stisk klávesy 0 je nutný, pokud potřebujeme zadat dva po sobě jdoucí znaky, kdy každý z nich je namapován na stejnou klávesu. Pokud bychom např. potřebovali zadat textový řetězec 'abc', museli bychom ho zadat pomocí sekvence 20220222.
+
+Třída \InlCode{GetTextInputDtmfFlow} implementující tuto komponentu vystavuje veřejnou metodu \InlCode{getInput}. Metoda vrací zadaný vstup převedený do textové podoby.
 
 Tato komponenta typicky bývá součástí jiné komplexnější komponenty. Jedna taková komponenta je popsána v následujícím textu.
 
 \InsertFigure{Figures/diagrams/gettextinputdtmfflow}{0.35\textwidth}{Struktura komponenty pro zadání textového vstupu (GetTextInputDtmfFlow)}{fig:GetTextInputDtmfFlow}
 
 \paragraph{Komponenta pro zvolení destinace letu}
+Struktura této komponenty je znázorněna v diagrumu \ref{fig:GetDestinationFlow}. Komponenta je implementována třídou \InlCode{GetDestinationFlow}.
 
-\InsertFigure{Figures/diagrams/getdestinationflow}{1\textwidth}{Obecná struktura komponenty pro zvolení destinace (GetDestinationFlow)}{fig:GetDestinationFlow}
+Úkolem komponenty je vyhledání destinace a následné zvolení výběru z vyhledaného seznamu. Tato komponenta je součástí filtru letů a slouží k zadání odletové, resp. příletové destinace.
 
-\InsertFigure{Figures/diagrams/destinationselectionflow}{1\textwidth}{Podrobnější struktura komponenty pro zvolení destinace (DestinationSelectionFlow)}{fig:DestinationSelectionFlow}
+Stav $getInput$ uživatele vyzve k zadání řetězce na jehož základě se provede vyhledání destinací. Tento stav obsahuje komponentu, která tento vstup zajišťuje (komponenta byla popsána v kapitole \ref{sec:GetTextInputDtmfFlow}).
+
+V momentě, kdy máme k dispozici zadaný vstup, přechází zpracování do stavu $showInput$. V tomto stavu je uživateli přehrán text, který byl zadán. Následuje dotaz, zda zadaný vstup odpovídá tomu, co uživatel zamýšlel. Následně uživatel může zadaný vstup schválit stiskem klávesy 1 nebo odmítnout stiskem klávesy 2.
+
+Pokud uživatel zadaný vstup odmítne, vrací se provádění do stavu $getInput$, kde má uživatel možnost provést nové zadání.
+
+V momentě, kdy uživatel zadaný vstup potvrdí stiskem klávesy 1, přechází provádění do stavu $destinationSelection$. Tento stav obsahuje komponentu \InlCode{DestinationSelectionFlow}, která tvoří vnitřní stavy tohoto stavu.
+
+Komponenta představuje seznam vyhledaných destinací na základě vyhledávacího řetězce. Seznam vyhledaných destinací dostává komponenta k dispozici prostřednictvím reference, která je předána hodnotou parametru do konstruktoru. Struktura této komponenty je zobrazena na obrázku \ref{fig:DestinationSelectionFlow}. Z diagramu je patrné, že struktura komponenty je závislá na počtu vyhledaných destinací a může mít dvě podoby.
+
+Pokud na základě vyhledávacího řetězce nedošlo k nalezení žádné destinace, tak komponenta obsahuje pouze jeden stav $noItems$. Tento stav, prostřednictvím svého hlasového modelu, uživateli sdělí, že žádné destinace nebyli nalezeny. Následně se provede přechod do konečného stavu, kde zpracování končí.
+
+Pokud bylo nalezeno $n$ destinací a $n > 0$, tak dojde k vytvoření $n$ stavů. Pro každou z nalezených destinací je vytvořen jeden stav. Každý tento stav uživateli přehraje název destinace. Všechny tyto stavy jsou propojeny do řetězu, kterým je možné se pohybovat vpřed a vzad, tedy přecházet do předchozího a následujícího stavu. Tomuto řetězu předchází stav $totalItems$, který uživatele informuje o celkovém počtu nalezených destinací a o možnostech navigace mezi těmito záznamy.
+
+Navigace je založena na DTMF volbě. K přechodu na předchozí záznam slouží klávesa 2. Pokud potřebujeme přejít k následujícímu záznamu, můžeme tak učinit stisknutím klávesy 3. Výběr aktuálního záznamu potvrzujeme stiskem klávesy 1. Stiskem této klávesy se dostáváme do stavu $selection$.
+
+Stav $selection$ uživatele informuje o zvolené destinaci. Následuje přechod do konečného stavu, kde zpracování končí.
+
+Komponenta implementuje metodu \InlCode{getSelectedDestination}, která slouží k získání zvolené destinace. Tato metoda je typicky volána v rámci akce \InlCode{onExitAction} definované na stavu, jehož je komponenta součástí.
+
+\InsertFigure{Figures/diagrams/getdestinationflow}{1\textwidth}{Struktura komponenty pro zvolení destinace (GetDestinationFlow)}{fig:GetDestinationFlow}
+
+\InsertFigure{Figures/diagrams/destinationselectionflow}{1\textwidth}{Vnitřní struktura stavu $destinationSelection$ komponenty pro zvolení destinace (DestinationSelectionFlow)}{fig:DestinationSelectionFlow}
 
 \section{Konfigurace a zprovoznění hlasového portálu}
 Popis, jak zprovoznit aplikaci na jednotlivých platformách. Voxeo Prophecy, Asterisk + VoiceGlue.
