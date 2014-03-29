@@ -7,30 +7,31 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{microtype}
+\usepackage[htt]{hyphenat}
 \definecolor{darkgreen}{rgb}{0, 0.5, 0}
 \definecolor{maroon}{rgb}{0.5,0,0}
 
 \lstdefinelanguage{JavaScript} {
-    morekeywords={
-        break,const,continue,delete,do,while,export,for,in,function,
-        if,else,import,in,instanceOf,label,let,new,return,switch,this,
-        throw,try,catch,typeof,var,void,with,yield
-    },
-    sensitive=true,
-    morecomment=[l]{//},
-    morecomment=[s]{/*}{*/},
-    morestring=[b]",
-    morestring=[d]',
-    alsoletter={.},
-    basicstyle=\footnotesize\ttfamily,
-    keywordstyle=\ttfamily\color{blue},
-    identifierstyle=\ttfamily,
-    stringstyle=\ttfamily\color{maroon},
-    commentstyle=\color{darkgreen}\ttfamily
+  morekeywords={
+      break,const,continue,delete,do,while,export,for,in,function,
+      if,else,import,in,instanceOf,label,let,new,return,switch,this,
+      throw,try,catch,typeof,var,void,with,yield
+  },
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+  morestring=[d]',
+  alsoletter={.},
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\ttfamily\color{blue},
+  identifierstyle=\ttfamily,
+  stringstyle=\ttfamily\color{maroon},
+  commentstyle=\color{darkgreen}\ttfamily
 }
 
-\lstdefinelanguage{XML}
-{
+\lstdefinelanguage{XML} {
   basicstyle=\ttfamily\footnotesize,
   morestring=[b]",
   moredelim=[s][\ttfamily\color{maroon}]{<}{\ },
@@ -44,15 +45,18 @@
   identifierstyle=\color{red}
 }
 
-\lstset{
-    showstringspaces=false,
-    rulecolor=\color{black},
-    aboveskip=\bigskipamount,
-    belowskip=\bigskipamount,
-    alsoletter={.},
-    numbers=left,
-    keywordstyle=\color{black}\ttfamily
+\lstset {
+  showstringspaces=false,
+  rulecolor=\color{black},
+  aboveskip=\bigskipamount,
+  belowskip=\bigskipamount,
+  alsoletter={.},
+  numbers=left,
+  keywordstyle=\color{black}\ttfamily
 }
+
+\def\changemargin#1#2{\list{}{\topmargin#2\bottommargin#1}\item[]}
+\let\endchangemargin=\endlist
 
 % Zadame pozadovane vstupy pro generovani titulnich stran.
 \ThesisAuthor{Ondřej Ždych}
@@ -96,6 +100,7 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 \AddAcronym{IVR}{Interactive Voice Response}
 \AddAcronym{MIME}{Multipurpose Internet Mail Extensions}
 \AddAcronym{SMS}{Short Message Service}
+\AddAcronym{CLI}{Command Line Interface}
 
 % Zadame cestu a jmeno souboru ci nekolika souboru s digitalizovanou podobou zadani prace
 % Pri sazbe se pak hledaji soubory Figures/Zadani1.jpg, Figures/Zadani2.jpg atd.
@@ -323,6 +328,7 @@ AngularJS je framework, který svými unikátními vlastnostmi ulehčuje návrh 
 Tento framework jsem použil k návrhu klientské části aplikace a to právě z výše uvedených důvodů.
 
 \subsubsection{Node.js}
+\label{sec:NodeJs}
 Node.js\cite{nodejs} je technologie přinášející možnost psát serverové části webových aplikací v JavaScriptu. Platforma Node.js se skládá z běhového prostředí, které je postaveno nad JavaScript enginem V8\footnote{Stejný engine je i součástí webového prohlížeče Chromium.} a knihovnou funkcí. Mezi důležité vlastnosti Node.js patří jeho asynchronní, událostmi řízená povaha, tedy veškeré vstupně/výstupní operace jsou zpracovávány asynchronně. Díky tomuto chování v praxi dochází k tomu, že webový server postavený nad Node.js dokáže zpracovat více souběžných požadavků\footnote{Za předpokladu, že je aplikace orientovaná na vstupně/výstupní operace jako je např. čtení z databáze nebo ze souborového systému.}.
 
 Technologii jsem zvolil hlavně proto, že mi umožňuje psát serverovou a klientskou část aplikace ve stejném programovacím jazyce, tedy v JavaScriptu.
@@ -445,11 +451,19 @@ Hodnotou posledního parametru \InlCode{server} je instance Express.js serveru (
 
 Aplikace běží nad HTTP protokolem. Požadavky na přechod mezi stavy jsou tedy klasické HTTP požadavky. První požadavek na VXML aplikaci má následující tvar:
 
-\InlCode{http://www.myserver.com/menu-example?session.sessionid=123}
+\begin{quote}
+\begin{sloppypar}
+	\texttt{http://www.myserver.com/menu-example?session.sessionid=123}
+\end{sloppypar}
+\end{quote}
 
 Následující požadavky jsou ve tvaru následujícím:
 
-\InlCode{http://www.myserver.com/menu-example?sessionid=123\&event=continue\&result=1}
+\begin{quote}
+\begin{sloppypar}
+	\texttt{http://www.myserver.com/menu-example?sessionid=123\allowbreak\&event=continue\&result=1}
+\end{sloppypar}
+\end{quote}
 
 V URL adrese požadavku jsou zakódovány všechny potřebné informace pro provedení přechodu do dalšího stavu.
 
@@ -479,7 +493,7 @@ Zbývající parametry \InlCode{target} a \InlCode{event} jsou nepovinné. V př
 
 V některých případech se nám může hodit nadefinovat více přechodů se stejným typem události. Více přechodů se stejným typem události bývá typicky definováno u stavů, které nějakou formou implementují menu. V momentě, kdy je proveden výběr v menu, může být vyvolána obecná událost, např. \InlCode{continue}. Tato obecná událost je parametrizována hodnotou, která byla v menu zvolena. Zde se dostáváme k volitelnému parametru \InlCode{condition}, který slouží k rozhodnutí, do jakého stavu se přejde. Hodnotou tohoto parametru je funkce, která přebírá jeden parametr a to je právě hodnota, která byla v menu zvolena. Tato funkce obsahuje rozhodovací logiku, která má tedy k dispozici informaci o vybrané hodnotě a vrací hodnotu \InlCode{true} v případě, že se má tento přechod použít pro přechod do dalšího stavu. Demonstrace toho postupu je vidět ve výpise \ref{src:MenuExample}.
 
-Třída dále obsahuje metody \InlCode{addOnEntryAction} a \InlCode{addOnExitAction}, které slouží k registraci funkcí\footnote{TODO: dopsat poznámku o funkčních generátorech.}, které se vyvolávají při vstupu resp. při výstupu z tohoto stavu. Těchto funkcí může být pro každý typ události zaregistrováno více. V případě, že je funkcí zaregistrováno více, jsou jednotlivé funkce volány sekvenčně za sebou. Každá funkce má v momentě zavolání k dispozici reference na následující objekty. Tyto reference jsou k dispozici prostřednictvím argumentů funkce. Prvním argumentem je instance kontejneru (flow), do kterého daný stav patří. Druhým argumentem je reference na stav samotný. Poslední argument obsahuje doplňující data, která jsou závislá na konkrétním případě použití.
+Třída dále obsahuje metody \InlCode{addOnEntryAction} a \InlCode{addOnExitAction}, které slouží k registraci funkcí, které se vyvolávají při vstupu, resp. při výstupu z tohoto stavu. Těchto funkcí může být pro každý typ události zaregistrováno více. V případě, že je funkcí zaregistrováno více, jsou jednotlivé funkce volány sekvenčně za sebou. Každá funkce má v momentě zavolání k dispozici reference na následující objekty. Tyto reference jsou k dispozici prostřednictvím argumentů funkce. Prvním argumentem je instance kontejneru (flow), do kterého daný stav patří. Druhým argumentem je reference na stav samotný. Poslední argument obsahuje doplňující data, která jsou závislá na konkrétním případě použití.
 
 Jak již bylo předesláno dříve, každý stav může obsahovat vnořené stavy. K registraci vnořených stavů slouží metoda \InlCode{addNestedCallFlow(callFlow)}, která přijímá jeden parametr. Hodnota parametru \InlCode{callFlow} je instance, pro nás již známé, třídy \InlCode{CallFlow}, která byla popsána v kapitole \ref{sec:CallFlow}. Díky této možnosti můžeme jednoduše docílit znovupoužitelnosti kódu, kdy opakovaně využívanou komponentu implementujeme jako samostatnou třídu, která je odvozena ze třídy \InlCode{CallFlow}. Instance této třídy je poté registrována zavoláním metody \InlCode{addNestedCallFlow} na daném stavu. V případě potřeby může být tato instance parametrizována, např. předáním různých parametrů do konstruktoru.
 
@@ -831,12 +845,44 @@ Komponenta implementuje metodu \InlCode{getSelectedDestination}, která slouží
 \InsertFigure{Figures/diagrams/destinationselectionflow}{1\textwidth}{Vnitřní struktura stavu $destinationSelection$ komponenty pro zvolení destinace (DestinationSelectionFlow)}{fig:DestinationSelectionFlow}
 
 \section{Konfigurace a zprovoznění hlasového portálu}
-Popis, jak zprovoznit aplikaci na jednotlivých platformách. Voxeo Prophecy, Asterisk + VoiceGlue.
+V této kapitole popíši kroky vedoucí k úspěšné konfiguraci a zprovoznění hlasového portálu na IVR platformách Voxeo Prophecy a VoiceGlue.
+
+\subsection{Aplikační server}
+Abychom mohli přistoupit ke konfiguraci jednotlivých IVR platforem, musíme nejdříve nainstalovat a spustit aplikační server. Spuštěním aplikačního serveru dostaneme přístup k webovému i hlasovému portálu rezervačního systému. Následuje popis instalace a spuštění aplikačního serveru v prostředí operačního systému založeného na Linuxu.
+
+Jak již bylo uvedeno, aplikační server je poháněn technologií Node.js (viz \ref{sec:NodeJs}). Je tedy nutné, aby na stroji byl Node.js nainstalován. Popis instalace Node.js zde popisovat nebudu, jen uvedu odkaz na oficiální web\cite{NodeJs_install}, kde je možné nalézt instalační balíky. Pří výběru instalačního balíku je nutné zvolit minimálně verzi v0.11.2. Od této verze je součástí Node.js implementace generátorů\footnote{Generátory používám v kódu VXML knihovny i aplikačního serveru pro přehlednější zpracování asynchronních operací.}, které jsou nutné pro spuštění serveru.
+
+Další prerekvizitou je instalace MongoDB databáze. Popis instalace pro Ubuntu je detailně popsán na této URL\cite{Mongo_install}.
+
+V momentě, kdy máme výše uvedené prerekvizity nainstalovány, můžeme přejít k instalaci modulů, na kterých je běh aplikačního serveru závislý. Otevřeme si terminál a přepneme se do adresáře, kde máme rozbalený archiv se zdrojovými kódy aplikačního serveru (TODO: přidat referenci na přílohu). Nyní můžeme spustit následující příkazy:
+
+\begin{itemize}
+\item \texttt{npm install}
+\item \texttt{bower install}
+\item \texttt{npm install -g grunt-cli}
+\end{itemize}
+
+První z výše uvedených příkazů instaluje moduly, na kterých je závislá serverová část aplikace (např. Express.js). Druhý příkaz se postará o instalaci knihoven, které jsou vyžadovány klientskou částí aplikace (např. Angular.js). Poslední příkaz instaluje CLI nástroje Grunt. Tento příkaz není nutné spouštět v případě, že již máte Grunt na stroji zprovozněn.
+
+Nyní bychom měli mít nainstalováno vše, co je pro spuštění aplikačního serveru nutné. Ještě než přistoupíme k samotnému spuštění, bylo by vhodné v databázi vytvořit nějaké testovací záznamy. Spusťme proto následující příkazy:
+
+\begin{itemize}
+\item \texttt{grunt insertUsers}
+\item \texttt{grunt insertFlights}
+\end{itemize}
+
+Tyto příkazy v databázi vytvoří záznamy o dvou uživatelích, dále vytvoří deset záznamů o letech.
+
+Nyní by nám již nemělo nic bránit ve spuštění aplikačního serveru. Spuštění provedeme příkazem \texttt{grunt}. Pokud spuštění proběhlo v pořádku, tak bychom měli v terminálu vidět vypsanou informaci o tom, že aplikace byla spuštěna a naslouchá na portu 9000.
+
+Webový portál je k dispozici na \url{http://localhost:9000/flights}. Po zadání této URL do prohlížeče by se mělo zobrazit okno pro přihlášení. Pro vyzkoušení přihlášení můžeme zkusit zadat jako přihlašovací jméno a heslo '12345'.
+
+Hlasový portál je k dispozici na \url{http://localhost:9000/vxml}. Po zadání této URL do prohlížeče by se měla zobrazovat chyba aplikace.
 
 \subsection{Voxeo Prophecy}
 ...
 
-\subsection{VoiceGlue}
+\subsection{Asterisk, VoiceGlue}
 ...
 
 \section{Zátěžové testy portálu}
@@ -870,25 +916,32 @@ Ondřej Ždych
 \textit{VoiceXML 2.0 Developer's Guide : Building Professional Voice-enabled Applications with JSP, ASP & Coldfusion}, Dream Tech Software India Inc., 2002.
 
 \bibitem{angulardocs} Google,
-\textit{Dokumentace k frameworku AngularJS}, http://docs.angularjs.org/.
+\textit{Dokumentace k frameworku AngularJS}, http://docs.angularjs.org.
 
 \bibitem{mongodb}
-\textit{Web projektu MongoDB}, http://www.mongodb.org/.
+\textit{Web projektu MongoDB}, http://www.mongodb.org.
 
 \bibitem{mongoose}
-\textit{Web projektu Mongoose}, http://www.mongoosejs.com/.
+\textit{Web projektu Mongoose}, http://www.mongoosejs.com.
 
 \bibitem{nodejs}
-\textit{Oficiální web o Node.js}, http://www.nodejs.org/.
+\textit{Oficiální web o Node.js}, http://www.nodejs.org.
 
 \bibitem{expressjs}
-\textit{Oficiální web o frameworku Express.js}, http://www.expressjs.com/.
+\textit{Oficiální web o frameworku Express.js}, http://www.expressjs.com.
 
 \bibitem{grunt}
-\textit{Oficiální web věnovaný nástroji Grunt}, http://gruntjs.com/.
+\textit{Oficiální web věnovaný nástroji Grunt}, http://gruntjs.com.
 
 \bibitem{vxml_org}
-\textit{VXML dokumentace} Voxeo, http://www.vxml.org/.
+\textit{VXML dokumentace} Voxeo, http://www.vxml.org.
+
+\bibitem{Mongo_install}
+\textit{Popis instalace MongoDB} MongoDB, http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu.
+
+\bibitem{NodeJs_install}
+\textit{Instalační balíky Node.js} Joyent, http://nodejs.org/download.
+
 
 \end{thebibliography}
 
