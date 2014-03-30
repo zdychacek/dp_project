@@ -1,11 +1,11 @@
 var recording =
-	new vxml.Record('Please record your information after the beep.');
+	new vxml.Record('Record your message after the beep.');
 
 // NEBO
 
 var recording =
 	new vxml.Record({
-		prompt: 'Please record your information after the beep.',
+		prompt: 'Record your message after the beep.',
 		maxTime: 60,
 		beep: true,
 		finalSilence: '2500ms',

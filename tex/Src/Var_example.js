@@ -10,7 +10,9 @@ var GetAgeCallFlow = CallFlow.extend({
 	create: function* () {
 		var getInputModel = new Ask({
 			prompt: 'Enter your age.',
-			grammar: new BuiltinGrammar({ type: 'digits', minLength: 1 })
+			grammar: new BuiltinGrammar({
+				type: 'digits', minLength: 1
+			})
 		});
 
 		var confirmInputModel = new Say([

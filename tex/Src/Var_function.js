@@ -1,4 +1,5 @@
-// uvnitr metody create, predpokladame existanci instancni vlastnosti _age
+// uvnitr metody create
+// predpokladame existanci instancni vlastnosti _age
 var confirmInputModel = new Say([
 	'You are ',
 	new Var(this, function () {
