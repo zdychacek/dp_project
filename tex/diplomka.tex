@@ -985,7 +985,7 @@ Pokud máme vše úspěšně nainstalováno, můžeme přejít ke konfiguraci. N
 
 Dále je nutné se ujistit, že je v tomto souboru obsažen řádek obsahující \texttt{enabled=yes}.
 
-Dalším krokem je vytvoření SIP účtu. Do souboru \texttt{/etc/asterisk/sip.conf} přídáme kód obsažený ve výpise \ref{src:Asterisk_sip}.
+Dalším krokem je vytvoření SIP účtu. Do souboru \texttt{/etc/asterisk/sip.conf} přídáme kód obsažený ve výpise \ref{src:Asterisk_sip}. Jméno uživatele a heslo si samozřejmě můžeme zvolit libovolně.
 
 \lstinputlisting[language=conf,label=src:Asterisk_sip,caption={Konfigurace souboru \texttt{/etc/asterisk/sip.conf}}]{Src/asterisk_sip.conf}
 
@@ -1004,6 +1004,8 @@ Třetí řádek definuje proměnnou \texttt{vxmlurl} obsahující URL adresu, na
 Pátý řádek provede prostřednictvím AGI rozhraní přepojení hovoru do subsystému VoiceGlue.
 
 Šestý řádek provede zavěšení hovoru.
+
+Nyní bychom měli mít vše správně nastaveno a můžeme tedy provést zkušební hovor na adresu \texttt{dp@localhost}. Hovor můžeme vytočit z jakéhokoliv SIP klienta, např. Ekiga.
 
 \section{Zátěžové testy portálu}
 \label{sec:Benchmark}
