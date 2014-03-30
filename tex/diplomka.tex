@@ -848,6 +848,7 @@ Komponenta implementuje metodu \InlCode{getSelectedDestination}, která slouží
 V této kapitole popíši kroky vedoucí k úspěšné konfiguraci a zprovoznění hlasového portálu na IVR platformách Voxeo Prophecy a VoiceGlue.
 
 \subsection{Aplikační server}
+\label{sec:App_server}
 Abychom mohli přistoupit ke konfiguraci jednotlivých IVR platforem, musíme nejdříve nainstalovat a spustit aplikační server. Spuštěním aplikačního serveru dostaneme přístup k webovému i hlasovému portálu rezervačního systému. Následuje popis instalace a spuštění aplikačního serveru v prostředí operačního systému založeného na Linuxu.
 
 Jak již bylo uvedeno, aplikační server je poháněn technologií Node.js (viz \ref{sec:NodeJs}). Je tedy nutné, aby na stroji byl Node.js nainstalován. Popis instalace Node.js zde popisovat nebudu, jen uvedu odkaz na oficiální web\cite{NodeJs_install}, kde je možné nalézt instalační balíky. Pří výběru instalačního balíku je nutné zvolit minimálně verzi v0.11.2. Od této verze je součástí Node.js implementace generátorů\footnote{Generátory používám v kódu VXML knihovny i aplikačního serveru pro přehlednější zpracování asynchronních operací.}, které jsou nutné pro spuštění serveru.
@@ -880,7 +881,45 @@ Webový portál je k dispozici na \url{http://localhost:9000/flights}. Po zadán
 Hlasový portál je k dispozici na \url{http://localhost:9000/vxml}. Po zadání této URL do prohlížeče by se měla zobrazovat chyba aplikace.
 
 \subsection{Voxeo Prophecy}
-...
+Instalace a zprovoznění této IVR platformy je jednoduché. V následující části nejdříve popíši postup instalace a poté popíši jak provést konfiguraci hlasového portálu.
+
+\subsubsection{Instalace}
+Hned na začátku je důležité poznamenat, že z linuxových distribucí, Voxeo Prophecy podporuje jen ty založené na RedHatu, např. tedy CentOS. Instalační balík stáhneme zadáním následujícího příkazu do terminálu:
+
+\begin{quote}
+\begin{sloppypar}
+	\texttt{wget "http://voxeo.com/wp-content/themes/voxeo/inc/prophecy13\allowbreak\_download\_linux64\_tts\_small.php"}
+\end{sloppypar}
+\end{quote}
+
+Jakmile je soubor stažen, tak si zjistíme název staženého souboru a následujícím příkazem spustíme instalaci:
+
+\begin{quote}
+\begin{sloppypar}
+	\texttt{sh prophecy-13.0.5.20.74229-x64.bin -i console}
+\end{sloppypar}
+\end{quote}
+
+Během instalace budeme vyzváni k potvrzení několika informací. Pokud jsme na konci instalace povolili automatický start služeb, tak bychom měli mít po dokončení instalace spuštěny tři nové služby:
+
+\begin{itemize}
+\item vdirectory
+\item vprism
+\item vserver
+\end{itemize}
+
+Zda jsou služby spuštěny můžeme ověřit spuštěním příkazu \texttt{./prophecy status}. Tento příkaz je nutné spouštět z umístění, ve kterém máme Voxeo Prophecy nainstalované. Pokud jsme při instalaci nic neměnili, tak se jedná o umístění \texttt{/opt/voxeo/prophecy}. Pokud služby spuštěny nejsou, můžeme je spustit příkazem \texttt{./prophecy start}.
+
+\subsubsection{Konfigurace}
+Nyní můžeme přistoupit ke konfiguraci hlasového portálu. Součástí IVR Voxeo Prophecy je webové konfigurační rozhraní pomocí kterého konfiguraci provedeme.
+
+Do tohoto rozhraní se dostaneme zadáním následující URL do internetového prohlížeče \url{http://localhost:9996/ManagementConsole}. Nyní bychom měli mít zobrazenu stránku s přihlašovacím formulářem. Přihlásíme se zadání řetězce 'admin', které slouží jako přihlašovací jméno i heslo. Na obrázku \ref{fig:Voxeo_admin} je zobrazena stránka, na které provedeme vytvoření nové VXML aplikace. Po přihlášení je nutné vybrat v horním menu vyznačenou ikonku (1.). Tímto se dostaneme na stránku, kde provedeme vytvoření nové aplikace. Nyní klikneme na ikonku + (2.). Tímto se nám ve spodní části stránky otevře formulář, který je nutné vyplnit.
+
+Do pole $Name$ můžeme vyplnit jakýkoliv text. Jedná se pouze o název aplikace. Pole $Type$ specifikuje typ vytvářené aplikace, vybereme hodnotu $VXML$. Do pole $URL1$ vyplníme URL adresu, na které je spuštěn hlasový portál (viz \ref{sec:App_server}). Ve výchozím stavu je hlasový portál spuštěn na URL \url{http://localhost:9000/vxml}. Posledním krokem je vytvoření adresy aplikace. Tuto adresu je nutné vyplnit, aby bylo možné se na aplikaci dovolat. Adresu vytvoříme přidáním nového záznamu do seznamu ve spodní části formuláře. Můžeme vyplnit např. řetězec 'dp'. Zbývá vyplněné nastavení uložit. Toto provedeme stisknutím tlačítka $Save$ (3.).
+
+Nyní by měla být naše aplikace vytvořena. Můžeme tedy provést zkušební hovor. Součástí Voxeo Prophecy je testovací SIP klient. Tento klient běží v prostředí prohlížeče a dostaneme se k němu zadáním následující URL do prohlížeče \url{http://localhost:9994/vphone/VPhoneClient/main.html}. Po zadání této URL bychom měli vidět stránku, kde máme možnost vyplnit SIP adresu naší aplikace. Zadáme tedy \texttt{sip:dp@localhost} a stiskneme tlačítko $Dial$. Pokud je vše správně nastavené, tak bychom měli za chvíli slyšet uvítací zprávu hlasového portálu.
+
+\InsertFigure{Figures/Voxeo_admin}{1\textwidth}{Registrace nové VXML aplikace}{fig:Voxeo_admin}
 
 \subsection{Asterisk, VoiceGlue}
 ...
