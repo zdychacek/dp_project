@@ -985,6 +985,10 @@ Pokud máme vše úspěšně nainstalováno, můžeme přejít ke konfiguraci. N
 
 Dále je nutné se ujistit, že je v tomto souboru obsažen řádek obsahující \texttt{enabled=yes}.
 
+Dalším krokem je vytvoření SIP účtu. Do souboru \texttt{/etc/asterisk/sip.conf} přídáme kód obsažený ve výpise \ref{src:Asterisk_sip}.
+
+\lstinputlisting[language=conf,label=src:Asterisk_sip,caption={Konfigurace souboru \texttt{/etc/asterisk/sip.conf}}]{Src/asterisk_sip.conf}
+
 Nyní je potřeba nakonfigurovat přepojování hovorů z Asterisku do VoiceGlue. Tuto konfiguraci provedeme v souboru \texttt{/etc/asterisk/extensions.conf}. Do souboru přidáme kód, který je obsažen ve výpise \ref{src:Asterisk_extensions}.
 
 \lstinputlisting[language=conf,label=src:Asterisk_extensions,caption={Konfigurace souboru \texttt{/etc/asterisk/extensions.conf}}]{Src/asterisk_extensions.conf}
