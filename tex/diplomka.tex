@@ -110,6 +110,7 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 \AddAcronym{SMS}{Short Message Service}
 \AddAcronym{CLI}{Command Line Interface}
 \AddAcronym{AGI}{Asterisk Gateway Interface}
+\AddAcronym{SIP}{Session Initiation Protocol}
 
 % Zadame cestu a jmeno souboru ci nekolika souboru s digitalizovanou podobou zadani prace
 % Pri sazbe se pak hledaji soubory Figures/Zadani1.jpg, Figures/Zadani2.jpg atd.
@@ -1009,10 +1010,25 @@ Nyní bychom měli mít vše správně nastaveno a můžeme tedy provést zkuše
 
 \section{Zátěžové testy portálu}
 \label{sec:Benchmark}
-Popis, jak probíhal test. Použité nástroje.
+Tato kapitola je věnována zátěžovým testům hlasového portálu, jehož návrhu byla věnována předchozí kapitola. Vzhledem k licenčním omezením\footnote{Verze, která je dostupná zdarma je omezena pouze na dva porty, čili na maximálně dva souběžné hovory.}, která jsou spojena s používáním IVR Voxeo Prophecy nebylo bohužel možné nad touto platformou zátěžové testy provést. Proto bude předmětem našich testů pouze hlasová platforma VoiceGlue.
+
+Zátěžové testy budou spouštěny na virtuálním stroji, který je poháněn jednojádrovým procesorem o taktu 2GHz a má k dispozici 2GB operační paměti. Jako operační systém je použita serverová varianta Ubuntu 10.04.4 LTS. Na tomto stroji je dále nainstalována softwarová ústředna Asterisk ve verzi 1.6.2.5, nad kterou je spuštěna hlasová platforma VoiceGlue ve verzi 0.14.
+
+Předmětem zátěžových testů hlasového portálu je analýza výpočetní a paměťové náročnosti obsluhy různého počtu připojených klientů. V testech je měřeno celkové vytížení systému i vytížení konkrétních procesů. Zátěžové testy jsou postaveny tak, aby bylo možné zároveň analyzovat využití hlasové platformy i aplikačního serveru. Pro tuto analýzu byly zvoleny následující procesy:
+
+\begin{itemize}
+\item asterisk
+\item voiceglue
+\item phoneglue
+\item node
+\item mongod
+\end{itemize}
+
+Z analýzy vytíženosti procesů $asterisk$, $voiceglue$ a $phoneglue$ vyvodíme paměťovou a výpočetní náročnost běhového prostředí hlasové platformy.
+
+Z vytíženosti procesů $node$ a $mongod$ zjistíme výpočetní a paměťovou náročnost aplikačního serveru, konkrétně tedy webového a databázového serveru.
 
 \subsection{Testovací scénář}
-Omezení dva paralelní hovory. Test 1 a 2 připojených klientů + extrapolace pro 5 a 10 klientů.
 
 \subsection{Výsledky měření}
 Co jsme zjistili v testech?
