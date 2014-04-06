@@ -61,7 +61,7 @@
   </send>
 
   <!-- prehrani uvitaci zprava a vyzva k zadani loginu -->
-  <pause milliseconds="5000"/>
+  <pause milliseconds="6000"/>
 
   <!-- zadani loginu -->
   <nop>
@@ -69,13 +69,13 @@
       <exec play_pcap_audio="pcap/dtmf_2833_1.pcap"/>
     </action>
   </nop>
-  <pause milliseconds="200"/>
+  <pause milliseconds="300"/>
   <nop>
     <action>
       <exec play_pcap_audio="pcap/dtmf_2833_pound.pcap"/>
     </action>
   </nop>
-  <pause milliseconds="3000"/>
+  <pause milliseconds="6000"/>
 
   <!-- potvrzeni zadani loginu -->
   <nop>
@@ -83,7 +83,7 @@
       <exec play_pcap_audio="pcap/dtmf_2833_1.pcap"/>
     </action>
   </nop>
-  <pause milliseconds="1500"/>
+  <pause milliseconds="3000"/>
 
   <!-- zadani hesla -->
   <nop>
@@ -91,7 +91,7 @@
       <exec play_pcap_audio="pcap/dtmf_2833_1.pcap"/>
     </action>
   </nop>
-  <pause milliseconds="200"/>
+  <pause milliseconds="300"/>
   <nop>
     <action>
       <exec play_pcap_audio="pcap/dtmf_2833_pound.pcap"/>
@@ -99,7 +99,7 @@
   </nop>
 
   <!-- prehrani hlavniho menu -->
-	<pause milliseconds="7000"/>
+	<pause milliseconds="8000"/>
 
 	<!-- vylistovani seznamu aktivnich rezervaci -->
   <nop>
@@ -107,7 +107,7 @@
       <exec play_pcap_audio="pcap/dtmf_2833_2.pcap"/>
     </action>
   </nop>
-  <pause milliseconds="200"/>
+  <pause milliseconds="300"/>
 
   <!-- prehrani informaci o prvni rezervaci -->
   <pause milliseconds="10000"/>
@@ -118,7 +118,7 @@
       <exec play_pcap_audio="pcap/dtmf_2833_5.pcap"/>
     </action>
   </nop>
-  <pause milliseconds="2000"/>
+  <pause milliseconds="6000"/>
 
   <!-- zaveseni hovoru -->
   <send retrans="500">
