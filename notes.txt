@@ -9,3 +9,27 @@ sshfs ondrej@virt-ubuntu:/ ~/virt-ubuntu-fs
 
 PORT=9000 node --harmony index.js
 ./start-bench.sh 0.2 20 10
+
+INVITE ---------->
+ 100 <----------
+ 180 <----------
+ 200 <----------
+
+ ACK ---------->
+Pause [   6000ms]
+			[ NOP ]
+Pause [    300ms]
+			[ NOP ]
+Pause [   6000ms]
+			[ NOP ]
+Pause [   3000ms]
+			[ NOP ]
+Pause [    300ms]
+			[ NOP ]
+Pause [   8000ms]
+			[ NOP ]
+Pause [    300ms]
+Pause [    10.0s]
+			[ NOP ]
+Pause [   6000ms]
+ 200 <----------
