@@ -1031,12 +1031,66 @@ Předmětem zátěžových testů hlasového portálu je analýza výpočetní a
 
 Analýza vytíženosti procesů $asterisk$, $voiceglue$ a $phoneglue$ nám poskytne informaci o výpočetní a paměťové náročnosti běhového prostředí hlasové platformy Z vytíženosti procesů $node$ a $mongod$ budeme zjišťovat výpočetní a paměťovou náročnost aplikačního serveru, konkrétně webového a databázového serveru.
 
-\subsection{Testovací scénář}
+\subsection{Scénář zátěžových testů}
+Zátěžové testy spočívaly ve vytvoření zátěže na hlasovém portálu simulací $n$ připojených klientů. Každý připojený klient inicioval hovor na bázi SIP dialogu mezi hlasovým portálem. Schéma simulovaného hovoru je vyobrazeno na obrázku \ref{fig:Bench_scenario}.
 
-\InsertFigure{Figures/diagrams/bench_scenario}{1\textwidth}{Diagram testovacího scénáře}{fig:Bench_scenario}
+Hovor sestává z následující posloupnosti akcí:
+
+\begin{enumerate}
+\item Iniciace hovoru SIP zprávou INVITE
+\item Přehrání uvítací zprávy a výzvy k zadání přihl. jména
+\item Zadání přihl. jména "1" prostřednictvím sekvence DTMF voleb 1 a \#
+\item Přehrání výzvy k potvrzení přihl. jména
+\item Potvrzení zadaného přihl. jména prostřednictvím DTMF volby 1
+\item Přehrání výzvy k zadání přihl. hesla
+\item Zadání přihl. hesla "1" prostřednictvím sekvence DTMF voleb 1 a \#
+\item Přehrání hlavního menu
+\item Zvolení "Seznamu rezervací" prostřednictvím DTMF volby 2
+\item Přehrání informací o první aktivní rezervaci
+\item Návrat do hlavního menu prostřednictvím DTMF volby 5
+\item Přehrání hlavního menu
+\item Ukončení hovoru SIP zprávou BYE
+\end{enumerate}
+
+Tento hovor byl poté spouštěn vůči hlasovému portálu. Hovory byly spouštěny v různém počtu instancí. V každém testu byl zároveň spouštěn různý počet souběžných instancí hovoru. V každém testu bylo měřeno procesorové a paměťové vytížení systému a klíčových procesů. Kapitola \ref{sec:Benchmark_results} je věnována výsledkům měření.
+
+V tabulce \ref{tab:Benchmark_variants} jsou uvedeny všechny varianty provedených zátěžových testů.
+
+\begin{table}
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		Celkový počet hovorů & Počet souběžných hovorů \\
+		\hline
+		5 & 5  \\
+		\hline
+		10 & 5  \\
+		\hline
+		10 & 10  \\
+		\hline
+		20 & 10  \\
+		\hline
+		20 & 20  \\
+		\hline
+		40 & 20  \\
+		\hline
+		40 & 40  \\
+		\hline
+		60 & 60  \\
+		\hline
+		120 & 60  \\
+		\hline
+		80 & 40  \\
+		\hline
+	\end{tabular}
+	\caption{Varianty provedených zátěžových testů}
+	\label{tab:Benchmark_variants}
+\end{table}
+
+\InsertFigure{Figures/diagrams/bench_scenario}{1\textwidth}{Schéma simulovaného hovoru}{fig:Bench_scenario}
 
 \subsection{Použité nástroje}
-Pro provedení zátěžových testů bylo potřeba zvolit vhodný nástroj, který nám umožní nasimulovat klienty, kteří se připojují k hlasovému portálu a nástroj, který nám umožní měřit vytížení systému a konkrétních procesů.
+Pro provedení zátěžových testů bylo potřebné zvolit vhodné nástroje. V první řadě bylo nutné použít nástroj umožnující simulaci klientů, kteří se připojují k hlasovému portálu. Dále bylo potřeba nástroje, který nám umožní měřit celkové vytížení systému a vytížení konkrétních procesů.
 
 \subsubsection{SIPp}
 SIPp je nástroj, který umožňuje generovat síťový provoz spojený se SIP protokolem. Tento nástroj umí ze XML souboru načíst definici SIP dialogu a na základě této definice generovat SIP zprávy. SIPp také umožňuje generovat pakety RTP protokolu. Podpora RTP protokolu je v testovacím scénáři využita pro přenos DTMF volby. Součástí instalace tohoto nástroje jsou k dispozici zachycené RTP pakety jednotlivých DTMF voleb ve formátu pcap.
@@ -1101,7 +1155,7 @@ Tento skript je nutné spouštět z umístění, ve kterém je obsažen XML soub
 
 První parametr udává periodu vzorkování vytížení systému. Hodnota se zadává ve vteřinách. Druhý parametrem udáváme celkový počet simulovaných hovorů, které chceme vyvolat. Posledním parametrem nastavujeme maximální počet souběžných hovorů.
 
-Po spuštění skript provede následující operace:
+Skript provede po spuštění následující operace:
 
 \begin{enumerate}
 \item vytvoření adresáře pro výstupní data
@@ -1121,9 +1175,51 @@ Je důležité poznamenat, že skript nezajišťuje spuštění hlasové platfor
 Jedním z posledních operací, které skript provádí je spuštění skriptu \texttt{parse.js}. Tento skript slouží k transformaci zachyceného výstupu z programu \texttt{top} do formátu CSV, ze kterého je poté možné vygenerovat grafy. Ve zdrojovém kódu tohoto skriptu jsou nadefinována jména procesů, o nichž se mají zjišťovat informace o vytíženosti. Některé z těchto procesů mohou být spuštěny v několika instancích (samostatných procesech). Např. proces \texttt{asterisk} je obvykle spuštěn minimálně ve dvou instancích. V zachyceném výstupu z programu \texttt{top} je poté uveden zvlášť záznam o každé instanci. Skript tedy zajišťuje agregaci informace o vytíženosti dílčích procesů.
 
 \subsection{Výsledky měření}
-Co jsme zjistili v testech?
+\label{sec:Benchmark_results}
+Měřením bylo zjištěno konkrétní vytížení procesoru a využití paměti RAM při různém počtu probíhajících hovorů v kombinaci s různým počtem souběžných hovorů (viz tabulka \ref{tab:Benchmark_variants}). V této kapitole uvedu grafy zachycující zmíněné využití hlasové platformy i aplikačního serveru. Nebudu zde uvádět grafy využití všech variant zátěžových testů, ale uvedu zde jen grafy nejzajímavější variant testů (zde neuvedené grafy je možné najít v příloze).
 
-\InsertSidewaysFigure{Figures/benchmark_charts/cpu_60_60}{1\textwidth}{Registrace nové VXML aplikace}{fig:Voxeo_admin}
+Ve všech následně uvedených grafech je zachyceno celkové využití procesoru nebo paměti RAM včetně podílu vytíženosti jednotlivých procesů. Na osu Y jsou vynášeny procentuální hodnoty využití konkrétního zdroje - procesoru nebo paměti RAM. Osa X reprezentuje časový průběh zátěžového testu. U osy X není uvedena žádná měrná jednotka. Není uvedena z toho důvodu, že nás nezajímá vytížení v konkrétním čase, spíše nás zajímá relativní distribuce vytíženosti zdroje v průběhu testu.
+
+\subsubsection{Zátěžový test č. 1}
+Konfigurace tohoto, nejméně náročného, zátěžového testu spočívala v uskutečnění celkového počtu 5 hovorů, kdy všech 5 hovorů bylo obslouženo souběžně.
+
+Na obrázku \ref{fig:Benchmark_CPU_5_5} je zobrazen graf zachycující využitím procesoru při této konfiguraci. Na obrázku \ref{fig:Benchmark_RAM_5_5} je vyobrazeno využití paměti RAM.
+
+\InsertSidewaysFigure{Figures/benchmark_charts/cpu_5_5}{1\textwidth}{Využití CPU při spuštění 5 souběžných hovorů (celkově 5 hovorů)}{fig:Benchmark_CPU_5_5}
+\InsertSidewaysFigure{Figures/benchmark_charts/ram_5_5}{1\textwidth}{Využití paměti RAM při spuštění 5 souběžných hovorů (celkově 5 hovorů)}{fig:Benchmark_RAM_5_5}
+
+Z grafu vytíženosti procesoru je patrné, že celkové vytížení systému je maximální jen v určitých časových periodách, které nemají dlouhého trvání. Největší podíl na vytíženosti má proces $node$, který představuje aplikační server. Procesy, které v testu zastupují hlasovou platformu, mají téměř konstantní podíl využití. Nejvíce vytíženým procesem hlasové platformy je proces $asterisk$, tedy hlasová ústředna.
+
+Vytíženost paměti RAM nám prozrazuje, že téměř všechny procesy mají konstantní nároky na paměť v průběhu celého testu. Nejvýraznější vyjímkou je opět proces $node$, který představuje aplikační server. Právě u tohoto procesu je patrná postupná alokace paměti.
+
+\subsubsection{Zátěžový test č. 2}
+Konfigurace tohoto zátěžového testu spočívala v uskutečnění celkového počtu 20 hovorů. V tomto případě bylo souběžně obsluhováno vždy 10 hovorů. Celková doba trvání této varianty testu tedy zabrala dvojnásobný čas.
+
+\InsertSidewaysFigure{Figures/benchmark_charts/cpu_20_10}{1\textwidth}{Využití CPU při spuštění 10 souběžných hovorů (celkově 20 hovorů)}{fig:Benchmark_CPU_20_10}
+\InsertSidewaysFigure{Figures/benchmark_charts/ram_20_10}{1\textwidth}{Využití paměti RAM při spuštění 10 souběžných hovorů (celkově 20 hovorů)}{fig:Benchmark_RAM_20_10}
+
+Tento typ testu nám může odhalit případné problémy s uvolňováním zdrojů mezi zpracováním jednotlivých "dávek" hovorů. Z grafů \ref{fig:Benchmark_CPU_20_10} a \ref{fig:Benchmark_RAM_20_10} však není žádná kumulace využití zdrojů patrná. Můžeme tedy usoudit, že zdroje jsou vždy správně uvolňovány.
+
+Z vytíženosti procesoru (\ref{fig:Benchmark_CPU_20_10}) je patrné, že zpracování hovorů v této konfiguraci systém stále zvládá bez sebemenšího problému - stále není ani zdaleka využit veškerý procesorový čas.
+
+V grafu vytíženosti paměti RAM (\ref{fig:Benchmark_RAM_20_10}) si můžeme povšimnout zvýšeného podílu na využití paměti u procesu $voiceglue$. U paměťové vytíženosti ostatních procesů nedošlo k výraznějšímu nárůstu.
+
+\subsubsection{Zátěžový test č. 3}
+Konfigurace této varianty zátěžového testu spočívala v uskutečnění celkového počtu 60 hovorů, kdy všech 60 hovorů bylo obslouženo souběžně.
+
+Využití procesoru (\ref{fig:Benchmark_CPU_60_60}) je u této varianty testu téměř stoprocentní po celou dobu trvání zátěžového testu. Je tedy patrné, že pro danou hardwarovou konfiguraci stroje (viz \ref{sec:Benchmark}) jsme se přiblížili k maximálnímu počtu hovorů, které je možné reálně obsloužit. Při větším počtu souběžných hovorů by již mohlo docházet k nepřijatelným prodlevám mezi iniciací hovoru a jeho obsloužením. Tyto prodlevy by dále mohly způsobovat problémy, které by např. mohly vést k nutnosti přeposílat některé datové pakety.
+
+Využití paměti RAM, které můžeme vidět v grafu na obrázku \ref{fig:Benchmark_RAM_60_60}, opět ukazuje mírné zvýšení nároků na paměť u procesu $voiceglue$. U ostatních procesů není patrná žádná výrazná změna oproti výsledkům z předchozího testu.
+
+\InsertSidewaysFigure{Figures/benchmark_charts/cpu_60_60}{1\textwidth}{Využití CPU při spuštění 60 souběžných hovorů (celkově 60 hovorů)}{fig:Benchmark_CPU_60_60}
+\InsertSidewaysFigure{Figures/benchmark_charts/ram_60_60}{1\textwidth}{Využití paměti RAM při spuštění 60 souběžných hovorů (celkově 60 hovorů)}{fig:Benchmark_RAM_60_60}
+
+\subsubsection{Obecné zhodnocení}
+Výsledky jednotlivých variant zátěžových testů můžeme obecně shrnout následovně.
+
+Měřením využití procesoru byl přibližně zjištěn maximální počet hovorů, které lze na dané hardwarové platformě obsloužit souběžně, aniž by začalo docházet k nárůstu doby potřebné pro obsloužení hovoru.
+
+Z analýzy využití paměti RAM naopak vyplynulo, že zde existují ještě velké rezervy. Využití paměti monitorovaných procesů se nezvýšilo na nikterak vysokou hodnotu. Využití paměti jednotlivými procesy bylo téměř ve všech variantách zátěžových testů konstantní. Využití paměti bylo téměř stejné i napříč různými testy. Pouze u procesu $voiceglue$ byl mezi testy patrný mírný nárůst nároku na paměť. I přes tento mírný postupný nárůst se využití paměti tímto procesem pohybovalo pouze mezi 2-9\%.
 
 \section{Závěr}
 \label{sec:Conclusion}
