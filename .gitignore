@@ -9,3 +9,4 @@ tex/*
 !tex/Src
 !tex/Vxml
 !*.tex
+benchmark/out/
