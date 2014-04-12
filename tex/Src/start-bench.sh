@@ -1,0 +1,1 @@
+/home/ondrej/myproj/letadla/benchmark/start-bench.sh

@@ -24,7 +24,6 @@
   morestring=[b]",
   morestring=[d]',
   alsoletter={.},
-  basicstyle=\ttfamily,
   keywordstyle=\ttfamily\color{blue},
   identifierstyle=\ttfamily,
   stringstyle=\ttfamily\color{maroon},
@@ -32,7 +31,6 @@
 }
 
 \lstdefinelanguage{XML} {
-  basicstyle=\ttfamily,
   morestring=[b]",
   moredelim=[s][\ttfamily\color{maroon}]{<}{\ },
   moredelim=[s][\ttfamily\color{maroon}]{</}{>},
@@ -46,12 +44,16 @@
 }
 
 \lstdefinelanguage{conf} {
-  basicstyle=\ttfamily,
   morecomment=[s]{#},
   commentstyle=\color{darkgreen}
 }
 
+\lstdefinelanguage{bash} {
+  keywordstyle=\color{blue}
+}
+
 \lstset {
+	basicstyle=\ttfamily,
   showstringspaces=false,
   rulecolor=\color{black},
   aboveskip=\bigskipamount,
@@ -111,6 +113,9 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 \AddAcronym{CLI}{Command Line Interface}
 \AddAcronym{AGI}{Asterisk Gateway Interface}
 \AddAcronym{SIP}{Session Initiation Protocol}
+\AddAcronym{CPU}{Central Processing Unit}
+\AddAcronym{IP}{Internet Protocol}
+\AddAcronym{CSV}{Comma-Separated Values}
 
 % Zadame cestu a jmeno souboru ci nekolika souboru s digitalizovanou podobou zadani prace
 % Pri sazbe se pak hledaji soubory Figures/Zadani1.jpg, Figures/Zadani2.jpg atd.
@@ -1012,9 +1017,9 @@ Nyní bychom měli mít vše správně nastaveno a můžeme tedy provést zkuše
 \label{sec:Benchmark}
 Tato kapitola je věnována zátěžovým testům hlasového portálu, jehož návrh byl popsán v předchozí kapitole. Vzhledem k licenčním omezením\footnote{Verze, která je dostupná zdarma je omezena pouze na dva porty, čili na maximálně dva souběžné hovory.}, které jsou spojeny s používáním IVR Voxeo Prophecy nebylo bohužel možné nad touto platformou zátěžové testy provést. Proto bude předmětem našich testů pouze hlasová platforma VoiceGlue.
 
-Zátěžové testy budou spouštěny na virtuálním stroji, který je poháněn jednojádrovým procesorem o taktu 2GHz a má k dispozici 2GB operační paměti. Jako operační systém je použita serverová varianta Ubuntu 10.04.4 LTS. Na tomto stroji je nainstalována softwarová ústředna Asterisk ve verzi 1.6.2.5, jejíž součástí je hlasová platforma VoiceGlue ve verzi 0.14.
+Zátěžové testy budou spouštěny na virtuálním stroji, který je poháněn jednojádrovým procesorem o taktu 2GHz a má k dispozici 2GB operační paměti. Jako operační systém je použita serverová varianta Ubuntu 10.04.4 LTS. Na tomto stroji je nainstalována softwarová ústředna Asterisk ve verzi 1.6.2.5. Nad touto ústřednou je spuštěna hlasová platforma VoiceGlue ve verzi 0.14.
 
-Předmětem zátěžových testů hlasového portálu je analýza výpočetní a paměťové náročnosti obsluhy různého počtu připojených klientů. V testech je měřeno celkové vytížení systému i vytížení konkrétních procesů. Zátěžové testy jsou postaveny tak, aby bylo možné zároveň analyzovat využití hlasové platformy i aplikačního serveru. Pro tuto analýzu byly zvoleny následující procesy:
+Předmětem zátěžových testů hlasového portálu je analýza výpočetní a paměťové náročnosti obsluhy různého počtu připojených klientů. V testech je měřeno celkové vytížení systému i vytíženost konkrétních procesů. Zátěžové testy jsou postaveny tak, aby bylo možné zároveň analyzovat využití hlasové platformy i aplikačního serveru. Pro tuto analýzu byly zvoleny následující procesy:
 
 \begin{itemize}
 \item asterisk
@@ -1024,9 +1029,96 @@ Předmětem zátěžových testů hlasového portálu je analýza výpočetní a
 \item mongod
 \end{itemize}
 
-Analýza vytíženosti procesů $asterisk$, $voiceglue$ a $phoneglue$ nám ukáže paměťovou a výpočetní náročnost běhového prostředí hlasové platformy a z vytíženosti procesů $node$ a $mongod$ zjistíme výpočetní a paměťovou náročnost aplikačního serveru, konkrétně tedy webového a databázového serveru.
+Analýza vytíženosti procesů $asterisk$, $voiceglue$ a $phoneglue$ nám poskytne informaci o výpočetní a paměťové náročnosti běhového prostředí hlasové platformy Z vytíženosti procesů $node$ a $mongod$ budeme zjišťovat výpočetní a paměťovou náročnost aplikačního serveru, konkrétně webového a databázového serveru.
 
 \subsection{Testovací scénář}
+
+\InsertFigure{Figures/diagrams/bench_scenario}{1\textwidth}{Diagram testovacího scénáře}{fig:Bench_scenario}
+
+\subsection{Použité nástroje}
+Pro provedení zátěžových testů bylo potřeba zvolit vhodný nástroj, který nám umožní nasimulovat klienty, kteří se připojují k hlasovému portálu a nástroj, který nám umožní měřit vytížení systému a konkrétních procesů.
+
+\subsubsection{SIPp}
+SIPp je nástroj, který umožňuje generovat síťový provoz spojený se SIP protokolem. Tento nástroj umí ze XML souboru načíst definici SIP dialogu a na základě této definice generovat SIP zprávy. SIPp také umožňuje generovat pakety RTP protokolu. Podpora RTP protokolu je v testovacím scénáři využita pro přenos DTMF volby. Součástí instalace tohoto nástroje jsou k dispozici zachycené RTP pakety jednotlivých DTMF voleb ve formátu pcap.
+
+Nástroj při spuštění přebírá několik nastavení, kterými je možné řídit např. celkový počet SIP spojení, které se mají vykonat nebo maximální počet souběžných SIP spojení.
+
+Pro naše účely byl nástroj spouštěn např. následujícím příkazem:
+
+\begin{quote}
+\begin{sloppypar}
+	\texttt{sudo sipp -sf scenario.xml -s dp -m 6 -l 2 -i 192.168.1.1 -nd -trace\_stat -fd 250 192.168.1.2}
+\end{sloppypar}
+\end{quote}
+
+SIPp je nutné spouštět pomocí příkazu \texttt{sudo} a to z toho důvodu, aby program mohl vytvořit sokety, které jsou nutné pro odesílání RTP paketů.
+
+Přepínač \texttt{sf} udává cestu k XML souboru, ve kterém je obsažena definice SIP dialogu - testovacího scénáře.
+
+Pomocí přepínače \texttt{s} specifikujeme název vytáčené SIP služby.
+
+Přepínačem \texttt{m} nastavujeme celkový počet vykonaných SIP spojení (hovorů).
+
+Přepínačem \texttt{l} specifikujeme maximální počet souběžně vykonávaných SIP spojení (hovorů).
+
+Pomocí přepínače \texttt{i} specifikujeme zdrojovou IP adresu. Tuto informaci je nutné uvést v případě, kdy stroj, na kterém SIPp běží, obsahuje více síťových rozhraní.
+
+Uvedením přepínače \texttt{nd} vypínáme výchozí chování programu, které spočívá v ukončení běhu programu při příjmu neočekávané SIP zprávy.
+
+Přepínač \texttt{trace\_stat} zapíná logování statistik o průběhu jednotlivých spojení.
+
+Poslední údaj, který je nutné uvést, je IP adresa stroje, na kterém běží hlasový portál.
+
+Tento nástroj byl pro testy zvolen hlavně proto, že umožňuje jednoduchým způsobem nasimulovat $n$ připojených klientů.
+
+SIPp byl během zátěžových testů spouštěn na samostatném stroji, aby nedocházelo ke zvýšení vytíženosti měřeného systému vlivem běhu tohoto programu.
+
+\subsubsection{top}
+$top$ je nástroj, který je součástí UNIX-like operačních systému a slouží k monitorování aktuálně běžících procesů a podprocesů. Tento program umožňuje periodicky zjišťovat informace o celkovém využití CPU a paměti. Zároveň poskytuje informace o využití systémových prostředků aktuálně běžícími procesy v systému.
+
+Pro účely našich zátěžových testů byl program spouštěn např. následujícím příkazem:
+
+\begin{quote}
+	\texttt{top -b -d 100 > out.txt}
+\end{quote}
+
+Přepínač \texttt{b} spouští program v dávkovém módu. Program je nutné v tomto módu spustit v případě, že chceme přesměrovat výstup do souboru.
+
+Pomocí přepínače \texttt{d} specifikujeme dobu, po jejichž uplynutí program vygeneruje nový snímek vytíženosti systému. Ve výše uvedeném případě se tak děje každých 100ms.
+
+Tento nástroj byl při běhu zátěžových testů spouštěn na stroji, na kterém byla spuštěna instance hlasové platformy a aplikačního serveru.
+
+\subsubsection{Automatizační skript}
+Výše jsem popsal dva nástroje, které byly využity pro simulaci připojovaných klientů a měření vytíženosti systému. Zátěžové testy byly postupně spouštěny s různými parametry. Pro zjednodušení spouštění zátěžových testů byl vytvořen $bash$ skript, kterému je možné při spouštění předat tři parametry. Ve výpise \ref{src:Benchmark_bash_script} je uveden zdrojový kód tohoto skriptu.
+
+\lstinputlisting[language=bash,label=src:Benchmark_bash_script,caption={Zdrojový kód automatizačního skriptu \texttt{start-bench.sh}}]{Src/start-bench.sh}
+
+Tento skript je nutné spouštět z umístění, ve kterém je obsažen XML soubor s definicí testovacího scénáře. Umístění dále musí obsahovat adresář $pcap$, ve kterém jsou uloženy soubory se zaznamenanými RTP pakety DTMF voleb. Skript je poté možné spustit např. následujícím příkazem:
+
+\begin{quote}
+	\texttt{./start-bench.sh 0.2 20 10}
+\end{quote}
+
+První parametr udává periodu vzorkování vytížení systému. Hodnota se zadává ve vteřinách. Druhý parametrem udáváme celkový počet simulovaných hovorů, které chceme vyvolat. Posledním parametrem nastavujeme maximální počet souběžných hovorů.
+
+Po spuštění skript provede následující operace:
+
+\begin{enumerate}
+\item vytvoření adresáře pro výstupní data
+\item spuštění příkazu \texttt{top} na vzdáleném stroji a přesměrování výstupu na lokální stroj
+\item spuštění příkazu \texttt{sipp} na lokálním stroji
+\item ukončení příkazu \texttt{top} na vzdáleném stroji
+\item spuštění skriptu, který transformuje výstup příkazu \texttt{top} do formátu CSV
+\item smazání dočasného souboru
+\end{enumerate}
+
+Je důležité poznamenat, že skript nezajišťuje spuštění hlasové platformy a aplikačního serveru na vzdáleném stroji. Tyto procesy je nutné spustit manuálně. Aplikační server je možné spustit následujícím příkazem:
+
+\begin{quote}
+	\texttt{PORT=9000 node --harmony index.js}
+\end{quote}
+
+Jedním z posledních operací, které skript provádí je spuštění skriptu \texttt{parse.js}. Tento skript slouží k transformaci zachyceného výstupu z programu \texttt{top} do formátu CSV, ze kterého je poté možné vygenerovat grafy. Ve zdrojovém kódu tohoto skriptu jsou nadefinována jména procesů, o nichž se mají zjišťovat informace o vytíženosti. Některé z těchto procesů mohou být spuštěny v několika instancích (samostatných procesech). Např. proces \texttt{asterisk} je obvykle spuštěn minimálně ve dvou instancích. V zachyceném výstupu z programu \texttt{top} je poté uveden zvlášť záznam o každé instanci. Skript tedy zajišťuje agregaci informace o vytíženosti dílčích procesů.
 
 \subsection{Výsledky měření}
 Co jsme zjistili v testech?
@@ -1073,7 +1165,6 @@ Ondřej Ždych
 
 \bibitem{NodeJs_install}
 \textit{Instalační balíky Node.js} Joyent, http://nodejs.org/download.
-
 
 \end{thebibliography}
 
