@@ -222,7 +222,7 @@ Něco o ASR od Loquenda.
 
 \section{Návrh webového portálu}
 \label{sec:Navrh}
-Na začátku této kapitoly nejprve představím aplikaci, která bude ve zbytku textu sloužit jako referenční aplikace. Na této aplikaci budu poté ve zbývajícím textu kapitoly demonstrovat proces návrhu a následnou implementaci.
+Na začátku této kapitoly nejprve představím referenční aplikaci, na které budu poté ve zbývajícím textu kapitoly demonstrovat proces jejího návrhu a následnou implementaci.
 
 Jako referenční aplikaci jsem zvolil rezervační systém smyšlené letecké společnosti. Rezervační systém obsahuje webové a hlasové rozhraní pro správu rezervací letů. Rezervace lze tedy spravovat z prostředí webového prohlížeče nebo z prostředí samoobslužné hlasové linky.
 
@@ -316,7 +316,7 @@ Data se mezi klientem a serverovou částí aplikace (RESP API) přenáší ve f
 \end{table}
 
 \subsection{Uživatelské rozhraní}
-Rozhraní aplikace je rozděleno do několika stránek. Po přihlášení do aplikace je zobrazena hlavní stránka se seznamem všech letů \ref{fig:FlightList}. Jednotlivé lety jsou zde zobrazeny v seznamu, který je stránkovatelný a je zde možnost nastavení počtu zobrazených položek na stránce. Každý řádek v seznamu reprezentuje jeden let. U každého letu jsou uvedeny základní informace. Na konci každého řádku se nachází tlačítka sloužící pro vytvoření nebo zrušení rezervace letu. Řádek, který představuje rezervovaný let je graficky odlišen jinou barvou pozadí. Dále je zde k dispozici tlačítko pro zobrazení detailních informací o letu. Pokud je přihlášen uživatel s právy administrátora, tak má možnost informace o letu i upravovat. Posledním tlačítko slouží ke smazání letu s databáze. Toto tlačítko se opět zobrazuje jen v případě, že je přihlášen uživatel s právy administrátora.
+Rozhraní aplikace je rozděleno do několika stránek. Po přihlášení do aplikace je zobrazena hlavní stránka se seznamem všech letů \ref{fig:FlightList}. Jednotlivé lety jsou zde zobrazeny v seznamu, který je stránkovatelný a je zde možnost nastavení počtu zobrazených položek na stránce. Každý řádek v seznamu reprezentuje jeden let. U každého letu jsou uvedeny základní informace. Na konci každého řádku se nachází tlačítka sloužící pro vytvoření nebo zrušení rezervace letu. Řádek, který představuje rezervovaný let je graficky odlišen jinou barvou pozadí. Dále je zde k dispozici tlačítko pro zobrazení detailních informací o letu. Pokud je přihlášen uživatel s právy administrátora, tak má možnost informace o letu i upravovat. Poslední tlačítko slouží ke smazání letu z databáze. Toto tlačítko se opět zobrazuje jen v případě, že je přihlášen uživatel s právy administrátora.
 
 \InsertFigure{Figures/web_flight_list}{1\textwidth}{Stránka zobrazující seznamem letů a filtr}{fig:FlightList}
 
@@ -1076,11 +1076,11 @@ V tabulce \ref{tab:Benchmark_variants} jsou uvedeny všechny varianty provedený
 		\hline
 		40 & 40  \\
 		\hline
+		80 & 40  \\
+		\hline
 		60 & 60  \\
 		\hline
 		120 & 60  \\
-		\hline
-		80 & 40  \\
 		\hline
 	\end{tabular}
 	\caption{Varianty provedených zátěžových testů}
