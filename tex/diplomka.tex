@@ -181,7 +181,7 @@ Architektura VoiceXML je velmi podobná architektuře webových aplikací. U web
 
 Ve VoiceXML aplikacích jsou VXML dokumenty také uloženy na webovém serveru. Typicky jsou tyto dokumenty generovány dynamicky aplikačním (webovým) serverem. Vedle aplikačního serveru, může být součástí architektury databázový server, který slouží jako zdroj dat. Mimo aplikační a databázový server, architektura VoiceXML navíc obsahuje hlasový server. Součástí hlasového serveru je interpretr VoiceXML dokumentů, modul pro syntézu řeči (TTS) a modul pro rozeznávání řeči (ASR). Hlasový server zastává roli prohlížeče, který je používán u webových aplikací. Generuje zvukové výzvy a interpretuje hlasové volby od uživatele. Uživatel se k hlasovému serveru poté připojuje prostřednictvím telefonního zařízení. Tímto zařízením může být např. pevná linka, která je součástí veřejné telefonní sítě nebo VoIP telefon, který je připojen do VoIP sítě. Tato zařízení jsou poté prostřednictvím telefonní ústředny připojena k hlasovému serveru. Jednotlivé servery spolu komunikují prostřednictvím protokolu TCP/IP. Pro přenos dat je typicky zvolen HTTP protokol.
 
-Na obrázku \ref{fig:voicexml_architecture} je uvedeno schéma výše popsané architektury\cite{vxml_interpreters}.
+Na obrázku \ref{fig:voicexml_architecture} je uvedeno schéma výše popsané architektury \cite{vxml_interpreters}.
 
 \InsertFigure{Figures/vxml_architecture}{0.7\textwidth}{Architektura VoiceXML}{fig:voicexml_architecture}
 
@@ -196,7 +196,7 @@ Voxeo Prophecy je komerční IVR platforma, která poskytuje rychlý vývoj hlas
 
 Platformu je možné integrovat s veřejnou telefonní sítí. Aplikace provozované nad touto platformou mohou být ovládány pomocí DTMF volby nebo pomocí automatického rozpoznávání řeči. Přestože je součástí platformy JBoss server, nad kterým lze provozovat aplikační server, není tato platforma uzavřena vůči dalším technologiím (např. Node.js, Python).
 
-IVR Voxeo Prophecy je možné provozovat na operačních systémech Windows (32 i 64 bitů), OS X a na linuxových distribucích, které jsou založeny na RHEL (např. CentOS). Pro produkční prostředí je však doporučován operační systém založený na linuxu.
+IVR Voxeo Prophecy je možné provozovat na operačních systémech Windows (32 i 64 bitů), Mac OS X a na linuxových distribucích, které jsou založeny na RHEL (např. CentOS). Pro produkční prostředí je však doporučován operační systém založený na linuxu.
 
 Jak již bylo uvedeno, tak je Voxeo Prophecy komerční platformou. Provoz této platformy je velmi limitován licenčními podmínkami. Voxeo Propehcy s podporou dvou souběžných hovorů je možné stáhnout zdarma. Aplikaci lze bez registrace provozovat pouze po dobu jednoho měsíce. Můžeme však u Voxea podstoupit bezplatnou registraci a touto registrací odstranit časové omezení. Aplikaci lze poté provozovat po neomezeně dlouhou dobu, omezení na dva souběžné hovory však stále zůstává. Po registraci máme možnost dokoupit si licenci na provozování více souběžných hovorů (portů) \cite{vxml_org}. Pořízení dalších portů však není levnou záležitostí. Na webu společnosti Voxeo je možné najít aktuální ceník.
 
@@ -225,8 +225,52 @@ Společnost Voxeo je zároveň provozovatelem domény vxml.org, kde je možné n
 
 Výhodou této platformy je velmi kvalitní syntetizátor řeči (TTS) a podpora automatického rozpoznávání řeči (ASR). Tyto výhody jsou vykoupeny licenčními podmínkami, které nám dovolují provozovat maximálně dva souběžné hovory.
 
+V kapitole \ref{sec:voxeo_conf} je uveden podrobný popis instalace a konfigurace platformy Voxeo Prophecy.
+
 \subsubsection{VoiceGlue}
-Popis kombinace Asterisku a VoiceGlue - licence, omezení, výhody (opensource), nevýhody (nekvalitní TTS, nepodporuje ASR).
+VoiceGlue samotné netvoří hlasovou platformou. Jedná se o přídavné rozšíření softwarové ústředny Asterisk.
+
+Asterisk je platforma pro provozování telekomunikačních aplikací. Asterisk je platforma s otevřeným zdrojovým kódem, který je uvolněn pod licencí GNU GPL. Vývoj Asterisku je sponzorován společností Digium \cite{asterisk_org}.
+
+Asterisk ve standardní konfiguraci neposkytuje podporu VoiceXML aplikací, ale díky své modulární architektuře je možné Asterisk o tuto podporu rozšířit.
+
+Asterisk je navržen pro unixové operační systémy (GNU/Linux, OpenBSD, FreeBSD, Mac OS X). K dispozici je i komunitní verze portována do prostředí operačního systému Windows.
+
+VoiceGlue je projekt přinášející podporu VoiceXML aplikací pro platformu Asterisk. VoiceGlue je postaveno nad OpenVXI interpretrem \cite{voiceglue_org}. V době psaní této práce je nejnovější verze 0.14 z listopadu 2011.
+
+VoiceXML interpretr nabízí plnou podporu specifikace VoiceXML 2.0 a zároveň implementuje některé vlastnosti ze specifikace VoiceXML 2.1.
+
+Aplikacím provozovaných na této platformě je umožněno využívat ovládání pomocí DTMF volby. Součástí VoiceGlue bohužel není modul pro automatické rozpoznávání řeči. VoiceGlue podporuje přehrávání nahraných audio souborů ve formátech, které jsou podporovány Asteriskem a podporu nahrávání vstupu ve formátu ulaw.
+
+Flexibilita Asterisku neomezuje provoz VoiceXML pouze na SIP telefonii, ale je možné využít jakýkoliv jiný, Asteriskem podporovaný, telefonní kanál \cite{voiceglue_architecture}.
+
+Do budoucna autoři VoiceGlue slibují integraci s ASR rozpoznávačem LumenVox, kvalitnější TTS syntetizátor a plnou podporu specifikace VoiceXML 2.1.
+
+Součástí VoiceGlue je hlasový syntetizátor Flite (viz kapitola \ref{sec:flite}). Flite je možné jednoduchou úpravou konfiguračního souboru VoiceGlue nahradit jiným syntetizátorem.
+
+Podle autorů by nemělo být problém provozovat VoiceGlue na jakémkoliv unixovém operačním systému.
+
+Na obrázku \ref{fig:voiceglue_architecture} je znázorněna architektura VoiceGlue a propojení s Asteriskem.
+
+\InsertFigure{Figures/voiceglue_architecture}{0.5\textwidth}{Architektura VoiceGlue}{fig:voiceglue_architecture}
+
+Propojení Asterisku s VoiceGlue je úkolem mezivrstvy $PhoneGlue$. Samotnou architekturu VoiceGlue je možné logicky rozdělit na tři hlavní části.
+
+\begin{itemize}
+\item síťová část
+\item část zpracovávající VoiceXML dokumenty
+\item rozhraní pro telefonii
+\end{itemize}
+
+Síťová část komunikuje s aplikačním (webovým) serverem, který generuje VoiceXML dokumenty. Komunikace probíhá nad protokolem TCP/IP pomocí protokolu HTTP.
+
+Část zpracovávající VoiceXML dokumenty je tvořena několika dalšími částmi. První částí je OpenVXI interpretr. Další částí je syntaktický analyzátor Xerces. O zpracování případných skriptů jazyka ECMAScript se stará engine SpiderMonkey.
+
+Rozhraní pro telefonii je tvořeno dalšími třemi částmi. První část je připravena pro implementaci rozpoznávání hlasu pomocí rozpoznávače LumenVox (zatím není implementována). Další část tvoří hlasový syntetizátor Flite. Poslední část má na starost komunikaci s mezivrstvou $PhoneGlue$. \cite{vxml_interpreters}
+
+Uvedení této hlasové platformy do provozu není tak jednoduché jako v případě platformy Voxeo Prophecy. Nejdřív je potřeba nakonfigurovat samotný Asterisk a poté doinstalovat a nakonfigurovat rozšíření VoiceGlue. Podrobněji je tento proces popsán v kapitole \ref{sec:voiceglue_conf}.
+
+Mezi hlavní výhody VoiceGlue je otevřenost zdrojového kódu, resp. licence pod kterou je VoiceGlue uvolněno. Na druhou stranu má toto řešení zatím dost nevýhod. Jako hlavní nevýhody lze uvést absenci modulu pro rozpoznávání řeči, nekvalitní syntetizátor řeči a chybějící podpora specifikace VoiceXML verze 2.1. Vzhledem k tomu, že poslední aktivita okolo tohoto projektu byla veřejně zaznamenaná koncem roku 2011, nemůžeme s určitostí v blízké době počítat s implementací těchto chybějících vlastností.
 
 \subsection{Základy VXML}
 \label{sec:Zaklady_vxml}
@@ -238,6 +282,7 @@ Vestavěné gramatiky
 Obecný úvod o technologiích TTS. Popis procesu syntézy řeči.
 
 \subsection{Flite}
+\label{sec:flite}
 Něco o Flite.
 
 \subsection{Cepstral}
@@ -930,6 +975,7 @@ Webový portál je k dispozici na \url{http://localhost:9000/flights}. Po zadán
 Hlasový portál je k dispozici na \url{http://localhost:9000/vxml}. Po zadání této URL do prohlížeče by se měla zobrazovat chyba aplikace.
 
 \subsection{Voxeo Prophecy}
+\label{sec:voxeo_conf}
 Instalace a zprovoznění této IVR platformy je jednoduché. V následující části nejdříve popíši postup instalace a poté popíši jak provést konfiguraci hlasového portálu.
 
 \subsubsection{Instalace}
@@ -970,6 +1016,7 @@ Do pole $Name$ můžeme vyplnit jakýkoliv text. Jedná se pouze o název aplika
 Nyní by měla být naše aplikace vytvořena. Můžeme tedy provést zkušební hovor. Součástí Voxeo Prophecy je testovací SIP klient. Tento klient běží v prostředí prohlížeče a dostaneme se k němu zadáním následující URL do prohlížeče \url{http://localhost:9994/vphone/VPhoneClient/main.html}. Po zadání této URL bychom měli vidět stránku, kde máme možnost vyplnit SIP adresu naší aplikace. Zadáme tedy \texttt{sip:dp@localhost} a stiskneme tlačítko $Dial$. Pokud je vše správně nastavené, tak bychom měli za chvíli slyšet uvítací zprávu hlasového portálu.
 
 \subsection{VoiceGlue}
+\label{sec:voiceglue_conf}
 V této kapitole popíši instalaci a konfiguraci opensource IVR platformy VoiceGlue. Tato platforma byla blíže představena v kapitole \ref{sec:Voxeo_interpreter}.
 
 \subsubsection{Instalace}
@@ -1270,6 +1317,15 @@ Ondřej Ždych
 
 \bibitem{vxml_interpreters} Peter Trilec,
 \textit{Porovnání volně dostupných VoiceXML interpreterů, bakalářská práce}, Masarykova univerzita, 2008.
+
+\bibitem{asterisk_org}
+\textit{Oficiální web Asterisku}, http://www.asterisk.org/get-started.
+
+\bibitem{voiceglue_org}
+\textit{Oficiální web projektu VoiceGlue}, http://www.voiceglue.org.
+
+\bibitem{voiceglue_architecture}
+\textit{Architektura VoiceGlue}, https://github.com/voiceglue/voiceglue/wiki/Features-and-Architecture.
 
 \bibitem{angulardocs} Google,
 \textit{Dokumentace k frameworku AngularJS}, http://docs.angularjs.org.
