@@ -93,12 +93,15 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 \EnglishKeywords{VoiceXML, VXML, voice portal, XML, JSON, ASR, TTS, JavaScript, Node.js, AngularJS}
 
 % Pridame pouzivane zkratky (pokud nejake pouzivame).
+\AddAcronym{XML}{Extensible Markup Language}
+\AddAcronym{TCP/IP}{Transmission Control Protocol/Internet Protocol}
 \AddAcronym{HTTP}{Hypertext Transfer Protocol}
+\AddAcronym{W3C}{World Wide Web Consortium}
+\AddAcronym{VoIP}{Voice over Internet Protocol}
 \AddAcronym{SAP}{Single Page Application}
 \AddAcronym{HTML}{Hypertext Markup Language}
 \AddAcronym{AJAX}{Asynchronous JavaScript and XML}
 \AddAcronym{JSON}{JavaScript Object Notation}
-\AddAcronym{XML}{Extensible Markup Language}
 \AddAcronym{REST}{Representational State Transfer}
 \AddAcronym{API}{Application Programming Interface}
 \AddAcronym{URL}{Uniform Resource Locator}
@@ -106,7 +109,7 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 \AddAcronym{PDF}{Portable Document Format}
 \AddAcronym{ASR}{Automatic Speech Recognition}
 \AddAcronym{TTS}{Text To Speech}
-\AddAcronym{DTMF}{Dual-tone multi-frequency signaling}
+\AddAcronym{DTMF}{Dual-Tone Multi-Frequency signaling}
 \AddAcronym{IVR}{Interactive Voice Response}
 \AddAcronym{MIME}{Multipurpose Internet Mail Extensions}
 \AddAcronym{SMS}{Short Message Service}
@@ -116,6 +119,10 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 \AddAcronym{CPU}{Central Processing Unit}
 \AddAcronym{IP}{Internet Protocol}
 \AddAcronym{CSV}{Comma-Separated Values}
+\AddAcronym{RHEL}{Red Hat Enterprise Linux}
+\AddAcronym{MRCP}{Media Resource Control Protocol}
+\AddAcronym{CCXML}{Call Control eXtensible Markup Language}
+
 
 % Zadame cestu a jmeno souboru ci nekolika souboru s digitalizovanou podobou zadani prace
 % Pri sazbe se pak hledaji soubory Figures/Zadani1.jpg, Figures/Zadani2.jpg atd.
@@ -169,19 +176,56 @@ Po vydání verze 1.0 došlo k předání standardu konsorciu W3C. Konzorcium W3
 
 Organizace VoiceXML Forum po předání standardu VoiceXML konzorciu W3C nezanikla a stále podporuje vývoj standardu.
 
-\subsection{Historie hlasových značkovacích jazyků}
-Voice Markup Languages
-
 \subsection{Architektura}
+Architektura VoiceXML je velmi podobná architektuře webových aplikací. U webových aplikací jsou všechny HTML dokumenty uloženy na serveru. Když uživatel potřebuje stáhnout nějaký dokument, tak prostřednictvím svého prohlížeče vyvolá požadavek. Prostřednictvím HTTP protokolu je tento dokument stažen ze serveru a prohlížeč ho může zpracovat. Výsledkem zpracování je zobrazený dokument, se kterým může uživatel pracovat.
 
-\subsection{Interpretry VoiceXML}
-Přehled vybraných interpretrů.
+Ve VoiceXML aplikacích jsou VXML dokumenty také uloženy na webovém serveru. Typicky jsou tyto dokumenty generovány dynamicky aplikačním (webovým) serverem. Vedle aplikačního serveru, může být součástí architektury databázový server, který slouží jako zdroj dat. Mimo aplikační a databázový server, architektura VoiceXML navíc obsahuje hlasový server. Součástí hlasového serveru je interpretr VoiceXML dokumentů, modul pro syntézu řeči (TTS) a modul pro rozeznávání řeči (ASR). Hlasový server zastává roli prohlížeče, který je používán u webových aplikací. Generuje zvukové výzvy a interpretuje hlasové volby od uživatele. Uživatel se k hlasovému serveru poté připojuje prostřednictvím telefonního zařízení. Tímto zařízením může být např. pevná linka, která je součástí veřejné telefonní sítě nebo VoIP telefon, který je připojen do VoIP sítě. Tato zařízení jsou poté prostřednictvím telefonní ústředny připojena k hlasovému serveru. Jednotlivé servery spolu komunikují prostřednictvím protokolu TCP/IP. Pro přenos dat je typicky zvolen HTTP protokol.
+
+Na obrázku \ref{fig:voicexml_architecture} je uvedeno schéma výše popsané architektury\cite{vxml_interpreters}.
+
+\InsertFigure{Figures/vxml_architecture}{0.7\textwidth}{Architektura VoiceXML}{fig:voicexml_architecture}
+
+\subsection{Hlasové platformy VoiceXML}
+V této části si představíme dvě hlasové (IVR) platformy, nad kterými lze provozovat VoiceXML aplikace. U každé platformy uvedu přehled dostupných funkcí, zmíním licenční podmínky, které jsou spojeny s používáním IVR platformy. V neposlední řadě uvedu informaci o podporované verzi VoiceXML.
+
+Hlasový portál, jehož návrh bude popsán v kapitole \ref{sec:Navrh_hlasoveho_portalu}, bude optimalizován pro provoz právě nad těmito hlasovými platformami.
 
 \subsubsection{Voxeo Prophecy}
 \label{sec:Voxeo_interpreter}
-Něco o Voxeu - licence, omezení, výhody (kvalitní TTS, podpora ASR), nevýhody (komerční).
+Voxeo Prophecy je komerční IVR platforma, která poskytuje rychlý vývoj hlasových aplikací. Klíčovou vlastností této platformy je jednoduchá instalace a rychlé uvedení hlasové aplikace do provozu. Součástí distribuce platformy je modul pro syntézu řeči (TTS) a modul sloužící k rozpoznávání řeči (ASR).
 
-\subsubsection{Asterisk + VoiceGlue}
+Platformu je možné integrovat s veřejnou telefonní sítí. Aplikace provozované nad touto platformou mohou být ovládány pomocí DTMF volby nebo pomocí automatického rozpoznávání řeči. Přestože je součástí platformy JBoss server, nad kterým lze provozovat aplikační server, není tato platforma uzavřena vůči dalším technologiím (např. Node.js, Python).
+
+IVR Voxeo Prophecy je možné provozovat na operačních systémech Windows (32 i 64 bitů), OS X a na linuxových distribucích, které jsou založeny na RHEL (např. CentOS). Pro produkční prostředí je však doporučován operační systém založený na linuxu.
+
+Jak již bylo uvedeno, tak je Voxeo Prophecy komerční platformou. Provoz této platformy je velmi limitován licenčními podmínkami. Voxeo Propehcy s podporou dvou souběžných hovorů je možné stáhnout zdarma. Aplikaci lze bez registrace provozovat pouze po dobu jednoho měsíce. Můžeme však u Voxea podstoupit bezplatnou registraci a touto registrací odstranit časové omezení. Aplikaci lze poté provozovat po neomezeně dlouhou dobu, omezení na dva souběžné hovory však stále zůstává. Po registraci máme možnost dokoupit si licenci na provozování více souběžných hovorů (portů) \cite{vxml_org}. Pořízení dalších portů však není levnou záležitostí. Na webu společnosti Voxeo je možné najít aktuální ceník.
+
+Platforma sestává ze čtyř serverů \cite{vxml_interpreters}, jejichž spuštění se děje automaticky po startu systému:
+
+\begin{itemize}
+\item Voxeo Prophecy Server
+\item Voxeo Prophecy VoiceXML Browser
+\item Voxeo Prophecy Management Console
+\item Voxeo Prophecy Application Server
+\end{itemize}
+
+Voxeo Prophecy Serveru je tvořen dvěmi částmi. Jedna část slouží ke zpracování řídících CCXML (značkovací jazyk zabezpečující správu, ovládání a přepojování telefonátů) informací. Druhá část je tvořena MRCP serverem, který slouží ke zpracovávání médií.
+
+Voxeo Prophecy VoiceXML Browser je interpretr, který slouží ke zpracování VoiceXML dokumentů. Tento interpretr plně podporuje specifikaci VoiceXML verze 2.1.
+
+Voxeo Prophecy Management Console představuje rozhraní pro správu hlasových aplikací.
+
+Aplikační server Voxeo Prophecy Application Sever umožňuje provozovat webové aplikace postavené na technologii Java.
+
+Součástí platformy Voxeo Prophecy je dále SIP klient s grafickým rozhraním, který je možné spouštět přímo ve webovém prohlížeči. Prostřednictvím tohoto klienta je možné bez další konfigurace testovat vytvářené aplikace.
+
+Konfigurace hlasových aplikací probíhá prostřednictvím webového rozhraní, jehož jedna stránka je ukázána na obrázku \ref{fig:Voxeo_admin}.
+
+Společnost Voxeo je zároveň provozovatelem domény vxml.org, kde je možné nalézt VoiceXML dokumentaci.
+
+Výhodou této platformy je velmi kvalitní syntetizátor řeči (TTS) a podpora automatického rozpoznávání řeči (ASR). Tyto výhody jsou vykoupeny licenčními podmínkami, které nám dovolují provozovat maximálně dva souběžné hovory.
+
+\subsubsection{VoiceGlue}
 Popis kombinace Asterisku a VoiceGlue - licence, omezení, výhody (opensource), nevýhody (nekvalitní TTS, nepodporuje ASR).
 
 \subsection{Základy VXML}
@@ -307,7 +351,7 @@ Data se mezi klientem a serverovou částí aplikace (RESP API) přenáší ve f
 \subsection{Uživatelské rozhraní}
 Rozhraní aplikace je rozděleno do několika stránek. Po přihlášení do aplikace je zobrazena hlavní stránka se seznamem všech letů \ref{fig:FlightList}. Jednotlivé lety jsou zde zobrazeny v seznamu, který je stránkovatelný a je zde možnost nastavení počtu zobrazených položek na stránce. Každý řádek v seznamu reprezentuje jeden let. U každého letu jsou uvedeny základní informace. Na konci každého řádku se nachází tlačítka sloužící pro vytvoření nebo zrušení rezervace letu. Řádek, který představuje rezervovaný let je graficky odlišen jinou barvou pozadí. Dále je zde k dispozici tlačítko pro zobrazení detailních informací o letu. Pokud je přihlášen uživatel s právy administrátora, tak má možnost informace o letu i upravovat. Poslední tlačítko slouží ke smazání letu z databáze. Toto tlačítko se opět zobrazuje jen v případě, že je přihlášen uživatel s právy administrátora.
 
-\InsertFigure{Figures/web_flight_list}{1\textwidth}{Stránka zobrazující seznamem letů a filtr}{fig:FlightList}
+\InsertSidewaysFigure{Figures/web_flight_list}{1\textwidth}{Stránka zobrazující seznamem letů a filtr}{fig:FlightList}
 
 Nad seznamem letů se nachází formulář pro nastavení vyhledávacích kritérií, dle kterých lze poté seznam letů vyfiltrovat.
 
@@ -315,7 +359,7 @@ V horní části stránky se nachází menu, které je viditelné ze všech str�
 
 Ostatní stránky aplikace mají uživatelské rozhraní uspořádané obdobně. Odkazy z horního menu vždy vedou na stránky se seznamovým zobrazením dané entity (lety, uživatelé, přepravci). Z toho seznamu existuje možnost přechodu na detail konkrétní entity. V závislosti na právech přihlášeného uživatele je zde možné entitu případně editovat. Pro ukázku uvádím ještě obrázek zobrazující formulář pro editaci letu\ref{fig:FlightDetail}.
 
-\InsertFigure{Figures/web_flight_detail}{1\textwidth}{Stránka zobrazující formulář pro editaci letu}{fig:FlightDetail}
+\InsertSidewaysFigure{Figures/web_flight_detail}{1\textwidth}{Stránka zobrazující formulář pro editaci letu}{fig:FlightDetail}
 
 \subsection{Použité technologie}
 \label{sec:Pouzite_technologie}
@@ -394,7 +438,7 @@ Já jsem se při návrhu hlasového portálu zaměřil na cílovou skupinu uživ
 
 Aby bylo možné s hlasovým rozhraním rezervačního systému začít pracovat, je nutné se do něj nejdříve přihlásit. Každý uživatel se prokazuje svým telefonním číslem a číselným heslem. Pokud uživatel zadá špatné telefonní číslo a heslo, tak je mu nabídnuto opakované zadání. V případě, že se uživatel prokáže správným telefonním číslem, ale špatným heslem a toto zadání provede třikrát za sebou špatně, tak dojde k dočasnému zablokování toho účtu. V tomto případě je uživateli sdělena informace o tom, kdy se může zkusit znovu přihlásit.
 
-\InsertFigure{Figures/diagrams/mainflow}{1\textwidth}{Diagram popisující hlavní strukturu hlasového portálu}{fig:MainFlow}
+\InsertSidewaysFigure{Figures/diagrams/mainflow}{1\textwidth}{Diagram popisující hlavní strukturu hlasového portálu}{fig:MainFlow}
 
 V případě úspěšného přihlášení do systému, je uživateli přehrána uvítací zpráva a následně je uživatel přesměrován do hlavního menu aplikace, kde má k dispozici akce pro správu a vytváření rezervací (seznam akcí je uveden v textu kapitoly \ref{sec:Navrh_hlasoveho_portalu}). Jednotlivá menu aplikace jsou navržena tak, aby měl uživatel kdykoliv možnost vrátit se o úroveň zpět. Na obrázku \ref{fig:MainFlow} je zobrazena hlavní struktura hlasového portálu. Struktura aplikace je na obrázku popsána formou stavového diagramu. Obdélníky reprezentují jednotlivé stavy aplikace. Některé stavy jsou pro svoji komplexnost zobrazeny pouze abstraktně. U abstraktních stavů je vždy uvedena informace, která slouží jako jakýsi odkaz na další diagram, který daný stav popisuje detailněji. Jako příklad můžu uvést stav pojmenovaný $getLoginData$. U tohoto stavu je ve dvojitých úhlových závorkách uvedena informace $<<GetLoginDataFlow>>$. Tato informace nám říká, že stav $getLoginData$ obsahuje další vnořené stavy. Tyto stavy jsou v aplikaci implementovány třídou $GetLoginDataFlow$. K této třídě existuje diagram, který popisuje vnitřní uspořádání těchto stavů a přechody mezi nimi. Pro ukázku uvádím ještě diagram této třídy na obrázku \ref{fig:GetLoginDataFlow}.
 
@@ -915,7 +959,7 @@ Zda jsou služby spuštěny můžeme ověřit spuštěním příkazu \texttt{./p
 
 \subsubsection{Konfigurace}
 
-\InsertFigure{Figures/Voxeo_admin}{1\textwidth}{Registrace nové VXML aplikace}{fig:Voxeo_admin}
+\InsertSidewaysFigure{Figures/Voxeo_admin}{0.9\textwidth}{Registrace nové VXML aplikace}{fig:Voxeo_admin}
 
 Nyní můžeme přistoupit ke konfiguraci hlasového portálu. Součástí IVR Voxeo Prophecy je webové konfigurační rozhraní pomocí kterého konfiguraci provedeme.
 
