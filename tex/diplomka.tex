@@ -159,38 +159,22 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 \label{sec:Uvod}
 Tady bude super úvod.
 
-\section{Seznámení s problematikou VoiceXML}
-\label{sec:Seznameni_s_vxml}
-Něco o standardu VXML.
+\section{VoiceXML}
+\label{sec:VoiceXML}
+VoiceXML je značkovací jazyk založený na značkovacím jazyku XML. Tento jazyk slouží k popisu interaktivních dialogů mezi člověkem a počítačem.
 
-\subsection{Vývoj standardu}
-Něco z historie.
+Vývoj tohoto jazyka začal v roce 1999. V tomto roce založily společnosti Motorola, IBM, AT\&T a Lucent organizaci VoiceXML Forum. Tato organizace vznikla za účelem sjednocení proprietárních řešení těchto firem a výsledkem tohoto snažení vznikl standard VoiceXML. V srpnu roku 1999 organizace VoiceXML Forum uvolnila první specifikaci standardu VoiceXML 0.9. Na jaře roku 2000 následovalo zveřejnění verze 1.0 \cite{vxmldevguide}.
 
-\subsubsection{Verze 1.0}
-Popis verze 1.
+Po vydání verze 1.0 došlo k předání standardu konsorciu W3C. Konzorcium W3C poté vydalo v březnu 2004 verzi standardu VoiceXML 2.0 a po získání zpětné vazby od partnerů došlo k vydání rozšíření standardu prostřednictvím verze VoiceXML 2.1. Toto rozšíření je zpětně kompatibilní s verzí 2.0.
 
-\subsubsection{Verze 2.0 a 2.1}
-Popis verze 2.0 a 2.1.
+Organizace VoiceXML Forum po předání standardu VoiceXML konzorciu W3C nezanikla a stále podporuje vývoj standardu.
 
-\subsubsection{Budoucnost VXML}
-Popis draftu 3.0.
+\subsection{Historie hlasových značkovacích jazyků}
+Voice Markup Languages
 
-\subsection{Základy VXML}
-\label{sec:Zaklady_vxml}
-Základní info.
+\subsection{Architektura}
 
-Vestavěné gramatiky
-
-\subsubsection{Struktura VXML dokumentu}
-Popis typické struktury VXML dokumentu. Členění aplikace do formu. Komunikace se serverem. (form, field)
-
-\subsubsection{Uživatelský vstup}
-Jak funguje zpracování vstupu od uřivatele. Popis gramatik a tagu, ktere se vztahuji ke sberu vstupu.
-
-\subsubsection{Uživatelský výstup}
-Popis možností generování výstupů pro uživatele. Tagy.
-
-\subsection{Interpretry VXML}
+\subsection{Interpretry VoiceXML}
 Přehled vybraných interpretrů.
 
 \subsubsection{Voxeo Prophecy}
@@ -199,6 +183,11 @@ Něco o Voxeu - licence, omezení, výhody (kvalitní TTS, podpora ASR), nevýho
 
 \subsubsection{Asterisk + VoiceGlue}
 Popis kombinace Asterisku a VoiceGlue - licence, omezení, výhody (opensource), nevýhody (nekvalitní TTS, nepodporuje ASR).
+
+\subsection{Základy VXML}
+\label{sec:Zaklady_vxml}
+Popis typické struktury VXML dokumentu. Členění aplikace do formu. Komunikace se serverem. (form, field)
+Vestavěné gramatiky
 
 \section{Technologie Text to Speech}
 \label{sec:TTS}
@@ -409,7 +398,7 @@ Aby bylo možné s hlasovým rozhraním rezervačního systému začít pracovat
 
 V případě úspěšného přihlášení do systému, je uživateli přehrána uvítací zpráva a následně je uživatel přesměrován do hlavního menu aplikace, kde má k dispozici akce pro správu a vytváření rezervací (seznam akcí je uveden v textu kapitoly \ref{sec:Navrh_hlasoveho_portalu}). Jednotlivá menu aplikace jsou navržena tak, aby měl uživatel kdykoliv možnost vrátit se o úroveň zpět. Na obrázku \ref{fig:MainFlow} je zobrazena hlavní struktura hlasového portálu. Struktura aplikace je na obrázku popsána formou stavového diagramu. Obdélníky reprezentují jednotlivé stavy aplikace. Některé stavy jsou pro svoji komplexnost zobrazeny pouze abstraktně. U abstraktních stavů je vždy uvedena informace, která slouží jako jakýsi odkaz na další diagram, který daný stav popisuje detailněji. Jako příklad můžu uvést stav pojmenovaný $getLoginData$. U tohoto stavu je ve dvojitých úhlových závorkách uvedena informace $<<GetLoginDataFlow>>$. Tato informace nám říká, že stav $getLoginData$ obsahuje další vnořené stavy. Tyto stavy jsou v aplikaci implementovány třídou $GetLoginDataFlow$. K této třídě existuje diagram, který popisuje vnitřní uspořádání těchto stavů a přechody mezi nimi. Pro ukázku uvádím ještě diagram této třídy na obrázku \ref{fig:GetLoginDataFlow}.
 
-\InsertFigure{Figures/diagrams/getlogindataflow}{0.8\textwidth}{Diagram popisující vnitřní stavy stavu $getLoginData$ (GetLoginDataFlow)}{fig:GetLoginDataFlow}
+\InsertFigure{Figures/diagrams/getlogindataflow}{0.8\textwidth}{Diagram popisující vnitřní stavy stavu $getLoginData$}{fig:GetLoginDataFlow}
 
 Pomocí šipek jsou v diagramu popsány přechody mezi jednotlivými stavy. U každého přechodu se dále nachází informace identifikující daný přechod. Součástí této informace může být i doplňující informace o DTMF volbě, která slouží jako parametr tohoto přechodu a bývá uvedena v hranatých závorkách.
 
@@ -778,7 +767,7 @@ V případě, že došlo k zadání validního data, provede se přechod ze stav
 
 Komponenta implementuje veřejnou metodu \texttt{getDate}. Tato metoda vrací prostřednictvím návratové hodnoty zadané datum. Metoda je typicky volána v rámci akce \texttt{onExitAction} definované na stavu, jehož je komponenta součástí.
 
-\InsertFigure{Figures/diagrams/getdatedtmfflow}{0.8\textwidth}{Struktura komponenty pro zadání data (GetDateDtmfFlow)}{fig:GetDateDtmfFlow}
+\InsertFigure{Figures/diagrams/getdatedtmfflow}{0.8\textwidth}{Struktura komponenty pro zadání data}{fig:GetDateDtmfFlow}
 
 \paragraph{Komponenta pro zadání textového vstupu}
 \label{sec:GetTextInputDtmfFlow}
@@ -829,7 +818,7 @@ Třída \texttt{GetTextInputDtmfFlow} implementující tuto komponentu vystavuje
 
 Tato komponenta typicky bývá součástí jiné komplexnější komponenty. Jedna taková komponenta je popsána v následujícím textu.
 
-\InsertFigure{Figures/diagrams/gettextinputdtmfflow}{0.35\textwidth}{Struktura komponenty pro zadání textového vstupu (GetTextInputDtmfFlow)}{fig:GetTextInputDtmfFlow}
+\InsertFigure{Figures/diagrams/gettextinputdtmfflow}{0.35\textwidth}{Struktura komponenty pro zadání textového vstupu}{fig:GetTextInputDtmfFlow}
 
 \paragraph{Komponenta pro zvolení destinace letu}
 Struktura této komponenty je znázorněna v diagrumu \ref{fig:GetDestinationFlow}. Komponenta je implementována třídou \texttt{GetDestinationFlow}.
@@ -856,9 +845,9 @@ Stav $selection$ uživatele informuje o zvolené destinaci. Následuje přechod 
 
 Komponenta implementuje metodu \texttt{getSelectedDestination}, která slouží k získání zvolené destinace. Tato metoda je typicky volána v rámci akce \texttt{onExitAction} definované na stavu, jehož je komponenta součástí.
 
-\InsertFigure{Figures/diagrams/getdestinationflow}{1\textwidth}{Struktura komponenty pro zvolení destinace (GetDestinationFlow)}{fig:GetDestinationFlow}
+\InsertFigure{Figures/diagrams/getdestinationflow}{1\textwidth}{Struktura komponenty pro zvolení destinace}{fig:GetDestinationFlow}
 
-\InsertFigure{Figures/diagrams/destinationselectionflow}{1\textwidth}{Vnitřní struktura stavu $destinationSelection$ komponenty pro zvolení destinace (DestinationSelectionFlow)}{fig:DestinationSelectionFlow}
+\InsertFigure{Figures/diagrams/destinationselectionflow}{1\textwidth}{Vnitřní struktura stavu $destinationSelection$ komponenty pro zvolení destinace}{fig:DestinationSelectionFlow}
 
 \section{Konfigurace a zprovoznění hlasového portálu}
 V této kapitole popíši kroky vedoucí k úspěšné konfiguraci a zprovoznění hlasového portálu na IVR platformách Voxeo Prophecy a VoiceGlue.
@@ -1185,8 +1174,8 @@ Konfigurace tohoto, nejméně náročného, zátěžového testu spočívala v u
 
 Na obrázku \ref{fig:Benchmark_CPU_5_5} je zobrazen graf zachycující využitím procesoru při této konfiguraci. Na obrázku \ref{fig:Benchmark_RAM_5_5} je vyobrazeno využití paměti RAM.
 
-\InsertSidewaysFigure{Figures/benchmark_charts/cpu_5_5}{1\textwidth}{Využití CPU při spuštění 5 souběžných hovorů (celkově 5 hovorů)}{fig:Benchmark_CPU_5_5}
-\InsertSidewaysFigure{Figures/benchmark_charts/ram_5_5}{1\textwidth}{Využití paměti RAM při spuštění 5 souběžných hovorů (celkově 5 hovorů)}{fig:Benchmark_RAM_5_5}
+\InsertSidewaysFigure{Figures/benchmark_charts/cpu_5_5}{1\textwidth}{Využití CPU při spuštění 5 souběžných hovorů, celkově 5 hovorů}{fig:Benchmark_CPU_5_5}
+\InsertSidewaysFigure{Figures/benchmark_charts/ram_5_5}{1\textwidth}{Využití paměti RAM při spuštění 5 souběžných hovorů, celkově 5 hovorů}{fig:Benchmark_RAM_5_5}
 
 Z grafu vytíženosti procesoru je patrné, že celkové vytížení systému je maximální jen v určitých časových periodách, které nemají dlouhého trvání. Největší podíl na vytíženosti má proces $node$, který představuje aplikační server. Procesy, které v testu zastupují hlasovou platformu, mají téměř konstantní podíl využití. Nejvíce vytíženým procesem hlasové platformy je proces $asterisk$, tedy hlasová ústředna.
 
@@ -1195,8 +1184,8 @@ Vytíženost paměti RAM nám prozrazuje, že téměř všechny procesy mají ko
 \subsubsection{Zátěžový test č. 2}
 Konfigurace tohoto zátěžového testu spočívala v uskutečnění celkového počtu 20 hovorů. V tomto případě bylo souběžně obsluhováno vždy 10 hovorů. Celková doba trvání této varianty testu tedy zabrala dvojnásobný čas.
 
-\InsertSidewaysFigure{Figures/benchmark_charts/cpu_20_10}{1\textwidth}{Využití CPU při spuštění 10 souběžných hovorů (celkově 20 hovorů)}{fig:Benchmark_CPU_20_10}
-\InsertSidewaysFigure{Figures/benchmark_charts/ram_20_10}{1\textwidth}{Využití paměti RAM při spuštění 10 souběžných hovorů (celkově 20 hovorů)}{fig:Benchmark_RAM_20_10}
+\InsertSidewaysFigure{Figures/benchmark_charts/cpu_20_10}{1\textwidth}{Využití CPU při spuštění 10 souběžných hovorů, celkově 20 hovorů}{fig:Benchmark_CPU_20_10}
+\InsertSidewaysFigure{Figures/benchmark_charts/ram_20_10}{1\textwidth}{Využití paměti RAM při spuštění 10 souběžných hovorů, celkově 20 hovorů}{fig:Benchmark_RAM_20_10}
 
 Tento typ testu nám může odhalit případné problémy s uvolňováním zdrojů mezi zpracováním jednotlivých "dávek" hovorů. Z grafů \ref{fig:Benchmark_CPU_20_10} a \ref{fig:Benchmark_RAM_20_10} však není žádná kumulace využití zdrojů patrná. Můžeme tedy usoudit, že zdroje jsou vždy správně uvolňovány.
 
@@ -1211,8 +1200,8 @@ Využití procesoru (\ref{fig:Benchmark_CPU_60_60}) je u této varianty testu t�
 
 Využití paměti RAM, které můžeme vidět v grafu na obrázku \ref{fig:Benchmark_RAM_60_60}, opět ukazuje mírné zvýšení nároků na paměť u procesu $voiceglue$. U ostatních procesů není patrná žádná výrazná změna oproti výsledkům z předchozího testu.
 
-\InsertSidewaysFigure{Figures/benchmark_charts/cpu_60_60}{1\textwidth}{Využití CPU při spuštění 60 souběžných hovorů (celkově 60 hovorů)}{fig:Benchmark_CPU_60_60}
-\InsertSidewaysFigure{Figures/benchmark_charts/ram_60_60}{1\textwidth}{Využití paměti RAM při spuštění 60 souběžných hovorů (celkově 60 hovorů)}{fig:Benchmark_RAM_60_60}
+\InsertSidewaysFigure{Figures/benchmark_charts/cpu_60_60}{1\textwidth}{Využití CPU při spuštění 60 souběžných hovorů, celkově 60 hovorů}{fig:Benchmark_CPU_60_60}
+\InsertSidewaysFigure{Figures/benchmark_charts/ram_60_60}{1\textwidth}{Využití paměti RAM při spuštění 60 souběžných hovorů, celkově 60 hovorů}{fig:Benchmark_RAM_60_60}
 
 \subsubsection{Obecné zhodnocení}
 Výsledky jednotlivých variant zátěžových testů můžeme obecně shrnout následovně.
@@ -1234,6 +1223,9 @@ Ondřej Ždych
 
 \bibitem{vxmldevguide} Shukla, Charul; Dass, Avnish; Gupta, Vikas,
 \textit{VoiceXML 2.0 Developer's Guide : Building Professional Voice-enabled Applications with JSP, ASP & Coldfusion}, Dream Tech Software India Inc., 2002.
+
+\bibitem{vxml_interpreters} Peter Trilec,
+\textit{Porovnání volně dostupných VoiceXML interpreterů, bakalářská práce}, Masarykova univerzita, 2008.
 
 \bibitem{angulardocs} Google,
 \textit{Dokumentace k frameworku AngularJS}, http://docs.angularjs.org.

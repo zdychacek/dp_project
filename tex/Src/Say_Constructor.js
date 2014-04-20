@@ -2,7 +2,7 @@ var simpleSay = new Say('This is message.');
 
 var sayWithSettings = new Say({
 	prompt: 'This is message.',
-	// OR
+	// nebo
 	prompt: new Prompt({
 		text: 'This is message.',
 		bargein: false
