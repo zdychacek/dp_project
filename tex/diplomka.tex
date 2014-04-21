@@ -181,7 +181,7 @@ Architektura VoiceXML je velmi podobná architektuře webových aplikací. U web
 
 Ve VoiceXML aplikacích jsou VXML dokumenty také uloženy na webovém serveru. Typicky jsou tyto dokumenty generovány dynamicky aplikačním (webovým) serverem. Vedle aplikačního serveru, může být součástí architektury databázový server, který slouží jako zdroj dat. Mimo aplikační a databázový server, architektura VoiceXML navíc obsahuje hlasový server. Součástí hlasového serveru je interpretr VoiceXML dokumentů, modul pro syntézu řeči (TTS) a modul pro rozeznávání řeči (ASR). Hlasový server zastává roli prohlížeče, který je používán u webových aplikací. Generuje zvukové výzvy a interpretuje hlasové volby od uživatele. Uživatel se k hlasovému serveru poté připojuje prostřednictvím telefonního zařízení. Tímto zařízením může být např. pevná linka, která je součástí veřejné telefonní sítě nebo VoIP telefon, který je připojen do VoIP sítě. Tato zařízení jsou poté prostřednictvím telefonní ústředny připojena k hlasovému serveru. Jednotlivé servery spolu komunikují prostřednictvím protokolu TCP/IP. Pro přenos dat je typicky zvolen HTTP protokol.
 
-Na obrázku \ref{fig:voicexml_architecture} je uvedeno schéma výše popsané architektury \cite{vxml_interpreters}.
+Na obrázku \ref{fig:voicexml_architecture} je uvedeno schéma výše popsané architektury \cite{vxml_rychlokurz}.
 
 \InsertFigure{Figures/vxml_architecture}{0.7\textwidth}{Architektura VoiceXML}{fig:voicexml_architecture}
 
@@ -270,12 +270,105 @@ Rozhraní pro telefonii je tvořeno dalšími třemi částmi. První část je 
 
 Uvedení této hlasové platformy do provozu není tak jednoduché jako v případě platformy Voxeo Prophecy. Nejdřív je potřeba nakonfigurovat samotný Asterisk a poté doinstalovat a nakonfigurovat rozšíření VoiceGlue. Podrobněji je tento proces popsán v kapitole \ref{sec:voiceglue_conf}.
 
-Mezi hlavní výhody VoiceGlue je otevřenost zdrojového kódu, resp. licence pod kterou je VoiceGlue uvolněno. Na druhou stranu má toto řešení zatím dost nevýhod. Jako hlavní nevýhody lze uvést absenci modulu pro rozpoznávání řeči, nekvalitní syntetizátor řeči a chybějící podpora specifikace VoiceXML verze 2.1. Vzhledem k tomu, že poslední aktivita okolo tohoto projektu byla veřejně zaznamenaná koncem roku 2011, nemůžeme s určitostí v blízké době počítat s implementací těchto chybějících vlastností.
+Mezi hlavní výhody VoiceGlue je otevřenost zdrojového kódu, resp. licence pod kterou je VoiceGlue uvolněno. Na druhou stranu má toto řešení zatím dost nevýhod. Jako hlavní nevýhody lze uvést absenci modulu pro rozpoznávání řeči, nekvalitní syntetizátor řeči a chybějící podpora specifikace VoiceXML verze 2.1. Vzhledem k tomu, že poslední aktivita autorů VoiceGlue byla na jejich webu zaznamenaná koncem roku 2011, nemůžeme s určitostí v blízké době počítat s implementací těchto chybějících vlastností.
 
-\subsection{Základy VXML}
+\subsection{VoiceXML dokument}
 \label{sec:Zaklady_vxml}
-Popis typické struktury VXML dokumentu. Členění aplikace do formu. Komunikace se serverem. (form, field)
-Vestavěné gramatiky
+Jazyk VoiceXML vychází ze značkovacího jazyka XML a proto pro něj platí veškerá pravidla spojená s jazykem XML. Každý VoiceXML dokument musí splňovat následující pravidla \cite{xml_wiki}:
+
+\begin{itemize}
+\item obsahuje právě jeden kořenový element
+\item neprázdné elementy musí být ohraničeny startovací a ukončovací značkou
+\item všechny hodnoty atributů musí být uzavřeny v uvozovkách
+\item elementy mohou být vnořeny, ale nemohou se překrývat
+\end{itemize}
+
+\InsertFigure{Figures/vxml_document_structure}{0.8\textwidth}{Stromová struktura dokumentu VoiceXML}{fig:vxml_document_structure}
+
+Ve výpise \ref{src:vxml_sample} je uvedena ukázka jednoduchého VoiceXML dokumentu. Jednotlivé elementy dokumentu tvoří stromovou strukturu. Struktura tohoto VoiceXML dokumentu je zachycena na obrázku \ref{fig:vxml_document_structure}.
+
+VoiceXML dokument bývá typicky členěn do několika dialogů a subdialogů. Jednotlivé dialogy obsahují informace, jakým způsobem mají být zpracovány. Každý dialog může zároveň obsahovat informaci o tom, kam se má po zpracování aktuálního dialogu pokračovat.
+
+Subdialogy lze chápat jako pomocné funkce, které jsou volány z rodičovského dialogu a mohou provést nějakou akci a poté vrátit výsledek zpět rodičovskému dialogu.
+
+Dialogy můžeme ve VoiceXML rozdělit na dva typy. Prvním typem jsou formuláře. Formuláře popisují interakci vedoucí k získání uživatelského vstupu a pomocí gramatik definují přípustné hodnoty pro vstup. Druhým typem jsou menu. Menu dávají uživateli na výběr ze seznamu voleb a po provedení výběru provedou určenou akci.
+
+\lstinputlisting[language=XML,label=src:vxml_sample,caption={VoiceXML dokument}]{Vxml/vxml_sample.vxml}
+
+\subsubsection{Zpracování VoiceXML dokumentu}
+\label{sec:Zpracovani_vxml_dokumentu}
+VoiceXML dokument je zpracováván interpretrem. Zpracování dokumentu začíná u kořenového elementu a postupně se pokračuje k dceřiným elementům. Nyní se vraťme k výpisu \ref{src:vxml_sample} v němž je uveden zdrojový kód jednoduchého VoiceXML dokumentu.
+
+Na prvním řádku můžeme vidět definici verze XML dokumentu. Na dalším řádku specifikujeme verzi VoiceXML dokumentu. Touto informací sdělujeme interpretru verzi standardu VoiceXML, dle které se bude dokument zpracovávat.
+
+Uvnitř elementu \texttt{<vxml>} je obsažen kód popisující chování hlasové aplikace. Na třetím řádku definujeme pomocí elementu \texttt{<var>} proměnnou a zároveň jí nastavujeme hodnotu.
+
+Následuje definice dvou dialogů. První dialog uživateli přehraje zprávu uloženou v proměnné, kterou jsme definovali na třetím řádku. Následně přechází zpracování dokumentu do dialogu s identifikátorem "dialog2". Tento přechod zajišťuje element \texttt{<goto>}. Nastavením hodnoty atributu \texttt{next} elementu lze specifikovat identifikátor dialogu, do kterého se má přejít. Druhý dialog uživateli následně přehraje definovanou zprávu.
+
+Zpracování tohoto dokumentu je možné rozdělit do následujících kroků \cite{vxmldevguide}:
+
+\begin{enumerate}
+\item Dokument je nahrán do paměti.
+\item Je provedena kontrola, zda je dokument validním XML dokumentem.
+\item Provede se inicializace proměnných (pokud jsou v dokumentu nějaké definované).
+\item Provede se načtení prvního dialogu a je spuštěn obsah elementu \texttt{<block>}. Zpracováním elementu \texttt{<goto>} dochází k přechodu do dalšího dialogu.
+\item Z paměti je uvolněn první dialog, následně dochází k načtení druhého dialogu. Poté jsou provedeny akce definované uvnitř tohoto dialogu.
+\item Druhý dialog je uvolněn z paměti a zpracování VoiceXML je ukončeno.
+\end{enumerate}
+
+\subsection{Základy jazyka VoiceXML}
+V následující sekci stručně popíši postupy, kterých bývá užito při návrhu hlasových dialogů pomocí jazyka VoiceXML.
+
+\subsubsection{Navigace v hlasové aplikaci}
+VoiceXML nám poskytuje několik elementů, pomocí kterých lze jednoduše navrhovat navigační prvky mezi jednotlivými částmi aplikace. My si zde blíže představíme pouze element \texttt{<menu>}.
+
+Tento element umožňuje jednoduchým způsobem sestavit interaktivní menu, ve kterém může uživatel provést volbu. Na základě jeho volby dochází k přesunu do jiné části aplikace. Ve výpise \ref{src:vxml_menu} je uveden zdrojový kód \cite{vxml_org}, který demonstruje vytvoření navigačního menu pomocí elementu \texttt{<menu>}.
+
+\lstinputlisting[language=XML,label=src:vxml_menu,caption={Vytvoření menu pomocí elementu \texttt{<menu>}}]{Vxml/vxml_menu.vxml}
+
+Jednotlivé položky menu jsou definovány pomocí elementu \texttt{<choice>}, přičemž hodnotou atributu \texttt{next} specifikujeme do jakého dialogu se má, v případě výběru této položky, přejít.
+
+Můžeme si všimnout, že element \texttt{<menu>} dále obsahuje element \texttt{<nomatch>}. Tímto elementem je možné specifikovat akci, která se provede v případě, že uživatel provede nedefinovanou volbu. V našem případě je tato situace obsloužena zopakováním položek menu (element \texttt{<reprompt/>}). Na základě výběru dochází k přesunu do dialogu "reservations" nebo "account", kde je aplikace následně ukončena.
+
+\subsubsection{Získání vstupu od uživatele}
+Jazyk VoiceXML nám pro získání uživatelského vstupu poskytuje podobné prostředky jako jazyk HTML. Máme k dispozici elementy, prostřednictvím kterých jsme schopni nadefinovat formulářové prvky. Do těchto prvků je uložen vstup od uživatele a následně odeslán ke zpracování na server např. prostřednictvím elementu \texttt{<submit>}. Elementy pro definici formulářových prvků jsou, stejně jako element \texttt{<submit/>}, obsaženy uvnitř elementu \texttt{<form>}. Zpracováním elementu \texttt{<submit>} dochází k odeslání všech formulářových prvků, které jsou ve formuláři obsaženy.
+
+Formulářové prvky se definují pomocí elementu \texttt{<field>}. Datový typ formulářového prvku je specifikován prostřednictvím hodnoty atributu \texttt{type}. V tabulce \ref{tab:form_fields_datatypes} je uveden výběr hodnot, které se dají použít \cite{vxml_org}.
+
+\begin{table}
+	\centering
+	\begin{tabular}{|l|l|}
+		\hline
+		Datový typ & Popis \\
+		\hline
+		boolean & Hodnota pravda/nepravda  \\
+		\hline
+		date & Datum zadaný ve formátu $yyyymmdd$ (např.20140421)   \\
+		\hline
+		digits & Číselná hodnota (např. 123)  \\
+		\hline
+		currency & Datový pro načtení měny  \\
+		\hline
+		phone & Telefonní čísla (závislé na hlasové platformě a systémovém nastavení)  \\
+		\hline
+	\end{tabular}
+	\caption{Hodnoty sloužící k určení datového typu formulářových prvků}
+	\label{tab:form_fields_datatypes}
+\end{table}
+
+Ve výpise \ref{src:vxml_field} je uveden zdrojový kód aplikace, která vytváří tři formulářové prvky. Tyto formulářové prvky jsou uživatelem vyplněny a následně jsou vyplněné informace odeslány ke zpracování na server. Můžeme si všimnout, že každý formulářový prvek je různého datového typu.
+
+Formulář dále obsahuje element \texttt{<filled>}. Tento element specifikuje akci, která se provede v momentě, kdy jsou všechny prvky formuláře vyplněny. Naší akcí je odeslání získaných dat na server. Odeslání dat zajišťuje element \texttt{<submit/>}. U tohoto elementu je třeba uvést hodnotu atributů \texttt{next} a \texttt{namelist}. Hodnotou atributu \texttt{next} specifikujeme URL adresu, na kterou se data odešlou. Hodnotou atributu \texttt{namelist} je seznam názvů formulářových prvků oddělených mezerou, jejichž hodnoty se odešlou.
+
+\lstinputlisting[language=XML,label=src:vxml_field,caption={Vytvoření formuláře pro získání uživatelské vstupu}]{Vxml/vxml_field.vxml}
+
+Hodnoty, které je možné do formulářového prvku zadat, je možné specifikovat ještě jedním způsobem. VoiceXML nám prostřednictvím elementu \texttt{<grammar>} poskytuje možnost nadefinovat si gramatiku, která definuje přípustné hodnoty pro vstup.
+
+Z pohledu použité vstupní metody můžeme gramatiky rozdělit na gramatiky, které definují přípustnou DTMF volbu, nebo na gramatiky, které definují přípustné hodnoty pro systém automatického rozpoznávání řeči (ASR). Takovou gramatiku je možné specifikovat pro daný element \texttt{<field>} nebo pro celý formulář \texttt{<form>}.
+
+Ve standardu VoiceXML 2.0 bývá gramatika nejčastěji popsána XML jazykem. Ve výpise \ref{src:vxml_grammar_sample} je uveden zdrojový kód dialogu, prostřednictvím kterého je uživatel vyzván k vyřčení oblíbené barvy. V této ukázce je ukázána pouze základní práce s gramatikou.
+
+\lstinputlisting[language=XML,label=src:vxml_grammar_sample,caption={Definice přípustných hodnot uživatelského vstupu pomocí gramatiky}]{Vxml/vxml_grammar_sample.vxml}
 
 \section{Technologie Text to Speech}
 \label{sec:TTS}
@@ -1326,6 +1419,12 @@ Ondřej Ždych
 
 \bibitem{voiceglue_architecture}
 \textit{Architektura VoiceGlue}, https://github.com/voiceglue/voiceglue/wiki/Features-and-Architecture.
+
+\bibitem{xml_wiki}
+\textit{Extensible Markup Language}, http://cs.wikipedia.org/wiki/Extensible\_Markup\_Language.
+
+\bibitem{vxml_rychlokurz} Katedra telekomunikační techniky, ČVUT Praha,
+\textit{Sítě integrovaných služeb}, http://www.comtel.cz/files/download.php?id=5459‎.
 
 \bibitem{angulardocs} Google,
 \textit{Dokumentace k frameworku AngularJS}, http://docs.angularjs.org.

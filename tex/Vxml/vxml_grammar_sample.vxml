@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<vxml version="2.0">
+	<form>
+		<field name="colour">
+			<prompt>
+				What is your favorite colour?
+			</prompt>
+
+			<grammar>
+				<rule id="root" scope="public">
+					<one-of>
+						<item tag="red">red</item>
+						<item tag="blue">blue</item>
+						<item tag="green">green</item>
+					</one-of>
+				</rule>
+			</grammar>
+
+			<nomatch>
+				Sorry you have selected a wrong colour.
+				<reprompt/>
+			</nomatch>
+
+			<noinput>
+				I did not hear anything.
+				<reprompt/>
+			</noinput>
+		</field>
+
+		<filled>
+			Your favourte color is:
+			<value expr="colour"/>
+		</filled>
+	</form>
+</vxml>

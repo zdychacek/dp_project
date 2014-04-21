@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<vxml version="2.0">
+	<var name="msg" expr="'Hello world!'"/>
+
+	<form id="dialog1">
+		<block>
+			<prompt>
+				<value expr="msg"/>
+			</prompt>
+
+			<goto next="#dialog2"/>
+		</block>
+	</form>
+
+	<form id="dialog2">
+		<block>
+			Second dialog.
+		</block>
+	</form>
+</vxml>

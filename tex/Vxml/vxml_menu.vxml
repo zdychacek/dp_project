@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<vxml version="2.0">
+	<menu scope="dialog">
+		<prompt>
+			Please select one of the following options: reservations info or account info.
+		</prompt>
+
+		<choice next="#reservations">
+			reservations info
+		</choice>
+		<choice next="#account">
+			account info
+		</choice>
+
+		<nomatch>
+			<reprompt/>
+		</nomatch>
+	</menu>
+
+	<form id="reservations">
+		<block>
+			Reservations info dialog.
+			<exit/>
+		</block>
+	</form>
+
+	<form id="account">
+		<block>
+			Account info dialog.
+			<exit/>
+		</block>
+	</form>
+</vxml>

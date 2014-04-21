@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<vxml version="2.0">
+	<form>
+		<field name="age" type="number">
+			<prompt>
+				How old are you?
+			</prompt>
+		</field>
+
+		<field name="telephone" type="phone">
+			<prompt>
+				What is your telephone number?
+			</prompt>
+		</field>
+
+		<field name="birthday" type="date">
+			<prompt>
+				When is your birthday?
+			</prompt>
+		</field>
+
+		<filled>
+			<submit next="http://www.mujserver.cz/save-data" namelist="age telephone birthday" />
+		</filled>
+	</form>
+</vxml>
