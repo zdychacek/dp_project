@@ -168,9 +168,9 @@ Tady bude super úvod.
 
 \section{VoiceXML}
 \label{sec:VoiceXML}
-VoiceXML je značkovací jazyk založený na značkovacím jazyku XML. Tento jazyk slouží k popisu interaktivních dialogů mezi člověkem a počítačem.
+VoiceXML je značkovací jazyk založený na jazyku XML. Tento jazyk slouží k popisu hlasových dialogů mezi člověkem a počítačem.
 
-Vývoj tohoto jazyka začal v roce 1999. V tomto roce založily společnosti Motorola, IBM, AT\&T a Lucent organizaci VoiceXML Forum. Tato organizace vznikla za účelem sjednocení proprietárních řešení těchto firem a výsledkem tohoto snažení vznikl standard VoiceXML. V srpnu roku 1999 organizace VoiceXML Forum uvolnila první specifikaci standardu VoiceXML 0.9. Na jaře roku 2000 následovalo zveřejnění verze 1.0 \cite{vxmldevguide}.
+Vývoj jazyka začal v roce 1999. V tomto roce založily společnosti Motorola, IBM, AT\&T a Lucent organizaci VoiceXML Forum. Tato organizace vznikla za účelem sjednocení proprietárních řešení těchto firem a výsledkem tohoto snažení vznikl standard VoiceXML. V srpnu roku 1999 organizace VoiceXML Forum uvolnila první specifikaci standardu VoiceXML 0.9. Na jaře roku 2000 následovalo zveřejnění verze 1.0 \cite{vxmldevguide}.
 
 Po vydání verze 1.0 došlo k předání standardu konsorciu W3C. Konzorcium W3C poté vydalo v březnu 2004 verzi standardu VoiceXML 2.0 a po získání zpětné vazby od partnerů došlo k vydání rozšíření standardu prostřednictvím verze VoiceXML 2.1. Toto rozšíření je zpětně kompatibilní s verzí 2.0.
 
@@ -179,7 +179,11 @@ Organizace VoiceXML Forum po předání standardu VoiceXML konzorciu W3C nezanik
 \subsection{Architektura}
 Architektura VoiceXML je velmi podobná architektuře webových aplikací. U webových aplikací jsou všechny HTML dokumenty uloženy na serveru. Když uživatel potřebuje stáhnout nějaký dokument, tak prostřednictvím svého prohlížeče vyvolá požadavek. Prostřednictvím HTTP protokolu je tento dokument stažen ze serveru a prohlížeč ho může zpracovat. Výsledkem zpracování je zobrazený dokument, se kterým může uživatel pracovat.
 
-Ve VoiceXML aplikacích jsou VXML dokumenty také uloženy na webovém serveru. Typicky jsou tyto dokumenty generovány dynamicky aplikačním (webovým) serverem. Vedle aplikačního serveru, může být součástí architektury databázový server, který slouží jako zdroj dat. Mimo aplikační a databázový server, architektura VoiceXML navíc obsahuje hlasový server. Součástí hlasového serveru je interpretr VoiceXML dokumentů, modul pro syntézu řeči (TTS) a modul pro rozeznávání řeči (ASR). Hlasový server zastává roli prohlížeče, který je používán u webových aplikací. Generuje zvukové výzvy a interpretuje hlasové volby od uživatele. Uživatel se k hlasovému serveru poté připojuje prostřednictvím telefonního zařízení. Tímto zařízením může být např. pevná linka, která je součástí veřejné telefonní sítě nebo VoIP telefon, který je připojen do VoIP sítě. Tato zařízení jsou poté prostřednictvím telefonní ústředny připojena k hlasovému serveru. Jednotlivé servery spolu komunikují prostřednictvím protokolu TCP/IP. Pro přenos dat je typicky zvolen HTTP protokol.
+Ve VoiceXML aplikacích jsou dokumenty také uloženy na webovém serveru. Typicky jsou tyto dokumenty generovány dynamicky aplikačním (webovým) serverem. Vedle aplikačního serveru, může být součástí architektury databázový server, který slouží jako zdroj dat.
+
+Mimo aplikační a databázový server, architektura VoiceXML navíc obsahuje hlasový server. Součástí hlasového serveru je interpretr VoiceXML dokumentů, modul pro syntézu řeči (TTS) a modul pro rozpoznávání řeči (ASR). Hlasový server zastává roli prohlížeče, který je používán u webových aplikací. Generuje zvukové výzvy a interpretuje hlasové volby od uživatele.
+
+Uživatel se k hlasovému serveru připojuje prostřednictvím telefonního zařízení. Tímto zařízením může být např. pevná linka, která je součástí veřejné telefonní sítě nebo VoIP telefon, který je připojen do VoIP sítě. Tato zařízení jsou poté prostřednictvím telefonní ústředny připojena k hlasovému serveru. Jednotlivé servery spolu komunikují prostřednictvím protokolu TCP/IP. Pro přenos dat je typicky zvolen HTTP protokol.
 
 Na obrázku \ref{fig:voicexml_architecture} je uvedeno schéma výše popsané architektury \cite{vxml_rychlokurz}.
 
@@ -192,13 +196,13 @@ Hlasový portál, jehož návrh bude popsán v kapitole \ref{sec:Navrh_hlasoveho
 
 \subsubsection{Voxeo Prophecy}
 \label{sec:Voxeo_interpreter}
-Voxeo Prophecy je komerční IVR platforma, která poskytuje rychlý vývoj hlasových aplikací. Klíčovou vlastností této platformy je jednoduchá instalace a rychlé uvedení hlasové aplikace do provozu. Součástí distribuce platformy je modul pro syntézu řeči (TTS) a modul sloužící k rozpoznávání řeči (ASR).
+Voxeo Prophecy je komerční IVR platforma. Klíčovou vlastností této platformy je jednoduchá instalace a rychlé uvedení hlasové aplikace do provozu. Součástí distribuce platformy je modul pro syntézu řeči (TTS) a modul sloužící k rozpoznávání řeči (ASR).
 
 Platformu je možné integrovat s veřejnou telefonní sítí. Aplikace provozované nad touto platformou mohou být ovládány pomocí DTMF volby nebo pomocí automatického rozpoznávání řeči. Přestože je součástí platformy JBoss server, nad kterým lze provozovat aplikační server, není tato platforma uzavřena vůči dalším technologiím (např. Node.js, Python).
 
 IVR Voxeo Prophecy je možné provozovat na operačních systémech Windows (32 i 64 bitů), Mac OS X a na linuxových distribucích, které jsou založeny na RHEL (např. CentOS). Pro produkční prostředí je však doporučován operační systém založený na linuxu.
 
-Jak již bylo uvedeno, tak je Voxeo Prophecy komerční platformou. Provoz této platformy je velmi limitován licenčními podmínkami. Voxeo Propehcy s podporou dvou souběžných hovorů je možné stáhnout zdarma. Aplikaci lze bez registrace provozovat pouze po dobu jednoho měsíce. Můžeme však u Voxea podstoupit bezplatnou registraci a touto registrací odstranit časové omezení. Aplikaci lze poté provozovat po neomezeně dlouhou dobu, omezení na dva souběžné hovory však stále zůstává. Po registraci máme možnost dokoupit si licenci na provozování více souběžných hovorů (portů) \cite{vxml_org}. Pořízení dalších portů však není levnou záležitostí. Na webu společnosti Voxeo je možné najít aktuální ceník.
+Jak již bylo uvedeno, tak je Voxeo Prophecy komerční platformou. Provoz této platformy je velmi limitován licenčními podmínkami. Voxeo Prophecy s podporou dvou souběžných hovorů je možné stáhnout zdarma. Aplikaci lze bez registrace provozovat pouze po dobu jednoho měsíce. Můžeme však u Voxea podstoupit bezplatnou registraci a touto registrací odstranit časové omezení. Aplikaci lze poté provozovat po neomezeně dlouhou dobu, omezení na dva souběžné hovory však stále zůstává. Po registraci máme možnost dokoupit si licenci na provozování více souběžných hovorů (portů) \cite{vxml_org}. Pořízení dalších portů však není levnou záležitostí. Na webu společnosti Voxeo je možné najít aktuální ceník.
 
 Platforma sestává ze čtyř serverů \cite{vxml_interpreters}, jejichž spuštění se děje automaticky po startu systému:
 
@@ -209,7 +213,7 @@ Platforma sestává ze čtyř serverů \cite{vxml_interpreters}, jejichž spušt
 \item Voxeo Prophecy Application Server
 \end{itemize}
 
-Voxeo Prophecy Serveru je tvořen dvěmi částmi. Jedna část slouží ke zpracování řídících CCXML (značkovací jazyk zabezpečující správu, ovládání a přepojování telefonátů) informací. Druhá část je tvořena MRCP serverem, který slouží ke zpracovávání médií.
+Voxeo Prophecy Server je tvořen dvěmi částmi. Jedna část slouží ke zpracování řídících CCXML (značkovací jazyk zabezpečující správu, ovládání a přepojování telefonátů) informací. Druhá část je tvořena MRCP serverem, který slouží ke zpracovávání médií.
 
 Voxeo Prophecy VoiceXML Browser je interpretr, který slouží ke zpracování VoiceXML dokumentů. Tento interpretr plně podporuje specifikaci VoiceXML verze 2.1.
 
@@ -217,20 +221,20 @@ Voxeo Prophecy Management Console představuje rozhraní pro správu hlasových 
 
 Aplikační server Voxeo Prophecy Application Sever umožňuje provozovat webové aplikace postavené na technologii Java.
 
-Součástí platformy Voxeo Prophecy je dále SIP klient s grafickým rozhraním, který je možné spouštět přímo ve webovém prohlížeči. Prostřednictvím tohoto klienta je možné bez další konfigurace testovat vytvářené aplikace.
+Součástí platformy Voxeo Prophecy je dále SIP klient s grafickým rozhraním, kterého lze spouštět přímo ve webovém prohlížeči. Prostřednictvím tohoto klienta je možné, bez další konfigurace, testovat vytvářené aplikace.
 
-Konfigurace hlasových aplikací probíhá prostřednictvím webového rozhraní, jehož jedna stránka je ukázána na obrázku \ref{fig:Voxeo_admin}.
+Konfigurace hlasových aplikací probíhá prostřednictvím webového rozhraní, jehož jedna stránka je zobrazena na obrázku \ref{fig:Voxeo_admin}.
 
-Společnost Voxeo je zároveň provozovatelem domény vxml.org, kde je možné nalézt VoiceXML dokumentaci.
+Společnost Voxeo je zároveň provozovatelem domény $vxml.org$, kde je možné nalézt VoiceXML dokumentaci.
 
-Výhodou této platformy je velmi kvalitní syntetizátor řeči (TTS) a podpora automatického rozpoznávání řeči (ASR). Tyto výhody jsou vykoupeny licenčními podmínkami, které nám dovolují provozovat maximálně dva souběžné hovory.
+Výhodou této platformy je velmi kvalitní syntetizátor řeči (TTS) a podpora automatického rozpoznávání řeči (ASR). Tyto výhody jsou ale vykoupeny licenčními podmínkami, které nám dovolují na platformě provozovat maximálně dva souběžné hovory.
 
 V kapitole \ref{sec:voxeo_conf} je uveden podrobný popis instalace a konfigurace platformy Voxeo Prophecy.
 
 \subsubsection{VoiceGlue}
 VoiceGlue samotné netvoří hlasovou platformou. Jedná se o přídavné rozšíření softwarové ústředny Asterisk.
 
-Asterisk je platforma pro provozování telekomunikačních aplikací. Asterisk je platforma s otevřeným zdrojovým kódem, který je uvolněn pod licencí GNU GPL. Vývoj Asterisku je sponzorován společností Digium \cite{asterisk_org}.
+Asterisk je platforma pro provozování telekomunikačních aplikací. Asterisk je projekt s otevřeným zdrojovým kódem, který je uvolněn pod licencí GNU GPL. Vývoj Asterisku je sponzorován společností Digium \cite{asterisk_org}.
 
 Asterisk ve standardní konfiguraci neposkytuje podporu VoiceXML aplikací, ale díky své modulární architektuře je možné Asterisk o tuto podporu rozšířit.
 
@@ -240,7 +244,7 @@ VoiceGlue je projekt přinášející podporu VoiceXML aplikací pro platformu A
 
 VoiceXML interpretr nabízí plnou podporu specifikace VoiceXML 2.0 a zároveň implementuje některé vlastnosti ze specifikace VoiceXML 2.1.
 
-Aplikacím provozovaných na této platformě je umožněno využívat ovládání pomocí DTMF volby. Součástí VoiceGlue bohužel není modul pro automatické rozpoznávání řeči. VoiceGlue podporuje přehrávání nahraných audio souborů ve formátech, které jsou podporovány Asteriskem a podporu nahrávání vstupu ve formátu ulaw.
+Aplikace provozované na této platformě je možné ovládat pouze pomocí DTMF volby. Součástí VoiceGlue bohužel není modul pro automatické rozpoznávání řeči. VoiceGlue podporuje přehrávání nahraných audio souborů ve formátech, které jsou podporovány Asteriskem, dále podporuje nahrávání vstupu ve formátu $ulaw$.
 
 Flexibilita Asterisku neomezuje provoz VoiceXML pouze na SIP telefonii, ale je možné využít jakýkoliv jiný, Asteriskem podporovaný, telefonní kanál \cite{voiceglue_architecture}.
 
@@ -257,20 +261,22 @@ Na obrázku \ref{fig:voiceglue_architecture} je znázorněna architektura VoiceG
 Propojení Asterisku s VoiceGlue je úkolem mezivrstvy $PhoneGlue$. Samotnou architekturu VoiceGlue je možné logicky rozdělit na tři hlavní části.
 
 \begin{itemize}
-\item síťová část
+\item síťové rozhraní
 \item část zpracovávající VoiceXML dokumenty
 \item rozhraní pro telefonii
 \end{itemize}
 
-Síťová část komunikuje s aplikačním (webovým) serverem, který generuje VoiceXML dokumenty. Komunikace probíhá nad protokolem TCP/IP pomocí protokolu HTTP.
+Síťové rozhraní komunikuje s aplikačním (webovým) serverem, který generuje VoiceXML dokumenty. Komunikace probíhá nad protokolem TCP/IP pomocí protokolu HTTP.
 
-Část zpracovávající VoiceXML dokumenty je tvořena několika dalšími částmi. První částí je OpenVXI interpretr. Další částí je syntaktický analyzátor Xerces. O zpracování případných skriptů jazyka ECMAScript se stará engine SpiderMonkey.
+Část zpracovávající VoiceXML dokumenty je tvořena několika dalšími částmi. Jednou částí je OpenVXI interpretr. Další částí je syntaktický analyzátor Xerces. O zpracování případných skriptů jazyka ECMAScript se stará engine SpiderMonkey.
 
-Rozhraní pro telefonii je tvořeno dalšími třemi částmi. První část je připravena pro implementaci rozpoznávání hlasu pomocí rozpoznávače LumenVox (zatím není implementována). Další část tvoří hlasový syntetizátor Flite. Poslední část má na starost komunikaci s mezivrstvou $PhoneGlue$. \cite{vxml_interpreters}
+Rozhraní pro telefonii je tvořeno dalšími třemi částmi. První část je připravena pro implementaci rozpoznávání hlasu pomocí ASR rozpoznávače LumenVox (zatím není implementována). Další část tvoří hlasový syntetizátor Flite. Poslední část má na starost komunikaci s mezivrstvou $PhoneGlue$. \cite{vxml_interpreters}
 
-Uvedení této hlasové platformy do provozu není tak jednoduché jako v případě platformy Voxeo Prophecy. Nejdřív je potřeba nakonfigurovat samotný Asterisk a poté doinstalovat a nakonfigurovat rozšíření VoiceGlue. Podrobněji je tento proces popsán v kapitole \ref{sec:voiceglue_conf}.
+Uvedení této hlasové platformy do provozu není tak jednoduché jako v případě platformy Voxeo Prophecy. Nejdříve je potřeba nakonfigurovat Asterisk a poté doinstalovat a nakonfigurovat rozšíření VoiceGlue. Podrobněji je tento proces popsán v kapitole \ref{sec:voiceglue_conf}.
 
-Mezi hlavní výhody VoiceGlue je otevřenost zdrojového kódu, resp. licence pod kterou je VoiceGlue uvolněno. Na druhou stranu má toto řešení zatím dost nevýhod. Jako hlavní nevýhody lze uvést absenci modulu pro rozpoznávání řeči, nekvalitní syntetizátor řeči a chybějící podpora specifikace VoiceXML verze 2.1. Vzhledem k tomu, že poslední aktivita autorů VoiceGlue byla na jejich webu zaznamenaná koncem roku 2011, nemůžeme s určitostí v blízké době počítat s implementací těchto chybějících vlastností.
+Mezi hlavní výhody VoiceGlue je otevřenost zdrojového kódu, resp. licence pod kterou je VoiceGlue uvolněno. Na druhou stranu má toto řešení zatím dost nevýhod. Jako hlavní nevýhody lze uvést absenci modulu pro rozpoznávání řeči, nekvalitní syntetizátor řeči a chybějící úplnou podporu specifikace VoiceXML verze 2.1.
+
+Vzhledem k tomu, že poslední aktivita autorů VoiceGlue byla na jejich webu zaznamenaná koncem roku 2011, nemůžeme s určitostí v blízké době počítat s implementací těchto chybějících vlastností.
 
 \subsection{VoiceXML dokument}
 \label{sec:Zaklady_vxml}
@@ -287,19 +293,19 @@ Jazyk VoiceXML vychází ze značkovacího jazyka XML a proto pro něj platí ve
 
 Ve výpise \ref{src:vxml_sample} je uvedena ukázka jednoduchého VoiceXML dokumentu. Jednotlivé elementy dokumentu tvoří stromovou strukturu. Struktura tohoto VoiceXML dokumentu je zachycena na obrázku \ref{fig:vxml_document_structure}.
 
-VoiceXML dokument bývá typicky členěn do několika dialogů a subdialogů. Jednotlivé dialogy obsahují informace, jakým způsobem mají být zpracovány. Každý dialog může zároveň obsahovat informaci o tom, kam se má po zpracování aktuálního dialogu pokračovat.
+VoiceXML dokument bývá typicky členěn do několika dialogů a subdialogů. Jednotlivé dialogy obsahují instrukce popisující interakce s uživatelem aplikace. Každý dialog může zároveň obsahovat informaci o tom, do jakého dalšího dialogu se má po dokončení zpracování dialogu pokračovat.
 
 Subdialogy lze chápat jako pomocné funkce, které jsou volány z rodičovského dialogu a mohou provést nějakou akci a poté vrátit výsledek zpět rodičovskému dialogu.
 
-Dialogy můžeme ve VoiceXML rozdělit na dva typy. Prvním typem jsou formuláře. Formuláře popisují interakci vedoucí k získání uživatelského vstupu a pomocí gramatik definují přípustné hodnoty pro vstup. Druhým typem jsou menu. Menu dávají uživateli na výběr ze seznamu voleb a po provedení výběru provedou určenou akci.
+Dialogy můžeme ve VoiceXML rozdělit na dva typy. Prvním typem jsou formuláře. Formuláře popisují interakci vedoucí k získání uživatelského vstupu a pomocí gramatik definují přípustné hodnoty pro vstup. Druhým typem jsou menu. Menu dávají uživateli na výběr ze seznamu voleb a po provedení výběru provedou určenou akci (přesun do jiného dialogu).
 
 \lstinputlisting[language=XML,label=src:vxml_sample,caption={VoiceXML dokument}]{Vxml/vxml_sample.vxml}
 
 \subsubsection{Zpracování VoiceXML dokumentu}
 \label{sec:Zpracovani_vxml_dokumentu}
-VoiceXML dokument je zpracováván interpretrem. Zpracování dokumentu začíná u kořenového elementu a postupně se pokračuje k dceřiným elementům. Nyní se vraťme k výpisu \ref{src:vxml_sample} v němž je uveden zdrojový kód jednoduchého VoiceXML dokumentu.
+VoiceXML dokument je zpracováván interpretrem. Zpracování dokumentu začíná u kořenového elementu a postupně se pokračuje k dceřiným elementům.
 
-Na prvním řádku můžeme vidět definici verze XML dokumentu. Na dalším řádku specifikujeme verzi VoiceXML dokumentu. Touto informací sdělujeme interpretru verzi standardu VoiceXML, dle které se bude dokument zpracovávat.
+Nyní se vraťme k výpisu \ref{src:vxml_sample} v němž je uveden zdrojový kód jednoduchého VoiceXML dokumentu. Na prvním řádku můžeme vidět definici verze XML dokumentu. Na dalším řádku specifikujeme verzi VoiceXML dokumentu. Touto informací sdělujeme interpretru verzi standardu VoiceXML, dle které se bude dokument zpracovávat.
 
 Uvnitř elementu \texttt{<vxml>} je obsažen kód popisující chování hlasové aplikace. Na třetím řádku definujeme pomocí elementu \texttt{<var>} proměnnou a zároveň jí nastavujeme hodnotu.
 
@@ -317,7 +323,7 @@ Zpracování tohoto dokumentu je možné rozdělit do následujících kroků \c
 \end{enumerate}
 
 \subsection{Základy jazyka VoiceXML}
-V následující sekci stručně popíši postupy, kterých bývá užito při návrhu hlasových dialogů pomocí jazyka VoiceXML.
+V následující sekci stručně popíši postupy, kterých bývá užito při návrhu hlasových aplikací pomocí jazyka VoiceXML.
 
 \subsubsection{Navigace v hlasové aplikaci}
 VoiceXML nám poskytuje několik elementů, pomocí kterých lze jednoduše navrhovat navigační prvky mezi jednotlivými částmi aplikace. My si zde blíže představíme pouze element \texttt{<menu>}.
@@ -593,7 +599,7 @@ Proces implementace hlasového portálu můžu tedy rozdělit na dvě části. P
 
 \subsubsection{Implementace pomocné knihovny}
 
-V kapitole \ref{sec:Zaklady_vxml} jsme se seznámili se základy návrhu VoiceXML dokumentů, konkrétně jsme se zde zaměřili na strukturu VXML dokumentu a popis vybraných elementů, které slouží k definici struktury aplikace. Již tedy máme dispozici znalosti, díky kterým jsme schopni napsat VXML kód, který popisuje jednoduchý hlasový portál.
+V kapitole \ref{sec:Zaklady_vxml} jsme se seznámili se základy návrhu VoiceXML dokumentů, konkrétně jsme se zde zaměřili na strukturu VXML dokumentu a popis vybraných elementů, které slouží k definici struktury aplikace. Již tedy máme k dispozici znalosti, které nám umožňují napsat VoiceXML kód jednoduchého hlasového portálu.
 
 Při návrhu složitějšího hlasového portálu by nám mohla ušetřit hodně práce vyšší úroveň abstrakce. Tato abstrakce by nás mohla odstínit od přímého psaní VMXL kódu. A právě tuto abstrakci zajišťuje knihovna, kterou jsem vyvinul v rámci této diplomové práce. Při použití této knihovny se nemusíme soustředit na psaní validního VXML kódu, ale veškeré naše soustředění můžeme zaměřit na aplikační logiku. Tato knihovna dále umožňuje dosáhnout efektivní znovu použitelnosti kódu formou komponentního modelu. V neposlední řadě knihovna zjednodušuje vývoj tím způsobem, že v podstatě ruší rozdělení aplikace na klientskou a serverovou část. Při vývoji aplikace tedy nemáme aplikaci striktně rozdělenou na statické VXML dokumenty, které definují strukturu aplikace a zajišťují vstup a výstup, a serverovou část, která řeší přístup k datům a implementuje aplikační logiku.
 
@@ -710,7 +716,7 @@ Třída obsahuje kolekci \texttt{audios}. Tato kolekce může obsahovat jednu ne
 
 Konstruktor třídy může být volán více způsoby. Ve výpise \ref{src:Prompt_Constructor} uvádím ukázky volání konstruktoru.
 
-\lstinputlisting[language=JavaScript,label=src:Prompt_Constructor,caption={Ukázka vytvoření instance třídy \texttt{Prompt}}]{Src/Prompt_Constructor.js}
+\lstinputlisting[language=JavaScript,label=src:Prompt_Constructor,caption={Vytvoření instance třídy \texttt{Prompt}}]{Src/Prompt_Constructor.js}
 
 Nejjednodušší možnost vytvoření instance je ukázáno na prvním řádku výpisu. Konstrukce spočítá v předání jediného argumentu, který definuje text zprávy, který bude pomocí TTS přehrán.
 
@@ -732,7 +738,7 @@ Nastavením \texttt{timeout} můžeme specifikovat časovou prodlevu, po kterou 
 \label{sec:Say}
 Tato třída je odvozena ze třídy \texttt{VoiceModel} a implementuje tedy konkrétní hlasový model. Prostřednictvím tohoto hlasového modelu sdělujeme uživateli nějakou zprávu. Způsoby vytvoření instance této třídy jsou ukázány ve výpise \ref{src:Say_Constructor}.
 
-\lstinputlisting[language=JavaScript,label=src:Say_Constructor,caption={Ukázka vytvoření instance třídy \texttt{Say}}]{Src/Say_Constructor.js}
+\lstinputlisting[language=JavaScript,label=src:Say_Constructor,caption={Vytvoření instance třídy \texttt{Say}}]{Src/Say_Constructor.js}
 
 Třída \texttt{Say} interně obsahuje instanci třídy \texttt{Prompt} a nastavuje hodnoty některým zděděným vlastnostem z třídy \texttt{VoiceModel}.
 
@@ -740,7 +746,7 @@ Ukázka vytvoření stavu, který obsahuje hlasový model tohoto typu, je vidět
 
 Ve výpise \ref{src:Say_Vxml} je ukázka VXML kódu, který pro takový stav aplikace automaticky vygeneruje.
 
-\lstinputlisting[language=XML,label=src:Say_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \texttt{Say}}]{Vxml/Say.vxml}
+\lstinputlisting[language=XML,label=src:Say_Vxml,caption={Kód vygenerovaný pro stav s hlasovým modelem \texttt{Say}}]{Vxml/Say.vxml}
 
 \paragraph{Třída Exit}
 \label{sec:Exit}
@@ -750,7 +756,7 @@ Nejjednodušší ukázka vytvoření instance této třídy je uvedena ve zdrojo
 
 Ve výpise \ref{src:Exit_Vxml} je uvedena ukázka VXML kódu, který je pro takový stav aplikací automaticky vygenerován.
 
-\lstinputlisting[language=XML,label=src:Exit_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \texttt{Exit}}]{Vxml/Exit.vxml}
+\lstinputlisting[language=XML,label=src:Exit_Vxml,caption={Kód vygenerovaný pro stav s hlasovým modelem \texttt{Exit}}]{Vxml/Exit.vxml}
 
 \paragraph{Třída Record}
 \label{sec:Record}
@@ -778,7 +784,7 @@ Posledním možným nastavením je \texttt{type}. Hodnotou tohoto nastavení ud�
 
 Ve výpise \ref{src:Record_Vxml} je pro představu uveden VXML kód, který aplikace pro takový stav automaticky vygeneruje.
 
-\lstinputlisting[language=XML,label=src:Record_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \texttt{Record}}]{Vxml/Record.vxml}
+\lstinputlisting[language=XML,label=src:Record_Vxml,caption={Kód vygenerovaný pro stav s hlasovým modelem \texttt{Record}}]{Vxml/Record.vxml}
 
 \paragraph{Třída Ask}
 \label{sec:Ask}
@@ -808,7 +814,7 @@ Pokud je hodnotou nastavení pole více zpráv, tak zpracování funguje násled
 
 Pro stav, který má jako hlasový model uvedenu instanci třídy \texttt{Ask}, aplikace automaticky vygeneruje VXML kód, který je předmětem výpisu \ref{src:Ask_Vxml}.
 
-\lstinputlisting[language=XML,label=src:Ask_Vxml,caption={VXML kód vygenerovaný pro stav s hlasovým modelem \texttt{Ask}}]{Vxml/Ask.vxml}
+\lstinputlisting[language=XML,label=src:Ask_Vxml,caption={Kód vygenerovaný pro stav s hlasovým modelem \texttt{Ask}}]{Vxml/Ask.vxml}
 
 \paragraph{Třída Grammar}
 \label{sec:Grammar}
@@ -913,7 +919,7 @@ Instance této třídy slouží jako zástupné objekty pro hodnoty, které nejs
 
 Ve výpise \ref{src:Var_example} je demonstrována situace, kdy je použití zástupného objektu nevyhnutelné.
 
-\lstinputlisting[language=JavaScript,label=src:Var_example,caption={Demonstrace využití zástupného objektu \texttt{Var}}]{Src/Var_example.js}
+\lstinputlisting[language=JavaScript,label=src:Var_example,caption={Použití zástupného objektu \texttt{Var}}]{Src/Var_example.js}
 
 Výše uvedený kód vytváří flow aplikace, který se skládá ze dvou stavů. První stav slouží k zjištění věku uživatele. Druhý stav slouží k zobrazení sdělení o zadaném věku. A proto potřebuje hlasový model druhého stavu referencovat hodnotou vlastnosti \mbox{\texttt{this.\_age}}. Tato hodnota ale není ve fázi vytváření flow dostupná. Hodnota bude dostupná až v momentě, kdy dojde k průchodu prvním stavem. Z tohoto důvodu chybějící hodnotu zastupuje zástupný objekt reprezentovaný instancí třídy \texttt{Var} (viz řádek 18).
 
@@ -921,7 +927,7 @@ Konstruktor této třídy přijímá dva parametry. Hodnotou prvního parametru 
 
 V některých případech může být vhodnější předat funkci jako hodnotu druhého parametru. Tato funkce může obsahovat například nějakou formátovací logiku (viz výpis \ref{src:Var_function}).
 
-\lstinputlisting[language=JavaScript,label=src:Var_function,caption={Demonstrace využití zástupného objektu \texttt{Var}}]{Src/Var_function.js}
+\lstinputlisting[language=JavaScript,label=src:Var_function,caption={Použití zástupného objektu \texttt{Var}}]{Src/Var_function.js}
 
 Třída definuje metodu \texttt{getValue}. Tato metoda je zavolána v momentě, kdy je potřeba vyhodnotit skutečnou hodnotu zástupného objektu.
 
