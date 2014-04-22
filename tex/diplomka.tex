@@ -378,24 +378,63 @@ Ve standardu VoiceXML 2.0 bývá gramatika nejčastěji popsána XML jazykem. Ve
 
 \section{Technologie Text to Speech}
 \label{sec:TTS}
-Obecný úvod o technologiích TTS. Popis procesu syntézy řeči.
+Text to Speech (TTS) je technologie sloužící k převodu textu napsaného běžným jazykem na řeč. TTS modul je základním stavebním kamenem každé hlasové platformy. Tento modul nám totiž umožňuje vytvořit uživatelské rozhraní mezi uživatelem a hlasovou aplikací. Proces převodu textu na řeč je složitý proces, který bude podrobněji popsán v následujícím textu.
 
-\subsection{Flite}
+Existují dva základní přístupy, jakým způsobem lze umělou řeč generovat \cite{tts_wiki}. První přístup spočívá ve spojování předem nahraných úseků řeči. Těmito úseky mohou být jednotlivé hlásky a dvojhlásky nebo celá slova. Délka ukládaných úseků má poté za následek vyšší nebo nižší kvalitu reprodukce.
+
+Druhý přístup je založen na simulaci charakteristik lidské řeči a umožňují tak reprodukovat skutečně umělou řeč.
+
+Proces převodu textu na řeč je v jednoduchosti znázorněn na obrázku \ref{fig:tts_scheme} a jednotlivé fáze tohoto převodu budou popsány v následujících odstavcích.
+
+\InsertFigure{Figures/tts_scheme}{1\textwidth}{Proces převodu textu na řeč}{fig:tts_scheme}
+
+\subsection{Textová analýza}
+Textová analýza se dá rozdělit do dvou fází. V první fázi dochází k načtení textového vstupu a převedení do formátu, se kterým je syntetizátor schopen pracovat.
+
+V druhé fázi dochází k normalizaci textu. Aby bylo možné text dále zpracovávat, dochází nejdříve ke konverzi slov na tokeny (tokenizace). Vzniklé tokeny se poté expandují do ortografického tvaru. Dochází tak k expanzi zkratek a čísel na slova. Např. token "28" je převeden na slovo "dvacetosm" a zkratka "č." je převedena na slovo "číslo".
+
+Tato expanze může být v některých situacích závislá na kontextu, ve kterém je token použit. Je proto tedy nutné analyzovat i okolí expandovaného tokenu. Tato situace se dá demonstrovat např. na expanzi zkratky "den.". Bez znalosti okolí (kontextu) tokenu nevíme, zda má dojít k expanzi na slovo "denně" nebo "denního". Dalším příkladem může být expanze textu "1 lev lovil 1 zebru". První výskyt číslovky 1 chceme převést na slovo "jeden" a druhý výskyt má být expandován na slovo "jednu".
+
+Složitost algoritmů, které tento proces provádějí, je závislá na morfologii\footnote{Morfologie je věda, která se zabývá ohýbáním slov, tedy skloňováním slovních druhů a časováním sloves.} interpretovaného jazyka.
+
+\subsection{Fonetická konverze a syntéza řeči}
+V momentě, kdy máme k dispozici normalizovány text, nastává fáze uplatnění fonetických pravidel. V této fázi dochází k převodu každého slova na svůj fonetický ekvivalent \cite{tts_linguatec}.
+
+Během tohoto procesu je opět nutné porozumění kontextu, ve kterém se dané slovo vyskytuje. Kontextovou závislost je možné demonstrovat na oznamovací větě "Honzo, jdeš." a na tázací větě "Honzo, jdeš?". V textové podobě se tyto věty liší pouze znaménkem na konci věty. Pokud jsou ale tyto věty vysloveny, tak se liší v intonaci. A právě intonace dává větám různý význam.
+
+Dalším příkladem závislosti fonetické konverze na kontextu může být konverze jednotlivých hlásek. Stejná hláska se nemusí vždy konvertovat na stejnou fonetickou hlásku. U některých jazyků je dokonce žádoucí, aby se daná hláska nepřeváděla na žádnou fonetickou hlásku (neznělé hlásky). Např. ve španělštině se nevyslovuje souhláska "h" na začátku slov.
+
+Posledním krokem je syntéza řeči, která je provedena na základě fonetické konverze.
+
+\subsection{Vybraná TTS řešení}
+Na trhu se vykytuje několik TTS řešení. Některá jsou k dispozici zdarma, v případě jiných se jedná o komerční řešení.
+
+\subsubsection{Festival Speech Synthesis System}
+Festival je obecný vícejazyčný syntetizátor řeči, který byl původně vyvinut Alanem W. Blackem na edinburghské univerzitě. Později se k vývoji připojila i univerzita Canergie Mellon University.
+
+Festival podporuje několik jazyků. Jeho součástí je podpora britské a americké angličtiny, velštiny a španělštiny. Podporu dalších jazyků je možné rozšířit instalací dalších balíčků. Touto formou jsou k dispozici např. následující jazyky: čeština, finština, italština a polština \cite{festival_wiki}.
+
+Program je napsán v programovacím jazyce C++ a je šířen jako svobodný software, je k němu tedy k dipozici i zdrojový kód.
+
+\subsubsection{Flite}
 \label{sec:flite}
-Něco o Flite.
+Název Flite je zkratka ze slovního spojení $festival-lite$. Jedná se o malý a rychlý syntetizátor řeči, který lze provozovat jak na malých (mobilních) zařízeních, tak i na serverových strojích.
 
-\subsection{Cepstral}
-Něco o Cepstralu?
+Flite je navržen jako odlehčená alternativa k syntetizátoru Festival a zároveň je s tímto syntetizátorem kompatibilní. Program je napsán v programovacím jazyce C a to z důvodu velikosti výsledného souboru a možnosti portace na různé platformy \cite{festvox_org}.
 
-\subsection{Loquendo}
-Něco o Loquendu.
+Za vznikem tohoto syntetizátoru stojí univerzita Carnegie Mellon University. Program je šířen pod licencí X11 a je dostupný zdarma.
+
+VoiceGlue používá Flite jako výchozí syntetizátor.
 
 \section{Technologie Automatic Speech Recognition}
 \label{sec:ASR}
-Popis procesu převodu řeči na text.
+TODO
 
-\subsection{Loquendo}
-Něco o ASR od Loquenda.
+\subsection{Vybraná ASR řešení}
+TODO
+
+\subsubsection{Loquendo}
+TODO
 
 \section{Návrh webového portálu}
 \label{sec:Navrh}
@@ -1431,6 +1470,18 @@ Ondřej Ždych
 
 \bibitem{vxml_rychlokurz} Katedra telekomunikační techniky, ČVUT Praha,
 \textit{Sítě integrovaných služeb}, http://www.comtel.cz/files/download.php?id=5459‎.
+
+\bibitem{tts_linguatec} Linguatec Language Technologies,
+\textit{Technologie převádění textu na mluvené slovo (Text-To-Speech)}, http://www.linguatec.cz/products/tts/information/technology.
+
+\bibitem{tts_wiki} Wikipedia,
+\textit{Speech synthesis}, http://en.wikipedia.org/wiki/Speech\_synthesis.
+
+\bibitem{festvox_org}
+\textit{Flite: a small, fast run time synthesis engine}, http://www.festvox.org/flite.
+
+\bibitem{festival_wiki}
+\textit{Festival Speech Synthesis System}, http://en.wikipedia.org/wiki/Festival_Speech_Synthesis_System.
 
 \bibitem{angulardocs} Google,
 \textit{Dokumentace k frameworku AngularJS}, http://docs.angularjs.org.
