@@ -3,6 +3,8 @@
 %\documentclass[ing,male,java,dept460,twoside]{diploma}		% oboustranny dokument
 \usepackage[czech]{babel}
 
+\renewcommand{\figurename}{Obrázek}
+
 % JavaScript highlighting
 \usepackage{graphicx}
 \usepackage{listings}
@@ -13,56 +15,56 @@
 \definecolor{maroon}{rgb}{0.5,0,0}
 
 \lstdefinelanguage{JavaScript} {
-  morekeywords={
-      break,const,continue,delete,do,while,export,for,in,function,
-      if,else,import,in,instanceOf,label,let,new,return,switch,this,
-      throw,try,catch,typeof,var,void,with,yield
-  },
-  sensitive=true,
-  morecomment=[l]{//},
-  morecomment=[s]{/*}{*/},
-  morestring=[b]",
-  morestring=[d]',
-  alsoletter={.},
-  keywordstyle=\ttfamily\color{blue},
-  identifierstyle=\ttfamily,
-  stringstyle=\ttfamily\color{maroon},
-  commentstyle=\color{darkgreen}\ttfamily
+	morekeywords={
+			break,const,continue,delete,do,while,export,for,in,function,
+			if,else,import,in,instanceOf,label,let,new,return,switch,this,
+			throw,try,catch,typeof,var,void,with,yield
+	},
+	sensitive=true,
+	morecomment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	morestring=[b]",
+	morestring=[d]',
+	alsoletter={.},
+	keywordstyle=\ttfamily\color{blue},
+	identifierstyle=\ttfamily,
+	stringstyle=\ttfamily\color{maroon},
+	commentstyle=\color{darkgreen}\ttfamily
 }
 
 \lstdefinelanguage{XML} {
-  morestring=[b]",
-  moredelim=[s][\ttfamily\color{maroon}]{<}{\ },
-  moredelim=[s][\ttfamily\color{maroon}]{</}{>},
-  moredelim=[l][\ttfamily\color{maroon}]{/>},
-  moredelim=[l][\ttfamily\color{maroon}]{>},
-  morecomment=[s]{<?}{?>},
-  morecomment=[s]{<!--}{-->},
-  commentstyle=\color{darkgreen},
-  stringstyle=\color{blue},
-  identifierstyle=\color{red}
+	morestring=[b]",
+	moredelim=[s][\ttfamily\color{maroon}]{<}{\ },
+	moredelim=[s][\ttfamily\color{maroon}]{</}{>},
+	moredelim=[l][\ttfamily\color{maroon}]{/>},
+	moredelim=[l][\ttfamily\color{maroon}]{>},
+	morecomment=[s]{<?}{?>},
+	morecomment=[s]{<!--}{-->},
+	commentstyle=\color{darkgreen},
+	stringstyle=\color{blue},
+	identifierstyle=\color{red}
 }
 
 \lstdefinelanguage{conf} {
-  morecomment=[s]{#},
-  commentstyle=\color{darkgreen}
+	morecomment=[s]{#},
+	commentstyle=\color{darkgreen}
 }
 
 \lstdefinelanguage{bash} {
-  keywordstyle=\color{blue}
+	keywordstyle=\color{blue}
 }
 
 \lstset {
 	basicstyle=\ttfamily,
-  showstringspaces=false,
-  rulecolor=\color{black},
-  aboveskip=\bigskipamount,
-  belowskip=\bigskipamount,
-  alsoletter={.},
-  numbers=left,
-  keywordstyle=\color{black}\ttfamily,
-  breaklines=true,
-  postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
+	showstringspaces=false,
+	rulecolor=\color{black},
+	aboveskip=\bigskipamount,
+	belowskip=\bigskipamount,
+	alsoletter={.},
+	numbers=left,
+	keywordstyle=\color{black}\ttfamily,
+	breaklines=true,
+	postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
 }
 
 \def\changemargin#1#2{\list{}{\topmargin#2\bottommargin#1}\item[]}
@@ -187,7 +189,7 @@ Uživatel se k hlasovému serveru připojuje prostřednictvím telefonního zař
 
 Na obrázku \ref{fig:voicexml_architecture} je uvedeno schéma výše popsané architektury \cite{vxml_rychlokurz}.
 
-\InsertFigure{Figures/vxml_architecture}{0.7\textwidth}{Architektura VoiceXML}{fig:voicexml_architecture}
+\InsertFigure{Figures/vxml_architecture}{1\textwidth}{Architektura VoiceXML}{fig:voicexml_architecture}
 
 \subsection{Hlasové platformy VoiceXML}
 V této části si představíme dvě hlasové (IVR) platformy, nad kterými lze provozovat VoiceXML aplikace. U každé platformy uvedu přehled dostupných funkcí, zmíním licenční podmínky, které jsou spojeny s používáním IVR platformy. V neposlední řadě uvedu informaci o podporované verzi VoiceXML.
@@ -232,6 +234,7 @@ Výhodou této platformy je velmi kvalitní syntetizátor řeči (TTS) a podpora
 V kapitole \ref{sec:voxeo_conf} je uveden podrobný popis instalace a konfigurace platformy Voxeo Prophecy.
 
 \subsubsection{VoiceGlue}
+\label{sec:voiceglue}
 VoiceGlue samotné netvoří hlasovou platformou. Jedná se o přídavné rozšíření softwarové ústředny Asterisk.
 
 Asterisk je platforma pro provozování telekomunikačních aplikací. Asterisk je projekt s otevřeným zdrojovým kódem, který je uvolněn pod licencí GNU GPL. Vývoj Asterisku je sponzorován společností Digium \cite{asterisk_org}.
@@ -425,6 +428,16 @@ Flite je navržen jako odlehčená alternativa k syntetizátoru Festival a záro
 Za vznikem tohoto syntetizátoru stojí univerzita Carnegie Mellon University. Program je šířen pod licencí X11 a je dostupný zdarma.
 
 VoiceGlue používá Flite jako výchozí syntetizátor.
+
+\subsubsection{Cepstral TTS}
+\label{sec:cepstral}
+Společnost Cepstral je poskytovatelem komerčního TTS řešení. Společnost byla založen v roce 2000 vědeckými pracovníky z univerzity Carnegie Mellon University \cite{cepstral_wiki}.
+
+Cepstral při vývoji svého TTS vyvinul několik nových technik, které umožňují lepší přizpůsobení hlasu dané aplikaci. Cepstral TTS je možné provozovat na zařízeních s omezenými výpočetními zdroji, stejně jako na high-end serverech \cite{cepstral_com}. Cepstral TTS je možné integrovat se softwarovou ústřednou Asterisk (viz kapitola \ref{sec:voiceglue}) a je možné ho provozovat na operačních systémech Windows i na Linuxu.
+
+TTS řešení od Cepstralu nabízí několik různých hlasů, které je možné dále konfigurovat. Jednotlivé hlasy je možné si vyzkoušet na jejich webových stránkách. Cepstral podporuje několik jazyků, konkrétně americkou a britskou angličtinu, americkou španělštinu, kanadskou francouzštinu, němčinu a italštinu.
+
+Přímo na webových stránkách společnosti je možné objednat jednotlivé hlasy nebo kompletní řešení Cepstral Telephony Server. Cena jednotlivých hlasů pro osobní využití se pohybuje zhruba v rozmezí 10-50 dolarů. Cena Cepstral Telephony Serveru se odvíjí od počtu povolených portů. Základní verze s podporou jednoho portu začíná na 100 dolarech. Za každý další port je nutné si připlatit dalších 100 dolarů.
 
 \section{Technologie Automatic Speech Recognition}
 \label{sec:ASR}
@@ -1363,7 +1376,7 @@ Tento nástroj byl při běhu zátěžových testů spouštěn na stroji, na kte
 \subsubsection{Automatizační skript}
 Výše jsem popsal dva nástroje, které byly využity pro simulaci připojovaných klientů a měření vytíženosti systému. Zátěžové testy byly postupně spouštěny s různými parametry. Pro zjednodušení spouštění zátěžových testů byl vytvořen $bash$ skript, kterému je možné při spouštění předat tři parametry. Ve výpise \ref{src:Benchmark_bash_script} je uveden zdrojový kód tohoto skriptu.
 
-\lstinputlisting[language=bash,label=src:Benchmark_bash_script,caption={Zdrojový kód automatizačního skriptu \texttt{start-bench.sh}}]{Src/start-bench.sh}
+\lstinputlisting[language=bash,label=src:Benchmark_bash_script,caption={Zdrojový kód skriptu \texttt{start-bench.sh}}]{Src/start-bench.sh}
 
 Tento skript je nutné spouštět z umístění, ve kterém je obsažen XML soubor s definicí testovacího scénáře. Umístění dále musí obsahovat adresář $pcap$, ve kterém jsou uloženy soubory se zaznamenanými RTP pakety DTMF voleb. Skript je poté možné spustit např. následujícím příkazem:
 
@@ -1435,9 +1448,11 @@ Využití paměti RAM, které můžeme vidět v grafu na obrázku \ref{fig:Bench
 \subsubsection{Obecné zhodnocení}
 Výsledky jednotlivých variant zátěžových testů můžeme obecně shrnout následovně.
 
-Měřením využití procesoru byl přibližně zjištěn maximální počet hovorů, které lze na dané hardwarové platformě obsloužit souběžně, aniž by začalo docházet k nárůstu doby potřebné pro obsloužení hovoru.
+Měřením využití procesoru byl přibližně zjištěn maximální počet hovorů, které lze na dané hardwarové platformě (1 x CPU@2GHz a 2GB RAM) obsloužit souběžně, aniž by začalo docházet k nárůstu doby potřebné pro obsloužení hovoru.
 
 Z analýzy využití paměti RAM naopak vyplynulo, že zde existují ještě velké rezervy. Využití paměti monitorovaných procesů se nezvýšilo na nikterak vysokou hodnotu. Využití paměti jednotlivými procesy bylo téměř ve všech variantách zátěžových testů konstantní. Využití paměti bylo téměř stejné i napříč různými testy. Pouze u procesu $voiceglue$ byl mezi testy patrný mírný nárůst nároku na paměť. I přes tento mírný postupný nárůst se využití paměti tímto procesem pohybovalo pouze mezi 2-9\%.
+
+Pro obsluhu většího počtu souběžných hovorů by bylo nutné zajistit vyšší výpočetní výkon, resp. procesor s více jádry. Další možností, jak zajistit vyšší škálovatelnost a stabilitu celého systému, je provozovat jednotlivé komponenty na různých serverech. Mohli bychom tedy například provozovat aplikační a hlasový server na odlehlých serverech.
 
 \section{Závěr}
 \label{sec:Conclusion}
@@ -1481,7 +1496,13 @@ Ondřej Ždych
 \textit{Flite: a small, fast run time synthesis engine}, http://www.festvox.org/flite.
 
 \bibitem{festival_wiki}
-\textit{Festival Speech Synthesis System}, http://en.wikipedia.org/wiki/Festival_Speech_Synthesis_System.
+\textit{Festival Speech Synthesis System}, http://en.wikipedia.org/wiki/Festival\_Speech_Synthesis_System.
+
+\bibitem{cepstral_wiki}
+\textit{Festival Speech Synthesis System}, http://en.wikipedia.org/wiki/Cepstral\_(company).
+
+\bibitem{cepstral_com}
+\textit{Cepstral TTS}, https://www.cepstral.com.
 
 \bibitem{angulardocs} Google,
 \textit{Dokumentace k frameworku AngularJS}, http://docs.angularjs.org.
