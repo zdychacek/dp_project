@@ -441,12 +441,43 @@ Přímo na webových stránkách společnosti je možné objednat jednotlivé hl
 
 \section{Technologie Automatic Speech Recognition}
 \label{sec:ASR}
-TODO
+Technologie ASR, neboli technologie automatického rozpoznávání řeči, je další důležitou součástí hlasové platformy. Uživateli umožňuje ovládat hlasovou aplikaci pomocí hlasových pokynů.
+
+Dnešní systémy pro automatické rozpoznávání řeči dosahují přesnosti rozpoznávání, která se může pohybovat až kolem 70\% \cite{vxmldevguide}. K dispozici jsou i systémy, které dokáží rozpoznávat i komplexní jazyky mající širokou slovní zásobu a složitou strukturu, např. čínštinu nebo češtinu.
+
+ASR systémy můžeme rozdělit podle toho, zda jsou orientovány na rozpoznávání souvislé řeči nebo na rozpoznávání izolovaných slov. Rozpoznávání souvislé řeči je, ve srovnání s rozpoznáváním izolovaných slov, mnohem náročnější proces. Při rozpoznávání souvislé řeči totiž dochází k nežádoucím jevům jako je např. spodoba\footnote{Poslední hláska ve slově je ovlivněna následující hláskou, kterou začíná druhé slovo.} slov nebo polykání hlásek. Při rozpoznávání izolovaných slov k těmto jevům nedochází a je proto rozpoznávání výpočetně i algoritmicky jednodušší.
+
+Pro automatické rozpoznávání řeči se používá několik metod. První metodou je použití algoritmu skrytého Markovova modelu. Jedná se o statistický model, který obsahuje skryté stavy. V kombinaci s tímto algoritmem bývá použit Viterbiho algoritmus za účelem nalezení nejpravděpodobnější posloupnosti skrytých stavů. Tato metoda je vhodná pro rozpoznávání plynulé řeči \cite{asr_wiki}.
+
+Další používanou metodou je metoda dynamického borcení času. Tato metoda je využívána pro rozpoznávání izolovaných slov. Podstatou této metody je měření podobnosti mezi dvěma nahrávkami slov a snaha najít nejlepší shodu.
+
+ASR systémy můžeme rozdělit i podle závislosti, resp. nezávislosti na mluvčím. Systémy, které jsou závislé na konkrétním mluvčím dosahují pro tuto osobu lepších výsledků. Nevýhodou tohoto typu systému je, že daná osoba musí, pro účely natrénování použitelného modelu, namluvit několik hodin nahrávek.
+
+Univerzálnějším typem ASR systému jsou systémy nezávislé na mluvčím. V tomto případě se model sestavuje z nahrávek, které jsou pořízený různými osobami. Nevýhodou těchto systémů je nižší přesnost rozpoznání. Je proto nutné použít další metody, které slouží k adaptaci na konkrétního mluvčího.
+
+Na obrázku \ref{fig:asr_scheme} je zachyceno schéma procesu automatického rozpoznávání řeči.
+
+\InsertFigure{Figures/asr_scheme}{1\textwidth}{Proces automatického rozpoznávání řeči}{fig:asr_scheme}
+
+\subsection{Hlasový vstup a jeho numerická reprezentace}
+První fází procesu rozpoznávání řeči je digitalizace řeči, tedy zachycení uživatelského vstupu (řeči) a jeho převodu do digitální podoby (nahrávky).
+
+Druhou fází je transformace digitálních dat do numerické modelu. Numerická model zachycuje informace o výšce hlasu v jednotlivých částech nahrávky a další důležité informace potřebné pro další zpracování.
+
+\subsection{Fonetické mapování a generování výstupu}
+Třetí fází procesu rozpoznávání řeči je fonetické mapování. Tato fáze je nejvíce komplexní a od její přesnosti se odvíjí přesnost celého systému. V této fázi je provedena spektrální analýza numerického modelu. Na základě výsledku spektrální analýzy jsou vybrány pravděpodobnostně nejvhodnější fonémy\footnote{Foném je nejmenší součást zvukové stránky řeči, která ještě má rozlišovací funkci v systému konkrétního jazyka.} \cite{vxmldevguide}.
+
+Výsledkem fonetického mapování je vygenerování sady řetězců, které vznikly poskládáním z jednotlivých fonémů.
+
+Každému řetězci je přiřazeno skóre, které vyjadřuje podobnost k právě rozpoznávanému slovu. Na základě této podobnosti a gramatiky, která popisuje hodnoty přípustné pro vstup, dochází k vybrání nejvhodnější řetězce. Tento řetězec je poté poslán na výstup.
 
 \subsection{Vybraná ASR řešení}
 TODO
 
 \subsubsection{Loquendo}
+TODO
+
+\subsubsection{Nuance}
 TODO
 
 \section{Návrh webového portálu}
@@ -1503,6 +1534,9 @@ Ondřej Ždych
 
 \bibitem{cepstral_com}
 \textit{Cepstral TTS}, https://www.cepstral.com.
+
+\bibitem{asr_wiki} Wikipedia,
+\textit{Speech recognition}, http://en.wikipedia.org/wiki/Speech\_recognition.
 
 \bibitem{angulardocs} Google,
 \textit{Dokumentace k frameworku AngularJS}, http://docs.angularjs.org.
