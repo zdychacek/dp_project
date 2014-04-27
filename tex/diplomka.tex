@@ -1530,7 +1530,17 @@ Pro obsluhu většího počtu souběžných hovorů by bylo nutné zajistit vyš
 
 \section{Závěr}
 \label{sec:Conclusion}
-TODO
+V diplomové práci jsem se zabýval návrhem a následnou implementací webového a hlasového rozhraní informačního systému pro správu letenek. Hlasový portál byl navrhován na platformě VoiceXML.
+
+V úvodní kapitole práce byl nejdříve představen jazyk VoiceXML a poté byly představeny vybrané hlasové platformy.
+
+Další kapitoly se zabývaly popisem souvisejících technologií, konkrétně zde byla představena technologie pro syntézu řeči (TTS) a technologie pro automatické rozpoznávání řeči (ASR).
+
+Hlavní náplň práce je obsažena v páté a šesté kapitole. Tyto kapitoly jsou věnovány popisu návrhu webového, resp. hlasového portálu. Byl zde detailně představen návrh knihovny, která má za úkol usnadnit návrh hlasových aplikací na platformě VoiceXML.
+
+V poslední kapitole práce byly provedeny zátěžové testy navrženého hlasového portálu a byly tímto zjištěny reálné hardwarové a softwarové požadavky na provozní prostředí hlasového portálu.
+
+Jako největší přínos této práce považuji vytvoření knihovny sloužící k usnadnění a urychlení vývoje hlasových aplikací na platformě VoiceXML.
 
 \bigskip
 \begin{flushright}
@@ -1622,16 +1632,16 @@ Ondřej Ždych
 \appendix
 \section{Přílohy}
 \subsection{Zdrojové kódy}
-Na doprovodném CD jsou k dispozici zdrojové kódy webového a hlasového portálu včetně navrhované VXML knihovny.
+Na doprovodném CD jsou k dispozici zdrojové kódy webového a hlasového portálu včetně navržené VXML knihovny.
 
 \subsection{Diagramy jednotlivých částí hlasového portálu}
 \label{sec:voice_portal_diagrams}
-V této příloze se nachází diagramy všech částí hlasového portálu. Pro přehlednost zde uvádím odkazy na diagramy částí, které byly zmíněny přímo v textu práce.
+V této příloze se nachází diagramy všech částí hlasového portálu. Pro přehlednost zde uvádím odkazy na diagramy částí, které byly uvedeny přímo v textu práce.
 
 \subsubsection{V textu uvedené diagramy}
 \begin{itemize}
 \item Hlavní struktura hlasového portálu je znázorněna na obrázku \ref{fig:MainFlow}.
-\item Vnitřní stavy stavu $getLoginData$ je znázorněn na obrázku \ref{fig:GetLoginDataFlow}.
+\item Vnitřní struktura stavu $getLoginData$ je znázorněna na obrázku \ref{fig:GetLoginDataFlow}.
 \item Struktura komponenty pro zadání data je znázorněna na obrázku \ref{fig:GetDateDtmfFlow}.
 \item Struktura komponenty pro zadání textového vstupu je znázorněna na obrázku \ref{fig:GetTextInputDtmfFlow}.
 \item Struktura komponenty pro zvolení destinace je znázorněna na obrázku \ref{fig:GetDestinationFlow}.
