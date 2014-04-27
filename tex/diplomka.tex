@@ -3,7 +3,7 @@
 %\documentclass[ing,male,java,dept460,twoside]{diploma}		% oboustranny dokument
 \usepackage[czech]{babel}
 
-\renewcommand{\figurename}{Obrázek}
+\renewcommand{\figurename}{Obr.}
 
 % JavaScript highlighting
 \usepackage{graphicx}
@@ -84,15 +84,27 @@
 
 \Thanks{Touto cestou bych rád poděkoval vedoucímu diplomové práce, panu Ing. Pavlovi Nevludovi, především za konzultace a odborné rady, které jsem zúročil při psaní tohoto textu.}
 
-\CzechAbstract{Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstrakt.
-Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstrakt.
-Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstrakt.}
+\CzechAbstract{Diplomová práce se zabývá návrhem a implementací webového a hlasového portálu na platformě VoiceXML.
 
-\CzechKeywords{VoiceXML, VXML, hlasový portál, XML, JSON, ASR, TTS, JavaScript, Node.js, AngularJS}
+Nejdříve je představen samotný jazyk VoiceXML a vybrané hlasové platformy. Následuje úvod do problematiky související s technologiemi pro syntézu řeči (TTS) a automatické rozpoznávání řeči (ASR).
 
-\EnglishAbstract{This is English abstract. This is English abstract. This is English abstract. This is English abstract. This is English abstract. This is English abstract.}
+V práci je dále popsán návrh a implementace webového a hlasového rozhraní informačního systému pro rezervaci letenek. Nechybí zde ani popis konfigurace hlasového portálu.
 
-\EnglishKeywords{VoiceXML, VXML, voice portal, XML, JSON, ASR, TTS, JavaScript, Node.js, AngularJS}
+Součástí práce bylo také provedení zátěžových testů navrženého hlasového portálu.}
+
+\CzechKeywords{VoiceXML, VXML, hlasový portál, JSON, automatické rozpoznávání řeči, syntéza řeči, JavaScript, Node.js, AngularJS, Asterisk, VoiceGlue, Voxeo Prophecy, SIP}
+
+\EnglishAbstract{Master’s thesis deals with design and implementation of web and voice portal with VoiceXML platform.
+
+There is an introduction to related technologies like speech syntesis (TTS) and automatic speech recognition (ASR) covered too.
+
+First chapters are dedicated to introduction to VoiceXML language and voice platforms.
+
+Following chapters of this thesis describe design and implementaion of web and voice interface for ticket reservations information system. There is also a description of the configuration of the voice portal included in next chapter.
+
+There were made some benchmark tests of designed voice portal too.}
+
+\EnglishKeywords{VoiceXML, VXML, voice portal, JSON, automatic speech recognition, speech synthesis, JavaScript, Node.js, AngularJS, Asterisk, VoiceGlue, Voxeo Prophecy, SIP}
 
 % Pridame pouzivane zkratky (pokud nejake pouzivame).
 \AddAcronym{XML}{Extensible Markup Language}
@@ -162,12 +174,26 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 \lstlistoflistings
 \cleardoublepage	% odstrankujeme, u jednostranneho dokumentu o jednu stranku, u oboustrenneho o dve
 
-
-
 % Zacneme uvodem
 \section{Úvod}
 \label{sec:Uvod}
-TODO
+Tématem diplomové práce je návrh a implementace webového a hlasového portálu s podporou VoiceXML. Výběr tématu práce byl motivován mým zájmem navrhnout webový informační systém, který bude zároveň možné ovládat i pomocí samoobslužného hlasového kanálu a přinese tak uživatelům flexibilnější možnosti ovládání. V diplomové práci je popsán návrh webového a hlasového rozhraní informačního systému pro rezervaci letenek.
+
+Druhá až čtvrtá kapitola se zabývají teoretickým úvodem do problematiky návrhu hlasových aplikací postavených na platformě VoiceXML.
+
+V druhé kapitole je představen jazyk VoiceXML a jeho struktura. Kapitola pokračuje popisem vybraných hlasových platforem, na kterých je možné hlasové aplikace provozovat. Náplní závěrečné části kapitoly je seznámení s praktickým návrhem aplikací pomocí jazyka VoiceXML.
+
+Třetí část představuje problematiku technologie TTS, tedy technologie syntézy umělé řeči.
+
+Čtvrtá část se zabývá problematikou automatického rozpoznávání řeči pomocí technologie ASR.
+
+Na začátku páté kapitoly je představena navrhovaná aplikace, tedy informační systém pro rezervaci letenek. Zbytek kapitoly je věnován návrhu webového portálu a použitým technologiím.
+
+Na návrh webového portálu plynule navazuje kapitola šestá, která nejdříve představuje vlastnosti hlasového portálu a poté popisuje jeho samotný návrh. Převážná část kapitoly je věnována návrhu knihovny, která slouží k usnadnění návrhu hlasových aplikací postavených na platformě VoiceXML.
+
+Náplní sedmé kapitoly je popis konfigurace vybraných hlasových platforem a zprovoznění navrženého hlasového portálu.
+
+Poslední kapitola se zabývá provedením zátěžových testů hlasového portálu, kde jsou prakticky zjištěny hardwarové a softwarové požadavky na provozní prostředí hlasového portálu.
 
 \section{VoiceXML}
 \label{sec:VoiceXML}
