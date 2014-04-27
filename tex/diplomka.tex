@@ -124,7 +124,8 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 \AddAcronym{RHEL}{Red Hat Enterprise Linux}
 \AddAcronym{MRCP}{Media Resource Control Protocol}
 \AddAcronym{CCXML}{Call Control eXtensible Markup Language}
-
+\AddAcronym{SRGS}{Speech Recognition Grammar Specification}
+\AddAcronym{SISR}{Semantic Interpretation for Speech Recognition}
 
 % Zadame cestu a jmeno souboru ci nekolika souboru s digitalizovanou podobou zadani prace
 % Pri sazbe se pak hledaji soubory Figures/Zadani1.jpg, Figures/Zadani2.jpg atd.
@@ -472,13 +473,28 @@ Výsledkem fonetického mapování je vygenerování sady řetězců, které vzn
 Každému řetězci je přiřazeno skóre, které vyjadřuje podobnost k právě rozpoznávanému slovu. Na základě této podobnosti a gramatiky, která popisuje hodnoty přípustné pro vstup, dochází k vybrání nejvhodnější řetězce. Tento řetězec je poté poslán na výstup.
 
 \subsection{Vybraná ASR řešení}
-TODO
+Na trhu je k dispozici několik ASR řešení, která jsou převážně komerčního charakteru. Najdeme mezi nimi ale i řešení, která vznikla na půdě univerzit a mohou být k dispozici zdarma. Taková řešení bohužel většinou nedosahují takových kvalit jako řešení komerční.
 
 \subsubsection{Loquendo}
-TODO
+Loquendo je ASR systém od společnosti Nuance, který je možné provozovat na zařízeních od kapesních zařízení po desktopové počítače. Jedná se o systém, který je nezávislý na mluvčím a umožňuje rozpoznávání plynulé řeči nebo izolovaných slov. Systém si dokáže poradit i s rozpoznáváním řeči v hlučném prostředí \cite{loquendo}.
 
-\subsubsection{Nuance}
-TODO
+Loquendo dokáže pracovat s velmi širokou slovní zásobou (až 1 milion slov). Systém dosahuje vysoké přesnosti použitím neuronových sítí a algoritmu skrytého Markovova modelu.
+
+Díky své podpoře standardů pro popis gramatik (SRGS 1.0, SISR 1.0) je systém velmi dobře optimalizován pro využití ve VoiceXML aplikacích.
+
+Loquendo podporuje rozpoznávání celkem 28 jazyků, mezi kterými nechybí např. britská a americká angličtina, holandština, dánština, řečtina a francouzština. Loquendo bohužel nepodporuje rozpoznávání češtiny \cite{nuance_com}.
+
+Loquendo je možné si vyzkoušet vytočením telefonního čísla (předvolba USA), kde jsou připraveny tři ukázkové aplikace.
+
+\subsubsection{Laboratoř počítačového zpracování řeči TU Liberec}
+Tato laboratoř patří k vedoucím pracovištím v oboru hlasových technologií v České republice. Začátkem devadesátých se tato laboratoř začala věnovat problematice rozpoznávání izolovaných slov a frází. Později se začala věnovat i rozpoznávání plynulé řeči s orientací na český jazyk.
+
+ASR systémy vyvinuté touto laboratoří zvládají rozpoznávání izolovaných slov z rozsáhlých slovníků, které obsahují stovky tisíc slov. Systém rozpoznávání je nezávislý na mluvčím a v reálném čase dokáže rozpoznávat s úspěšností 95\%. ASR systémy lze provozovat i na mobilních zařízeních.
+
+U systémů pro rozpoznávání plynulé řeči se úspěšnost, s použitím slovníku, který obsahuje 350 tisíc slov, pohybuje kolem 90\%. V případě přepisu televizních nebo rozhlasových pořadů se úspěšnost pohybuje až kolem 95 - 97\%.
+
+Laboratoř vyvinula několik aplikací, které využívají schopnosti rozpoznávání řeči. Můžeme uvést např. aplikaci MobilDictate, která slouží k diktování textů do mobilního zařízení nebo aplikaci ATT (Audio Transcription Toolkit), která slouží k automatickému generování titulků pro televizní pořady.
+
 
 \section{Návrh webového portálu}
 \label{sec:Navrh}
@@ -1511,7 +1527,7 @@ Ondřej Ždych
 \bibitem{voiceglue_architecture}
 \textit{Architektura VoiceGlue}, https://github.com/voiceglue/voiceglue/wiki/Features-and-Architecture.
 
-\bibitem{xml_wiki}
+\bibitem{xml_wiki} Wikipedia,
 \textit{Extensible Markup Language}, http://cs.wikipedia.org/wiki/Extensible\_Markup\_Language.
 
 \bibitem{vxml_rychlokurz} Katedra telekomunikační techniky, ČVUT Praha,
@@ -1526,10 +1542,10 @@ Ondřej Ždych
 \bibitem{festvox_org}
 \textit{Flite: a small, fast run time synthesis engine}, http://www.festvox.org/flite.
 
-\bibitem{festival_wiki}
-\textit{Festival Speech Synthesis System}, http://en.wikipedia.org/wiki/Festival\_Speech_Synthesis_System.
+\bibitem{festival_wiki} Wikipedia,
+\textit{Festival Speech Synthesis System}, http://en.wikipedia.org/wiki/Festival\_Speech\_Synthesis\_System.
 
-\bibitem{cepstral_wiki}
+\bibitem{cepstral_wiki} Wikipedia,
 \textit{Festival Speech Synthesis System}, http://en.wikipedia.org/wiki/Cepstral\_(company).
 
 \bibitem{cepstral_com}
@@ -1537,6 +1553,12 @@ Ondřej Ždych
 
 \bibitem{asr_wiki} Wikipedia,
 \textit{Speech recognition}, http://en.wikipedia.org/wiki/Speech\_recognition.
+
+\bibitem{loquendo}
+\textit{Loquendo ASR}, http://www.sintel.com/bibli/telechargement/168/document\_Multi.pdf.
+
+\bibitem{nuance_com}
+\textit{Web společnosti Nuance}, http://www.nuance.com.
 
 \bibitem{angulardocs} Google,
 \textit{Dokumentace k frameworku AngularJS}, http://docs.angularjs.org.
