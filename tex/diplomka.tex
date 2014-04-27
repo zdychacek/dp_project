@@ -167,7 +167,7 @@ Tohle je nějaký abstrakt. Tohle je nějaký abstrakt. Tohle je nějaký abstra
 % Zacneme uvodem
 \section{Úvod}
 \label{sec:Uvod}
-Tady bude super úvod.
+TODO
 
 \section{VoiceXML}
 \label{sec:VoiceXML}
@@ -491,10 +491,9 @@ Tato laboratoř patří k vedoucím pracovištím v oboru hlasových technologi�
 
 ASR systémy vyvinuté touto laboratoří zvládají rozpoznávání izolovaných slov z rozsáhlých slovníků, které obsahují stovky tisíc slov. Systém rozpoznávání je nezávislý na mluvčím a v reálném čase dokáže rozpoznávat s úspěšností 95\%. ASR systémy lze provozovat i na mobilních zařízeních.
 
-U systémů pro rozpoznávání plynulé řeči se úspěšnost, s použitím slovníku, který obsahuje 350 tisíc slov, pohybuje kolem 90\%. V případě přepisu televizních nebo rozhlasových pořadů se úspěšnost pohybuje až kolem 95 - 97\%.
+U systémů pro rozpoznávání plynulé řeči se úspěšnost, s použitím slovníku, který obsahuje 350 tisíc slov, pohybuje kolem 90\%. V případě přepisu televizních nebo rozhlasových pořadů se úspěšnost pohybuje až kolem 95 - 97\% \cite{speechlab}.
 
 Laboratoř vyvinula několik aplikací, které využívají schopnosti rozpoznávání řeči. Můžeme uvést např. aplikaci MobilDictate, která slouží k diktování textů do mobilního zařízení nebo aplikaci ATT (Audio Transcription Toolkit), která slouží k automatickému generování titulků pro televizní pořady.
-
 
 \section{Návrh webového portálu}
 \label{sec:Navrh}
@@ -683,7 +682,9 @@ Aby bylo možné s hlasovým rozhraním rezervačního systému začít pracovat
 
 \InsertSidewaysFigure{Figures/diagrams/mainflow}{1\textwidth}{Diagram popisující hlavní strukturu hlasového portálu}{fig:MainFlow}
 
-V případě úspěšného přihlášení do systému, je uživateli přehrána uvítací zpráva a následně je uživatel přesměrován do hlavního menu aplikace, kde má k dispozici akce pro správu a vytváření rezervací (seznam akcí je uveden v textu kapitoly \ref{sec:Navrh_hlasoveho_portalu}). Jednotlivá menu aplikace jsou navržena tak, aby měl uživatel kdykoliv možnost vrátit se o úroveň zpět. Na obrázku \ref{fig:MainFlow} je zobrazena hlavní struktura hlasového portálu. Struktura aplikace je na obrázku popsána formou stavového diagramu. Obdélníky reprezentují jednotlivé stavy aplikace. Některé stavy jsou pro svoji komplexnost zobrazeny pouze abstraktně. U abstraktních stavů je vždy uvedena informace, která slouží jako jakýsi odkaz na další diagram, který daný stav popisuje detailněji. Jako příklad můžu uvést stav pojmenovaný $getLoginData$. U tohoto stavu je ve dvojitých úhlových závorkách uvedena informace $<<GetLoginDataFlow>>$. Tato informace nám říká, že stav $getLoginData$ obsahuje další vnořené stavy. Tyto stavy jsou v aplikaci implementovány třídou $GetLoginDataFlow$. K této třídě existuje diagram, který popisuje vnitřní uspořádání těchto stavů a přechody mezi nimi. Pro ukázku uvádím ještě diagram této třídy na obrázku \ref{fig:GetLoginDataFlow}.
+V případě úspěšného přihlášení do systému, je uživateli přehrána uvítací zpráva a následně je uživatel přesměrován do hlavního menu aplikace, kde má k dispozici akce pro správu a vytváření rezervací (seznam akcí je uveden v textu kapitoly \ref{sec:Navrh_hlasoveho_portalu}). Jednotlivá menu aplikace jsou navržena tak, aby měl uživatel kdykoliv možnost vrátit se o úroveň zpět.
+
+Na obrázku \ref{fig:MainFlow} je zobrazena hlavní struktura hlasového portálu. Struktura aplikace je na obrázku popsána formou stavového diagramu. Obdélníky reprezentují jednotlivé stavy aplikace. Některé stavy jsou pro svoji komplexnost zobrazeny pouze abstraktně. U abstraktních stavů je vždy uvedena informace, která slouží jako jakýsi odkaz na další diagram, který daný stav popisuje detailněji. Jako příklad můžu uvést stav pojmenovaný $getLoginData$. U tohoto stavu je ve dvojitých úhlových závorkách uvedena informace $<<GetLoginDataFlow>>$. Tato informace nám říká, že stav $getLoginData$ obsahuje další vnořené stavy. Tyto stavy jsou v aplikaci implementovány třídou $GetLoginDataFlow$. K této třídě existuje diagram, který popisuje vnitřní uspořádání těchto stavů a přechody mezi nimi. Pro ukázku uvádím ještě diagram této třídy na obrázku \ref{fig:GetLoginDataFlow}. Diagramy ostatních částí aplikace jsou obsaženy v příloze \ref{sec:voice_portal_diagrams}.
 
 \InsertFigure{Figures/diagrams/getlogindataflow}{0.8\textwidth}{Diagram popisující vnitřní stavy stavu $getLoginData$}{fig:GetLoginDataFlow}
 
@@ -1503,7 +1504,7 @@ Pro obsluhu většího počtu souběžných hovorů by bylo nutné zajistit vyš
 
 \section{Závěr}
 \label{sec:Conclusion}
-Tak tady je konečně konec.
+TODO
 
 \bigskip
 \begin{flushright}
@@ -1557,6 +1558,9 @@ Ondřej Ždych
 \bibitem{loquendo}
 \textit{Loquendo ASR}, http://www.sintel.com/bibli/telechargement/168/document\_Multi.pdf.
 
+\bibitem{speechlab} Technická univerzita v Liberci,
+\textit{Laboratoř počítačového zpracování řeči}, https://www.ite.tul.cz/speechlab.
+
 \bibitem{nuance_com}
 \textit{Web společnosti Nuance}, http://www.nuance.com.
 
@@ -1590,9 +1594,40 @@ Ondřej Ždych
 \end{thebibliography}
 
 \appendix
-\section{Grafy a měření}
-Tohle je příloha k práci. Většinou se sem dávají grafy, tabulky, které by vzhledem
-ke svému počtu překážely v textu diplomky.
+\section{Přílohy}
+\subsection{Zdrojové kódy}
+Na doprovodném CD jsou k dispozici zdrojové kódy webového a hlasového portálu včetně navrhované VXML knihovny.
+
+\subsection{Diagramy jednotlivých částí hlasového portálu}
+\label{sec:voice_portal_diagrams}
+V této příloze se nachází diagramy všech částí hlasového portálu. Pro přehlednost zde uvádím odkazy na diagramy částí, které byly zmíněny přímo v textu práce.
+
+\subsubsection{V textu uvedené diagramy}
+\begin{itemize}
+\item Hlavní struktura hlasového portálu je znázorněna na obrázku \ref{fig:MainFlow}.
+\item Vnitřní stavy stavu $getLoginData$ je znázorněn na obrázku \ref{fig:GetLoginDataFlow}.
+\item Struktura komponenty pro zadání data je znázorněna na obrázku \ref{fig:GetDateDtmfFlow}.
+\item Struktura komponenty pro zadání textového vstupu je znázorněna na obrázku \ref{fig:GetTextInputDtmfFlow}.
+\item Struktura komponenty pro zvolení destinace je znázorněna na obrázku \ref{fig:GetDestinationFlow}.
+\item Vnitřní struktura stavu $destinationSelection$ komponenty pro zvolení destinace je znázorněna na obrázku \ref{fig:DestinationSelectionFlow}.
+\end{itemize}
+
+\subsubsection{V textu neuvedené diagramy}
+
+\InsertSidewaysFigure{Figures/diagrams/appendix/createnewflow}{1\textwidth}{Struktura stavu $createNew <<CreateNewFlow>>$}{fig:createnewflow}
+
+\InsertFigure{Figures/diagrams/appendix/cancelactiveflow}{1\textwidth}{Struktura stavu $cancelActive <<CancelActiveFlow>>$}{fig:cancelactiveflow}
+
+\InsertFigure{Figures/diagrams/appendix/listactiveflow}{0.85\textwidth}{Struktura stavu $listActive <<ListActiveFlow>>$}{fig:listactiveflow}
+
+\InsertFigure{Figures/diagrams/appendix/filterbyarrivaldateflow}{0.6\textwidth}{Struktura stavu $filterByArrivalDate <<FilterByArrivalDateFlow>>$}{fig:filterbyarrivaldateflow}
+
+\InsertFigure{Figures/diagrams/appendix/filterbydeparturedateflow}{0.6\textwidth}{Struktura stavu $filterByDepartureDate <<FilterByDepartureDateFlow>>$}{fig:filterbydeparturedateflow}
+
+\InsertFigure{Figures/diagrams/appendix/reservationmenuflow}{1\textwidth}{Struktura stavu $reservationMenu <<ReservationMenuFlow>>$}{fig:reservationmenuflow}
+
+\InsertFigure{Figures/diagrams/appendix/reservationscontainerflow}{1\textwidth}{Struktura stavu $reservationsContainer <<ReservationsContainerFlow>>$}{fig:reservationscontainerflow}
+
 \clearpage
 
 \end{document}
