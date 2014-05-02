@@ -1530,15 +1530,25 @@ Pro obsluhu většího počtu souběžných hovorů by bylo nutné zajistit vyš
 
 \section{Závěr}
 \label{sec:Conclusion}
-V diplomové práci jsem se zabýval návrhem a následnou implementací webového a hlasového rozhraní informačního systému pro správu letenek. Hlasový portál byl navrhován na platformě VoiceXML.
+Diplomové práce se zabývala návrhem hlasového portálu na platformě VoiceXML.
 
-V úvodní kapitole práce byl nejdříve představen jazyk VoiceXML a poté byly představeny vybrané hlasové platformy.
+Úvodní kapitola nejdříve představila jazyk VoiceXML a jeho architekturu, strukturu VoiceXML dokumentů a seznámila nás se základy návrhu hlasových aplikací pomocí jazyka VoiceXML.
 
-Další kapitoly se zabývaly popisem souvisejících technologií, konkrétně zde byla představena technologie pro syntézu řeči (TTS) a technologie pro automatické rozpoznávání řeči (ASR).
+Text kapitoly dále pokračoval podrobným představením dvou hlasových platforem VoiceXML. Konkrétně zde byla představena architektura a vlastnosti komerční platformy Voxeo Prophecy a opensource platformy VoiceGlue.
 
-Hlavní náplň práce je obsažena v páté a šesté kapitole. Tyto kapitoly jsou věnovány popisu návrhu webového, resp. hlasového portálu. Byl zde detailně představen návrh knihovny, která má za úkol usnadnit návrh hlasových aplikací na platformě VoiceXML.
+Následující dvě kapitoly se zabývaly popisem technologií, které úzce souvisí s VoiceXML, resp. s návrhem hlasových portálů. Byla zde představena technologie pro syntézu řeči (TTS) a technologie pro automatické rozpoznávání řeči (ASR).
 
-V poslední kapitole práce byly provedeny zátěžové testy navrženého hlasového portálu a byly tímto zjištěny reálné hardwarové a softwarové požadavky na provozní prostředí hlasového portálu.
+Hlavní náplň práce je obsažena v páté a šesté kapitole. Na začátku páté kapitoly je představen informační systém pro rezervaci letenek. Následující text kapitoly popisuje návrh webového rozhraní tohoto informačního systému. Text se dále zabývá podrobnějším představením technologií, které byly pro návrh webového portálu zvoleny.
+
+Náplní šesté kapitoly je popis návrhu a následné implementace hlasového portálu, který doplňuje webové rozhraní informačního systému o možnost hlasového ovládání prostřednictvím samoobslužného hlasového kanálu. Hlasový portál je možné ovládat pomocí DTMF volby. Ovládání pomocí DMTF volby bylo zvoleno z důvodu možnosti provozovat hlasový portál i na platformách, které nedisponují možností automatického rozpoznávání řeči (ASR).
+
+Kapitola je rozdělena na dvě hlavní části. První část se zabývá návrhem knihovny, která má za úkol zpřehlednit a urychlit vývoj hlasových aplikací na platformě VoiceXML. Na tuto část navazuje část, kde je představen návrh konkrétních částí hlasového portálu pomocí vytvořené knihovny.
+
+Sedmá kapitola popisuje konfiguraci, kterou je nutné provést pro uvedení hlasového portálu do provozu. Je zde popsána konfigurace pro hlasového platformy Voxeo Prophecy a VoiceGlue.
+
+Poslední kapitola se zabývá zátěžovými testy hlasového portálu. Cílem zátěžových testů byla analýza využití systémových zdrojů a zjištění reálných hardwarových a softwarových požadavků na provozní prostředí hlasového portálu.
+
+Na začátku kapitoly byla nejdříve představena konfigurace testovacího prostředí. Následovalo představení testovacího scénáře. Zbytek kapitoly byl věnován rozboru provedených testů.
 
 Jako největší přínos této práce považuji vytvoření knihovny sloužící k usnadnění a urychlení vývoje hlasových aplikací na platformě VoiceXML.
 
