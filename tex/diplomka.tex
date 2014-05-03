@@ -92,11 +92,11 @@ V práci je dále popsán návrh a implementace webového a hlasového rozhraní
 
 Součástí práce bylo také provedení zátěžových testů navrženého hlasového portálu.}
 
-\CzechKeywords{VoiceXML, VXML, hlasový portál, JSON, automatické rozpoznávání řeči, syntéza řeči, JavaScript, Node.js, AngularJS, Asterisk, VoiceGlue, Voxeo Prophecy, SIP}
+\CzechKeywords{VoiceXML, VXML, hlasový portál, JSON, automatické rozpoznávání řeči, syntéza řeči, JavaScript, Node.js, AngularJS, Asterisk, VoiceGlue, Voxeo Prophecy, SIP, ASR, TTS}
 
 \EnglishAbstract{Master’s thesis deals with design and implementation of web and voice portal with VoiceXML platform.
 
-There is an introduction to related technologies like speech syntesis (TTS) and automatic speech recognition (ASR) covered too.
+There is an introduction to related technologies like speech synthesis (TTS) and automatic speech recognition (ASR) covered too.
 
 First chapters are dedicated to introduction to VoiceXML language and voice platforms.
 
@@ -104,15 +104,16 @@ Following chapters of this thesis describe design and implementaion of web and v
 
 There were made some benchmark tests of designed voice portal too.}
 
-\EnglishKeywords{VoiceXML, VXML, voice portal, JSON, automatic speech recognition, speech synthesis, JavaScript, Node.js, AngularJS, Asterisk, VoiceGlue, Voxeo Prophecy, SIP}
+\EnglishKeywords{VoiceXML, VXML, voice portal, JSON, automatic speech recognition, speech synthesis, JavaScript, Node.js, AngularJS, Asterisk, VoiceGlue, Voxeo Prophecy, SIP, ASR, TTS}
 
 % Pridame pouzivane zkratky (pokud nejake pouzivame).
 \AddAcronym{XML}{Extensible Markup Language}
+\AddAcronym{IP}{Internet Protocol}
 \AddAcronym{TCP/IP}{Transmission Control Protocol/Internet Protocol}
 \AddAcronym{HTTP}{Hypertext Transfer Protocol}
 \AddAcronym{W3C}{World Wide Web Consortium}
 \AddAcronym{VoIP}{Voice over Internet Protocol}
-\AddAcronym{SAP}{Single Page Application}
+\AddAcronym{SPA}{Single Page Application}
 \AddAcronym{HTML}{Hypertext Markup Language}
 \AddAcronym{AJAX}{Asynchronous JavaScript and XML}
 \AddAcronym{JSON}{JavaScript Object Notation}
@@ -131,7 +132,6 @@ There were made some benchmark tests of designed voice portal too.}
 \AddAcronym{AGI}{Asterisk Gateway Interface}
 \AddAcronym{SIP}{Session Initiation Protocol}
 \AddAcronym{CPU}{Central Processing Unit}
-\AddAcronym{IP}{Internet Protocol}
 \AddAcronym{CSV}{Comma-Separated Values}
 \AddAcronym{RHEL}{Red Hat Enterprise Linux}
 \AddAcronym{MRCP}{Media Resource Control Protocol}
@@ -177,15 +177,15 @@ There were made some benchmark tests of designed voice portal too.}
 % Zacneme uvodem
 \section{Úvod}
 \label{sec:Uvod}
-Tématem diplomové práce je návrh a implementace webového a hlasového portálu s podporou VoiceXML. Výběr tématu práce byl motivován mým zájmem navrhnout webový informační systém, který bude zároveň možné ovládat i pomocí samoobslužného hlasového kanálu a přinese tak uživatelům flexibilnější možnosti ovládání. V diplomové práci je popsán návrh webového a hlasového rozhraní informačního systému pro rezervaci letenek.
+Tématem diplomové práce je návrh a implementace webového a hlasového portálu na platformě VoiceXML. Výběr tématu práce byl motivován mým zájmem navrhnout webový informační systém, který bude zároveň možné ovládat i pomocí samoobslužného hlasového kanálu a přinese tak uživatelům flexibilnější možnosti ovládání. V diplomové práci je popsán návrh webového a hlasového rozhraní informačního systému pro rezervaci letenek.
 
-Druhá až čtvrtá kapitola se zabývají teoretickým úvodem do problematiky návrhu hlasových aplikací postavených na platformě VoiceXML.
+Druhá až čtvrtá kapitola se zabývá teoretickým úvodem do problematiky návrhu hlasových aplikací postavených na platformě VoiceXML.
 
-V druhé kapitole je představen jazyk VoiceXML a jeho struktura. Kapitola pokračuje popisem vybraných hlasových platforem, na kterých je možné hlasové aplikace provozovat. Náplní závěrečné části kapitoly je seznámení s praktickým návrhem aplikací pomocí jazyka VoiceXML.
+V druhé kapitole je nejdříve představen jazyk VoiceXML a struktura VoiceXML dokumentů. Kapitola pokračuje popisem vybraných hlasových platforem, na kterých je možné hlasové aplikace provozovat. Náplní závěrečné části kapitoly je seznámení s praktickým návrhem aplikací pomocí jazyka VoiceXML.
 
-Třetí část představuje problematiku technologie TTS, tedy technologie syntézy umělé řeči.
+Třetí kapitola představuje problematiku technologie TTS, tedy technologie převodu textu na řeč.
 
-Čtvrtá část se zabývá problematikou automatického rozpoznávání řeči pomocí technologie ASR.
+Čtvrtá kapitola se zabývá problematikou automatického rozpoznávání řeči pomocí technologie ASR.
 
 Na začátku páté kapitoly je představena navrhovaná aplikace, tedy informační systém pro rezervaci letenek. Zbytek kapitoly je věnován návrhu webového portálu a použitým technologiím.
 
@@ -212,14 +212,16 @@ Ve VoiceXML aplikacích jsou dokumenty také uloženy na webovém serveru. Typic
 
 Mimo aplikační a databázový server, architektura VoiceXML navíc obsahuje hlasový server. Součástí hlasového serveru je interpretr VoiceXML dokumentů, modul pro syntézu řeči (TTS) a modul pro rozpoznávání řeči (ASR). Hlasový server zastává roli prohlížeče, který je používán u webových aplikací. Generuje zvukové výzvy a interpretuje hlasové volby od uživatele.
 
-Uživatel se k hlasovému serveru připojuje prostřednictvím telefonního zařízení. Tímto zařízením může být např. pevná linka, která je součástí veřejné telefonní sítě nebo VoIP telefon, který je připojen do VoIP sítě. Tato zařízení jsou poté prostřednictvím telefonní ústředny připojena k hlasovému serveru. Jednotlivé servery spolu komunikují prostřednictvím protokolu TCP/IP. Pro přenos dat je typicky zvolen HTTP protokol.
+Uživatel se k hlasovému serveru připojuje prostřednictvím telefonního zařízení. Tímto zařízením může být např. pevná linka, která je součástí veřejné telefonní sítě nebo VoIP telefon, který je připojen do VoIP sítě. Tato zařízení jsou poté prostřednictvím telefonní ústředny připojena k hlasovému serveru.
+
+Jednotlivé servery spolu komunikují prostřednictvím protokolu TCP/IP. Pro přenos dat je typicky zvolen HTTP protokol.
 
 Na obrázku \ref{fig:voicexml_architecture} je uvedeno schéma výše popsané architektury \cite{vxml_rychlokurz}.
 
 \InsertFigure{Figures/vxml_architecture}{1\textwidth}{Architektura VoiceXML}{fig:voicexml_architecture}
 
 \subsection{Hlasové platformy VoiceXML}
-V této části si představíme dvě hlasové (IVR) platformy, nad kterými lze provozovat VoiceXML aplikace. U každé platformy uvedu přehled dostupných funkcí, zmíním licenční podmínky, které jsou spojeny s používáním IVR platformy. V neposlední řadě uvedu informaci o podporované verzi VoiceXML.
+V této části představím dvě hlasové (IVR) platformy, nad kterými lze provozovat VoiceXML aplikace. U každé platformy popíši architekturu, uvedu přehled dostupných funkcí a zmíním licenční podmínky, které jsou spojeny s používáním IVR platformy. V neposlední řadě uvedu informaci o podporované verzi jazyka VoiceXML.
 
 Hlasový portál, jehož návrh bude popsán v kapitole \ref{sec:Navrh_hlasoveho_portalu}, bude optimalizován pro provoz právě nad těmito hlasovými platformami.
 
@@ -231,9 +233,11 @@ Platformu je možné integrovat s veřejnou telefonní sítí. Aplikace provozov
 
 IVR Voxeo Prophecy je možné provozovat na operačních systémech Windows (32 i 64 bitů), Mac OS X a na linuxových distribucích, které jsou založeny na RHEL (např. CentOS). Pro produkční prostředí je však doporučován operační systém založený na linuxu.
 
-Jak již bylo uvedeno, tak je Voxeo Prophecy komerční platformou. Provoz této platformy je velmi limitován licenčními podmínkami. Voxeo Prophecy s podporou dvou souběžných hovorů je možné stáhnout zdarma. Aplikaci lze bez registrace provozovat pouze po dobu jednoho měsíce. Můžeme však u Voxea podstoupit bezplatnou registraci a touto registrací odstranit časové omezení. Aplikaci lze poté provozovat po neomezeně dlouhou dobu, omezení na dva souběžné hovory však stále zůstává. Po registraci máme možnost dokoupit si licenci na provozování více souběžných hovorů (portů) \cite{vxml_org}. Pořízení dalších portů však není levnou záležitostí. Na webu společnosti Voxeo je možné najít aktuální ceník.
+Jak již bylo uvedeno, Voxeo Prophecy je komerční platformou. Provoz této platformy je velmi limitován licenčními podmínkami. Voxeo Prophecy s podporou dvou souběžných hovorů je možné stáhnout zdarma. Aplikaci lze bez registrace provozovat pouze po dobu jednoho měsíce. Můžeme však u Voxea podstoupit bezplatnou registraci a touto registrací odstranit časové omezení. Aplikaci lze poté provozovat po neomezeně dlouhou dobu, omezení na dva souběžné hovory však stále zůstává.
 
-Platforma sestává ze čtyř serverů \cite{vxml_interpreters}, jejichž spuštění se děje automaticky po startu systému:
+Po registraci máme možnost dokoupit si licenci na provozování více souběžných hovorů (portů) \cite{vxml_org}. Pořízení dalších portů však není levnou záležitostí. Na webu společnosti Voxeo je možné najít aktuální ceník.
+
+Platforma Voxeo Prophecy sestává ze čtyř serverů \cite{vxml_interpreters}, jejichž spuštění se děje automaticky po startu systému:
 
 \begin{itemize}
 \item Voxeo Prophecy Server
@@ -242,7 +246,7 @@ Platforma sestává ze čtyř serverů \cite{vxml_interpreters}, jejichž spušt
 \item Voxeo Prophecy Application Server
 \end{itemize}
 
-Voxeo Prophecy Server je tvořen dvěmi částmi. Jedna část slouží ke zpracování řídících CCXML (značkovací jazyk zabezpečující správu, ovládání a přepojování telefonátů) informací. Druhá část je tvořena MRCP serverem, který slouží ke zpracovávání médií.
+Voxeo Prophecy Server je tvořen dvěmi částmi. Jedna část slouží ke zpracování řídících CCXML\footnote{CCXML je značkovací jazyk zabezpečující správu, ovládání a přepojování telefonátů.} informací. Druhá část je tvořena MRCP serverem, který slouží ke zpracovávání médií.
 
 Voxeo Prophecy VoiceXML Browser je interpretr, který slouží ke zpracování VoiceXML dokumentů. Tento interpretr plně podporuje specifikaci VoiceXML verze 2.1.
 
@@ -254,7 +258,7 @@ Součástí platformy Voxeo Prophecy je dále SIP klient s grafickým rozhraním
 
 Konfigurace hlasových aplikací probíhá prostřednictvím webového rozhraní, jehož jedna stránka je zobrazena na obrázku \ref{fig:Voxeo_admin}.
 
-Společnost Voxeo je zároveň provozovatelem domény $vxml.org$, kde je možné nalézt VoiceXML dokumentaci.
+Společnost Voxeo je zároveň provozovatelem domény $vxml.org$, kde je možné nalézt dokumentaci k jazyku VoiceXML.
 
 Výhodou této platformy je velmi kvalitní syntetizátor řeči (TTS) a podpora automatického rozpoznávání řeči (ASR). Tyto výhody jsou ale vykoupeny licenčními podmínkami, které nám dovolují na platformě provozovat maximálně dva souběžné hovory.
 
@@ -272,6 +276,8 @@ Asterisk je navržen pro unixové operační systémy (GNU/Linux, OpenBSD, FreeB
 
 VoiceGlue je projekt přinášející podporu VoiceXML aplikací pro platformu Asterisk. VoiceGlue je postaveno nad OpenVXI interpretrem \cite{voiceglue_org}. V době psaní této práce je nejnovější verze 0.14 z listopadu 2011.
 
+\InsertFigure{Figures/voiceglue_architecture}{0.5\textwidth}{Architektura VoiceGlue}{fig:voiceglue_architecture}
+
 VoiceXML interpretr nabízí plnou podporu specifikace VoiceXML 2.0 a zároveň implementuje některé vlastnosti ze specifikace VoiceXML 2.1.
 
 Aplikace provozované na této platformě je možné ovládat pouze pomocí DTMF volby. Součástí VoiceGlue bohužel není modul pro automatické rozpoznávání řeči. VoiceGlue podporuje přehrávání nahraných audio souborů ve formátech, které jsou podporovány Asteriskem, dále podporuje nahrávání vstupu ve formátu $ulaw$.
@@ -285,8 +291,6 @@ Součástí VoiceGlue je hlasový syntetizátor Flite (viz kapitola \ref{sec:fli
 Podle autorů by nemělo být problém provozovat VoiceGlue na jakémkoliv unixovém operačním systému.
 
 Na obrázku \ref{fig:voiceglue_architecture} je znázorněna architektura VoiceGlue a propojení s Asteriskem.
-
-\InsertFigure{Figures/voiceglue_architecture}{0.5\textwidth}{Architektura VoiceGlue}{fig:voiceglue_architecture}
 
 Propojení Asterisku s VoiceGlue je úkolem mezivrstvy $PhoneGlue$. Samotnou architekturu VoiceGlue je možné logicky rozdělit na tři hlavní části.
 
@@ -319,7 +323,7 @@ Jazyk VoiceXML vychází ze značkovacího jazyka XML a proto pro něj platí ve
 \item elementy mohou být vnořeny, ale nemohou se překrývat
 \end{itemize}
 
-\InsertFigure{Figures/vxml_document_structure}{0.8\textwidth}{Stromová struktura dokumentu VoiceXML}{fig:vxml_document_structure}
+\InsertFigure{Figures/vxml_document_structure}{0.9\textwidth}{Stromová struktura dokumentu VoiceXML}{fig:vxml_document_structure}
 
 Ve výpise \ref{src:vxml_sample} je uvedena ukázka jednoduchého VoiceXML dokumentu. Jednotlivé elementy dokumentu tvoří stromovou strukturu. Struktura tohoto VoiceXML dokumentu je zachycena na obrázku \ref{fig:vxml_document_structure}.
 
@@ -335,16 +339,22 @@ Dialogy můžeme ve VoiceXML rozdělit na dva typy. Prvním typem jsou formulá�
 \label{sec:Zpracovani_vxml_dokumentu}
 VoiceXML dokument je zpracováván interpretrem. Zpracování dokumentu začíná u kořenového elementu a postupně se pokračuje k dceřiným elementům.
 
-Nyní se vraťme k výpisu \ref{src:vxml_sample} v němž je uveden zdrojový kód jednoduchého VoiceXML dokumentu. Na prvním řádku můžeme vidět definici verze XML dokumentu. Na dalším řádku specifikujeme verzi VoiceXML dokumentu. Touto informací sdělujeme interpretru verzi standardu VoiceXML, dle které se bude dokument zpracovávat.
+Nyní se vraťme k výpisu \ref{src:vxml_sample} v němž je uveden zdrojový kód jednoduchého VoiceXML dokumentu.
+
+Na prvním řádku můžeme vidět definici verze XML dokumentu. Na dalším řádku specifikujeme verzi VoiceXML dokumentu. Touto informací sdělujeme interpretru verzi standardu VoiceXML, dle které se bude dokument zpracovávat.
 
 Uvnitř elementu \texttt{<vxml>} je obsažen kód popisující chování hlasové aplikace. Na třetím řádku definujeme pomocí elementu \texttt{<var>} proměnnou a zároveň jí nastavujeme hodnotu.
 
-Následuje definice dvou dialogů. První dialog uživateli přehraje zprávu uloženou v proměnné, kterou jsme definovali na třetím řádku. Následně přechází zpracování dokumentu do dialogu s identifikátorem "dialog2". Tento přechod zajišťuje element \texttt{<goto>}. Nastavením hodnoty atributu \texttt{next} elementu lze specifikovat identifikátor dialogu, do kterého se má přejít. Druhý dialog uživateli následně přehraje definovanou zprávu.
+Následuje definice dvou dialogů. První dialog uživateli přehraje zprávu uloženou v proměnné, kterou jsme definovali na třetím řádku. Následně přechází zpracování dokumentu do dialogu s identifikátorem "dialog2".
+
+Tento přechod zajišťuje element \texttt{<goto>}. Nastavením hodnoty atributu \texttt{next} elementu lze specifikovat identifikátor dialogu, do kterého se má přejít.
+
+Druhý dialog uživateli následně přehraje definovanou zprávu.
 
 Zpracování tohoto dokumentu je možné rozdělit do následujících kroků \cite{vxmldevguide}:
 
 \begin{enumerate}
-\item Dokument je nahrán do paměti.
+\item VoiceXML dokument je nahrán do paměti.
 \item Je provedena kontrola, zda je dokument validním XML dokumentem.
 \item Provede se inicializace proměnných (pokud jsou v dokumentu nějaké definované).
 \item Provede se načtení prvního dialogu a je spuštěn obsah elementu \texttt{<block>}. Zpracováním elementu \texttt{<goto>} dochází k přechodu do dalšího dialogu.
@@ -353,23 +363,25 @@ Zpracování tohoto dokumentu je možné rozdělit do následujících kroků \c
 \end{enumerate}
 
 \subsection{Základy jazyka VoiceXML}
-V následující sekci stručně popíši postupy, kterých bývá užito při návrhu hlasových aplikací pomocí jazyka VoiceXML.
+V následující sekci stručně popíši základní postupy, kterých bývá užito při návrhu hlasových aplikací pomocí jazyka VoiceXML.
 
 \subsubsection{Navigace v hlasové aplikaci}
 VoiceXML nám poskytuje několik elementů, pomocí kterých lze jednoduše navrhovat navigační prvky mezi jednotlivými částmi aplikace. My si zde blíže představíme pouze element \texttt{<menu>}.
 
-Tento element umožňuje jednoduchým způsobem sestavit interaktivní menu, ve kterém může uživatel provést volbu. Na základě jeho volby dochází k přesunu do jiné části aplikace. Ve výpise \ref{src:vxml_menu} je uveden zdrojový kód \cite{vxml_org}, který demonstruje vytvoření navigačního menu pomocí elementu \texttt{<menu>}.
+Tento element umožňuje jednoduchým způsobem sestavit interaktivní menu, ve kterém může uživatel provést volbu. Na základě jeho volby dochází k přesunu do jiné části aplikace.
+
+Ve výpise \ref{src:vxml_menu} je uveden zdrojový kód \cite{vxml_org}, který demonstruje vytvoření navigačního menu pomocí elementu \texttt{<menu>}.
 
 \lstinputlisting[language=XML,label=src:vxml_menu,caption={Vytvoření menu pomocí elementu \texttt{<menu>}}]{Vxml/vxml_menu.vxml}
 
 Jednotlivé položky menu jsou definovány pomocí elementu \texttt{<choice>}, přičemž hodnotou atributu \texttt{next} specifikujeme do jakého dialogu se má, v případě výběru této položky, přejít.
 
-Můžeme si všimnout, že element \texttt{<menu>} dále obsahuje element \texttt{<nomatch>}. Tímto elementem je možné specifikovat akci, která se provede v případě, že uživatel provede nedefinovanou volbu. V našem případě je tato situace obsloužena zopakováním položek menu (element \texttt{<reprompt/>}). Na základě výběru dochází k přesunu do dialogu "reservations" nebo "account", kde je aplikace následně ukončena.
+Můžeme si všimnout, že element \texttt{<menu>} dále obsahuje element \texttt{<nomatch>}. Tímto elementem je možné specifikovat akci, která se provede v případě, že uživatel provede nedefinovanou volbu. V našem případě je tato situace obsloužena zopakováním položek menu (element \texttt{<reprompt>}). Na základě výběru dochází k přesunu do dialogu "reservations" nebo "account", kde je aplikace následně ukončena.
 
 \subsubsection{Získání vstupu od uživatele}
-Jazyk VoiceXML nám pro získání uživatelského vstupu poskytuje podobné prostředky jako jazyk HTML. Máme k dispozici elementy, prostřednictvím kterých jsme schopni nadefinovat formulářové prvky. Do těchto prvků je uložen vstup od uživatele a následně odeslán ke zpracování na server např. prostřednictvím elementu \texttt{<submit>}. Elementy pro definici formulářových prvků jsou, stejně jako element \texttt{<submit/>}, obsaženy uvnitř elementu \texttt{<form>}. Zpracováním elementu \texttt{<submit>} dochází k odeslání všech formulářových prvků, které jsou ve formuláři obsaženy.
+Jazyk VoiceXML nám pro získání uživatelského vstupu poskytuje podobné prostředky jako jazyk HTML. Máme k dispozici elementy, prostřednictvím kterých jsme schopni nadefinovat formulářové prvky. Do těchto prvků je uložen vstup od uživatele a následně odeslán ke zpracování na server např. prostřednictvím elementu \texttt{<submit>}. Elementy pro definici formulářových prvků jsou, stejně jako element \texttt{<submit>}, obsaženy uvnitř elementu \texttt{<form>}. Zpracováním elementu \texttt{<submit>} dochází k odeslání všech formulářových prvků, které jsou ve formuláři obsaženy.
 
-Formulářové prvky se definují pomocí elementu \texttt{<field>}. Datový typ formulářového prvku je specifikován prostřednictvím hodnoty atributu \texttt{type}. V tabulce \ref{tab:form_fields_datatypes} je uveden výběr hodnot, které se dají použít \cite{vxml_org}.
+Formulářové prvky se definují pomocí elementu \texttt{<field>}. Datový typ formulářového prvku je specifikován prostřednictvím hodnoty atributu \texttt{type}. V tabulce \ref{tab:form_fields_datatypes} je uveden výběr hodnot, které je možné použít \cite{vxml_org}.
 
 \begin{table}
 	\centering
@@ -379,7 +391,7 @@ Formulářové prvky se definují pomocí elementu \texttt{<field>}. Datový typ
 		\hline
 		boolean & Hodnota pravda/nepravda  \\
 		\hline
-		date & Datum zadaný ve formátu $yyyymmdd$ (např.20140421)   \\
+		date & Datum zadaný ve formátu $yyyymmdd$ (např. 20140421)   \\
 		\hline
 		digits & Číselná hodnota (např. 123)  \\
 		\hline
@@ -394,7 +406,9 @@ Formulářové prvky se definují pomocí elementu \texttt{<field>}. Datový typ
 
 Ve výpise \ref{src:vxml_field} je uveden zdrojový kód aplikace, která vytváří tři formulářové prvky. Tyto formulářové prvky jsou uživatelem vyplněny a následně jsou vyplněné informace odeslány ke zpracování na server. Můžeme si všimnout, že každý formulářový prvek je různého datového typu.
 
-Formulář dále obsahuje element \texttt{<filled>}. Tento element specifikuje akci, která se provede v momentě, kdy jsou všechny prvky formuláře vyplněny. Naší akcí je odeslání získaných dat na server. Odeslání dat zajišťuje element \texttt{<submit/>}. U tohoto elementu je třeba uvést hodnotu atributů \texttt{next} a \texttt{namelist}. Hodnotou atributu \texttt{next} specifikujeme URL adresu, na kterou se data odešlou. Hodnotou atributu \texttt{namelist} je seznam názvů formulářových prvků oddělených mezerou, jejichž hodnoty se odešlou.
+Formulář dále obsahuje element \texttt{<filled>}. Tento element specifikuje akci, která se provede v momentě, kdy jsou všechny prvky formuláře vyplněny. Naší akcí je odeslání získaných dat na server.
+
+Odeslání dat zajišťuje element \texttt{<submit>}. U tohoto elementu je třeba uvést hodnotu atributů \texttt{next} a \texttt{namelist}. Hodnotou atributu \texttt{next} specifikujeme URL adresu, na kterou se data odešlou. Hodnotou atributu \texttt{namelist} je seznam názvů formulářových prvků, jejichž hodnoty se mají odeslat. Jednotlivé názvy jsou odděleny mezerou.
 
 \lstinputlisting[language=XML,label=src:vxml_field,caption={Vytvoření formuláře pro získání uživatelské vstupu}]{Vxml/vxml_field.vxml}
 
@@ -410,9 +424,9 @@ Ve standardu VoiceXML 2.0 bývá gramatika nejčastěji popsána XML jazykem. Ve
 \label{sec:TTS}
 Text to Speech (TTS) je technologie sloužící k převodu textu napsaného běžným jazykem na řeč. TTS modul je základním stavebním kamenem každé hlasové platformy. Tento modul nám totiž umožňuje vytvořit uživatelské rozhraní mezi uživatelem a hlasovou aplikací. Proces převodu textu na řeč je složitý proces, který bude podrobněji popsán v následujícím textu.
 
-Existují dva základní přístupy, jakým způsobem lze umělou řeč generovat \cite{tts_wiki}. První přístup spočívá ve spojování předem nahraných úseků řeči. Těmito úseky mohou být jednotlivé hlásky a dvojhlásky nebo celá slova. Délka ukládaných úseků má poté za následek vyšší nebo nižší kvalitu reprodukce.
+Existují dva základní přístupy, jakým způsobem lze umělou řeč generovat \cite{tts_wiki}. První přístup spočívá ve spojování předem nahraných úseků řeči. Těmito úseky mohou být jednotlivé hlásky a dvojhlásky nebo celá slova. Volba délky nahrávaných úseků ovlivňuje kvalitu reprodukce.
 
-Druhý přístup je založen na simulaci charakteristik lidské řeči a umožňují tak reprodukovat skutečně umělou řeč.
+Druhý přístup je založen na simulaci charakteristik lidské řeči a umožňuje tak reprodukovat skutečně umělou řeč.
 
 Proces převodu textu na řeč je v jednoduchosti znázorněn na obrázku \ref{fig:tts_scheme} a jednotlivé fáze tohoto převodu budou popsány v následujících odstavcích.
 
@@ -444,7 +458,7 @@ Festival je obecný vícejazyčný syntetizátor řeči, který byl původně vy
 
 Festival podporuje několik jazyků. Jeho součástí je podpora britské a americké angličtiny, velštiny a španělštiny. Podporu dalších jazyků je možné rozšířit instalací dalších balíčků. Touto formou jsou k dispozici např. následující jazyky: čeština, finština, italština a polština \cite{festival_wiki}.
 
-Program je napsán v programovacím jazyce C++ a je šířen jako svobodný software, je k němu tedy k dipozici i zdrojový kód.
+Program je napsán v programovacím jazyce C++ a je šířen jako svobodný software, je k němu tedy k dispozici i zdrojový kód.
 
 \subsubsection{Flite}
 \label{sec:flite}
@@ -464,7 +478,7 @@ Cepstral při vývoji svého TTS vyvinul několik nových technik, které umož�
 
 TTS řešení od Cepstralu nabízí několik různých hlasů, které je možné dále konfigurovat. Jednotlivé hlasy je možné si vyzkoušet na jejich webových stránkách. Cepstral podporuje několik jazyků, konkrétně americkou a britskou angličtinu, americkou španělštinu, kanadskou francouzštinu, němčinu a italštinu.
 
-Přímo na webových stránkách společnosti je možné objednat jednotlivé hlasy nebo kompletní řešení Cepstral Telephony Server. Cena jednotlivých hlasů pro osobní využití se pohybuje zhruba v rozmezí 10-50 dolarů. Cena Cepstral Telephony Serveru se odvíjí od počtu povolených portů. Základní verze s podporou jednoho portu začíná na 100 dolarech. Za každý další port je nutné si připlatit dalších 100 dolarů.
+Přímo na webových stránkách společnosti je možné objednat si jednotlivé hlasy nebo kompletní řešení Cepstral Telephony Server. Cena jednotlivých hlasů pro osobní využití se pohybuje zhruba v rozmezí 10-50 dolarů. Cena Cepstral Telephony Serveru se odvíjí od počtu povolených portů. Základní verze s podporou jednoho portu začíná na 100 dolarech. Za každý další port je nutné si připlatit dalších 100 dolarů.
 
 \section{Technologie Automatic Speech Recognition}
 \label{sec:ASR}
@@ -487,9 +501,9 @@ Na obrázku \ref{fig:asr_scheme} je zachyceno schéma procesu automatického roz
 \InsertFigure{Figures/asr_scheme}{1\textwidth}{Proces automatického rozpoznávání řeči}{fig:asr_scheme}
 
 \subsection{Hlasový vstup a jeho numerická reprezentace}
-První fází procesu rozpoznávání řeči je digitalizace řeči, tedy zachycení uživatelského vstupu (řeči) a jeho převodu do digitální podoby (nahrávky).
+První fází procesu rozpoznávání řeči je digitalizace řeči, tedy zachycení uživatelského vstupu (řeči) a jeho převod do digitální podoby (nahrávky).
 
-Druhou fází je transformace digitálních dat do numerické modelu. Numerická model zachycuje informace o výšce hlasu v jednotlivých částech nahrávky a další důležité informace potřebné pro další zpracování.
+Druhou fází je transformace digitálních dat do numerické modelu. Numerický model zachycuje informace o výšce hlasu v jednotlivých částech nahrávky a další důležité informace potřebné pro další zpracování.
 
 \subsection{Fonetické mapování a generování výstupu}
 Třetí fází procesu rozpoznávání řeči je fonetické mapování. Tato fáze je nejvíce komplexní a od její přesnosti se odvíjí přesnost celého systému. V této fázi je provedena spektrální analýza numerického modelu. Na základě výsledku spektrální analýzy jsou vybrány pravděpodobnostně nejvhodnější fonémy\footnote{Foném je nejmenší součást zvukové stránky řeči, která ještě má rozlišovací funkci v systému konkrétního jazyka.} \cite{vxmldevguide}.
@@ -527,7 +541,11 @@ Na začátku této kapitoly nejprve představím referenční aplikaci, na kter�
 
 Jako referenční aplikaci jsem zvolil rezervační systém smyšlené letecké společnosti. Rezervační systém obsahuje webové a hlasové rozhraní pro správu rezervací letů. Rezervace lze tedy spravovat z prostředí webového prohlížeče nebo z prostředí samoobslužné hlasové linky.
 
-Pro práci s rezervačním systémem je nutné se nejdříve přihlásit. Každý přihlašovaný uživatel se prokazuje přihlašovacím jménem (telefonní číslo) a heslem. Do systému se můžou přihlásit dva typy uživatelů. V závislosti na roli přihlášeného uživatele jsou uživateli dovoleny akce, které může vykonávat. Prvním typem uživatele je uživatel v roli zákazníka. Zákazníkovi je dovoleno vytvoření nové rezervace nebo zrušení již aktivní rezervace, dále je zákazníkovi umožněno vyhledávání letů dle následujících kritérií:
+Pro práci s rezervačním systémem je nutné se do systému nejdříve přihlásit. Každý uživatel se prokazuje kombinací telefonního čísla a hesla.
+
+Do systému se můžou přihlásit dva typy uživatelů. V závislosti na roli přihlášeného uživatele jsou uživateli dovoleny akce, které může vykonávat.
+
+Prvním typem uživatele je uživatel v roli zákazníka. Zákazníkovi je dovoleno vytvoření nové rezervace nebo zrušení již aktivní rezervace, dále je zákazníkovi umožněno vyhledávání letů dle následujících kritérií:
 
 \begin{itemize}
 \item místa a data odletu
@@ -540,19 +558,24 @@ Pro práci s rezervačním systémem je nutné se nejdříve přihlásit. Každ�
 Druhým typem uživatele je uživatel v roli administrátora. Pro uživatele s právy administrátora jsou dostupné stejné akce jako uživateli v roli zákazníka, navíc však administrátor může vykonávat následující akce:
 
 \begin{itemize}
-\item přihlášení/odhlášení ze systému
 \item správa databáze letů (editace/vytvoření)
 \item správa uživatelů (editace/vytvoření)
 \item správa přepravních společností (editace/vytvoření)
 \end{itemize}
 
-Webové rozhraní rezervačního systému je v reálném čase synchronizováno s hlasovým rozhraním pomocí technologie WebSockets\footnote{Webová technologie umožňující vytvoření obousměrného komunikačního kanálu mezi klientem a serverem nad HTTP protokolem. Více informací o této technologii najdete v kapitole \ref{sec:Pouzite_technologie}.} Toto v praxi znamená následující. Pokud je uživatel přihlášen do webového rozhraní a zároveň se nachází v interakci s hlasovou samoobsluhou, kde např. zruší svoji rezervaci, okamžitě dojde k reflektování provedené akce do webového rozhraní aniž by uživatel musel znovu provést načtení zobrazené stránky.
+Webové rozhraní rezervačního systému je v reálném čase synchronizováno s hlasovým rozhraním pomocí technologie WebSockets\footnote{Webová technologie umožňující vytvoření obousměrného komunikačního kanálu mezi klientem a serverem nad HTTP protokolem. Více informací o této technologii najdete v kapitole \ref{sec:Pouzite_technologie}.} Toto v praxi znamená následující. Pokud je uživatel přihlášen do webového rozhraní a zároveň se nachází v interakci s hlasovou samoobsluhou, kde např. zruší svoji rezervaci, okamžitě dojde k reflektování provedené akce do webového rozhraní, aniž by uživatel musel znovu provést načtení zobrazené stránky.
 
 Webové rozhraní rezervačního systému nabízí uživateli pohodlné grafické rozhraní pro správu rezervací. Webová aplikace je navržena jako jednostránková aplikace\footnote{Moderní způsob návrhu webové aplikace, kdy je aplikace reprezentována jednou základní HTML stránkou (statickou) a veškeré další interakce na stránce jsou řešeny pomocí JavaScriptu.}. Tento způsob návrhu aplikace uživateli přináší rychlejší odezvu uživatelského rozhraní a zároveň minimalizuje množství přenesených dat po síti mezi klientem a serverem. Úspory přenesených dat se dosahuje využitím AJAXového načítání dat, kdy dochází k načtení pouze těch dat, která jsou aktuálně potřebná.
 
-V aplikaci je implementované REST API\footnote{Architektura rozhraní navržená pro distribuované prostředí. REST je, na rozdíl od známějších XML-RPC či SOAP, orientován datově, nikoli procedurálně.}, které slouží jako datový zdroj pro klienty. REST API implementuje přístup k datům, která jsou uložena v databázi. Většina metod REST API generuje notifikace pro ostatní připojené klienty. Notifikace slouží k synchronizaci uživatelských rozhraní všech připojených klientů.
+V aplikaci je implementované REST API\footnote{REST API je architektura rozhraní navržená pro distribuované prostředí. REST je, na rozdíl od známějších XML-RPC či SOAP, orientován datově, nikoli procedurálně.}, které slouží jako datový zdroj. REST API implementuje přístup k datům, která jsou uložena v databázi. Většina metod REST API generuje notifikace pro ostatní připojené klienty. Notifikace slouží k synchronizaci uživatelských rozhraní všech připojených klientů.
 
-Data se mezi klientem a serverovou částí aplikace (RESP API) přenáší ve formátu JSON. Formát JSON preferuji hlavně z toho důvodu, že pro zakódování informace je potřeba menšího objemu dat než např. ve srovnání s formátem XML. Implementace REST API však volitelně dovoluje použít pro komunikaci např. i formát XML. Stačí jen o tom do požadavku přidat informaci. Možnost zvolit si formát přenášených dat je umožněna díky malé knihovně, která vznikla zároveň s touto prací. Tato knihovna řeší univerzálním způsobem převod jakéhokoliv JSON objektu do XML formátu. V tabulce \ref{tab:RestAPI} se nachází popis implementovaných metod REST API. API běží na základní URL adrese \texttt{/api/v1/}\footnote{URL zdroje pro získání informací o jednom letu tedy vypadá následovně \texttt{http://muj.server.cz/api/v1/fligths/1}.} a to z toho důvodu, aby bylo možné jednotlivé verze API v budoucnosti případně verzovat.
+Data se mezi klientem a serverovou částí aplikace (RESP API) přenáší ve formátu JSON. Formát JSON preferuji hlavně z toho důvodu, že pro zakódování informace je potřeba menšího objemu dat než např. ve srovnání s formátem XML.
+
+Implementace REST API však volitelně dovoluje použít pro komunikaci např. i formát XML. Stačí jen o tom do HTTP požadavku přidat informaci.
+
+Možnost zvolit si formát přenášených dat je umožněna díky malé knihovně, která vznikla zároveň s touto prací. Tato knihovna řeší univerzálním způsobem převod jakéhokoliv JSON objektu do XML formátu.
+
+V tabulce \ref{tab:RestAPI} se nachází popis implementovaných metod REST API. API běží na základní URL adrese \texttt{/api/v1/}\footnote{URL zdroje pro získání informací o jednom letu tedy vypadá následovně \texttt{http://muj.server.cz/api/v1/fligths/1}.} a to z toho důvodu, aby bylo možné jednotlivé verze API v budoucnosti případně verzovat.
 
 \begin{table}
 	\centering
@@ -612,30 +635,32 @@ Data se mezi klientem a serverovou částí aplikace (RESP API) přenáší ve f
 		GET & /security/current-user & Vrací data o aktuálně přihlášeném uživateli. \\
 		\hline
 	\end{tabular}
-	\caption{Přehled implementovaných metod REST API}
+	\caption{Implementované metody REST API}
 	\label{tab:RestAPI}
 \end{table}
 
 \subsection{Uživatelské rozhraní}
-Rozhraní aplikace je rozděleno do několika stránek. Po přihlášení do aplikace je zobrazena hlavní stránka se seznamem všech letů \ref{fig:FlightList}. Jednotlivé lety jsou zde zobrazeny v seznamu, který je stránkovatelný a je zde možnost nastavení počtu zobrazených položek na stránce. Každý řádek v seznamu reprezentuje jeden let. U každého letu jsou uvedeny základní informace. Na konci každého řádku se nachází tlačítka sloužící pro vytvoření nebo zrušení rezervace letu. Řádek, který představuje rezervovaný let je graficky odlišen jinou barvou pozadí. Dále je zde k dispozici tlačítko pro zobrazení detailních informací o letu. Pokud je přihlášen uživatel s právy administrátora, tak má možnost informace o letu i upravovat. Poslední tlačítko slouží ke smazání letu z databáze. Toto tlačítko se opět zobrazuje jen v případě, že je přihlášen uživatel s právy administrátora.
+Uživatelské rozhraní aplikace je rozděleno do několika stránek. Po přihlášení do aplikace je zobrazena hlavní stránka se seznamem všech letů (viz obr. \ref{fig:FlightList}). Jednotlivé lety jsou zde zobrazeny v seznamu, který je stránkovatelný a je zde možnost nastavení počtu zobrazených položek na stránce. Každý řádek v seznamu reprezentuje jeden let. U každého letu jsou uvedeny základní informace. Na konci každého řádku se nachází tlačítka sloužící pro vytvoření nebo zrušení rezervace letu. Řádek, který představuje rezervovaný let je graficky odlišen jinou barvou pozadí. Dále je zde k dispozici tlačítko pro zobrazení detailních informací o letu. Pokud je přihlášen uživatel s právy administrátora, tak má možnost informace o letu i upravovat. Poslední tlačítko slouží ke smazání letu z databáze. Toto tlačítko se opět zobrazuje jen v případě, že je přihlášen uživatel s právy administrátora.
 
-\InsertSidewaysFigure{Figures/web_flight_list}{1\textwidth}{Stránka zobrazující seznamem letů a filtr}{fig:FlightList}
+\InsertSidewaysFigure{Figures/web_flight_list}{1\textwidth}{Stránka se seznamem letů a filtrem}{fig:FlightList}
 
 Nad seznamem letů se nachází formulář pro nastavení vyhledávacích kritérií, dle kterých lze poté seznam letů vyfiltrovat.
 
-V horní části stránky se nachází menu, které je viditelné ze všech stránek webového rozhraní. Menu obsahuje odkazy na další stránky aplikace jako je stránka se seznamem uživatelů a stránka se seznamem přepravců. V pravé části horního menu se nachází informace se jménem aktuálně přihlášeného uživatele s tlačítkem, které slouží k odhlášení uživatele.
+V horní části stránky se nachází menu, které je viditelné ze všech stránek webového rozhraní. Menu obsahuje odkazy na další stránky aplikace jako je stránka se seznamem uživatelů a stránka se seznamem přepravců. V pravé části horního menu se nachází informace se jménem aktuálně přihlášeného uživatele a tlačítko, které slouží k odhlášení uživatele.
 
 Ostatní stránky aplikace mají uživatelské rozhraní uspořádané obdobně. Odkazy z horního menu vždy vedou na stránky se seznamovým zobrazením dané entity (lety, uživatelé, přepravci). Z toho seznamu existuje možnost přechodu na detail konkrétní entity. V závislosti na právech přihlášeného uživatele je zde možné entitu případně editovat. Pro ukázku uvádím ještě obrázek zobrazující formulář pro editaci letu\ref{fig:FlightDetail}.
 
-\InsertSidewaysFigure{Figures/web_flight_detail}{1\textwidth}{Stránka zobrazující formulář pro editaci letu}{fig:FlightDetail}
+\InsertSidewaysFigure{Figures/web_flight_detail}{1\textwidth}{Stránka s formulářem pro editaci letu}{fig:FlightDetail}
 
 \subsection{Použité technologie}
 \label{sec:Pouzite_technologie}
-Celá webová aplikace je napsána kompletně v JavaScriptu a to včetně serverové části. V následujících odstavcích stručně popíši použité technologie a důvod jejich použití.
+Klientská i serverová část aplikace je napsána v JavaScriptu. V následujících odstavcích stručně popíši použité technologie a důvod jejich použití.
 
 \subsubsection{JavaScript}
 \label{sec:JavaScript}
-Je multiparadigmatický skriptovací jazyk ovlivněný hlavně jazyky Java, Perl a Smalltalk. Jedná se o událostmi řízený programovací jazyk. Od klasických programovacích jazyků se liší hlavně podporou prototypové dědičnosti a skutečností, že vše je objekt (dokonce i funkce). Tento jazyk byl vytvořen Brendanem Eichem v roce 1997. Primárním důvodem vzniku tohoto jazyka byla potřeba možnosti obohacení statických webových stránek. Jazyk prošel několika verzemi, kdy do něj byly postupně přidávány nové vlastnosti. V době psaní této práce (2014), je nejvíce rozšířená verze EcmaScript 5 a postupně se začínají do jazyka implementovat vlastnosti z nadcházející specifikace EcmaScript 6.
+Je multiparadigmatický skriptovací jazyk ovlivněný hlavně jazyky Java, Perl a Smalltalk. Jedná se o událostmi řízený programovací jazyk.
+
+Od klasických programovacích jazyků se liší hlavně podporou prototypové dědičnosti a skutečností, že vše je objekt (dokonce i funkce). Tento jazyk byl vytvořen Brendanem Eichem v roce 1997. Primárním důvodem vzniku tohoto jazyka byla potřeba možnosti obohacení statických webových stránek. Jazyk prošel několika verzemi, kdy do něj byly postupně přidávány nové vlastnosti. V době psaní této práce (2014), je nejvíce rozšířená verze ECMAScript 5 a postupně se začínají do jazyka implementovat vlastnosti z nadcházející specifikace ECMAScript 6.
 
 Díky platformě Node.js již není JavaScript omezen jen na oblast klientského skriptování, ale pronikl i na stranu serverového programování a umožňuje návrh vysoce škálovatelných síťových aplikací.
 
@@ -646,7 +671,9 @@ Tento framework jsem použil k návrhu klientské části aplikace a to právě 
 
 \subsubsection{Node.js}
 \label{sec:NodeJs}
-Node.js\cite{nodejs} je technologie přinášející možnost psát serverové části webových aplikací v JavaScriptu. Platforma Node.js se skládá z běhového prostředí, které je postaveno nad JavaScript enginem V8\footnote{Stejný engine je i součástí webového prohlížeče Chromium.} a knihovnou funkcí. Mezi důležité vlastnosti Node.js patří jeho asynchronní, událostmi řízená povaha, tedy veškeré vstupně/výstupní operace jsou zpracovávány asynchronně. Díky tomuto chování v praxi dochází k tomu, že webový server postavený nad Node.js dokáže zpracovat více souběžných požadavků\footnote{Za předpokladu, že je aplikace orientovaná na vstupně/výstupní operace jako je např. čtení z databáze nebo ze souborového systému.}.
+Node.js\cite{nodejs} je technologie přinášející možnost psát serverové části webových aplikací v JavaScriptu.
+
+Platforma Node.js se skládá z běhového prostředí, které je postaveno nad JavaScript enginem V8\footnote{Stejný engine je i součástí webového prohlížeče Chromium.} a z knihovny funkcí. Mezi důležité vlastnosti Node.js patří jeho asynchronní, událostmi řízená povaha, tedy veškeré vstupně/výstupní operace jsou zpracovávány asynchronně. Díky tomuto chování v praxi dochází k tomu, že webový server postavený nad Node.js dokáže zpracovat více souběžných požadavků\footnote{Za předpokladu, že je aplikace orientovaná na vstupně/výstupní operace jako je např. čtení z databáze nebo ze souborového systému.}.
 
 Technologii jsem zvolil hlavně proto, že mi umožňuje psát serverovou a klientskou část aplikace ve stejném programovacím jazyce, tedy v JavaScriptu.
 
@@ -657,9 +684,11 @@ Jedná se o minimalistický framework pro Node.js, který umožňuje snadné vyt
 Více informací o tomto frameworku je možné nalézt na oficiálním webu\cite{expressjs}.
 
 \subsubsection{MongoDB}
-Pro ukládání dat jsem zvolil databázi MongoDB. MongoDB je NoSQL databáze, což znamená, že principy přístupu k datům nejsou implementovány na bázi relací jako jsme zvyklí u klasických relačních databází. MongoDB se řadí mezi dokumentové databáze, které nemají pevně definované schéma. Více informací o MongoDB databázi lze nalézt na webu projektu\cite{mongodb}.
+Pro ukládání dat jsem zvolil databázi MongoDB. MongoDB je NoSQL databáze, což znamená, že principy přístupu k datům nejsou implementovány na bázi relací jako jsme zvyklí u klasických relačních databází. MongoDB se řadí mezi dokumentové databáze, které nemají pevně definované schéma.
 
-V kombinaci s touto databází jsem použil nadstavbu Mongoose\cite{mongoose}, což je vrstva přidávající možnost nadefinovat si pevné schéma dokumentů a pracovat s těmito dokumenty jako s datovými modely. Tato vrstva dále umožňuje např. přidávání validačních metod na jednotlivé modely.
+Více informací o MongoDB databázi lze nalézt na webu projektu\cite{mongodb}.
+
+V kombinaci s touto databází jsem použil nadstavbu Mongoose\cite{mongoose}, což je vrstva přidávající možnost definovat pevné schéma dokumentů a pracovat s těmito dokumenty jako s datovými modely. Tato vrstva dále umožňuje např. přidávání validačních metod na jednotlivé modely.
 
 \subsubsection{WebSockets}
 \label{sec:WebSockets}
@@ -668,16 +697,22 @@ Je technologie pro tvorbu webových aplikací, které mezi sebou potřebují kom
 Tuto technologii v aplikaci používám k synchronizaci všech aktuálně otevřených webových rozhraní, aby přihlášený uživatel nemusel otevřenou stránku ve webovém prohlížeči manuálně znovu načítat.
 
 \subsubsection{Grunt}
-Jedná se o automatizační nástroj, který usnadňuje workflow vývoje (nejen) webových aplikací. Tento nástroj nabízí aplikační rozhraní pro definici úkolů, které se mají automaticky provést v definovaný moment. Definice úkolů se popisuje v jazyce JavaScript. Já jsem tento nástroj použil např. k validaci zdrojového kódu napsaného v JavaScriptu nebo ke spouštění webového serveru. Tento nástroj jsem dokonce využil k automatizaci sazby této práce - po každém uložení zdrojového \LaTeX\ souboru dojde k automatickému vytvoření výstupního PDF souboru. Více informaci o tomto nástroji je možné nalézt na oficiálních webových stránkách\cite{grunt}.
+Grunt je automatizační nástroj, který usnadňuje workflow vývoje (nejen) webových aplikací. Tento nástroj nabízí aplikační rozhraní pro definici úkolů, které se mají automaticky provést v definovaný moment. Definice úkolů se popisuje v jazyce JavaScript.
+
+Já jsem tento nástroj použil např. k validaci zdrojového kódu napsaného v JavaScriptu nebo ke spouštění webového serveru. Tento nástroj jsem dokonce využil k automatizaci sazby této práce - po každém uložení zdrojového \LaTeX\ souboru dojde k automatickému vytvoření výstupního PDF souboru.
+
+Více informaci o tomto nástroji je možné nalézt na oficiálních webových stránkách\cite{grunt}.
 
 \subsubsection{Jade}
-Jedná se o nejrozšířenější šablonovací jazyk používaný na platformě Node.js. Jade svými vlastnostmi urychluje zápis HTML kódu. Např. není potřeba psát ukončovací značky HTML elementů a není potřeba značky zapisovat v úhlových závorkách. Zanoření jednotlivých elementů je vyjádřeno postupným odsazováním elementů. Šablonovací systém je rozšiřitelný pomocí mixinů.
+Jedná se o šablonovací jazyk používaný na platformě Node.js. Jade svými vlastnostmi urychluje zápis HTML kódu. Např. není potřeba psát ukončovací značky HTML elementů a není potřeba značky zapisovat v úhlových závorkách. Zanoření jednotlivých elementů je vyjádřeno postupným odsazováním elementů. Šablonovací systém je rozšiřitelný pomocí mixinů.
 
 \section{Návrh hlasového portálu}
 \label{sec:Navrh_hlasoveho_portalu}
-V této části práce se zaměřím na popis procesu návrhu a následné implementace hlasového portálu rezervačního systému. Rezervační systém byl podrobněji představen za začátku kapitoly \ref{sec:Navrh}. Hlasový portál umožňuje uživateli spravovat své rezervace prostřednictvím hlasové samoobsluhy, se kterou se spojí vytočením telefonního čísla např. na svém mobilním telefonu.
+V této části práce se zaměřím na popis procesu návrhu a následné implementace hlasového portálu rezervačního systému. Rezervační systém byl podrobněji představen za začátku kapitoly \ref{sec:Navrh}.
 
-Hlasový portál se od portálu webového liší hlavně ve způsobu interakce uživatele se systémem a množinou dostupných akcí, které jsou uživateli umožněny. Stručně řečeno je uživateli nabídnuta podmnožina akcí, které jsou dostupné ve webovém portálu. Hlasový portál nabízí užší množinu funkcí hlavně z toho důvodu, že ne všechny funkce systému lze z pohledu uživatelského rozhraní komfortně implementovat i v prostředí hlasového systému. Hlasový portál je tedy cílen pouze na uživatele v roli zákazníka letecké společnosti a nenabízí funkce uživatelům v roli administrátora systému, které jim jsou dostupné prostřednictvím webového portálu (např. přidání nového letu do databáze).
+Hlasový portál umožňuje uživateli spravovat své rezervace prostřednictvím hlasové samoobsluhy, se kterou se spojí vytočením telefonního čísla např. na svém mobilním telefonu. Hlasový portál se od portálu webového liší hlavně ve způsobu interakce uživatele se systémem a množinou dostupných akcí, které jsou uživateli umožněny.
+
+Stručně řečeno je uživateli nabídnuta podmnožina akcí, které jsou dostupné ve webovém portálu. Hlasový portál nabízí užší množinu funkcí hlavně z toho důvodu, že ne všechny funkce systému lze z pohledu uživatelského rozhraní komfortně implementovat i v prostředí hlasového systému. Hlasový portál je tedy cílen pouze na uživatele v roli zákazníka letecké společnosti a nenabízí funkce uživatelům v roli administrátora systému, které jim jsou dostupné prostřednictvím webového portálu (např. přidání nového letu do databáze).
 
 V následujícím seznamu uvádím souhrn akcí, které může uživatel prostřednictvím hlasového portálu vykonávat:
 
@@ -689,10 +724,10 @@ V následujícím seznamu uvádím souhrn akcí, které může uživatel prostř
 \item odhlášení ze systému
 \end{itemize}
 
-V následujícím textu nejdříve popíši odlišnosti v návrhu uživatelského rozhraní hlasového portálu ve srovnání s návrhem uživatelského rozhraní webového portálu a poté se zaměřím na samotnou implementaci hlasového rozhraní rezervačního systému.
+V následujícím textu nejdříve popíši odlišnosti v návrhu uživatelského rozhraní hlasového portálu ve srovnání s návrhem uživatelského rozhraní webového portálu a poté se zaměřím na popis návrhu hlasového rozhraní rezervačního systému.
 
 \subsection{Uživatelské rozhraní}
-Rozhraní sloužící ke komunikaci mezi uživatelem a hlasovým portálem je diametrálně odlišné od rozhraní, které nabízí webové portály. Proto je nutné při návrhu uživatelského rozhraní hlasového portálu k těmto odlišnostem přihlédnout. Hlavní rozdíl mezi uživatelským rozhraním webových a hlasových portálů je ve způsobu interakce. Zatímco webové portály nabízí uživatelská rozhraní založená převážně na interakci pomocí vizuálních vjemů uživatele, při návrhu uživatelského rozhraní hlasového portálu není možné interakci založenou na vizuálních vjemech aplikovat. Uživatelské rozhraní hlasových portálů je totiž založeno pouze na zvukových vjemech a hlasových odezvách. Proto není vhodné navrhovat příliš komplexní uživatelské rozhraní. Naopak, musíme se snažit uživatelské rozhraní členit co nejjednodušeji a přehledně tak, abychom uživateli interakci se systémem co nejvíce zjednodušili a nedocházelo tak k dezorientaci v prostředí systému.
+Uživatelské rozhraní sloužící ke komunikaci mezi uživatelem a hlasovým portálem je diametrálně odlišné od rozhraní, které nabízí webové portály. Proto je nutné při návrhu uživatelského rozhraní hlasového portálu k těmto odlišnostem přihlédnout. Hlavní rozdíl mezi uživatelským rozhraním webových a hlasových portálů je ve způsobu interakce. Zatímco webové portály nabízí uživatelská rozhraní založená převážně na interakci pomocí vizuálních vjemů uživatele, při návrhu uživatelského rozhraní hlasového portálu není možné interakci založenou na vizuálních vjemech aplikovat. Uživatelské rozhraní hlasových portálů je totiž založeno pouze na zvukových vjemech a hlasových odezvách. Proto není vhodné navrhovat příliš komplexní uživatelské rozhraní. Naopak, musíme se snažit uživatelské rozhraní členit co nejjednodušeji a přehledně tak, abychom uživateli interakci se systémem co nejvíce zjednodušili a nedocházelo tak k dezorientaci v prostředí systému.
 
 Komunikace s uživatelem většinou probíhá pomocí automatické syntézy řeči. Zatím však neexistuje hlasový syntetizátor, který by se svou kvalitou zcela vyrovnal lidské řeči. V závislosti na kvalitě použitého syntetizéru může někdy při syntéze řeči docházet ke komolení slov a pro uživatele nemusí být sdělení zcela srozumitelné. V tomto případě většinou stačí nahradit zkomolenou část věty jiným slovem či slovním spojením. V případě použití nekvalitního syntetizéru řeči se, před nasazením hlasového portálu do produkčního prostředí, doporučuje veškerá hlasová sdělení namluvit a zdigitalizovat a tyto nahrávky používat místo automatické syntézy.
 
@@ -700,26 +735,32 @@ Před začátkem návrhu uživatelského rozhraní hlasového systému je vhodn�
 
 Naopak pokud víme, že naši aplikaci budou využívat převážně uživatelé, kteří jsou znalí moderních technologií, můžeme si dovolit navrhnout složitější uživatelské rozhraní založené na ovládání pomocí DTMF volby.
 
-Jedno je ale společné pro všechny typy uživatelů. Za každých okolností jim musíme umožnit rychlou a pohodlnou navigaci napříč celou aplikací tak, aby byli schopni se v co nejkratším čase dostat k informaci, kterou hledají.
+Jedno je ale společné pro všechny typy uživatelů. Za každých okolností musíme uživatelům umožnit rychlou a pohodlnou navigaci napříč celou aplikací tak, aby byli schopni se v co nejkratším čase dostat k informaci, kterou hledají.
 
-Já jsem se při návrhu hlasového portálu zaměřil na cílovou skupinu uživatelů, u kterých již předpokládám určitou znalost komunikace s hlasovým portálem\footnote{Předpokládám tedy, že uživatelé mají zkušenost alespoň s hlasovou samoobsluhou svého mobilního operátora}. Pro navigaci napříč hlasovým portálem se využívá ovládání pomocí DTMF volby. Ovládání pomocí DTMF volby jsem zvolil hlavně ze dvou důvodů. Prvním důvodem je potřeba získávat od uživatele přesné vstupy jako je např. zadání data nebo identifikátoru rezervace letu. Tyto vstupy se dají jednoduše zadávat pomocí DTMF volby. Dalším důvodem zvolení DTMF je široká podpora tohoto typu vstupu ze strany IVR platforem. Mým cílem bylo zprovoznit aplikaci na dvou různých IVR platformách, přičemž jedna z nich nenabízí podporu vstupu pomocí automatického rozpoznávání řeči. V rámci zachování jednotné metody vstupu napříč všemi testovanými IVR platformami jsem tedy zvolil DTMF volbu.
+Já jsem se při návrhu hlasového portálu zaměřil na cílovou skupinu uživatelů, u kterých již předpokládám určitou znalost komunikace s hlasovým portálem\footnote{Předpokládám tedy, že uživatelé mají zkušenost alespoň s hlasovou samoobsluhou svého mobilního operátora}. Pro navigaci napříč hlasovým portálem se využívá ovládání pomocí DTMF volby. Ovládání pomocí DTMF volby jsem zvolil hlavně ze dvou důvodů.
 
-Aby bylo možné s hlasovým rozhraním rezervačního systému začít pracovat, je nutné se do něj nejdříve přihlásit. Každý uživatel se prokazuje svým telefonním číslem a číselným heslem. Pokud uživatel zadá špatné telefonní číslo a heslo, tak je mu nabídnuto opakované zadání. V případě, že se uživatel prokáže správným telefonním číslem, ale špatným heslem a toto zadání provede třikrát za sebou špatně, tak dojde k dočasnému zablokování toho účtu. V tomto případě je uživateli sdělena informace o tom, kdy se může zkusit znovu přihlásit.
+Prvním důvodem je potřeba získávat od uživatele přesné vstupy jako je např. zadání data nebo identifikátoru rezervace letu. Tyto vstupy se dají jednoduše zadávat pomocí DTMF volby.
 
-\InsertSidewaysFigure{Figures/diagrams/mainflow}{1\textwidth}{Diagram popisující hlavní strukturu hlasového portálu}{fig:MainFlow}
+Dalším důvodem zvolení DTMF je široká podpora tohoto typu vstupu ze strany IVR platforem. Mým cílem bylo zprovoznit aplikaci na dvou různých IVR platformách, přičemž jedna z nich nenabízí podporu vstupu pomocí automatického rozpoznávání řeči. V rámci zachování jednotné metody vstupu napříč všemi testovanými IVR platformami jsem tedy zvolil DTMF volbu.
+
+Aby bylo možné s hlasovým rozhraním rezervačního systému začít pracovat, je nutné se do něj nejdříve přihlásit. Každý uživatel se prokazuje svým telefonním číslem a číselným heslem. Pokud uživatel zadá špatné telefonní číslo a heslo, tak je mu nabídnuto opakované zadání. V případě, že se uživatel prokáže správným telefonním číslem, ale špatným heslem a toto zadání provede třikrát za sebou špatně, tak dojde k dočasnému zablokování jeho účtu. V tomto případě je uživateli sdělena informace o tom, kdy se může zkusit znovu přihlásit.
+
+\InsertSidewaysFigure{Figures/diagrams/mainflow}{1\textwidth}{Hlavní struktura hlasového portálu}{fig:MainFlow}
 
 V případě úspěšného přihlášení do systému, je uživateli přehrána uvítací zpráva a následně je uživatel přesměrován do hlavního menu aplikace, kde má k dispozici akce pro správu a vytváření rezervací (seznam akcí je uveden v textu kapitoly \ref{sec:Navrh_hlasoveho_portalu}). Jednotlivá menu aplikace jsou navržena tak, aby měl uživatel kdykoliv možnost vrátit se o úroveň zpět.
 
-Na obrázku \ref{fig:MainFlow} je zobrazena hlavní struktura hlasového portálu. Struktura aplikace je na obrázku popsána formou stavového diagramu. Obdélníky reprezentují jednotlivé stavy aplikace. Některé stavy jsou pro svoji komplexnost zobrazeny pouze abstraktně. U abstraktních stavů je vždy uvedena informace, která slouží jako jakýsi odkaz na další diagram, který daný stav popisuje detailněji. Jako příklad můžu uvést stav pojmenovaný $getLoginData$. U tohoto stavu je ve dvojitých úhlových závorkách uvedena informace $<<GetLoginDataFlow>>$. Tato informace nám říká, že stav $getLoginData$ obsahuje další vnořené stavy. Tyto stavy jsou v aplikaci implementovány třídou $GetLoginDataFlow$. K této třídě existuje diagram, který popisuje vnitřní uspořádání těchto stavů a přechody mezi nimi. Pro ukázku uvádím ještě diagram této třídy na obrázku \ref{fig:GetLoginDataFlow}. Diagramy ostatních částí aplikace jsou obsaženy v příloze \ref{sec:voice_portal_diagrams}.
+Na obrázku \ref{fig:MainFlow} je zobrazena hlavní struktura hlasového portálu. Struktura aplikace je na obrázku popsána formou stavového diagramu. Obdélníky reprezentují jednotlivé stavy aplikace. Některé stavy jsou pro svoji komplexnost zobrazeny pouze obecně. U takových stavů je vždy uvedena informace, která slouží jako jakýsi odkaz na další diagram, který daný stav popisuje detailněji. Jako příklad můžu uvést stav pojmenovaný $getLoginData$. U tohoto stavu je ve dvojitých úhlových závorkách uvedena informace $<<GetLoginDataFlow>>$. Tato informace nám říká, že stav $getLoginData$ obsahuje další vnořené stavy. Tyto stavy jsou v aplikaci implementovány třídou $GetLoginDataFlow$. K této třídě existuje diagram, který popisuje vnitřní uspořádání těchto stavů a přechody mezi nimi.
 
-\InsertFigure{Figures/diagrams/getlogindataflow}{0.8\textwidth}{Diagram popisující vnitřní stavy stavu $getLoginData$}{fig:GetLoginDataFlow}
+Pro ukázku uvádím ještě diagram této třídy na obrázku \ref{fig:GetLoginDataFlow}.
+
+\InsertFigure{Figures/diagrams/getlogindataflow}{0.8\textwidth}{Struktura stavu $getLoginData$ $(GetLoginDataFlow)$}{fig:GetLoginDataFlow}
 
 Pomocí šipek jsou v diagramu popsány přechody mezi jednotlivými stavy. U každého přechodu se dále nachází informace identifikující daný přechod. Součástí této informace může být i doplňující informace o DTMF volbě, která slouží jako parametr tohoto přechodu a bývá uvedena v hranatých závorkách.
 
-Z důvodu zpřehlednění textu zde neuvádím diagramy všech částí aplikace. Nejvíce zajímavým částem aplikace se budu detailněji věnovat později.
+Z důvodu zpřehlednění textu zde neuvádím diagramy všech částí aplikace. Nejvíce zajímavým částem aplikace se budu detailněji věnovat později. Diagramy ostatních částí aplikace jsou obsaženy v příloze \ref{sec:voice_portal_diagrams}.
 
 \subsection{Implementace hlasového portálu}
-V této kapitole se budu věnovat implementaci hlasového portálu. Nejdříve se zaměřím na popis knihovny, která vznikla v rámci této práce za účelem usnadnění vývoje hlasových portálů postavených na platformě VoiceXML. Poté se vrátím k detailnějšímu popisu implementace vybraných částí hlasového portálu.
+V této kapitole se budu věnovat popisu implementace hlasového portálu. Nejdříve se zaměřím na popis knihovny, která vznikla v rámci této práce za účelem usnadnění vývoje hlasových portálů postavených na platformě VoiceXML. Poté se vrátím k detailnějšímu popisu implementace vybraných částí hlasového portálu.
 
 Proces implementace hlasového portálu můžu tedy rozdělit na dvě části. První částí je návrh VXML knihovny a druhou částí je návrh hlasového portálu rezervačního systému s využitím vytvořené knihovny.
 
@@ -727,11 +768,13 @@ Proces implementace hlasového portálu můžu tedy rozdělit na dvě části. P
 
 V kapitole \ref{sec:Zaklady_vxml} jsme se seznámili se základy návrhu VoiceXML dokumentů, konkrétně jsme se zde zaměřili na strukturu VXML dokumentu a popis vybraných elementů, které slouží k definici struktury aplikace. Již tedy máme k dispozici znalosti, které nám umožňují napsat VoiceXML kód jednoduchého hlasového portálu.
 
-Při návrhu složitějšího hlasového portálu by nám mohla ušetřit hodně práce vyšší úroveň abstrakce. Tato abstrakce by nás mohla odstínit od přímého psaní VMXL kódu. A právě tuto abstrakci zajišťuje knihovna, kterou jsem vyvinul v rámci této diplomové práce. Při použití této knihovny se nemusíme soustředit na psaní validního VXML kódu, ale veškeré naše soustředění můžeme zaměřit na aplikační logiku. Tato knihovna dále umožňuje dosáhnout efektivní znovu použitelnosti kódu formou komponentního modelu. V neposlední řadě knihovna zjednodušuje vývoj tím způsobem, že v podstatě ruší rozdělení aplikace na klientskou a serverovou část. Při vývoji aplikace tedy nemáme aplikaci striktně rozdělenou na statické VXML dokumenty, které definují strukturu aplikace a zajišťují vstup a výstup, a serverovou část, která řeší přístup k datům a implementuje aplikační logiku.
+Při návrhu složitějšího hlasového portálu by nám mohlo ušetřit hodně práce vyšší úroveň abstrakce. Tato abstrakce by nás mohla odstínit od přímého psaní VXML kódu. A právě tuto abstrakci zajišťuje knihovna, která je vyvinuta v rámci této diplomové práce.
+
+Při použití této knihovny se nemusíme soustředit na psaní validního VXML kódu, ale veškeré naše soustředění můžeme zaměřit na aplikační logiku. Tato knihovna dále umožňuje dosáhnout efektivní znovupoužitelnosti kódu formou komponentního modelu. V neposlední řadě knihovna zjednodušuje vývoj tím způsobem, že v podstatě ruší rozdělení aplikace na klientskou a serverovou část. Při vývoji aplikace tedy nemáme aplikaci striktně rozdělenou na VXML dokumenty, které definují strukturu aplikace a zajišťují vstup a výstup, a serverovou část, která řeší přístup k datům a implementuje aplikační logiku.
 
 Knihovna je implementována v JavaScriptu\footnote{Více informací o této technologii můžete najít v kapitole \ref{sec:JavaScript}.} a aplikace, která je vyvíjena s využitím této knihovny je spouštěna v serverovém prostředí na platformě Node.js.
 
-Samotná aplikace se dá jednoduše popsat jako kolekce stavů mezi kterými jsou definovány přechody do stavů dalších (v podstatě se tedy jedná o stavový automat). Každý stav může být určitého typu. Jedním typem je stav, sloužící k získání vstupu od uživatele. Dalším typem je stav, který zajišťuje výstup, tedy sděluje uživateli nějakou informaci. Posledním typem je stav, který nezajišťuje vstup ani výstup, ale implementuje pouze logiku, na základě které dochází mj. k rozhodnutí do jakého dalšího stavu se bude přecházet.
+Aplikace vytvořená pomocí této knihovny se dá jednoduše popsat jako kolekce stavů mezi kterými jsou definovány přechody do stavů dalších (v podstatě se tedy jedná o stavový automat). Každý stav může být určitého typu. Jedním typem je stav, sloužící k získání vstupu od uživatele. Dalším typem je stav, který zajišťuje výstup, tedy sděluje uživateli nějakou informaci. Posledním typem je stav, který nezajišťuje vstup ani výstup, ale implementuje pouze logiku, na základě které dochází mj. k rozhodnutí do jakého dalšího stavu se bude přecházet.
 
 Každý stav může vyvolávat události. Pro každou vyvolanou událost je definován přechod do dalšího stavu. Způsob definice přechodů pomocí událostí zabraňuje vzniku pevných vazeb mezi objekty, které spolu potřebují nějakým způsobem komunikovat. V rámci interní implementace stavu tedy může docházet k vyvolání události, na které mohou závislé objekty nějakým způsobem reagovat.
 
@@ -744,9 +787,9 @@ Knihovna nám tedy poskytuje rozhraní API umožňující definovat jednotlivé 
 \subsubsection{Aplikační rozhraní knihovny}
 V předchozí kapitole jsem představil pomocnou knihovnu a popsal jsem důvody, které mě vedly k její implementaci.
 
-V této části se budu podrobně věnovat jednotlivým částem rozhraní API, které nám tato knihovna nabízí. Popíši zde jednotlivé třídy, které knihovna obsahuje. Aby bylo možné srovnat vývoj VXML hlasového portálu za pomoci této knihovny s tradičním způsobem vývoje (kdy ručně vytváříme VXML kód), nesmí chybět i ukázky použití jednotlivých částí knihovny.
+V této části se budu podrobně věnovat jednotlivým částem rozhraní API, které nám tato knihovna nabízí. Popíši zde jednotlivé třídy, které knihovna obsahuje. Aby bylo možné srovnat vývoj VoiceXML hlasového portálu za pomoci této knihovny s tradičním způsobem vývoje (kdy ručně vytváříme VXML kód), nesmí chybět i ukázky použití jednotlivých částí knihovny.
 
-Ve výpise \ref{src:MenuExample} je uveden zdrojový kód jednoduché aplikace, jejíž zdrojový kód nám v dalším textu poslouží pro detailnější rozbor. Jen pro představu zde ještě uvedu, co daná aplikace dělá. Aplikace představuje jednoduché menu. Nejdříve nás aplikace přivítá uvítací hláškou. Poté dojde k přechodu do menu, kde se dozvídáme, že můžeme pomocí volby DTMF zvolit hodnotu 1, 2 nebo 3. V závislosti na výběru poté přecházíme do stavu, ve kterém jsme informováni o tom, jakou volbu jsme provedli. Pokud zvolíme jinou hodnotu, než je povoleno (např. 4) dojde k přechodu do stavu, kde je nám řečeno, že jsme zvolili nepovolenou volbu.
+Ve výpise \ref{src:MenuExample} je uveden zdrojový kód jednoduché aplikace, jejíž zdrojový kód bude v dalším textu předmětem detailnějšího rozboru. Jen pro představu zde ještě uvedu, co daná aplikace dělá. Aplikace představuje jednoduché menu. Nejdříve nás aplikace přivítá uvítací hláškou. Poté dojde k přechodu do menu, kde se dozvídáme, že můžeme pomocí volby DTMF zvolit hodnotu 1, 2 nebo 3. V závislosti na výběru poté přecházíme do stavu, ve kterém jsme informováni o tom, jakou volbu jsme provedli. Pokud zvolíme jinou hodnotu, než je povoleno (např. 4) dojde k přechodu do stavu, kde je nám řečeno, že jsme zvolili nepovolenou volbu.
 
 \lstinputlisting[language=JavaScript,label=src:MenuExample,caption={Zdrojový kód ukázkové aplikace}]{Src/MenuExample.js}
 
@@ -758,13 +801,13 @@ Tato třída implementuje statickou metodu \texttt{create}, která přijímá po
 
 \lstinputlisting[language=JavaScript,label=src:Application_create,caption={Vytvoření hlavního objektu aplikace}]{Src/Application_create.js}
 
-Metoda \texttt{create} přijímá jako parametr jeden objekt, který obsahuje jednotlivé parametry aplikace. Následuje popis jednotlivých parametrů.
+Metoda \texttt{create} přijímá jako parametr jeden objekt, který obsahuje jednotlivá nastavení aplikace. Následuje popis jednotlivých parametrů.
 
 Parametr \texttt{route} udává, na jaké URL bude aplikace dostupná.
 
 Parametr \texttt{controller} je reference na konstruktor, který se použije k vytvoření hlavního flow\footnote{V textu používám termín $flow$ pro označení instancí třídy \texttt{CallFlow} (viz \ref{sec:CallFlow}), které definují kolekci stavů aplikace.} aplikace.
 
-Dalším parametrem, který není povinný, je parametr \texttt{config}. Jedná se o objekt, pomocí kterého můžeme do aplikace protlačit jakékoliv další parametry. Tyto parametry jsou poté dostupné celé aplikaci. V příkladu je uvedeno nastavení \texttt{io}, kterým aplikaci předávám referenci na objekt, který se stará o generování push notifikací pomocí technologie WebSockets\footnote{Technologie WebSockets byla představena v kapitole \ref{sec:WebSockets}.}.
+Dalším parametrem, který není povinný, je parametr \texttt{config}. Jedná se o objekt, pomocí kterého můžeme do aplikace protlačit jakákoliv další nastavení. Tyto nastavení jsou poté dostupné celé aplikaci. V příkladu je uvedeno nastavení \texttt{io}, prostřednictvím kterého aplikaci předáváme referenci na objekt, který se stará o generování push notifikací pomocí technologie WebSockets\footnote{Technologie WebSockets byla představena v kapitole \ref{sec:WebSockets}.}.
 
 Hodnotou posledního parametru \texttt{server} je instance Express.js serveru (viz \ref{sec:ExpressJs}), nad kterým je VXML aplikace spuštěna. Tato instance je interně využita k navěšení metod, které obsluhují jednotlivé požadavky na přechod mezi stavy aplikace.
 
@@ -786,7 +829,9 @@ Následující požadavky jsou ve tvaru následujícím:
 
 V URL adrese požadavku jsou zakódovány všechny potřebné informace pro provedení přechodu do dalšího stavu.
 
-První výše uvedený požadavek obsahuje pouze jeden parametr, a tím je parametr \texttt{session.sessionid}. Tento parametr slouží jako jednoznačný identifikátor instance hovoru. Hodnotu tohoto parametru generuje IVR platforma a tuto hodnotu dále předává aplikačnímu serveru. Aplikační server tento údaj využívá jako klíč, pod kterým ukládá stav hovoru mezi jednotlivými požadavky. Informace o stavu, která je na serveru uchovávána, obsahuje například informaci o právě navštíveném stavu. Identifikátor instance hovoru je poté obsažen ve všech dalších požadavcích prostřednictvím parametru \texttt{sessionid}. Mezi dalšími požadavky je hodnota předávána prostřednictvím automaticky vygenerovaného VXML dokumentu. Pokud by hodnota nebyla přítomna, aplikace by nevěděla s jakou instancí hovoru má pracovat.
+První výše uvedený požadavek obsahuje pouze jeden parametr, a tím je parametr \texttt{session.sessionid}. Tento parametr slouží jako jednoznačný identifikátor instance aplikace. Hodnotu tohoto parametru generuje IVR platforma a tuto hodnotu dále předává aplikačnímu serveru. Aplikační server tento údaj využívá jako klíč, pod kterým ukládá stav aplikace mezi jednotlivými požadavky. Informace o stavu, která je na serveru uchovávána, obsahuje například informaci o právě navštíveném stavu.
+
+Identifikátor instance aplikace je poté obsažen ve všech dalších požadavcích prostřednictvím parametru \texttt{sessionid}. Mezi dalšími požadavky je hodnota předávána prostřednictvím automaticky vygenerovaného VXML dokumentu. Pokud by hodnota nebyla přítomna, aplikace by nevěděla s jakou instancí má pracovat.
 
 Dalším parametrem, který musí být v URL obsažen, je název události \texttt{event}, která byla vyvolána v interakci s uživatelem. Na základě této informace server zpracuje přechod do dalšího stavu.
 
@@ -808,13 +853,17 @@ Tato třída reprezentuje jeden stav aplikace. Jedná se o bázovou třídu, ze 
 
 Konstruktor může přijímat tři parametry. Prvním a jediným povinným parametrem je parametr \texttt{id}. Jedná se o identifikátor stavu, který musí být jedinečný v rámci jednoho flow.
 
-Zbývající parametry \texttt{target} a \texttt{event} jsou nepovinné. V případě, že jsou tyto parametry uvedeny, tak konstruktor interně zavolá metodu \texttt{addTransition} s hodnotami těchto parametrů. Metoda má následující předpis \texttt{addTransition(event, target, condition)}. Tato metoda slouží k definici přechodů do dalších stavů. Každý stav může mít definováno více přechodů. Přechod je definován kombinací typu události a cílového stavu. Tato kombinace může být volitelně rozšířena ještě parametrem \texttt{condition}. Metodě \texttt{addTransition} může být cílový stav \texttt{target} předán formou reference na instanci třídy \texttt{State} nebo můžeme metodě předat pouze identifikátor stavu.
+Zbývající parametry \texttt{target} a \texttt{event} jsou nepovinné. V případě, že jsou tyto parametry uvedeny, tak konstruktor třídy interně zavolá metodu \texttt{addTransition} s hodnotami těchto parametrů. Tato metoda má následující předpis \texttt{addTransition(event, target, condition)} a slouží k definici přechodů do dalších stavů.
 
-V některých případech se nám může hodit nadefinovat více přechodů se stejným typem události. Více přechodů se stejným typem události bývá typicky definováno u stavů, které nějakou formou implementují menu. V momentě, kdy je proveden výběr v menu, může být vyvolána obecná událost, např. \texttt{continue}. Tato obecná událost je parametrizována hodnotou, která byla v menu zvolena. Zde se dostáváme k volitelnému parametru \texttt{condition}, který slouží k rozhodnutí, do jakého stavu se přejde. Hodnotou tohoto parametru je funkce, která přebírá jeden parametr a to je právě hodnota, která byla v menu zvolena. Tato funkce obsahuje rozhodovací logiku, která má tedy k dispozici informaci o vybrané hodnotě a vrací hodnotu \texttt{true} v případě, že se má tento přechod použít pro přechod do dalšího stavu. Demonstrace toho postupu je vidět ve výpise \ref{src:MenuExample}.
+Každý stav může mít definován více přechodů. Přechod je definován kombinací typu události a cílového stavu. Tato kombinace může být volitelně rozšířena ještě parametrem \texttt{condition}. Metodě \texttt{addTransition} může být cílový stav \texttt{target} předán formou reference na instanci třídy \texttt{State} nebo můžeme metodě předat pouze identifikátor stavu.
 
-Třída dále obsahuje metody \texttt{addOnEntryAction} a \texttt{addOnExitAction}, které slouží k registraci funkcí, které se vyvolávají při vstupu, resp. při výstupu z tohoto stavu. Těchto funkcí může být pro každý typ události zaregistrováno více. V případě, že je funkcí zaregistrováno více, jsou jednotlivé funkce volány sekvenčně za sebou. Každá funkce má v momentě zavolání k dispozici reference na následující objekty. Tyto reference jsou k dispozici prostřednictvím argumentů funkce. Prvním argumentem je instance kontejneru (flow), do kterého daný stav patří. Druhým argumentem je reference na stav samotný. Poslední argument obsahuje doplňující data, která jsou závislá na konkrétním případě použití.
+V některých případech se nám může hodit nadefinovat více přechodů se stejným typem události. Více přechodů se stejným typem události bývá typicky definováno u stavů, které nějakou formou implementují menu.
 
-Jak již bylo předesláno dříve, každý stav může obsahovat vnořené stavy. K registraci vnořených stavů slouží metoda \texttt{addNestedCallFlow(callFlow)}, která přijímá jeden parametr. Hodnota parametru \texttt{callFlow} je instance, pro nás již známé, třídy \texttt{CallFlow}, která byla popsána v kapitole \ref{sec:CallFlow}. Díky této možnosti můžeme jednoduše docílit znovupoužitelnosti kódu, kdy opakovaně využívanou komponentu implementujeme jako samostatnou třídu, která je odvozena ze třídy \texttt{CallFlow}. Instance této třídy je poté registrována zavoláním metody \texttt{addNestedCallFlow} na daném stavu. V případě potřeby může být tato instance parametrizována, např. předáním různých parametrů do konstruktoru.
+V momentě, kdy je proveden výběr v menu, může být vyvolána obecná událost, např. \texttt{continue}. Tato obecná událost je parametrizována hodnotou, která byla v menu zvolena. Zde se dostáváme k volitelnému parametru \texttt{condition}, který slouží k rozhodnutí, do jakého stavu se přejde. Hodnotou tohoto parametru je funkce, která přebírá jeden parametr a to je právě hodnota, která byla v menu zvolena. Tato funkce obsahuje rozhodovací logiku, která má tedy k dispozici informaci o vybrané hodnotě a vrací hodnotu \texttt{true} v případě, že se má daný přechod použít pro přechod do dalšího stavu. Demonstrace tohoto postupu je vidět ve výpise \ref{src:MenuExample}.
+
+Třída dále obsahuje metody \texttt{addOnEntryAction} a \texttt{addOnExitAction}, které slouží k registraci funkcí, které se vyvolávají při vstupu, resp. při výstupu z tohoto stavu. Těchto funkcí může být zaregistrováno více. V případě, že je funkcí zaregistrováno více, jsou jednotlivé funkce volány sekvenčně za sebou. Každá taková funkce má v momentě zavolání k dispozici reference na následující objekty. Tyto reference jsou k dispozici prostřednictvím argumentů funkce. Prvním argumentem je instance kontejneru (flow), do kterého daný stav patří. Druhým argumentem je reference na stav samotný. Poslední argument obsahuje doplňující data, která jsou závislá na konkrétním případě použití.
+
+Jak již bylo předesláno dříve, každý stav může obsahovat vnořené stavy. K registraci vnořených stavů slouží metoda \texttt{addNestedCallFlow(callFlow)}, která přijímá jeden parametr. Hodnota parametru \texttt{callFlow} je instance, pro nás již známé, třídy \texttt{CallFlow}, která byla popsána v kapitole \ref{sec:CallFlow}. Díky této možnosti můžeme jednoduše docílit znovupoužitelnosti kódu, kdy opakovaně využívanou komponentu implementujeme jako samostatnou třídu, která je odvozena ze třídy \texttt{CallFlow}. Instance této třídy je poté registrována zavoláním metody \texttt{addNestedCallFlow} na daném stavu. V případě potřeby může být tato instance parametrizována předáním parametrů do konstruktoru.
 
 Třída \texttt{State} obsahuje tovární statickou metodu \texttt{create}, která je další možností, jak vytvořit instanci stavu. Oproti vytvoření stavu pomocí konstruktoru nabízí pohodlnější cestu k vytvoření stavu, který obsahuje hlasový model (viz \ref{sec:VoiceModel}). Pomocí hlasového modelu definujeme typ stavu. Jedním z typů je stav, který zajišťuje přečtení vstupu od uživatele, dalším typem stavu může být stav, který slouží k prezentaci výstupu. Vytváření stavů pomocí teto metody je použito ve výpise \ref{src:MenuExample}.
 
@@ -836,7 +885,7 @@ Instance tříd, které jsou z této třídy odvozeny obsahují všechny informa
 
 \paragraph{Třída Prompt}
 \label{sec:Prompt}
-Tato třída slouží k definici zprávy, která se má uživateli předložit. Tuto definici zprávy používají všechny třídy, které implementují hlasový model (viz kapitola \ref{sec:VoiceModel}).
+Třída \texttt{Prompt} slouží k definici zprávy, která se má uživateli předložit. Tuto definici zprávy používají všechny třídy, které implementují hlasový model (viz kapitola \ref{sec:VoiceModel}).
 
 Třída obsahuje kolekci \texttt{audios}. Tato kolekce může obsahovat jednu nebo více zpráv, které se uživateli postupně přehrají. Položkami této kolekce může být text, který bude pomocí TTS enginu převeden na hlasovou zprávu nebo reference na audio nahrávku, která bude přehrána.
 
@@ -852,13 +901,13 @@ Pokud potřebujeme vytvořit instanci a zároveň nastavit její další vlastno
 
 Obě nastavení \texttt{text} a \texttt{audios} nastavují zprávu, která se uživateli předloží. V praxi nenastavujeme oba parametry, ale pouze jeden z nich. Nastavení \texttt{text} přebírá text zprávy a používá se tehdy, když definujeme pouze jednoduchou textovou zprávu. Hodnotou nastavení \texttt{audios} je kolekce zpráv, která může obsahovat textové zprávy nebo reference na audio nahrávky.
 
-Hodnotou nastavení \texttt{bargein} definujeme, zda je možné zprávu během přehrávání přerušit např. stiskem klávesy nebo hlasovým vstupem. Výchozí hodnotou tohoto nastavení je \texttt{true}. Hodnota \texttt{true} povoluje přerušení přehrávání zprávy. Pokud chceme uživatele donutit, aby si musel zprávu vyslechnout celou, tak nastavení předáme hodnotu \texttt{false}.
+Hodnotou nastavení \texttt{bargein} definujeme, zda je možné zprávu během přehrávání přerušit stiskem klávesy nebo hlasovým vstupem. Výchozí hodnotou tohoto nastavení je \texttt{true}. Hodnota \texttt{true} povoluje přerušení přehrávání zprávy. Pokud chceme uživatele donutit, aby si musel zprávu vyslechnout celou, tak nastavíme hodnotu \texttt{false}.
 
-Nastavením \texttt{bargeinType} blíže specifikujeme způsob, jakým je možné přehrávání zprávy přerušit. Hodnotou nastavení může být \texttt{speech} nebo \texttt{hotword}. Více informací o významu jednotlivých hodnot najdete v kapitole \ref{sec:Zaklady_vxml}.
+Nastavením \texttt{bargeinType} blíže specifikujeme způsob, jakým je možné přehrávání zprávy přerušit. Hodnotou nastavení může být \texttt{speech} nebo \texttt{hotword}.
 
-Nastavení \texttt{language} zprostředkovává TTS enginu informaci o jazyku, v jakém má být zpráva interpretována. Pokud není hodnota specifikována, přebírá se hodnota, kterou má nastavena IVR platforma.
+Nastavení \texttt{language} zprostředkovává TTS modulu informaci o jazyku, v jakém má být zpráva interpretována. Pokud není hodnota specifikována, přebírá se hodnota, kterou má nastavena IVR platforma.
 
-Nastavením \texttt{timeout} můžeme specifikovat časovou prodlevu, po kterou bude VXML interpretr čekat na uživatelovu odezvu. Hodnotou je číslo udávající tuto prodlevu ve vteřinách. Toto nastavení má smysl specifikovat v případě, kdy definujeme zprávu, která bude předcházet uživatelskému vstupu.
+Nastavením \texttt{timeout} můžeme specifikovat časovou prodlevu, po kterou bude VXML interpretr čekat na odezvu od uživatele. Hodnotou je číslo udávající tuto prodlevu ve vteřinách. Toto nastavení má smysl specifikovat v případě, kdy definujeme zprávu, která bude předcházet uživatelskému vstupu.
 
 \paragraph{Třída Say}
 \label{sec:Say}
@@ -1009,7 +1058,7 @@ Z ukázky je patrné, že je možné délku pauzy specifikovat více způsoby. J
 		x-strong & 1 \\
 		\hline
 	\end{tabular}
-	\caption{Seznam textových hodnot pro definici pauzy a přidružených délek pauzy}
+	\caption{Textové hodnoty pro definici pauzy a přidružených délek pauzy}
 	\label{tab:Silence_pauses}
 \end{table}
 
@@ -1161,7 +1210,7 @@ Komponenta implementuje metodu \texttt{getSelectedDestination}, která slouží 
 
 \InsertFigure{Figures/diagrams/getdestinationflow}{1\textwidth}{Struktura komponenty pro zvolení destinace}{fig:GetDestinationFlow}
 
-\InsertFigure{Figures/diagrams/destinationselectionflow}{1\textwidth}{Vnitřní struktura stavu $destinationSelection$ komponenty pro zvolení destinace}{fig:DestinationSelectionFlow}
+\InsertSidewaysFigure{Figures/diagrams/destinationselectionflow}{0.9\textwidth}{Struktura stavu $destinationSelection$ $(DestinationSelectionFlow)$}{fig:DestinationSelectionFlow}
 
 \section{Konfigurace a zprovoznění hlasového portálu}
 V této kapitole popíši kroky vedoucí k úspěšné konfiguraci a zprovoznění hlasového portálu na IVR platformách Voxeo Prophecy a VoiceGlue.
@@ -1174,7 +1223,7 @@ Jak již bylo uvedeno, aplikační server je poháněn technologií Node.js (viz
 
 Další prerekvizitou je instalace MongoDB databáze. Popis instalace pro Ubuntu je detailně popsán na této URL\cite{Mongo_install}.
 
-V momentě, kdy máme výše uvedené prerekvizity nainstalovány, můžeme přejít k instalaci modulů, na kterých je běh aplikačního serveru závislý. Otevřeme si terminál a přepneme se do adresáře, kde máme rozbalený archiv se zdrojovými kódy aplikačního serveru (TODO: přidat referenci na přílohu). Nyní můžeme spustit následující příkazy:
+V momentě, kdy máme výše uvedené prerekvizity nainstalovány, můžeme přejít k instalaci modulů, na kterých je běh aplikačního serveru závislý. Otevřeme si terminál a přepneme se do adresáře, kde máme rozbalený archiv se zdrojovými kódy aplikačního serveru. Nyní můžeme spustit následující příkazy:
 
 \begin{itemize}
 \item \texttt{npm install}
@@ -1660,19 +1709,19 @@ V této příloze se nachází diagramy všech částí hlasového portálu. Pro
 
 \subsubsection{V textu neuvedené diagramy}
 
-\InsertSidewaysFigure{Figures/diagrams/appendix/createnewflow}{1\textwidth}{Struktura stavu $createNew <<CreateNewFlow>>$}{fig:createnewflow}
+\InsertSidewaysFigure{Figures/diagrams/appendix/createnewflow}{1\textwidth}{Struktura stavu $createNew$ $(CreateNewFlow)$}{fig:createnewflow}
 
-\InsertFigure{Figures/diagrams/appendix/cancelactiveflow}{1\textwidth}{Struktura stavu $cancelActive <<CancelActiveFlow>>$}{fig:cancelactiveflow}
+\InsertFigure{Figures/diagrams/appendix/cancelactiveflow}{1\textwidth}{Struktura stavu $cancelActive$ $(CancelActiveFlow)$}{fig:cancelactiveflow}
 
-\InsertFigure{Figures/diagrams/appendix/listactiveflow}{0.85\textwidth}{Struktura stavu $listActive <<ListActiveFlow>>$}{fig:listactiveflow}
+\InsertFigure{Figures/diagrams/appendix/listactiveflow}{0.85\textwidth}{Struktura stavu $listActive$ $(ListActiveFlow)$}{fig:listactiveflow}
 
-\InsertFigure{Figures/diagrams/appendix/filterbyarrivaldateflow}{0.6\textwidth}{Struktura stavu $filterByArrivalDate <<FilterByArrivalDateFlow>>$}{fig:filterbyarrivaldateflow}
+\InsertFigure{Figures/diagrams/appendix/filterbyarrivaldateflow}{0.6\textwidth}{Struktura stavu $filterByArrivalDate$ $(FilterByArrivalDateFlow)$}{fig:filterbyarrivaldateflow}
 
-\InsertFigure{Figures/diagrams/appendix/filterbydeparturedateflow}{0.6\textwidth}{Struktura stavu $filterByDepartureDate <<FilterByDepartureDateFlow>>$}{fig:filterbydeparturedateflow}
+\InsertFigure{Figures/diagrams/appendix/filterbydeparturedateflow}{0.6\textwidth}{Struktura stavu $filterByDepartureDate$ $(FilterByDepartureDateFlow)$}{fig:filterbydeparturedateflow}
 
-\InsertFigure{Figures/diagrams/appendix/reservationmenuflow}{1\textwidth}{Struktura stavu $reservationMenu <<ReservationMenuFlow>>$}{fig:reservationmenuflow}
+\InsertFigure{Figures/diagrams/appendix/reservationmenuflow}{1\textwidth}{Struktura stavu $reservationMenu$ $(ReservationMenuFlow)$}{fig:reservationmenuflow}
 
-\InsertFigure{Figures/diagrams/appendix/reservationscontainerflow}{1\textwidth}{Struktura stavu $reservationsContainer <<ReservationsContainerFlow>>$}{fig:reservationscontainerflow}
+\InsertFigure{Figures/diagrams/appendix/reservationscontainerflow}{1\textwidth}{Struktura stavu $reservationsContainer$ $(ReservationsContainerFlow)$}{fig:reservationscontainerflow}
 
 \clearpage
 
