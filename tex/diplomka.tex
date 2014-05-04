@@ -1,9 +1,9 @@
 % Nejprve uvedeme tridu dokumentu s volbami
-\documentclass[ing,male,java,dept460]{diploma}						% jednostranny dokument
+\documentclass[ing,male,java,dept460,twoside]{diploma}						% jednostranny dokument
 %\documentclass[ing,male,java,dept460,twoside]{diploma}		% oboustranny dokument
 \usepackage[czech]{babel}
 
-\renewcommand{\figurename}{Obr.}
+\renewcommand{\figurename}{Obrázek}
 
 % JavaScript highlighting
 \usepackage{graphicx}
@@ -313,7 +313,7 @@ Mezi hlavní výhody VoiceGlue je otevřenost zdrojového kódu, resp. licence p
 Vzhledem k tomu, že poslední aktivita autorů VoiceGlue byla na jejich webu zaznamenaná koncem roku 2011, nemůžeme s určitostí v blízké době počítat s implementací těchto chybějících vlastností.
 
 \subsection{VoiceXML dokument}
-\label{sec:Zaklady_vxml}
+\label{sec:VXML_dokument}
 Jazyk VoiceXML vychází ze značkovacího jazyka XML a proto pro něj platí veškerá pravidla spojená s jazykem XML. Každý VoiceXML dokument musí splňovat následující pravidla \cite{xml_wiki}:
 
 \begin{itemize}
@@ -354,15 +354,16 @@ Druhý dialog uživateli následně přehraje definovanou zprávu.
 Zpracování tohoto dokumentu je možné rozdělit do následujících kroků \cite{vxmldevguide}:
 
 \begin{enumerate}
-\item VoiceXML dokument je nahrán do paměti.
-\item Je provedena kontrola, zda je dokument validním XML dokumentem.
-\item Provede se inicializace proměnných (pokud jsou v dokumentu nějaké definované).
-\item Provede se načtení prvního dialogu a je spuštěn obsah elementu \texttt{<block>}. Zpracováním elementu \texttt{<goto>} dochází k přechodu do dalšího dialogu.
-\item Z paměti je uvolněn první dialog, následně dochází k načtení druhého dialogu. Poté jsou provedeny akce definované uvnitř tohoto dialogu.
-\item Druhý dialog je uvolněn z paměti a zpracování VoiceXML je ukončeno.
+\item voiceXML dokument je nahrán do paměti
+\item je provedena kontrola, zda je dokument validním XML dokumentem
+\item provede se inicializace proměnných (pokud jsou v dokumentu nějaké definované)
+\item provede se načtení prvního dialogu a je spuštěn obsah elementu \texttt{<block>}. Zpracováním elementu \texttt{<goto>} dochází k přechodu do dalšího dialogu
+\item z paměti je uvolněn první dialog, následně dochází k načtení druhého dialogu. Poté jsou provedeny akce definované uvnitř tohoto dialogu
+\item druhý dialog je uvolněn z paměti a zpracování VoiceXML je ukončeno
 \end{enumerate}
 
 \subsection{Základy jazyka VoiceXML}
+\label{sec:Zaklady_vxml}
 V následující sekci stručně popíši základní postupy, kterých bývá užito při návrhu hlasových aplikací pomocí jazyka VoiceXML.
 
 \subsubsection{Navigace v hlasové aplikaci}
@@ -379,6 +380,7 @@ Jednotlivé položky menu jsou definovány pomocí elementu \texttt{<choice>}, p
 Můžeme si všimnout, že element \texttt{<menu>} dále obsahuje element \texttt{<nomatch>}. Tímto elementem je možné specifikovat akci, která se provede v případě, že uživatel provede nedefinovanou volbu. V našem případě je tato situace obsloužena zopakováním položek menu (element \texttt{<reprompt>}). Na základě výběru dochází k přesunu do dialogu "reservations" nebo "account", kde je aplikace následně ukončena.
 
 \subsubsection{Získání vstupu od uživatele}
+\label{sec:VXML_input}
 Jazyk VoiceXML nám pro získání uživatelského vstupu poskytuje podobné prostředky jako jazyk HTML. Máme k dispozici elementy, prostřednictvím kterých jsme schopni nadefinovat formulářové prvky. Do těchto prvků je uložen vstup od uživatele a následně odeslán ke zpracování na server např. prostřednictvím elementu \texttt{<submit>}. Elementy pro definici formulářových prvků jsou, stejně jako element \texttt{<submit>}, obsaženy uvnitř elementu \texttt{<form>}. Zpracováním elementu \texttt{<submit>} dochází k odeslání všech formulářových prvků, které jsou ve formuláři obsaženy.
 
 Formulářové prvky se definují pomocí elementu \texttt{<field>}. Datový typ formulářového prvku je specifikován prostřednictvím hodnoty atributu \texttt{type}. V tabulce \ref{tab:form_fields_datatypes} je uveden výběr hodnot, které je možné použít \cite{vxml_org}.
@@ -766,7 +768,7 @@ Proces implementace hlasového portálu můžu tedy rozdělit na dvě části. P
 
 \subsubsection{Implementace pomocné knihovny}
 
-V kapitole \ref{sec:Zaklady_vxml} jsme se seznámili se základy návrhu VoiceXML dokumentů, konkrétně jsme se zde zaměřili na strukturu VXML dokumentu a popis vybraných elementů, které slouží k definici struktury aplikace. Již tedy máme k dispozici znalosti, které nám umožňují napsat VoiceXML kód jednoduchého hlasového portálu.
+V kapitole \ref{sec:VXML_dokument} jsme se seznámili se základy návrhu VoiceXML dokumentů, konkrétně jsme se zde zaměřili na strukturu VXML dokumentu a popis vybraných elementů, které slouží k definici struktury aplikace. Již tedy máme k dispozici znalosti, které nám umožňují napsat VoiceXML kód jednoduchého hlasového portálu.
 
 Při návrhu složitějšího hlasového portálu by nám mohlo ušetřit hodně práce vyšší úroveň abstrakce. Tato abstrakce by nás mohla odstínit od přímého psaní VXML kódu. A právě tuto abstrakci zajišťuje knihovna, která je vyvinuta v rámci této diplomové práce.
 
@@ -941,17 +943,17 @@ Pořízení zvukové nahrávky má v kompetenci IVR platforma a musí tedy tuto 
 
 Jelikož práce s tímto hlasovým modelem není demonstrována ve zdrojovým kódu ukázkové aplikace, tak ve výpise \ref{src:Record_example} uvádím ukázku zdrojového kódu, který vytváří stav, jehož hlasovým modelem je instance této třídy. V ukázce jsou demonstrovány dva způsoby zavolání konstruktoru.
 
-První volání spočívá v předání jednoho argumentu. Tento argument může být textový řetězec zprávy nebo instance typu \texttt{Prompt}. Z ukázky je dále vidět způsob, jakým je možné nahrávku uložit na disk.
+První volání spočívá v předání jednoho parametru. Tento parametr může být textový řetězec zprávy nebo instance typu \texttt{Prompt}. Z ukázky je dále vidět způsob, jakým je možné nahrávku uložit na disk.
 
-Druhé volání také přebírá jeden argument. Hodnotou je objekt, který obsahuje jednotlivá nastavení.
+Druhé volání také přebírá jeden parametr. Hodnotou je objekt, který obsahuje jednotlivá nastavení.
 
 Nastavení \texttt{prompt} je zpráva, která bude uživateli předložena.
 
 Nastavení \texttt{maxTime} nastavuje maximální délku nahrávky ve vteřinách. Výchozí hodnotou tohoto nastavení je 60 (s), tedy jedna minuta.
 
-Nastavení \texttt{beep} udává, jestli se má po přehrání zprávy přehrát pípnutí indikující začátek proces nahrávání. Ve výchozím stavu je toto nastavení zapnuto.
+Nastavení \texttt{beep} udává, zda má po přehrání zprávy dojít k přehrání pípnutí, které indikuje začátek procesu nahrávání. Ve výchozím stavu je toto nastavení zapnuto.
 
-Dalším nastavením je \texttt{finalSilence}. Tímto nastavením můžeme nadefinovat dobu v milisekundách, po kterou musí být uživatel vydržet tiše, aby tuto pauzu VXML interpretr vyhodnotil jako konec uživatelova vstupu a ukončil tak proces nahrávání. Výchozí hodnotou tohoto nastavení je 2500 (ms).
+Dalším nastavením je \texttt{finalSilence}. Tímto nastavením můžeme nadefinovat dobu v milisekundách, po kterou musí uživatel vydržet tiše, aby tuto pauzu VXML interpretr vyhodnotil jako konec zadání uživatelova vstupu a ukončil tak proces nahrávání. Výchozí hodnotou tohoto nastavení je 2500 (ms).
 
 Posledním možným nastavením je \texttt{type}. Hodnotou tohoto nastavení udáváme MIME typ nahraného souboru. Pod tímto MIME typem bude audio nahrávka odeslána serveru\footnote{Konkrétně je hodnota MIME typu přítomna v hlavičce Content-Type požadavku.}. Výchozí hodnotou je \texttt{audio/wav}.
 
@@ -963,13 +965,13 @@ Ve výpise \ref{src:Record_Vxml} je pro představu uveden VXML kód, který apli
 
 \paragraph{Třída Ask}
 \label{sec:Ask}
-Třída \texttt{Ask} prezentuje hlasový model, který slouží k zajištění vstupu od uživatele. Částečně je tato třída podobná třídě \texttt{Say}. S touto třídou má společné to, že uživateli předkládá nějakou zprávu - interně tedy také pracuje s instancí třídy \texttt{Prompt}.
+Třída \texttt{Ask} představuje hlasový model, který slouží k zajištění vstupu od uživatele. Částečně je tato třída podobná třídě \texttt{Say}. S touto třídou má společné to, že uživateli předkládá nějakou zprávu - interně tedy také pracuje s instancí třídy \texttt{Prompt}.
 
 Jelikož tento hlasový model zajišťuje uživatelský vstup, je potřeba mít k dispozici mechanismus, pomocí kterého bychom byli schopni popsat, jak mají hodnoty na vstupu vypadat. Třída interně využívá pro tento účel gramatiky, které byly představeny v kapitole \ref{sec:Zaklady_vxml}.
 
 Pro účely definice těchto gramatik je využito několika tříd, kterým se budu podrobněji věnovat v dalších částech textu. Ve stručnosti zde jen uvedu, že máme k dispozici třídu \texttt{BuiltinGrammar} pro definici vestavěných gramatik, třídu \texttt{Grammar} pro definici DTMF a hlasových gramatik, a třídu \texttt{Choices}, která slouží k definici smíšených hlasových a DTMF gramatik.
 
-Ve výpise se zdrojovým kódem ukázkové aplikace je na řádku 26 uveden kód, který vytváří stav, jehož hlasovým modelem je právě instance třídy \texttt{Ask}. Z tohoto kódu je patrné, že konstruktor třídy přijímá jeden objekt. Tento objekt musí definovat minimálně dvě povinná nastavení.
+Ve výpise \ref{src:MenuExample} se zdrojovým kódem ukázkové aplikace je na řádku 26 uveden kód, který vytváří stav, jehož hlasovým modelem je právě instance třídy \texttt{Ask}. Z kódu je patrné, že konstruktor třídy přijímá jeden objekt. Tento objekt musí definovat minimálně dvě povinná nastavení.
 
 Jedno z těchto nastavení je \texttt{prompt}, které slouží k definici předkládané zprávy. Tato zpráva by měla uživatele informovat o tom, jaké jsou přípustné hodnoty pro vstup. Typem tohoto nastavení je buď řetězec nebo instance třídy \texttt{Prompt}.
 
@@ -979,7 +981,7 @@ Při vytváření instance můžeme volitelně nastavit zprávy, které se uživ
 
 Pomocí nastavení \texttt{noInputPrompts} můžeme nastavit znění zprávy, která bude uživateli přehrána v situaci, kdy nedošlo k zadání žádného vstupu.
 
-Nastavením \texttt{noMatchPrompts} definujeme zprávu, která se uživateli přehraje v momentě, kdy byl nějaký vstup zadán, ale nesplnil pravidla na validitu vstupu popsaná gramatikou.
+Nastavením \texttt{noMatchPrompts} definujeme zprávu, která se uživateli přehraje v momentě, kdy byl nějaký vstup zadán, ale nejedná se o validní vstup popsaný gramatikou.
 
 Obě tyto nastavení jsou typu pole a můžou tedy obsahovat více zpráv pro každý typ nastavení.
 
@@ -993,25 +995,27 @@ Pro stav, který má jako hlasový model uvedenu instanci třídy \texttt{Ask}, 
 
 \paragraph{Třída Grammar}
 \label{sec:Grammar}
-Prostřednictvím instancí této třídy definujeme hlasové nebo DTMF gramatiky. V podstatě se jedná o abstrakci nad VXML elementem \texttt{<grammar/>}, který byl podrobněji představen v kapitole \ref{sec:Zaklady_vxml}. Tato třída je úzce s spjata s třídou \texttt{Ask}, která tuto třídu využívá k definici přípustných vstupních dat. Pomocí této třídy lze specifikovat pouze gramatiky, které definují uživatelský vstup jako výběr jedné položky z předem definované konečné množiny.
+Prostřednictvím instancí této třídy definujeme hlasové nebo DTMF gramatiky. V podstatě se jedná o abstrakci nad VXML elementem \texttt{<grammar>}, který byl představen v kapitole \ref{sec:Zaklady_vxml}.
 
-Třída zároveň podporuje externí gramatiky, tedy gramatiky, jejichž popis se nachází v samostatném XML souboru.
+Tato třída je úzce spjata s třídou \texttt{Ask}, která tuto třídu využívá k definici přípustných vstupních dat. Pomocí této třídy lze specifikovat pouze gramatiky, které definují uživatelský vstup jako výběr jedné položky z předem definované konečné množiny.
 
-Ve výpise \ref{src:Grammar_example} je vidět zdrojový kód, vytvářející stav, jehož úkolem je načíst vstup od uživatele. Povolené hodnoty vstupu jsou definovány pomocí gramatiky. V ukázce je dále vidět způsob, jakým způsobem lze programově přistoupit k zadanému vstupu.
+Třída zároveň podporuje externí gramatiky, tedy gramatiky, jejichž definice se nachází v samostatném XML souboru.
+
+Ve výpise \ref{src:Grammar_example} je vidět zdrojový kód, vytvářející stav, jehož úkolem je načíst vstup od uživatele. Povolené hodnoty vstupu jsou definovány pomocí gramatiky. V ukázce je dále vidět způsob, jakým lze programově přistoupit k zadanému vstupu.
 
 \lstinputlisting[language=JavaScript,label=src:Grammar_example,caption={Vytvoření hlasové gramatiky}]{Src/Grammar_example.js}
 
 Na řádcích 1 až 10 dochází k vytvoření instance gramatiky. Můžeme si všimnout, že konstruktor přebírá jeden parametr. Hodnotou tohoto parametru je objekt obsahující veškerá potřebná nastavení.
 
-Prvním uvedeným nastavením je \texttt{mode}. Možné hodnoty nastavení jsou 'voice' nebo 'dtmf'. Tento údaj specifikuje, zda vytváříme hlasovou nebo DTMF gramatiku.
+Prvním uvedeným nastavením je \texttt{mode}. Možné hodnoty nastavení jsou "voice" nebo "dtmf". Tento údaj specifikuje, zda vytváříme hlasovou nebo DTMF gramatiku.
 
-Další nastavení je \texttt{items}. Jedná se o pole položek, kde každá položka obsahuje vlastnost \texttt{text} a \texttt{tag}. Vlastnost \texttt{text} definuje text, který se bude ASR engine snažit rozeznat. Pokud dojde k úspěšnému rozeznání tohoto textu, je z gramatiky vrácena návratová hodnota. Návratová hodnota obsahuje hodnotu vlastnosti \texttt{tag}. S návratovou hodnotou lze dále pracovat. Lze ji například uložit do databáze nebo na základě této hodnoty rozvětvit program. Více položkám můžeme přiřadit stejný tag.
+Další nastavení je \texttt{items}. Jedná se o pole položek, kde každá položka obsahuje objekt s vlastností \texttt{text} a \texttt{tag}. Vlastnost \texttt{text} definuje text, který se bude ASR modul snažit rozpoznat. Pokud dojde k úspěšnému rozeznání tohoto textu, je z gramatiky vrácena návratová hodnota. Návratová hodnota je obsažena ve vlastnosti \texttt{tag}. S návratovou hodnotou lze dále pracovat. Lze ji například uložit do databáze nebo na základě této hodnoty rozvětvit program. Více položkám můžeme přiřadit stejný tag.
 
-Definice DTMF gramatiky by vypadala analogicky. Při vytváření instance bychom pouze nastavili hodnotu nastavení \texttt{mode} na 'dtmf'. Následně bychom v definici jednotlivých položek pole \texttt{items} mohli jako hodnoty vlastnosti \texttt{text} použít pouze následující hodnoty: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, *, \#.
+Definice DTMF gramatiky by vypadala analogicky. Při vytváření instance bychom pouze nastavili hodnotu nastavení \texttt{mode} na "dtmf". Následně bychom v definici jednotlivých položek pole \texttt{items} mohli jako hodnoty vlastnosti \texttt{text} použít pouze následující hodnoty: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, *, \#.
 
 \paragraph{Třída BuiltinGrammar}
 \label{sec:BuiltinGrammar}
-Tato třída reprezentuje vestavěné gramatiky. Vestavěné gramatiky se od klasických gramatik liší způsobem, jakým jsou zapsány ve výsledném VXML kódu. Standard VXML definuje sadu vestavěných gramatik, které není v kódu potřeba nijak dále specifikovat. Stačí uvést typ gramatiky a případně její parametry. Vestavěné gramatiky byly podrobněji popsány v kapitole \ref{sec:Zaklady_vxml}.
+Tato třída představuje vestavěné gramatiky. Vestavěné gramatiky se od klasických gramatik liší způsobem, jakým jsou zapsány ve výsledném VXML kódu. Standard VXML definuje sadu vestavěných gramatik, které není v kódu potřeba nijak dále specifikovat. Stačí uvést typ gramatiky a případně její parametry. Vestavěné gramatiky byly představeny v kapitole \ref{sec:VXML_input}.
 
 Ve výpise \ref{src:MenuExample} je na řádcích 28-31 ukázán způsob, jakým lze vytvořit instanci této třídy.
 
@@ -1023,21 +1027,23 @@ Ve výpise \ref{src:Choices_example} se nachází zdrojový kód, který vytvá�
 
 \lstinputlisting[language=JavaScript,label=src:Choices_example,caption={Vytvoření kombinované gramatiky \texttt{Choices}}]{Src/Choices_example.js}
 
-Zápis definice je hodně podobný stylu zápisu, který se používá u definice gramatik prostřednictvím třídy \texttt{Grammar}. Konstruktor třídy \texttt{Choices} přebírá jeden parametr a to je pole položek, kde každá položka obsahuje dvě vlastnosti. První vlastnost je \texttt{items} a jedná se o pole řetězců. Jednotlivé řetězce specifikují texty, které bude rozpoznávat ASR engine nebo kódy DMTF volby. Pokud chceme definovat položku jako DMTF volbu, tak ji musíme prefixovat řetězcem 'dtmf-', např. tedy 'dtmf-1'. Vlastnost \texttt{tag} specifikuje návratovou hodnotu z gramatiky.
+Zápis definice je hodně podobný způsobu zápisu, který se používá u definice gramatik prostřednictvím třídy \texttt{Grammar}. Konstruktor třídy \texttt{Choices} přebírá jeden parametr a to je pole položek, kde každá položka obsahuje dvě vlastnosti. První vlastnost je \texttt{items} a jedná se o pole řetězců. Jednotlivé řetězce specifikují texty, které bude rozpoznávat ASR modul nebo kódy DMTF volby. Pokud chceme definovat položku jako DMTF volbu, tak ji musíme prefixovat řetězcem "dtmf-", např. tedy "dtmf-1". Vlastnost \texttt{tag} specifikuje návratovou hodnotu z gramatiky.
 
 \paragraph{Třída Audio}
 \label{sec:Audio}
-Prostřednictvím této třídy lze vytvářet reference na audio soubory, které se dají použít jako součást zprávy uvnitř kontejneru \texttt{Prompt}. Jedná se o abstrakci nad VXML elementem \texttt{<audio/>}. Vytvoření této instance je přímočaré. Ve výpise \ref{src:Audio_example} je uveden kód, který vytváří instanci této třídy jako součást definice zprávy.
+Prostřednictvím této třídy lze vytvářet reference na audio soubory, které se dají použít jako součást zprávy uvnitř kontejneru \texttt{Prompt}. Jedná se o abstrakci nad VXML elementem \texttt{<audio>}.
 
-\lstinputlisting[language=JavaScript,label=src:Audio_example,caption={Vytvoření instance \texttt{Audio}}]{Src/Audio_example.js}
+Vytvoření instance třídy je přímočaré. Ve výpise \ref{src:Audio_example} je uveden kód, který vytváří instanci jako součást definice zprávy.
 
-Konstruktor této třídy přijímá dva parametry. Hodnotou prvního parametru je cesta k audio souboru, který se má přehrát. Hodnota druhého parametru specifikuje text, který bude přehrán pomocí TTS enginu v případě, že se nepodaří specifikovaný audio soubor stáhnout. Druhý parametr není povinný.
+\lstinputlisting[language=JavaScript,label=src:Audio_example,caption={Vytvoření instance třídy \texttt{Audio}}]{Src/Audio_example.js}
+
+Konstruktor této třídy přijímá dva parametry. Hodnotou prvního parametru je cesta k audio souboru, který se má přehrát. Hodnota druhého parametru specifikuje text, který bude přehrán TTS modulem v případě, že se nepodaří specifikovaný audio soubor stáhnout. Tento parametr není povinný.
 
 \paragraph{Třída Silence}
 \label{sec:Silence}
-Tato třída se využívá k vytvoření pauzy mezi přehrávanými částmi zprávy. Jedná se o abstrakci nad VXML elementem \texttt{<break/>}. Obsahem výpisu \ref{src:Silence_example} je ukázka zdrojového kódu, který demonstruje vytvoření krátké pauzy mezi přehrávanými částmi zprávy.
+Tato třída se využívá k vytvoření pauzy mezi přehrávanými částmi zprávy. Jedná se o abstrakci nad VXML elementem \texttt{<break>}.
 
-Z ukázky je patrné, že je možné délku pauzy specifikovat více způsoby. Jedním způsobem je použít jednu z definovaných textových hodnot. V tabulce \ref{tab:Silence_pauses} uvádím seznam hodnot, které lze použít. Současně s těmito hodnotami je v tabulce pro každou hodnotu uvedena přidružená délka pauzy\cite{vxml_org}.
+Obsahem výpisu \ref{src:Silence_example} je ukázka zdrojového kódu, který demonstruje vytvoření krátké pauzy mezi přehrávanými částmi zprávy. Z ukázky je patrné, že je možné délku pauzy specifikovat více způsoby. Jedním způsobem je použít jednu z definovaných textových hodnot. V tabulce \ref{tab:Silence_pauses} uvádím seznam hodnot, které lze použít. Současně s těmito hodnotami je v tabulce pro každou hodnotu uvedena přidružená délka pauzy\cite{vxml_org}.
 
 \begin{table}
 	\centering
@@ -1062,21 +1068,19 @@ Z ukázky je patrné, že je možné délku pauzy specifikovat více způsoby. J
 	\label{tab:Silence_pauses}
 \end{table}
 
-Pokud nám pro definici délky pauzy nepostačuji nadefinované hodnoty, tak můžeme pauzu vyjádřit ve vteřinách nebo v milisekundách.
+Pokud nám pro definici délky pauzy nepostačují textové hodnoty, můžeme pauzu vyjádřit ve vteřinách nebo v milisekundách.
 
 Oba způsoby definice pauzy jsou znázorněny ve výpise zdrojového kódu \ref{src:Silence_example}.
 
-\lstinputlisting[language=JavaScript,label=src:Silence_example,caption={Vytvoření instance \texttt{Silence}}]{Src/Silence_example.js}
+\lstinputlisting[language=JavaScript,label=src:Silence_example,caption={Vytvoření instance třídy \texttt{Silence}}]{Src/Silence_example.js}
 
 \paragraph{Třída SayAs}
 \label{sec:SayAs}
-Tato třída je abstrakcí nad VXML elementem \texttt{<say-as/>}. Umožňuje nadefinovat způsob, jakým bude text interpretován TTS enginem. Tímto způsobem můžeme TTS engine instruovat například o tom, aby číslo 1234 neinterpretoval jako souvislé číslo, ale aby výsledkem byla postupná interpretace jednotlivých číslic, tedy 1, 2, 3, 4.
+Tato třída je abstrakcí nad VXML elementem \texttt{<say-as>}. Umožňuje nadefinovat způsob, jakým bude text interpretován TTS modulem. Tímto způsobem můžeme TTS modul instruovat například o tom, aby číslo 1234 neinterpretoval jako souvislé číslo, ale aby výsledkem byla postupná interpretace jednotlivých číslic, tedy 1, 2, 3, 4. Ve výpise \ref{src:SayAs_example} je demonstrováno použití třídy \texttt{SayAs}.
 
-Ve výpise \ref{src:SayAs_example} je demonstrováno použití instance \texttt{SayAs}.
+\lstinputlisting[language=JavaScript,label=src:SayAs_example,caption={Vytvoření instance třídy \texttt{SayAs}}]{Src/SayAs_example.js}
 
-\lstinputlisting[language=JavaScript,label=src:SayAs_example,caption={Vytvoření instance \texttt{SayAs}}]{Src/SayAs_example.js}
-
-Konstruktor přebírá dva parametry. Hodnotou prvního parametru je text, který se má interpretovat, druhý parametr udává typ interpretace. Důležité je upozornit na to, že je tato funkcionalita závislá na použitém TTS enginu a některé typy interpretací nemusí být dostupné. V následujícím seznamu uvádím typy interpretací, které by měly být podporovány TTS enginem, který je součástí IVR platformy Voxeo Prophecy\cite{vxml_org}:
+Konstruktor třídy přebírá dva parametry. Hodnotou prvního parametru je text, který se má interpretovat, druhý parametr udává typ interpretace. Důležité je upozornit na to, že je tato funkcionalita závislá na použitém TTS modulu a některé typy interpretací nemusí být dostupné. V následujícím seznamu uvádím typy interpretací, které by měly být podporovány TTS modulem, který je součástí IVR platformy Voxeo Prophecy\cite{vxml_org}:
 
 \begin{itemize}
 \item time
@@ -1096,33 +1100,35 @@ Ve výpise \ref{src:Var_example} je demonstrována situace, kdy je použití zá
 
 \lstinputlisting[language=JavaScript,label=src:Var_example,caption={Použití zástupného objektu \texttt{Var}}]{Src/Var_example.js}
 
-Výše uvedený kód vytváří flow aplikace, který se skládá ze dvou stavů. První stav slouží k zjištění věku uživatele. Druhý stav slouží k zobrazení sdělení o zadaném věku. A proto potřebuje hlasový model druhého stavu referencovat hodnotou vlastnosti \mbox{\texttt{this.\_age}}. Tato hodnota ale není ve fázi vytváření flow dostupná. Hodnota bude dostupná až v momentě, kdy dojde k průchodu prvním stavem. Z tohoto důvodu chybějící hodnotu zastupuje zástupný objekt reprezentovaný instancí třídy \texttt{Var} (viz řádek 18).
+Výše uvedený kód vytváří flow aplikace, které se skládá ze dvou stavů. První stav slouží k zjištění věku uživatele. Druhý stav slouží k zobrazení sdělení o zadaném věku. A proto potřebuje hlasový model druhého stavu referencovat hodnotou vlastnosti \mbox{\texttt{this.\_age}}. Tato hodnota ale není ve fázi vytváření flow dostupná. Hodnota bude dostupná až v momentě, kdy dojde k průchodu prvním stavem. Z tohoto důvodu chybějící hodnotu zastupuje zástupný objekt reprezentovaný instancí třídy \texttt{Var} (viz řádek 20).
 
 Konstruktor této třídy přijímá dva parametry. Hodnotou prvního parametru je kontext. Kontext představuje objekt, ze kterého se bude číst vlastnost specifikovaná druhým parametrem konstruktoru. V tomto případě je typem druhého parametru řetězec.
 
 V některých případech může být vhodnější předat funkci jako hodnotu druhého parametru. Tato funkce může obsahovat například nějakou formátovací logiku (viz výpis \ref{src:Var_function}).
 
-\lstinputlisting[language=JavaScript,label=src:Var_function,caption={Použití zástupného objektu \texttt{Var}}]{Src/Var_function.js}
+\lstinputlisting[language=JavaScript,label=src:Var_function,caption={Použití zástupného objektu \texttt{Var} s funkčním parametrem}]{Src/Var_function.js}
 
 Třída definuje metodu \texttt{getValue}. Tato metoda je zavolána v momentě, kdy je potřeba vyhodnotit skutečnou hodnotu zástupného objektu.
 
-Pokud byla jako druhý parametr volání konstruktoru předána funkce, tak dojde k zavolání této funkce v kontextu\footnote{V JavaScriptu může být funkce zavolána v kontextu, který může být programově nastaven na specifický objekt. Reference \texttt{this} uvnitř funkce poté ukazuje na tento nastavený objekt (kontext).}, který byl specifikován prvním argumentem. Návratová hodnota této funkce potom představuje hodnotu zástupného objektu.
+Pokud byla jako druhý parametr volání konstruktoru předána funkce, tak dojde k zavolání této funkce v kontextu\footnote{V JavaScriptu může být funkce zavolána v kontextu, který může být programově nastaven na specifický objekt. Reference \texttt{this} uvnitř funkce poté ukazuje na tento nastavený objekt (kontext).}, který byl specifikován prvním parametrem. Návratová hodnota této funkce potom představuje hodnotu zástupného objektu.
 
 Pokud byl hodnotou druhého argumentu řetězec, pak dojde k nalezení pojmenované vlastnosti v rámci specifikovaného kontextu.
 
 \subsubsection{Popis implementace vybraných částí hlasového portálu}
 V předchozí kapitole jsme získali detailní informace o struktuře a fungování navržené knihovny.
 
-V této kapitole se opět vrátím k navrhovanému hlasovému portálu rezervačního systému a zaměřím se zde na popis vybraných komponent, které jsou nějakým způsobem zajímavé a stojí za to zmínit se o nich podrobněji.
+V této kapitole se opět vrátím k hlasovému portálu rezervačního systému a zaměřím se zde na popis vybraných komponent, které jsou nějakým způsobem zajímavé a stojí za to zmínit se o nich podrobněji.
 
 Všechny tyto popisované komponenty jsou navrženy s ohledem na znovupoužitelnost kódu. Principu znovupoužitelnosti se dosahuje zaregistrováním instance komponenty jako sady vnořených stavů (viz kapitola \ref{sec:State}).
 
 \paragraph{Komponenta pro zadání data}
-Tato komponenta slouží k zadání data pomocí DTMF volby. V aplikaci hlasového portálu se tato komponenta používá v menu pro filtrování seznamu letů. Prostřednictvím této komponenty je uživatel vyzván k zadání požadovaného data odletu, resp. příletu. Obrázek \ref{fig:GetDateDtmfFlow} znázorňuje strukturu této komponenty formou stavového diagramu. V aplikaci je tato komponenta reprezentována třídou \texttt{GetDateDtmfFlow}.
+Tato komponenta slouží k zadání data pomocí DTMF volby. V aplikaci hlasového portálu se tato komponenta používá v menu pro filtrování seznamu letů. Prostřednictvím této komponenty je uživatel vyzván k zadání požadovaného data odletu, resp. příletu.
+
+Obrázek \ref{fig:GetDateDtmfFlow} znázorňuje strukturu této komponenty formou stavového diagramu. V aplikaci je tato komponenta reprezentována třídou \texttt{GetDateDtmfFlow}.
 
 První stav $getDate$ uživateli předkládá zprávu o tom, že se od něj očekává zadání data formou osmi číslic ve formátu $ddmmyyyy$. Prostřednictvím hodnoty parametru předané do konstruktoru je možné pro každou instanci této komponenty nastavit různý text této zprávy. Komponenta zůstává v tomto stavu, dokud nedojde k zadání vstupu v požadovaném formátu.
 
-Pokud došlo k zadání vstupu v požadovaném formátu (8 číslic), tak zpracování přechází do druhého stavu $validateDate$. Tento stav má za úkol ověřit, zda je zadaný vstup validním datem. Ověřuje se např. zda zadaný den nepřesahuje za poslední den v daném měsíci. Toto ověření bere v úvahu přestupný rok apod.
+Pokud došlo k zadání vstupu v požadovaném formátu (8 číslic), tak zpracování přechází do druhého stavu $validateDate$. Tento stav má za úkol ověřit, zda je zadaný vstup validním datem. Ověřuje se např. zda zadaný den nepřesahuje za poslední den v daném měsíci. Toto ověření bere v úvahu i přestupný rok.
 
 Pokud zadaný vstup neprošel všemi validačními pravidly, dochází k vyvolání události $error$ a zpracování tak přechází do stavu $invalidDate$. Hlasový model tohoto stavu uživatele informuje o tom, že zadal neplatný vstup. Po přehrání této informace uživatel automaticky přechází do prvního stavu $getDate$, kde je vyzván k opakovanému zadání.
 
@@ -1136,9 +1142,9 @@ Komponenta implementuje veřejnou metodu \texttt{getDate}. Tato metoda vrací pr
 \label{sec:GetTextInputDtmfFlow}
 Na obrázku \ref{fig:GetTextInputDtmfFlow} je znázorněna struktura komponenty sloužící pro získání textového vstupu pomocí DTMF volby. Vstup se zadává stejným způsobem jako se na mobilním telefonu s klávesnicí píše SMS zpráva.
 
-Struktura komponenty je velmi jednoduchá. Skládá se pouze z jednoho stavu $askForInput$. Tento stav uživateli přehraje zprávu, prostřednictvím které uživatele vyzve k zadání textu. Text této zprávy je konfigurovatelný parametrem, který se předává konstruktoru třídy. Stav poté očekává zadání vstupu. Konec zadávání vstupu se komponentě indikuje krátkou neaktivitou nebo stisknutím klávesy #.
+Struktura komponenty je velmi jednoduchá. Skládá se pouze z jednoho stavu $askForInput$. Tento stav uživateli přehraje zprávu, prostřednictvím které uživatele vyzve k zadání textu. Text této zprávy je konfigurovatelný parametrem, který se předává konstruktoru třídy. Stav poté očekává zadání vstupu. Konec zadávání vstupu se komponentě indikuje krátkou neaktivitou nebo stisknutím klávesy \#.
 
-Zpracování vstupu probíhá ve funkci, která je zaregistrovaná pro akci \texttt{onExitAction} (viz \ref{sec:State}). Implementace této funkce spočívá v převedení vstupní číselné sekvence na textový formát. Převod se řídí mapováním, které je znázorněno v tabulce \ref{tab:GetTextInputDtmfFlow_mapping}. Např. následující sekvence 2446665 je převedena na řetězec 'ahoj'.
+Zpracování vstupu probíhá ve funkci, která je zaregistrovaná pro akci \texttt{onExitAction} (viz \ref{sec:State}). Implementace této funkce spočívá v převedení vstupní číselné sekvence na textový formát. Převod se řídí mapováním, které je znázorněno v tabulce \ref{tab:GetTextInputDtmfFlow_mapping}. Např. následující sekvence 2446665 je převedena na řetězec "ahoj".
 
 \begin{table}
 	\centering
@@ -1175,7 +1181,7 @@ V tabulce si můžeme všimnout speciálního významu klávesy 0 ($skipchar$). 
 
 Stisk této klávesy není nutný v případech, kdy zadáváme dva za sebou jdoucí znaky, které jsou namapovány na stisky různých kláves.
 
-Stisk klávesy 0 je nutný, pokud potřebujeme zadat dva po sobě jdoucí znaky, kdy každý z nich je namapován na stejnou klávesu. Pokud bychom např. potřebovali zadat textový řetězec 'abc', museli bychom ho zadat pomocí sekvence 20220222.
+Stisk klávesy 0 je nutný, pokud potřebujeme zadat dva po sobě jdoucí znaky, kdy každý z nich je namapován na stejnou klávesu. Pokud bychom např. potřebovali zadat textový řetězec "abc", museli bychom ho zadat pomocí sekvence 20220222.
 
 Třída \texttt{GetTextInputDtmfFlow} implementující tuto komponentu vystavuje veřejnou metodu \texttt{getInput}. Metoda vrací zadaný vstup převedený do textové podoby.
 
@@ -1190,7 +1196,7 @@ Struktura této komponenty je znázorněna v diagrumu \ref{fig:GetDestinationFlo
 
 Stav $getInput$ uživatele vyzve k zadání řetězce na jehož základě se provede vyhledání destinací. Tento stav obsahuje komponentu, která tento vstup zajišťuje (komponenta byla popsána v kapitole \ref{sec:GetTextInputDtmfFlow}).
 
-V momentě, kdy máme k dispozici zadaný vstup, přechází zpracování do stavu $showInput$. V tomto stavu je uživateli přehrán text, který byl zadán. Následuje dotaz, zda zadaný vstup odpovídá tomu, co uživatel zamýšlel. Následně uživatel může zadaný vstup schválit stiskem klávesy 1 nebo odmítnout stiskem klávesy 2.
+V momentě, kdy máme k dispozici zadaný vstup, přechází zpracování do stavu $showInput$. V tomto stavu je uživateli přehrán text, který byl zadán. Následuje dotaz, zda zadaný vstup odpovídá tomu, co uživatel zamýšlel. Následně uživatel může zadaný vstup potvrdit stiskem klávesy 1 nebo odmítnout stiskem klávesy 2.
 
 Pokud uživatel zadaný vstup odmítne, vrací se provádění do stavu $getInput$, kde má uživatel možnost provést nové zadání.
 
@@ -1198,9 +1204,9 @@ V momentě, kdy uživatel zadaný vstup potvrdí stiskem klávesy 1, přechází
 
 Komponenta představuje seznam vyhledaných destinací na základě vyhledávacího řetězce. Seznam vyhledaných destinací dostává komponenta k dispozici prostřednictvím reference, která je předána hodnotou parametru do konstruktoru. Struktura této komponenty je zobrazena na obrázku \ref{fig:DestinationSelectionFlow}. Z diagramu je patrné, že struktura komponenty je závislá na počtu vyhledaných destinací a může mít dvě podoby.
 
-Pokud na základě vyhledávacího řetězce nedošlo k nalezení žádné destinace, tak komponenta obsahuje pouze jeden stav $noItems$. Tento stav, prostřednictvím svého hlasového modelu, uživateli sdělí, že žádné destinace nebyli nalezeny. Následně se provede přechod do konečného stavu, kde zpracování končí.
+Pokud na základě vyhledávacího řetězce nedošlo k nalezení žádné destinace, tak komponenta obsahuje pouze jeden stav $noItems$. Tento stav, prostřednictvím svého hlasového modelu, uživateli sdělí, že žádné destinace nebyly nalezeny. Následně se provede přechod do konečného stavu, kde zpracování končí.
 
-Pokud bylo nalezeno $n$ destinací a $n > 0$, tak dojde k vytvoření $n$ stavů. Pro každou z nalezených destinací je vytvořen jeden stav. Každý tento stav uživateli přehraje název destinace. Všechny tyto stavy jsou propojeny do řetězu, kterým je možné se pohybovat vpřed a vzad, tedy přecházet do předchozího a následujícího stavu. Tomuto řetězu předchází stav $totalItems$, který uživatele informuje o celkovém počtu nalezených destinací a o možnostech navigace mezi těmito záznamy.
+Pokud bylo nalezeno $n$ destinací a $n > 0$, dojde k vytvoření $n$ stavů. Pro každou z nalezených destinací je vytvořen jeden stav. Každý tento stav uživateli přehraje název destinace. Všechny tyto stavy jsou propojeny do řetězu, kterým je možné se pohybovat vpřed a vzad, tedy přecházet do předchozího a následujícího stavu. Tomuto řetězu předchází stav $totalItems$, který uživatele informuje o celkovém počtu nalezených destinací a o možnostech navigace mezi těmito záznamy.
 
 Navigace je založena na DTMF volbě. K přechodu na předchozí záznam slouží klávesa 2. Pokud potřebujeme přejít k následujícímu záznamu, můžeme tak učinit stisknutím klávesy 3. Výběr aktuálního záznamu potvrzujeme stiskem klávesy 1. Stiskem této klávesy se dostáváme do stavu $selection$.
 
@@ -1217,9 +1223,9 @@ V této kapitole popíši kroky vedoucí k úspěšné konfiguraci a zprovozněn
 
 \subsection{Aplikační server}
 \label{sec:App_server}
-Abychom mohli přistoupit ke konfiguraci jednotlivých IVR platforem, musíme nejdříve nainstalovat a spustit aplikační server. Spuštěním aplikačního serveru dostaneme přístup k webovému i hlasovému portálu rezervačního systému. Následuje popis instalace a spuštění aplikačního serveru v prostředí operačního systému založeného na Linuxu.
+Abychom mohli přistoupit ke konfiguraci jednotlivých IVR platforem, musíme nejdříve nainstalovat a spustit aplikační server. Spuštěním aplikačního serveru dostaneme přístup k webovému i hlasovému portálu rezervačního systému. Následuje popis instalace a spuštění aplikačního serveru v prostředí operačního systému Ubuntu.
 
-Jak již bylo uvedeno, aplikační server je poháněn technologií Node.js (viz \ref{sec:NodeJs}). Je tedy nutné, aby na stroji byl Node.js nainstalován. Popis instalace Node.js zde popisovat nebudu, jen uvedu odkaz na oficiální web\cite{NodeJs_install}, kde je možné nalézt instalační balíky. Pří výběru instalačního balíku je nutné zvolit minimálně verzi v0.11.2. Od této verze je součástí Node.js implementace generátorů\footnote{Generátory používám v kódu VXML knihovny i aplikačního serveru pro přehlednější zpracování asynchronních operací.}, které jsou nutné pro spuštění serveru.
+Jak již bylo uvedeno, aplikační server je poháněn technologií Node.js (viz \ref{sec:NodeJs}). Je tedy nutné, aby na stroji byl Node.js nainstalován. Popis instalace Node.js zde popisovat nebudu, jen uvedu odkaz na oficiální web\cite{NodeJs_install}, kde je možné nalézt instalační balíky. Pří výběru instalačního balíku je nutné zvolit minimálně verzi v0.11.2. Od této verze je součástí Node.js implementace generátorů\footnote{Generátory jsou použity v kódu VXML knihovny i aplikačního serveru pro přehlednější zpracování asynchronních operací.}, které jsou nutné pro spuštění serveru.
 
 Další prerekvizitou je instalace MongoDB databáze. Popis instalace pro Ubuntu je detailně popsán na této URL\cite{Mongo_install}.
 
@@ -1231,7 +1237,7 @@ V momentě, kdy máme výše uvedené prerekvizity nainstalovány, můžeme pře
 \item \texttt{npm install -g grunt-cli}
 \end{itemize}
 
-První z výše uvedených příkazů instaluje moduly, na kterých je závislá serverová část aplikace (např. Express.js). Druhý příkaz se postará o instalaci knihoven, které jsou vyžadovány klientskou částí aplikace (např. Angular.js). Poslední příkaz instaluje CLI nástroje Grunt. Tento příkaz není nutné spouštět v případě, že již máte Grunt na stroji zprovozněn.
+První z výše uvedených příkazů instaluje moduly, na kterých je závislá serverová část aplikace (např. Express.js). Druhý příkaz se postará o instalaci knihoven, které jsou vyžadovány klientskou částí aplikace (např. Angular.js). Poslední příkaz instaluje CLI nástroje Grunt. Tento příkaz není nutné spouštět v případě, že již máte Grunt na stroji nainstalován.
 
 Nyní bychom měli mít nainstalováno vše, co je pro spuštění aplikačního serveru nutné. Ještě než přistoupíme k samotnému spuštění, bylo by vhodné v databázi vytvořit nějaké testovací záznamy. Spusťme proto následující příkazy:
 
@@ -1244,13 +1250,15 @@ Tyto příkazy v databázi vytvoří záznamy o dvou uživatelích, dále vytvo�
 
 Nyní by nám již nemělo nic bránit ve spuštění aplikačního serveru. Spuštění provedeme příkazem \texttt{grunt}. Pokud spuštění proběhlo v pořádku, tak bychom měli v terminálu vidět vypsanou informaci o tom, že aplikace byla spuštěna a naslouchá na portu 9000.
 
-Webový portál je k dispozici na \url{http://localhost:9000/flights}. Po zadání této URL do prohlížeče by se mělo zobrazit okno pro přihlášení. Pro vyzkoušení přihlášení můžeme zkusit zadat jako přihlašovací jméno a heslo '12345'.
+Webový portál je k dispozici na URL \url{http://localhost:9000/flights}. Po zadání této URL do prohlížeče by se mělo zobrazit okno pro přihlášení. Pro vyzkoušení přihlášení můžeme zkusit zadat jako přihlašovací jméno a heslo řetězec "12345".
 
-Hlasový portál je k dispozici na \url{http://localhost:9000/vxml}. Po zadání této URL do prohlížeče by se měla zobrazovat chyba aplikace.
+Hlasový portál je k dispozici na URL \url{http://localhost:9000/vxml}. Po zadání této URL do prohlížeče by se měla zobrazit chyba aplikace.
 
 \subsection{Voxeo Prophecy}
 \label{sec:voxeo_conf}
-Instalace a zprovoznění této IVR platformy je jednoduché. V následující části nejdříve popíši postup instalace a poté popíši jak provést konfiguraci hlasového portálu.
+Instalace a zprovoznění této IVR platformy je jednoduché. Vlastnosti této platformy byly blíže představeny v kapitole \ref{sec:Voxeo_interpreter}.
+
+V následující části nejdříve popíši postup instalace a poté popíši jak provést konfiguraci hlasového portálu.
 
 \subsubsection{Instalace}
 Hned na začátku je důležité poznamenat, že z linuxových distribucí, Voxeo Prophecy podporuje jen ty založené na RedHatu, např. tedy CentOS. Instalační balík stáhneme zadáním následujícího příkazu do terminálu:
@@ -1281,17 +1289,19 @@ Zda jsou služby spuštěny můžeme ověřit spuštěním příkazu \texttt{./p
 
 \InsertSidewaysFigure{Figures/Voxeo_admin}{0.9\textwidth}{Registrace nové VXML aplikace}{fig:Voxeo_admin}
 
-Nyní můžeme přistoupit ke konfiguraci hlasového portálu. Součástí IVR Voxeo Prophecy je webové konfigurační rozhraní pomocí kterého konfiguraci provedeme.
+Nyní můžeme přistoupit ke konfiguraci hlasového portálu. Součástí IVR Voxeo Prophecy je webové konfigurační rozhraní, pomocí kterého konfiguraci provedeme.
 
-Do tohoto rozhraní se dostaneme zadáním následující URL do internetového prohlížeče \url{http://localhost:9996/ManagementConsole}. Nyní bychom měli mít zobrazenu stránku s přihlašovacím formulářem. Přihlásíme se zadání řetězce 'admin', které slouží jako přihlašovací jméno i heslo. Na obrázku \ref{fig:Voxeo_admin} je zobrazena stránka, na které provedeme vytvoření nové VXML aplikace. Po přihlášení je nutné vybrat v horním menu vyznačenou ikonku (1.). Tímto se dostaneme na stránku, kde provedeme vytvoření nové aplikace. Nyní klikneme na ikonku + (2.). Tímto se nám ve spodní části stránky otevře formulář, který je nutné vyplnit.
+Do tohoto rozhraní se dostaneme zadáním následující URL do internetového prohlížeče \url{http://localhost:9996/ManagementConsole}. Nyní bychom měli mít zobrazenu stránku s přihlašovacím formulářem. Přihlásíme se zadání řetězce "admin", které slouží jako přihlašovací jméno i heslo. Na obrázku \ref{fig:Voxeo_admin} je zobrazena stránka, na které provedeme vytvoření nové VXML aplikace. Po přihlášení je nutné vybrat v horním menu vyznačenou ikonku (1.). Tímto se dostaneme na stránku, kde provedeme vytvoření nové aplikace. Nyní klikneme na ikonku + (2.). Tímto se nám ve spodní části stránky otevře formulář, který je nutné vyplnit.
 
-Do pole $Name$ můžeme vyplnit jakýkoliv text. Jedná se pouze o název aplikace. Pole $Type$ specifikuje typ vytvářené aplikace, vybereme hodnotu $VXML$. Do pole $URL1$ vyplníme URL adresu, na které je spuštěn hlasový portál (viz \ref{sec:App_server}). Ve výchozím stavu je hlasový portál spuštěn na URL \url{http://localhost:9000/vxml}. Posledním krokem je vytvoření adresy aplikace. Tuto adresu je nutné vyplnit, aby bylo možné se na aplikaci dovolat. Adresu vytvoříme přidáním nového záznamu do seznamu ve spodní části formuláře. Můžeme vyplnit např. řetězec 'dp'. Zbývá vyplněné nastavení uložit. Toto provedeme stisknutím tlačítka $Save$ (3.).
+Do pole $Name$ můžeme vyplnit jakýkoliv text. Jedná se pouze o název aplikace. Pole $Type$ specifikuje typ vytvářené aplikace, vybereme hodnotu "VXML". Do pole $URL1$ vyplníme URL adresu, na které je spuštěn hlasový portál (viz \ref{sec:App_server}). Ve výchozím stavu je hlasový portál spuštěn na URL \url{http://localhost:9000/vxml}.
+
+Posledním krokem je vytvoření adresy aplikace. Tuto adresu je nutné vyplnit, aby bylo možné se na aplikaci dovolat. Adresu vytvoříme přidáním nového záznamu do seznamu ve spodní části formuláře. Můžeme vyplnit např. řetězec "dp". Zbývá vyplněné nastavení uložit. Toto provedeme stisknutím tlačítka $Save$ (3.).
 
 Nyní by měla být naše aplikace vytvořena. Můžeme tedy provést zkušební hovor. Součástí Voxeo Prophecy je testovací SIP klient. Tento klient běží v prostředí prohlížeče a dostaneme se k němu zadáním následující URL do prohlížeče \url{http://localhost:9994/vphone/VPhoneClient/main.html}. Po zadání této URL bychom měli vidět stránku, kde máme možnost vyplnit SIP adresu naší aplikace. Zadáme tedy \texttt{sip:dp@localhost} a stiskneme tlačítko $Dial$. Pokud je vše správně nastavené, tak bychom měli za chvíli slyšet uvítací zprávu hlasového portálu.
 
 \subsection{VoiceGlue}
 \label{sec:voiceglue_conf}
-V této kapitole popíši instalaci a konfiguraci opensource IVR platformy VoiceGlue. Tato platforma byla blíže představena v kapitole \ref{sec:Voxeo_interpreter}.
+V této kapitole popíši instalaci a konfiguraci opensource IVR platformy VoiceGlue. Vlastnosti této platformy byly blíže představeny v kapitole \ref{sec:voiceglue}.
 
 \subsubsection{Instalace}
 Instalaci budeme provádět na stroji s operačním systémem Ubuntu Server. Něž přistoupíme k samotné instalaci IVR VoiceGlue, je třeba nainstalovat Asterisk. Vyžadována je minimálně verze 1.6. Asterisk nainstalujeme zadáním následující příkazu do terminálu:
@@ -1353,7 +1363,7 @@ Nyní je potřeba nakonfigurovat přepojování hovorů z Asterisku do VoiceGlue
 
 \lstinputlisting[language=conf,label=src:Asterisk_extensions,caption={Konfigurace souboru \texttt{/etc/asterisk/extensions.conf}}]{Src/asterisk_extensions.conf}
 
-Kód vytváří nový kontext \texttt{[phoneglue]}. Tento kontext slouží k obsluze hovorů, které mají být zpracovány pomocí VoiceGlue. Kód dále registruje nové rozšíření představující naši hlasovou aplikaci. Adresa tohoto rozšíření je 'dp'.
+Kód vytváří nový kontext \texttt{[phoneglue]}. Tento kontext slouží k obsluze hovorů, které mají být zpracovány pomocí VoiceGlue. Kód dále registruje nové rozšíření představující naši hlasovou aplikaci. Adresa tohoto rozšíření je "dp".
 
 Příkaz uvedený na druhém řádku provede příjem hovoru.
 
@@ -1365,11 +1375,11 @@ Pátý řádek provede prostřednictvím AGI rozhraní přepojení hovoru do sub
 
 Šestý řádek provede zavěšení hovoru.
 
-Nyní bychom měli mít vše správně nastaveno a můžeme tedy provést zkušební hovor na adresu \texttt{dp@localhost}. Hovor můžeme vytočit z jakéhokoliv SIP klienta, např. Ekiga.
+Nyní bychom měli mít vše správně nastaveno a můžeme tedy provést zkušební hovor na SIP adresu \texttt{dp@localhost}. Hovor můžeme vytočit z jakéhokoliv SIP klienta, např. Ekiga.
 
 \section{Zátěžové testy portálu}
 \label{sec:Benchmark}
-Tato kapitola je věnována zátěžovým testům hlasového portálu, jehož návrh byl popsán v předchozí kapitole. Vzhledem k licenčním omezením\footnote{Verze, která je dostupná zdarma je omezena pouze na dva porty, čili na maximálně dva souběžné hovory.}, které jsou spojeny s používáním IVR Voxeo Prophecy nebylo bohužel možné nad touto platformou zátěžové testy provést. Proto bude předmětem našich testů pouze hlasová platforma VoiceGlue.
+Tato kapitola je věnována zátěžovým testům hlasového portálu, jehož návrh byl popsán v předchozích kapitolách. Vzhledem k licenčním omezením\footnote{Verze, která je dostupná zdarma je omezena pouze na dva porty, čili na maximálně dva souběžné hovory.}, které jsou spojeny s používáním IVR Voxeo Prophecy nebylo bohužel možné nad touto platformou zátěžové testy provést. Proto bude předmětem našich testů pouze hlasová platforma VoiceGlue.
 
 Zátěžové testy budou spouštěny na virtuálním stroji, který je poháněn jednojádrovým procesorem o taktu 2GHz a má k dispozici 2GB operační paměti. Jako operační systém je použita serverová varianta Ubuntu 10.04.4 LTS. Na tomto stroji je nainstalována softwarová ústředna Asterisk ve verzi 1.6.2.5. Nad touto ústřednou je spuštěna hlasová platforma VoiceGlue ve verzi 0.14.
 
@@ -1383,27 +1393,27 @@ Předmětem zátěžových testů hlasového portálu je analýza výpočetní a
 \item mongod
 \end{itemize}
 
-Analýza vytíženosti procesů $asterisk$, $voiceglue$ a $phoneglue$ nám poskytne informaci o výpočetní a paměťové náročnosti běhového prostředí hlasové platformy Z vytíženosti procesů $node$ a $mongod$ budeme zjišťovat výpočetní a paměťovou náročnost aplikačního serveru, konkrétně webového a databázového serveru.
+Analýza vytíženosti procesů $asterisk$, $voiceglue$ a $phoneglue$ nám poskytne informaci o výpočetní a paměťové náročnosti běhového prostředí hlasové platformy. Z vytíženosti procesů $node$ a $mongod$ budeme zjišťovat výpočetní a paměťovou náročnost aplikačního serveru, konkrétně webového a databázového serveru.
 
 \subsection{Scénář zátěžových testů}
-Zátěžové testy spočívaly ve vytvoření zátěže na hlasovém portálu simulací $n$ připojených klientů. Každý připojený klient inicioval hovor na bázi SIP dialogu mezi hlasovým portálem. Schéma simulovaného hovoru je vyobrazeno na obrázku \ref{fig:Bench_scenario}.
+Zátěžové testy spočívaly ve vytvoření zátěže na hlasovém portálu simulací $n$ připojených klientů. Každý připojený klient inicioval SIP hovor. Schéma tohoto hovoru je zobrazeno na obrázku \ref{fig:Bench_scenario}.
 
-Hovor sestává z následující posloupnosti akcí:
+Hovor sestává z posloupnosti následujících akcí:
 
 \begin{enumerate}
-\item Iniciace hovoru SIP zprávou INVITE
-\item Přehrání uvítací zprávy a výzvy k zadání přihl. jména
-\item Zadání přihl. jména "1" prostřednictvím sekvence DTMF voleb 1 a \#
-\item Přehrání výzvy k potvrzení přihl. jména
-\item Potvrzení zadaného přihl. jména prostřednictvím DTMF volby 1
-\item Přehrání výzvy k zadání přihl. hesla
-\item Zadání přihl. hesla "1" prostřednictvím sekvence DTMF voleb 1 a \#
-\item Přehrání hlavního menu
-\item Zvolení "Seznamu rezervací" prostřednictvím DTMF volby 2
-\item Přehrání informací o první aktivní rezervaci
-\item Návrat do hlavního menu prostřednictvím DTMF volby 5
-\item Přehrání hlavního menu
-\item Ukončení hovoru SIP zprávou BYE
+\item iniciace hovoru SIP zprávou INVITE
+\item přehrání uvítací zprávy a výzvy k zadání přihl. jména
+\item zadání přihl. jména "1" prostřednictvím sekvence DTMF voleb 1 a \#
+\item přehrání výzvy k potvrzení přihl. jména
+\item potvrzení zadaného přihl. jména prostřednictvím DTMF volby 1
+\item přehrání výzvy k zadání přihl. hesla
+\item zadání přihl. hesla "1" prostřednictvím sekvence DTMF voleb 1 a \#
+\item přehrání nabídky hlavního menu
+\item zvolení "Seznamu rezervací" prostřednictvím DTMF volby 2
+\item přehrání informací o první aktivní rezervaci
+\item návrat do hlavního menu prostřednictvím DTMF volby 5
+\item přehrání nabídky hlavního menu
+\item ukončení hovoru SIP zprávou BYE
 \end{enumerate}
 
 Tento hovor byl poté spouštěn vůči hlasovému portálu. Hovory byly spouštěny v různém počtu instancí. V každém testu byl zároveň spouštěn různý počet souběžných instancí hovoru. V každém testu bylo měřeno procesorové a paměťové vytížení systému a klíčových procesů. Kapitola \ref{sec:Benchmark_results} je věnována výsledkům měření.
@@ -1444,7 +1454,7 @@ V tabulce \ref{tab:Benchmark_variants} jsou uvedeny všechny varianty provedený
 \InsertFigure{Figures/diagrams/bench_scenario}{1\textwidth}{Schéma simulovaného hovoru}{fig:Bench_scenario}
 
 \subsection{Použité nástroje}
-Pro provedení zátěžových testů bylo potřebné zvolit vhodné nástroje. V první řadě bylo nutné použít nástroj umožnující simulaci klientů, kteří se připojují k hlasovému portálu. Dále bylo potřeba nástroje, který nám umožní měřit celkové vytížení systému a vytížení konkrétních procesů.
+Pro provedení zátěžových testů bylo potřeba zvolit vhodné nástroje. V první řadě bylo nutné použít nástroj umožnující simulaci klientů, kteří se připojují k hlasovému portálu. Dále bylo potřeba nástroje, který nám umožní měřit celkové vytížení systému a vytížení konkrétních procesů.
 
 \subsubsection{SIPp}
 SIPp je nástroj, který umožňuje generovat síťový provoz spojený se SIP protokolem. Tento nástroj umí ze XML souboru načíst definici SIP dialogu a na základě této definice generovat SIP zprávy. SIPp také umožňuje generovat pakety RTP protokolu. Podpora RTP protokolu je v testovacím scénáři využita pro přenos DTMF volby. Součástí instalace tohoto nástroje jsou k dispozici zachycené RTP pakety jednotlivých DTMF voleb ve formátu pcap.
@@ -1507,7 +1517,7 @@ Tento skript je nutné spouštět z umístění, ve kterém je obsažen XML soub
 	\texttt{./start-bench.sh 0.2 20 10}
 \end{quote}
 
-První parametr udává periodu vzorkování vytížení systému. Hodnota se zadává ve vteřinách. Druhý parametrem udáváme celkový počet simulovaných hovorů, které chceme vyvolat. Posledním parametrem nastavujeme maximální počet souběžných hovorů.
+První parametr udává periodu vzorkování vytížení systému. Hodnota se zadává ve vteřinách. Druhým parametrem udáváme celkový počet simulovaných hovorů, které chceme vyvolat. Posledním parametrem nastavujeme maximální počet souběžných hovorů.
 
 Skript provede po spuštění následující operace:
 
@@ -1530,21 +1540,23 @@ Jedním z posledních operací, které skript provádí je spuštění skriptu \
 
 \subsection{Výsledky měření}
 \label{sec:Benchmark_results}
-Měřením bylo zjištěno konkrétní vytížení procesoru a využití paměti RAM při různém počtu probíhajících hovorů v kombinaci s různým počtem souběžných hovorů (viz tabulka \ref{tab:Benchmark_variants}). V této kapitole uvedu grafy zachycující zmíněné využití hlasové platformy i aplikačního serveru. Nebudu zde uvádět grafy využití všech variant zátěžových testů, ale uvedu zde jen grafy nejzajímavější variant testů (zde neuvedené grafy je možné najít v příloze).
+Měřením bylo zjištěno konkrétní vytížení procesoru a využití paměti RAM při různém počtu probíhajících hovorů v kombinaci s různým počtem souběžných hovorů (viz tabulka \ref{tab:Benchmark_variants}). V této kapitole uvedu grafy zachycující zmíněné využití hlasové platformy i aplikačního serveru. Nebudu zde uvádět grafy využití všech variant zátěžových testů, ale uvedu zde jen grafy nejzajímavější variant testů.
 
 Ve všech následně uvedených grafech je zachyceno celkové využití procesoru nebo paměti RAM včetně podílu vytíženosti jednotlivých procesů. Na osu Y jsou vynášeny procentuální hodnoty využití konkrétního zdroje - procesoru nebo paměti RAM. Osa X reprezentuje časový průběh zátěžového testu. U osy X není uvedena žádná měrná jednotka. Není uvedena z toho důvodu, že nás nezajímá vytížení v konkrétním čase, spíše nás zajímá relativní distribuce vytíženosti zdroje v průběhu testu.
 
 \subsubsection{Zátěžový test č. 1}
 Konfigurace tohoto, nejméně náročného, zátěžového testu spočívala v uskutečnění celkového počtu 5 hovorů, kdy všech 5 hovorů bylo obslouženo souběžně.
 
-Na obrázku \ref{fig:Benchmark_CPU_5_5} je zobrazen graf zachycující využitím procesoru při této konfiguraci. Na obrázku \ref{fig:Benchmark_RAM_5_5} je vyobrazeno využití paměti RAM.
+Na obrázku \ref{fig:Benchmark_CPU_5_5} je zobrazen graf zachycující využití procesoru při této konfiguraci. Na obrázku \ref{fig:Benchmark_RAM_5_5} je zobrazeno využití paměti RAM.
 
 \InsertSidewaysFigure{Figures/benchmark_charts/cpu_5_5}{1\textwidth}{Využití CPU při spuštění 5 souběžných hovorů, celkově 5 hovorů}{fig:Benchmark_CPU_5_5}
 \InsertSidewaysFigure{Figures/benchmark_charts/ram_5_5}{1\textwidth}{Využití paměti RAM při spuštění 5 souběžných hovorů, celkově 5 hovorů}{fig:Benchmark_RAM_5_5}
 
-Z grafu vytíženosti procesoru je patrné, že celkové vytížení systému je maximální jen v určitých časových periodách, které nemají dlouhého trvání. Největší podíl na vytíženosti má proces $node$, který představuje aplikační server. Procesy, které v testu zastupují hlasovou platformu, mají téměř konstantní podíl využití. Nejvíce vytíženým procesem hlasové platformy je proces $asterisk$, tedy hlasová ústředna.
+Z grafu vytíženosti procesoru je patrné, že celkové vytížení systému je maximální jen v určitých časových periodách, které nemají dlouhého trvání. Největší podíl na vytíženosti má proces $node$, který představuje aplikační server.
 
-Vytíženost paměti RAM nám prozrazuje, že téměř všechny procesy mají konstantní nároky na paměť v průběhu celého testu. Nejvýraznější vyjímkou je opět proces $node$, který představuje aplikační server. Právě u tohoto procesu je patrná postupná alokace paměti.
+Procesy, které v testu zastupují hlasovou platformu, mají téměř konstantní podíl využití. Nejvíce vytíženým procesem hlasové platformy je proces $asterisk$, tedy hlasová ústředna.
+
+Vytíženost paměti RAM nám prozrazuje, že téměř všechny procesy mají konstantní nároky na paměť v průběhu celého testu. Výjimkou je opět proces $node$, který představuje aplikační server. Právě u tohoto procesu je patrná postupná alokace paměti.
 
 \subsubsection{Zátěžový test č. 2}
 Konfigurace tohoto zátěžového testu spočívala v uskutečnění celkového počtu 20 hovorů. V tomto případě bylo souběžně obsluhováno vždy 10 hovorů. Celková doba trvání této varianty testu tedy zabrala dvojnásobný čas.
@@ -1556,7 +1568,7 @@ Tento typ testu nám může odhalit případné problémy s uvolňováním zdroj
 
 Z vytíženosti procesoru (\ref{fig:Benchmark_CPU_20_10}) je patrné, že zpracování hovorů v této konfiguraci systém stále zvládá bez sebemenšího problému - stále není ani zdaleka využit veškerý procesorový čas.
 
-V grafu vytíženosti paměti RAM (\ref{fig:Benchmark_RAM_20_10}) si můžeme povšimnout zvýšeného podílu na využití paměti u procesu $voiceglue$. U paměťové vytíženosti ostatních procesů nedošlo k výraznějšímu nárůstu.
+V grafu vytíženosti paměti RAM (\ref{fig:Benchmark_RAM_20_10}) si můžeme všimnout zvýšeného podílu na využití paměti u procesu $voiceglue$. U paměťové vytíženosti ostatních procesů nedošlo k výraznějšímu nárůstu.
 
 \subsubsection{Zátěžový test č. 3}
 Konfigurace této varianty zátěžového testu spočívala v uskutečnění celkového počtu 60 hovorů, kdy všech 60 hovorů bylo obslouženo souběžně.
@@ -1579,7 +1591,7 @@ Pro obsluhu většího počtu souběžných hovorů by bylo nutné zajistit vyš
 
 \section{Závěr}
 \label{sec:Conclusion}
-Diplomové práce se zabývala návrhem hlasového portálu na platformě VoiceXML.
+Diplomová práce se zabývala návrhem hlasového portálu na platformě VoiceXML.
 
 Úvodní kapitola nejdříve představila jazyk VoiceXML a jeho architekturu, strukturu VoiceXML dokumentů a seznámila nás se základy návrhu hlasových aplikací pomocí jazyka VoiceXML.
 
@@ -1614,84 +1626,90 @@ Ondřej Ždych
 \bibitem{vxml_interpreters} Peter Trilec,
 \textit{Porovnání volně dostupných VoiceXML interpreterů, bakalářská práce}, Masarykova univerzita, 2008.
 
-\bibitem{asterisk_org}
-\textit{Oficiální web Asterisku}, http://www.asterisk.org/get-started.
+\bibitem{asterisk_org} Digium, Inc.,
+\textit{Web projektu Asterisk}, http://www.asterisk.org/get-started, 2014.
 
-\bibitem{voiceglue_org}
-\textit{Oficiální web projektu VoiceGlue}, http://www.voiceglue.org.
+\bibitem{voiceglue_org} VoiceGlue,
+\textit{Web projektu VoiceGlue}, http://www.voiceglue.org, 2014.
 
-\bibitem{voiceglue_architecture}
-\textit{Architektura VoiceGlue}, https://github.com/voiceglue/voiceglue/wiki/Features-and-Architecture.
+\bibitem{voiceglue_architecture} VoiceGlue,
+\textit{Architektura VoiceGlue}, https://github.com/voiceglue/voiceglue/wiki/Features-and-Architecture, 2014.
 
 \bibitem{xml_wiki} Wikipedia,
-\textit{Extensible Markup Language}, http://cs.wikipedia.org/wiki/Extensible\_Markup\_Language.
+\textit{Extensible Markup Language}, http://cs.wikipedia.org/wiki/Extensible\_Markup\_Language, 2014.
 
-\bibitem{vxml_rychlokurz} Katedra telekomunikační techniky, ČVUT Praha,
-\textit{Sítě integrovaných služeb}, http://www.comtel.cz/files/download.php?id=5459‎.
+\bibitem{vxml_rychlokurz} Pavel Bezpalec; Katedra telekomunikační techniky, ČVUT Praha,
+\textit{Sítě integrovaných služeb}, http://www.comtel.cz/files/download.php?id=5459‎, 2010.
 
 \bibitem{tts_linguatec} Linguatec Language Technologies,
-\textit{Technologie převádění textu na mluvené slovo (Text-To-Speech)}, http://www.linguatec.cz/products/tts/information/technology.
+\textit{Technologie převádění textu na mluvené slovo (Text-To-Speech)}, http://www.linguatec.cz/products/tts/information/technology, 2014.
 
 \bibitem{tts_wiki} Wikipedia,
-\textit{Speech synthesis}, http://en.wikipedia.org/wiki/Speech\_synthesis.
+\textit{Speech synthesis}, http://en.wikipedia.org/wiki/Speech\_synthesis, 2014.
 
-\bibitem{festvox_org}
-\textit{Flite: a small, fast run time synthesis engine}, http://www.festvox.org/flite.
+\bibitem{festvox_org} Alan W. Black,
+\textit{Flite: a small, fast run time synthesis engine}, http://www.festvox.org/flite, 2014.
 
 \bibitem{festival_wiki} Wikipedia,
-\textit{Festival Speech Synthesis System}, http://en.wikipedia.org/wiki/Festival\_Speech\_Synthesis\_System.
+\textit{Festival Speech Synthesis System}, http://en.wikipedia.org/wiki/Festival\_Speech\_Synthesis\_System, 2014.
 
 \bibitem{cepstral_wiki} Wikipedia,
-\textit{Festival Speech Synthesis System}, http://en.wikipedia.org/wiki/Cepstral\_(company).
+\textit{Festival Speech Synthesis System}, http://en.wikipedia.org/wiki/Cepstral\_(company), 2014.
 
-\bibitem{cepstral_com}
-\textit{Cepstral TTS}, https://www.cepstral.com.
+\bibitem{cepstral_com} Cepstral LLC,
+\textit{Cepstral TTS}, https://www.cepstral.com, 2013.
 
 \bibitem{asr_wiki} Wikipedia,
-\textit{Speech recognition}, http://en.wikipedia.org/wiki/Speech\_recognition.
+\textit{Speech recognition}, http://en.wikipedia.org/wiki/Speech\_recognition, 2014.
 
-\bibitem{loquendo}
-\textit{Loquendo ASR}, http://www.sintel.com/bibli/telechargement/168/document\_Multi.pdf.
+\bibitem{loquendo} Loquedo,
+\textit{Loquendo ASR}, http://www.sintel.com/bibli/telechargement/168/document\_Multi.pdf, 2010.
 
 \bibitem{speechlab} Technická univerzita v Liberci,
-\textit{Laboratoř počítačového zpracování řeči}, https://www.ite.tul.cz/speechlab.
+\textit{Laboratoř počítačového zpracování řeči}, https://www.ite.tul.cz/speechlab, 2014.
 
-\bibitem{nuance_com}
-\textit{Web společnosti Nuance}, http://www.nuance.com.
+\bibitem{nuance_com} Nuance Communications, Inc.,
+\textit{Web společnosti Nuance}, http://www.nuance.com, 2014.
 
-\bibitem{angulardocs} Google,
-\textit{Dokumentace k frameworku AngularJS}, http://docs.angularjs.org.
+\bibitem{angulardocs} Google, Inc.,
+\textit{Dokumentace k frameworku AngularJS}, http://docs.angularjs.org, 2014.
 
-\bibitem{mongodb}
-\textit{Web projektu MongoDB}, http://www.mongodb.org.
+\bibitem{mongodb} MongoDB, Inc.,
+\textit{Web projektu MongoDB}, http://www.mongodb.org, 2013.
 
-\bibitem{mongoose}
-\textit{Web projektu Mongoose}, http://www.mongoosejs.com.
+\bibitem{mongoose} LearnBoost, Inc.,
+\textit{Web projektu Mongoose}, http://www.mongoosejs.com, 2011.
 
-\bibitem{nodejs}
-\textit{Oficiální web o Node.js}, http://www.nodejs.org.
+\bibitem{nodejs} Joyent, Inc.,
+\textit{Web platformy Node.js}, http://www.nodejs.org, 2014.
 
-\bibitem{expressjs}
-\textit{Oficiální web o frameworku Express.js}, http://www.expressjs.com.
+\bibitem{expressjs} TJ Holowaychuk,
+\textit{Web frameworku Express.js}, http://www.expressjs.com, 2014.
 
-\bibitem{grunt}
-\textit{Oficiální web věnovaný nástroji Grunt}, http://gruntjs.com.
+\bibitem{grunt} Opensource komunita,
+\textit{Web věnovaný nástroji Grunt}, http://gruntjs.com, 2014.
 
-\bibitem{vxml_org}
-\textit{VXML dokumentace} Voxeo, http://www.vxml.org.
+\bibitem{vxml_org} Voxeo,
+\textit{VXML dokumentace}, http://www.vxml.org, 2013.
 
-\bibitem{Mongo_install}
-\textit{Popis instalace MongoDB} MongoDB, http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu.
+\bibitem{Mongo_install} MongoDB, Inc.,
+\textit{Popis instalace MongoDB}, http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu, 2014.
 
-\bibitem{NodeJs_install}
-\textit{Instalační balíky Node.js} Joyent, http://nodejs.org/download.
+\bibitem{NodeJs_install} Joyent, Inc.,
+\textit{Instalační balíky Node.js}, http://nodejs.org/download, 2014.
 
 \end{thebibliography}
 
 \appendix
 \section{Přílohy}
-\subsection{Zdrojové kódy}
-Na doprovodném CD jsou k dispozici zdrojové kódy webového a hlasového portálu včetně navržené VXML knihovny.
+\subsection{Obsah CD}
+\begin{itemize}
+\item diplomová práce ve formátu PDF
+\item zdrojové kódy webového portálu
+\item zdrojové kódy hlasového portálu
+\item zdrojové kódy VXML knihovny
+\item doprovodné skripty
+\end{itemize}
 
 \subsection{Diagramy jednotlivých částí hlasového portálu}
 \label{sec:voice_portal_diagrams}
